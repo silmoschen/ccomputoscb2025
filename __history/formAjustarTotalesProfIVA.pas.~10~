@@ -1,0 +1,97 @@
+unit formAjustarTotalesProfIVA;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ComCtrls, ExtCtrls, Grids, StdCtrls, Buttons, Mask, CUtiles, CProfesionalCCB;
+
+type
+  TfmAjustesTotalesIVA = class(TForm)
+    StatusBar1: TStatusBar;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    Label14: TLabel;
+    Label27: TLabel;
+    periodo: TMaskEdit;
+    Label47: TLabel;
+    idprof: TMaskEdit;
+    BuscarProfes: TBitBtn;
+    np: TLabel;
+    RadioButton1: TRadioButton;
+    RadioButton2: TRadioButton;
+    Panel3: TPanel;
+    S: TStringGrid;
+    procedure FormResize(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure periodoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure idprofKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure BuscarProfesClick(Sender: TObject);
+  private
+    { Private declarations }
+    procedure CargarDatosProfesional;
+  public
+    { Public declarations }
+  end;
+
+var
+  fmAjustesTotalesIVA: TfmAjustesTotalesIVA;
+
+implementation
+
+uses NominaDeProfesionalesLiquidacionOS;
+
+{$R *.dfm}
+
+procedure TfmAjustesTotalesIVA.CargarDatosProfesional;
+begin
+  profesional.getDatos(idprof.Text);
+  np.Caption := profesional.nombre;
+  profesional.SincronizarListaRetIVA(periodo.Text, idprof.Text);
+  if (profesional.Retieneiva <> 'S') then begin
+    utiles.msgError('Esta Opción Solo está Disponible para Profesionales que Retienen I.V.A. ...!');
+    idprof.Text := '';
+  end;
+end;
+
+procedure TfmAjustesTotalesIVA.BuscarProfesClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmListProfesionalesLiq, fmListProfesionalesLiq);
+  fmListProfesionalesLiq.introSalir := True;
+  fmListProfesionalesLiq.on2        := True;
+  fmListProfesionalesLiq.ShowModal;
+  if fmListProfesionalesLiq.seleccionOK then Begin
+    idprof.Text := profesional.tperso.FieldByName('idprof').AsString;
+    CargarDatosProfesional;
+  End;
+end;
+
+procedure TfmAjustesTotalesIVA.FormResize(Sender: TObject);
+begin
+  StatusBar1.Panels[0].Width := Width - 250;
+end;
+
+procedure TfmAjustesTotalesIVA.FormShow(Sender: TObject);
+begin
+  periodo.setFocus;
+end;
+
+procedure TfmAjustesTotalesIVA.idprofKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_UP) then periodo.setFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then begin
+    if (profesional.Buscar(idprof.Text)) then CargarDatosProfesional else BuscarProfesClick(Self);
+  end;
+end;
+
+procedure TfmAjustesTotalesIVA.periodoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_ESCAPE) then Close;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if (utiles.verificarPeriodo(periodo.Text)) then idprof.setFocus;
+end;
+
+end.

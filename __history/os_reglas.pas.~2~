@@ -1,0 +1,44 @@
+unit os_reglas;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, Grids, DBGrids, DBCtrls, ExtCtrls, CObrasSociales, DB;
+
+type
+  TfmReglasOs = class(TForm)
+    Panel1: TPanel;
+    Panel2: TPanel;
+    DBNavigator: TDBNavigator;
+    Panel3: TPanel;
+    DBGrid: TDBGrid;
+    DTS: TDataSource;
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  fmReglasOs: TfmReglasOs;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfmReglasOs.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  Close;
+  Release; fmReglasOs := nil;
+end;
+
+procedure TfmReglasOs.FormShow(Sender: TObject);
+begin
+  obsocial.conectar;
+  DTS.DataSet := obsocial.texport;
+end;
+
+end.

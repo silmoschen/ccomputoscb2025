@@ -1,0 +1,2 @@
+agregar anulada a cab_auditoria y det_auditoria,
+cab_auditoria_hist y det_auditoria_hist

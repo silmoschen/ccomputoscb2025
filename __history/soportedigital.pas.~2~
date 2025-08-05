@@ -1,0 +1,38 @@
+unit soportedigital;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Mask, ExtCtrls, ComCtrls;
+
+type
+  TfmSoporteDigital = class(TForm)
+    StatusBar1: TStatusBar;
+    Panel4: TPanel;
+    Label1: TLabel;
+    Edit1: TEdit;
+    Label4: TLabel;
+    periodo: TMaskEdit;
+    Label5: TLabel;
+    estado: TLabel;
+    Label6: TLabel;
+    listObraSocial: TComboBox;
+    listCodigo: TComboBox;
+    Panel3: TPanel;
+    btnCerrar: TButton;
+    btnFacturar: TButton;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  fmSoporteDigital: TfmSoporteDigital;
+
+implementation
+
+{$R *.dfm}
+
+end.

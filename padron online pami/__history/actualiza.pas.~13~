@@ -1,0 +1,53 @@
+unit actualiza;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, DB, DBTables, CUtiles;
+
+type
+  TForm3 = class(TForm)
+    codos: TEdit;
+    Button1: TButton;
+    Table1: TTable;
+    Edit1: TEdit;
+    procedure Button1Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form3: TForm3;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm3.Button1Click(Sender: TObject);
+var
+  archivo: textfile;
+begin
+  assignfile(archivo, 'padron_pami.sql');
+  rewrite(archivo);
+  table1.TableName := Edit1.Text;
+  table1.Open; table1.first;
+  while not table1.eof do begin
+    writeln(archivo, 'insert into bioqafil (codos, nrodoc, nombre, fechanac, id_beneficio, id_parentesco, sexo, direccion, tipo_doc) values (' + '''' + codos.Text + '''' + ', ' + '''' + utiles.sLlenarIzquierda(table1.FieldByName('n_docu').asstring, 8, '0') + '''' + ', '+
+      '"' + table1.FieldByName('padron_d_a').asstring + '"' + ',' +
+      '''' + '20/11/1925' + '''' + ',' +
+      '''' + table1.FieldByName('n_benefici').asstring + '''' + ',' +
+      '''' + table1.FieldByName('c_grado_pa').asstring + '''' + ',' +
+      '''' + 'M' + '''' + ',' + '''' + '25 de mayo 461' + '''' + ',' +
+      '''' + table1.FieldByName('t_docu').asstring + '''' +
+      ');' );
+    table1.next;
+  end;
+  table1.close;
+  closeFile(archivo);
+  Close;
+end;
+
+end.

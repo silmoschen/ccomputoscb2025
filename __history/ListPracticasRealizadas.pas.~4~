@@ -1,0 +1,97 @@
+unit ListPracticasRealizadas;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, Grids, StdCtrls, Mask, ExtCtrls, CUtiles, IBQuery, CFacturacionCCB, CNbu;
+
+type
+  TfmListPracticasRealizadas = class(TForm)
+    Panel2: TPanel;
+    ScrollBox: TScrollBox;
+    Panel1: TPanel;
+    Panel3: TPanel;
+    Label1: TLabel;
+    desde: TMaskEdit;
+    Label2: TLabel;
+    hasta: TMaskEdit;
+    btnBuscar: TButton;
+    Panel4: TPanel;
+    F: TStringGrid;
+    procedure desdeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure hastaKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure btnBuscarClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  fmListPracticasRealizadas: TfmListPracticasRealizadas;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfmListPracticasRealizadas.btnBuscarClick(Sender: TObject);
+var
+  r: TIBquery;
+  i: integer;
+begin
+  if ((not utiles.verificarPeriodo(desde.Text)) or (not (utiles.verificarPeriodo(hasta.Text)))) then begin
+    utiles.msgError('Periodos Incorrectos ... !');
+    exit;
+  end;
+  r := facturacion.getPracticasFacturadas(desde.Text, hasta.Text);
+  r.Open; i := 0;
+  while not r.eof do begin
+    inc(i);
+    F.Cells[0, i] := r.FieldByName('codigo').asstring;
+    nbu.getDatos(r.FieldByName('codigo').asstring);
+    F.Cells[1, i] := nbu.Descrip;
+    r.Next;
+  end;
+
+  r.close; r.free;
+end;
+
+procedure TfmListPracticasRealizadas.desdeKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+     if not (utiles.verificarPeriodo(desde.Text)) then begin
+       utiles.msgError('Período Incorrecto ...!');
+       exit;
+     end;
+     hasta.SetFocus;
+  End;
+end;
+
+procedure TfmListPracticasRealizadas.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  facturacion.desconectar;
+end;
+
+procedure TfmListPracticasRealizadas.FormShow(Sender: TObject);
+begin
+  facturacion.conectar;
+end;
+
+procedure TfmListPracticasRealizadas.hastaKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+     if not (utiles.verificarPeriodo(hasta.Text)) then begin
+       utiles.msgError('Período Incorrecto ...!');
+       exit;
+     end;
+     btnBuscar.SetFocus;
+End;
+end;
+
+end.

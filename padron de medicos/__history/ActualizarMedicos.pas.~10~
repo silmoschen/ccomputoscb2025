@@ -1,0 +1,85 @@
+unit ActualizarMedicos;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, CUtiles;
+
+type
+  TForm3 = class(TForm)
+    Button1: TButton;
+    Button2: TButton;
+    procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form3: TForm3;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm3.Button1Click(Sender: TObject);
+var
+  archivo, salida: TextFile;
+  linea, libro, folio, matricula, nombre: string;
+  p, j: integer;
+begin
+  j := 0;
+  AssignFile(archivo, 'listadogeneral.csv');
+  AssignFile(salida, 'sal_med.txt');
+  reset(archivo);
+  rewrite(salida);
+  while not eof(archivo) do begin
+    inc(j);
+    readln(archivo, linea);
+    libro := copy(linea, 1, 2);
+    folio := copy(linea, 4, 3);
+    matricula := copy(linea, 8, 5);
+    nombre := copy(linea, 15, 50);
+    p := pos('|', nombre);
+    nombre := copy(nombre, 1, p-1);
+    if (j > 1) then
+      writeln(salida, libro + ' ' + folio + ' ' + matricula + ' ' + nombre);
+  end;
+  closeFile(salida);
+  closeFile(archivo);
+  Close;
+end;
+
+procedure TForm3.Button2Click(Sender: TObject);
+var
+  archivo, salida: TextFile;
+  linea, libro, folio, matricula, nombre: string;
+  p, j, k: integer;
+begin
+  j := 0; k := 6657;
+  AssignFile(archivo, 'odo.prn');
+  AssignFile(salida, 'sal_odo.txt');
+  reset(archivo);
+  rewrite(salida);
+  while not eof(archivo) do begin
+    inc(j);
+    readln(archivo, linea);
+    libro := '0';
+    folio := '0';
+    matricula := trim(copy(linea, 70, 15));
+    nombre := copy(linea, 1, 30);
+    inc(k);
+    if (j > 0) then
+      writeln(salida, 'insert into medicos (codos, idprof, nombre, matricula) values (' +
+                      '''' + '121005' + '''' + ', ' + '''' + utiles.sLlenarIzquierda(inttostr(k), 5, '0') + '''' + ', ' +
+                      '''' + trimright(nombre) + '''' + ', ' +  '''' + matricula + '''' + ');' );
+  end;
+  closeFile(salida);
+  closeFile(archivo);
+  Close;
+end;
+
+end.

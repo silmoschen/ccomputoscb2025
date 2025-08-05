@@ -1,0 +1,4 @@
+indice en profesio: PROFESIO_NOMBRE
+indice obra social: OBSOCIAL_NOMBRE
+agregar carpeta work
+agregar campo alta en pacientes

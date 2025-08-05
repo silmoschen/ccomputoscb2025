@@ -1,0 +1,22 @@
+<zonas>
+<registro>
+<idzona>01</idzona>
+<zona>CENTRO</zona>
+</registro>
+<registro>
+<idzona>02</idzona>
+<zona>Sur</zona>
+</registro>
+<registro>
+<idzona>03</idzona>
+<zona>Norte</zona>
+</registro>
+<registro>
+<idzona>04</idzona>
+<zona>Vera</zona>
+</registro>
+<registro>
+<idzona>05</idzona>
+<zona>NIVEL 2</zona>
+</registro>
+</zonas>

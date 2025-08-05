@@ -1,0 +1,307 @@
+unit EleccionObrasSocialesAgrupadas;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  ComCtrls, Grids, ExtCtrls, ImgForms, ToolWin, DBTables, StdCtrls, Mask,
+  Buttons, Menus, BorBtns;
+
+type
+  TfmEleObraSocialesAgrupadas = class(TForm)
+    Panel2: TPanel;
+    ScrollBox: TScrollBox;
+    Panel3: TPanel;
+    F: TStringGrid;
+    Panel4: TPanel;
+    Label3: TLabel;
+    PopupMenu: TPopupMenu;
+    Seleccionar1: TMenuItem;
+    odos1: TMenuItem;
+    Ninguno1: TMenuItem;
+    Label2: TLabel;
+    Panel1: TPanel;
+    Si: TSpeedButton;
+    Ninguno: TSpeedButton;
+    Todos: TSpeedButton;
+    P: TSpeedButton;
+    A: TSpeedButton;
+    S: TSpeedButton;
+    U: TSpeedButton;
+    Actualizar: TSpeedButton;
+    Panel5: TPanel;
+    Label1: TLabel;
+    buscar: TMaskEdit;
+    todas: TRadioButton;
+    capitadas: TRadioButton;
+    nocapitadas: TRadioButton;
+    retIva: TRadioButton;
+    procedure SiClick(Sender: TObject);
+    procedure TodosClick(Sender: TObject);
+    procedure NingunoClick(Sender: TObject);
+    procedure PClick(Sender: TObject);
+    procedure buscarChange(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure buscarKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure ActualizarClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure todasClick(Sender: TObject);
+    procedure capitadasClick(Sender: TObject);
+    procedure nocapitadasClick(Sender: TObject);
+    procedure Panel3Resize(Sender: TObject);
+    procedure retIvaClick(Sender: TObject);
+  private
+    { Private declarations }
+    nroitems: integer;
+  public
+    { Public declarations }
+    tipo: string; ObSeleccionadas, redim, EleIndividual: Boolean; cantidadSel, CargarNivel: Integer;
+    lista: TStringList;
+    procedure CargarDatos(xnivel: ShortInt);
+    procedure MarcarObrasSociales(xlista: TStringList);
+  end;
+
+var
+  fmEleObraSocialesAgrupadas: TfmEleObraSocialesAgrupadas;
+
+implementation
+
+uses CObrasSocialesCCB, CUtiles, CConfigForms, CUtilidadesStringGrid, CAgrupacionOSFact;
+
+{$R *.DFM}
+
+procedure TfmEleObraSocialesAgrupadas.CargarDatos(xnivel: ShortInt);
+var
+  r: TQuery; i: integer; cap: Boolean;
+begin
+  osagrupa.conectar;
+  grid.IniciarGrilla(F);
+  F.cells[0, 0] := 'Obra Social'; F.cells[1, 0] := 'Cód.'; F.cells[2, 0] := 'S';
+  F.cells[3, 0] := 'Agr.';
+  r := obsocial.setobsocialsAlf;
+  r.Open; i := 0; r.First; lista := Nil;
+  while not r.EOF do Begin
+    cap := False;
+    if xnivel = 1 then cap := True;
+    if xnivel = 2 then
+      if r.FieldByName('capitada').AsString = 'S'   then cap := True;
+    if xnivel = 3 then
+      if r.FieldByName('capitada').AsString <> 'S'  then cap := True;
+    if xnivel = 4 then
+      if r.FieldByName('retieneiva').AsString = 'S' then cap := True;
+    if cap then Begin
+      if not (osagrupa.buscarosdet(r.FieldByName('codos').AsString)) then begin
+        Inc(i);
+        F.cells[0, i] := r.FieldByName('nombre').AsString;
+        F.cells[1, i] := r.FieldByName('codos').AsString;
+        F.cells[3, i] := 'N';
+      end;
+    end;
+    r.Next;
+  end;
+  r.Close; r.Free;
+
+  r := osagrupa.getObrasAgrupadas;
+  r.Open;
+  while not r.eof do begin
+    if (osagrupa.verificarSiTieneOSAgrupada(r.FieldByName('id').AsString)) then begin
+      Inc(i);
+      F.cells[0, i] := r.FieldByName('nombre').AsString;
+      F.cells[1, i] := r.FieldByName('id').AsString;
+      F.cells[3, i] := 'S';
+    end;
+    r.Next;
+  end;
+  r.Close; r.Free;
+  osagrupa.desconectar;
+  nroItems := i;
+  F.Refresh;
+  Label3.Caption := '1';
+end;
+
+procedure TfmEleObraSocialesAgrupadas.MarcarObrasSociales(xlista: TStringList);
+var
+  i: Integer;
+begin
+  if xlista <> Nil then
+    if xlista.Count > 0 then
+      For i := 1 to F.RowCount do Begin
+        if Length(Trim(F.Cells[0, i])) = 0 then Break;
+        if utiles.verificarItemsLista(xlista, F.Cells[1, i]) then F.Cells[2, i] := 'S' else F.Cells[2, i] := '';
+      end;
+end;
+
+procedure TfmEleObraSocialesAgrupadas.SiClick(Sender: TObject);
+begin
+  if Length(Trim(F.cells[0, F.row])) > 0 then Begin
+    if F.cells[2, F.row] <> 'S' then F.cells[2, F.row] := 'S' else F.cells[2, F.row] := ' ';
+    if (F.row < F.rowcount) and (Length(Trim(F.cells[0, F.row + 1])) > 0) then F.row := F.row + 1;
+    F.Refresh;
+  end;
+end;
+
+procedure TfmEleObraSocialesAgrupadas.TodosClick(Sender: TObject);
+var
+  i: integer;
+begin
+  For i := 1 to nroItems do F.cells[2, i] := 'S';
+  F.Refresh;
+end;
+
+procedure TfmEleObraSocialesAgrupadas.NingunoClick(Sender: TObject);
+var
+  i: integer;
+begin
+  For i := 1 to F.RowCount do F.cells[2, i] := ' ';
+  buscar.Text := '';
+  lista := Nil;
+  F.Refresh;
+end;
+
+procedure TfmEleObraSocialesAgrupadas.PClick(Sender: TObject);
+begin
+  if Sender = P then F.row := 1;
+  if Sender = U then F.row := nroItems;
+  if Sender = A then if F.row > 1 then F.row := F.row - 1;
+  if Sender = S then if F.row < nroItems then F.row := F.row + 1;
+  F.Refresh;
+end;
+
+procedure TfmEleObraSocialesAgrupadas.buscarChange(Sender: TObject);
+var
+  caracteres, i: integer;
+begin
+  caracteres := Length(Trim(buscar.Text));
+  For i := 1 to nroItems do Begin
+    if UpperCase(buscar.Text) = UpperCase(Copy(F.cells[0, i], 1, caracteres)) then Begin
+      F.row := i; F.Refresh; Break;
+    end;
+  end;
+end;
+
+procedure TfmEleObraSocialesAgrupadas.FormCreate(Sender: TObject);
+begin
+  Left := StrToInt(FormatFloat('####', (Screen.DesktopWidth / 2) - (Width / 2)));
+  buscar.Text   := '';
+  F.row         := StrToInt(Label3.Caption);
+  ActiveControl := buscar;
+  lista         := TStringList.Create;
+end;
+
+procedure TfmEleObraSocialesAgrupadas.buscarKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if Key = VK_UP then Begin
+    if F.row > 1 then F.row := F.row - 1;
+    ActiveControl := F; F. Refresh;
+  end;
+  if Key = VK_DOWN then Begin
+    if F.row < nroItems then F.row := F.row + 1;
+    ActiveControl := F; F. Refresh;
+  end;
+  if Key = VK_RETURN then ActiveControl := F;
+end;
+
+procedure TfmEleObraSocialesAgrupadas.FormClose(Sender: TObject; var Action: TCloseAction);
+var
+  i, j: Integer;
+begin
+  configform.Guardar(fmEleObraSocialesAgrupadas, redim);
+  Label3.Caption  := IntToStr(F.row);
+  ObSeleccionadas := False;
+
+  For i := 1 to F.RowCount do Begin
+    if Length(Trim(F.cells[0, i])) = 0 then Break;
+    if F.cells[2, i] = 'S' then Begin
+      ObSeleccionadas := True;
+      Break;
+    end;
+  end;
+
+  lista := TStringList.Create;
+  j := 0;
+  For i := 1 to F.RowCount do Begin
+    if Length(Trim(F.cells[0, i])) = 0 then Break;
+    if F.cells[2, i] = 'S' then Begin
+      Inc(j);
+      lista.Add(F.cells[1, i]);
+    end;
+  end;
+  cantidadSel := j;
+  if cantidadSel = 0 then lista := Nil;
+
+  if (lista = Nil) and (retIva.Checked) then Begin
+    For i := 1 to F.RowCount do Begin
+      if Length(Trim(F.cells[0, i])) = 0 then Break;
+      if lista = Nil then lista := TStringList.Create;
+      lista.Add(F.cells[1, i]);
+    end;
+  end;
+end;
+
+procedure TfmEleObraSocialesAgrupadas.FKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_ESCAPE) or (Key = VK_RETURN) then Close;
+  if Key = VK_SPACE  then
+    if not EleIndividual then SiClick(Sender);
+end;
+
+procedure TfmEleObraSocialesAgrupadas.ActualizarClick(Sender: TObject);
+begin
+  CargarDatos(1);
+end;
+
+procedure TfmEleObraSocialesAgrupadas.FormShow(Sender: TObject);
+begin
+  if not configform.Setear(fmEleObraSocialesAgrupadas) then Left := StrToInt(FormatFloat('####', (Screen.DesktopWidth / 2) - (Width / 2)));
+  buscar.Text := '';
+  redim := False;
+  buscar.SetFocus;
+  if CargarNivel = 0 then todas.Checked := True;
+  if CargarNivel = 1 then capitadas.Checked := True;
+  if CargarNivel = 2 then nocapitadas.Checked := True;
+  if CargarNivel = 3 then retiva.Checked := True;
+  if EleIndividual then Begin
+    si.Enabled := False; ninguno.Enabled := False; todos.Enabled := False;
+    F.ColWidths[2] := -1;
+  end else Begin
+    si.Enabled := True; ninguno.Enabled := True; todos.Enabled := True;
+    F.ColWidths[2] := 15;
+  end;
+end;
+
+procedure TfmEleObraSocialesAgrupadas.todasClick(Sender: TObject);
+begin
+  CargarDatos(1);
+  buscar.SetFocus;
+end;
+
+procedure TfmEleObraSocialesAgrupadas.capitadasClick(Sender: TObject);
+begin
+  CargarDatos(2);
+  buscar.SetFocus;
+end;
+
+procedure TfmEleObraSocialesAgrupadas.nocapitadasClick(Sender: TObject);
+begin
+  CargarDatos(3);
+  buscar.SetFocus;
+end;
+
+procedure TfmEleObraSocialesAgrupadas.Panel3Resize(Sender: TObject);
+begin
+  redim := True;
+end;
+
+procedure TfmEleObraSocialesAgrupadas.retIvaClick(Sender: TObject);
+begin
+  CargarDatos(4);
+  buscar.SetFocus;
+end;
+
+end.

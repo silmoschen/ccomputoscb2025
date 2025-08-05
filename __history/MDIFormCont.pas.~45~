@@ -1,0 +1,1343 @@
+unit MDIFormCont;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Menus, ExtCtrls, ToolWin, ComCtrls, StdCtrls, IniFiles, DBTables, lmdgraph,
+  LMDCustomComponent, LMDWndProcComponent, LMDCustomFormFill, WinSkinData,
+  LMDBaseControl, LMDBaseGraphicControl, LMDGraphicControl, LMDFill,
+  LMDControl, IdBaseComponent, IdAntiFreezeBase, IdAntiFreeze;
+
+const
+  //version = '3.07.009';
+  version = '4.01.001';
+  distribucion = '';               // Centro de Bioquimicos - Laboratorios
+  estilos: array [1..4] of TLMDTileMode = (tmNone, tmCenter, tmStretch, tmTile);
+
+type
+  TfmSistem = class(TForm)
+    MainMenu: TMainMenu;
+    Sistema1: TMenuItem;
+    RegistracinOperacionesBingo1: TMenuItem;
+    N1: TMenuItem;
+    Salir1: TMenuItem;
+    Archivo1: TMenuItem;
+    AdministracindeMaestros1: TMenuItem;
+    Emisin1: TMenuItem;
+    Estadistica1: TMenuItem;
+    InformeEstadstico1: TMenuItem;
+    N5: TMenuItem;
+    ProyeccinMensualdeCobros1: TMenuItem;
+    ProyeccinMensualdeComisionesaPagar1: TMenuItem;
+    ProyeccinMensualdeComisionesPagadas1: TMenuItem;
+    Cerrar1: TMenuItem;
+    Depurar1: TMenuItem;
+    Auditora1: TMenuItem;
+    General2: TMenuItem;
+    CopiasdeSeguridad1: TMenuItem;
+    N2: TMenuItem;
+    Datosdelsistema1: TMenuItem;
+    N3: TMenuItem;
+    NivelesdeSeguridad1: TMenuItem;
+    N8: TMenuItem;
+    Agenda1: TMenuItem;
+    Panel1: TPanel;
+    Ver1: TMenuItem;
+    BarradeHerramientas1: TMenuItem;
+    General1: TMenuItem;
+    Estadisticas1: TMenuItem;
+    Comprobantes1: TMenuItem;
+    ComprobantesRegistrables1: TMenuItem;
+    Accesos1: TMenuItem;
+    Impresoras1: TMenuItem;
+    N6: TMenuItem;
+    Cascada1: TMenuItem;
+    MosaicoHorizontal1: TMenuItem;
+    MosaicoVerical1: TMenuItem;
+    N4: TMenuItem;
+    InformesdeUsuario1: TMenuItem;
+    EtiquetasdeUsuario1: TMenuItem;
+    N11: TMenuItem;
+    Acercade1: TMenuItem;
+    Usuarios1: TMenuItem;
+    N7: TMenuItem;
+    ObrasSociales1: TMenuItem;
+    N12: TMenuItem;
+    PopupMenuArchivo: TPopupMenu;
+    ObrasSociales2: TMenuItem;
+    Comprobantes2: TMenuItem;
+    ComprobantesRegistrables2: TMenuItem;
+    N13: TMenuItem;
+    DatosFactLaboratorios1: TMenuItem;
+    N16: TMenuItem;
+    DistribucinPagosdeObrasSociales2: TMenuItem;
+    AuditoaOrdenesObrasSociales1: TMenuItem;
+    N17: TMenuItem;
+    N9: TMenuItem;
+    abladeComprobantes1: TMenuItem;
+    ConfigurarBackup1: TMenuItem;
+    PopupMenuPersonalizarEntorno: TPopupMenu;
+    PersonalizarEntornodeTrabajo1: TMenuItem;
+    StatusBar1: TStatusBar;
+    ToolBar1: TToolBar;
+    sistSolicitudes: TToolButton;
+    sistAuditoria: TToolButton;
+    sistLiquidacion: TToolButton;
+    ToolButton3: TToolButton;
+    sistLaboratorios: TToolButton;
+    sistPacientes: TToolButton;
+    sistObrasSociales: TToolButton;
+    sisInformesDiarios: TToolButton;
+    agenda: TToolButton;
+    PopupMenuDistribucion: TPopupMenu;
+    DistribucinObrasSociales1: TMenuItem;
+    N14: TMenuItem;
+    VentadeInsumos1: TMenuItem;
+    N18: TMenuItem;
+    Separador1: TToolButton;
+    Separador2: TToolButton;
+    GenerarDatosparaActualizacionesOnLine1: TMenuItem;
+    N15: TMenuItem;
+    DeduccinMontoDeterminaciones1: TMenuItem;
+    N20: TMenuItem;
+    CompradeInsumos1: TMenuItem;
+    RestaurarBackup1: TMenuItem;
+    skd: TSkinData;
+    InformesDiarios1: TMenuItem;
+    Veriones1: TMenuItem;
+    Nomenclaturas1: TMenuItem;
+    DatosMaestrosAuditora1: TMenuItem;
+    Zonas1: TMenuItem;
+    Mdicos1: TMenuItem;
+    abladeDiagnsitcos2: TMenuItem;
+    ablaDiagnsticosOMS1: TMenuItem;
+    PadrnAfiliadosaObrasSociales1: TMenuItem;
+    ActualizarPadronesAuditora1: TMenuItem;
+    ArancelesDiferencialesObrasSociales1: TMenuItem;
+    NomencladorNacionalNormalizado1: TMenuItem;
+    NomencladorBioqumicoUnificado2: TMenuItem;
+    NomenclaturasObrasSociales1: TMenuItem;
+    IncluiryExcluirCdigosNomenclatura1: TMenuItem;
+    ActualizarMontosFijosNBU2: TMenuItem;
+    DatosMaestrosDistribucin1: TMenuItem;
+    DbitosCreditosProfDistribucin1: TMenuItem;
+    RetencionesDistribucin1: TMenuItem;
+    EntidadesBancarias1: TMenuItem;
+    N10: TMenuItem;
+    PadrndeInsumos1: TMenuItem;
+    ProveedoresdeInsumos2: TMenuItem;
+    Nomenclaturas2: TMenuItem;
+    NomencladorNaciomalNormalizado1: TMenuItem;
+    NomencladorBioqumicoUnificado1: TMenuItem;
+    NomeclaturasObrasSociales1: TMenuItem;
+    IncluiryExcluirCdigosNomenclatura2: TMenuItem;
+    ActualizarMontosFijosNBU1: TMenuItem;
+    DatosMaestrosDistribucin2: TMenuItem;
+    DbitosyCrditosProfDistribucin1: TMenuItem;
+    RetencionesDistribucin2: TMenuItem;
+    EntidadesBancarias2: TMenuItem;
+    N19: TMenuItem;
+    PadrndeInsumos2: TMenuItem;
+    ProveedoresdeInsumos1: TMenuItem;
+    DatosMaestrosAuditora2: TMenuItem;
+    Zonas2: TMenuItem;
+    Mdicos2: TMenuItem;
+    abladeDiagnsitcos1: TMenuItem;
+    ablaDiagnsticosOMS2: TMenuItem;
+    PadrnAfiliadosaObrasSociales2: TMenuItem;
+    ActualizarPadronesAuditora2: TMenuItem;
+    ArancelesDiferencialesObrasSociales2: TMenuItem;
+    N21: TMenuItem;
+    N22: TMenuItem;
+    Insumos1: TMenuItem;
+    VentadeInsumos2: TMenuItem;
+    ComprasdeInsumos1: TMenuItem;
+    N23: TMenuItem;
+    PosicinBarradeHerramientas1: TMenuItem;
+    Superior1: TMenuItem;
+    Izquierda1: TMenuItem;
+    Derecha1: TMenuItem;
+    RepararDatos1: TMenuItem;
+    RepararMdulo1: TMenuItem;
+    SeleccinManual1: TMenuItem;
+    btnContabilidad: TToolButton;
+    PopupMenuCont: TPopupMenu;
+    PlandeCuentas1: TMenuItem;
+    MenuItem1: TMenuItem;
+    DefinirEjercicioEconmico1: TMenuItem;
+    MenuItem2: TMenuItem;
+    AsientosContables1: TMenuItem;
+    DefdeAsientosModelo1: TMenuItem;
+    MenuItem3: TMenuItem;
+    RenumerarAsientos1: TMenuItem;
+    MenuItem4: TMenuItem;
+    ExportacindeAsientos1: TMenuItem;
+    ImportacindeAsientos1: TMenuItem;
+    PopupMenuInformes: TPopupMenu;
+    InformesAdicionalesdeAuditora1: TMenuItem;
+    N24: TMenuItem;
+    InformesContables1: TMenuItem;
+    N25: TMenuItem;
+    InformesContables2: TMenuItem;
+    RegistracinContable1: TMenuItem;
+    PlandeCuentas2: TMenuItem;
+    N26: TMenuItem;
+    DefinirEjercicioEconmico2: TMenuItem;
+    N27: TMenuItem;
+    AsientosContables2: TMenuItem;
+    DefinirdeAsientosModelos1: TMenuItem;
+    N28: TMenuItem;
+    RenumerarAsientos2: TMenuItem;
+    N29: TMenuItem;
+    ExportarAsientos1: TMenuItem;
+    ImportarAsientos1: TMenuItem;
+    N30: TMenuItem;
+    ParmetrosdeAuditoria1: TMenuItem;
+    N31: TMenuItem;
+    ParmetrosAuditoria1: TMenuItem;
+    LMDFormFill: TLMDFill;
+    GeneracinEstadsticasIAPOS1: TMenuItem;
+    AuditoriaCentral1: TMenuItem;
+    AuditoraDiferida1: TMenuItem;
+    PopupMenuAuditoria: TPopupMenu;
+    AuditoraGeneral1: TMenuItem;
+    AuditoraDiferencial1: TMenuItem;
+    AgruparObrasSocialesparaFacturar1: TMenuItem;
+    N32: TMenuItem;
+    AgruparObrasSocialesparaFacturar2: TMenuItem;
+    N33: TMenuItem;
+    ConfiguracinAccesosRemotos1: TMenuItem;
+    Coseguros1: TMenuItem;
+    Coseguros2: TMenuItem;
+    N34: TMenuItem;
+    ConfigurarAccesoFTP1: TMenuItem;
+    Laboratorios3: TMenuItem;
+    Laboratorios2: TMenuItem;
+    CategorasLaboratorios2: TMenuItem;
+    Laboratorios4: TMenuItem;
+    Laboratorios1: TMenuItem;
+    CategorasLaboratorios1: TMenuItem;
+    PrcticasRealizadas1: TMenuItem;
+    FacturacinAFIP1: TMenuItem;
+    procedure FormActivate(Sender: TObject);
+    procedure sistObrasSocialesClick(Sender: TObject);
+    procedure Salir1Click(Sender: TObject);
+    procedure General1Click(Sender: TObject);
+    procedure MainMenuChange(Sender: TObject; Source: TMenuItem;
+      Rebuild: Boolean);
+    procedure sistNomecladorClick(Sender: TObject);
+    procedure Comprobantes1Click(Sender: TObject);
+    procedure ComprobantesRegistrables1Click(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure sisBackupClick(Sender: TObject);
+    procedure Datosdelsistema1Click(Sender: TObject);
+    procedure agendaClick(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure Accesos1Click(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure Impresoras1Click(Sender: TObject);
+    procedure MosaicoVerical1Click(Sender: TObject);
+    procedure MosaicoHorizontal1Click(Sender: TObject);
+    procedure Cascada1Click(Sender: TObject);
+    procedure DatosdeLaboratorios1Click(Sender: TObject);
+    procedure Categoras1Click(Sender: TObject);
+    procedure sistPacientesClick(Sender: TObject);
+    procedure PlandeCuentas2Click(Sender: TObject);
+    procedure Usuarios1Click(Sender: TObject);
+    procedure Acercade1Click(Sender: TObject);
+    procedure CopiasSeguridadIngresosdelda1Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure DatosFactLaboratorios1Click(Sender: TObject);
+    procedure InformeEstadstico1Click(Sender: TObject);
+    procedure DbitosyCrditosaProfesionales1Click(Sender: TObject);
+    procedure Retenciones1Click(Sender: TObject);
+    procedure MontosFacturadosporObraSocial1Click(Sender: TObject);
+    procedure DistribucinPagosdeObrasSociales2Click(Sender: TObject);
+    procedure RegistracinOperacionesBingo1Click(Sender: TObject);
+    procedure sistAuditoriaClick(Sender: TObject);
+    procedure Zonas1Click(Sender: TObject);
+    procedure Mdicos1Click(Sender: TObject);
+    procedure PadrnAfiliadosaObrasSociales1Click(Sender: TObject);
+    procedure ConfigurarBackup1Click(Sender: TObject);
+    procedure PersonalizarEntornodeTrabajo1Click(Sender: TObject);
+    procedure ActualizarPadronesObrasSociales1Click(Sender: TObject);
+    procedure VentadeInsumos1Click(Sender: TObject);
+    procedure PadrndeInsumos1Click(Sender: TObject);
+    procedure GenerarDatosparaActualizacionesOnLine1Click(Sender: TObject);
+    procedure EntidadesBancarias1Click(Sender: TObject);
+    procedure DeduccinMontoDeterminaciones1Click(Sender: TObject);
+    procedure ProveedoresdeInsumos2Click(Sender: TObject);
+    procedure CompradeInsumos1Click(Sender: TObject);
+    procedure RestaurarBackup1Click(Sender: TObject);
+    procedure NomeclaturasObrasSociales1Click(Sender: TObject);
+    procedure abladeDiagnsitcos2Click(Sender: TObject);
+    procedure NomencladorBioqumicoUnificado2Click(Sender: TObject);
+    procedure ArancelesDiferencialesObrasSociales1Click(Sender: TObject);
+    procedure ablaDiagnsticosOMS1Click(Sender: TObject);
+    procedure IncluiryExcluirCdigosNomenclatura1Click(Sender: TObject);
+    procedure Veriones1Click(Sender: TObject);
+    procedure ActualizarMontosFijosNBUdesdeArchivo1Click(Sender: TObject);
+    procedure Superior1Click(Sender: TObject);
+    procedure Izquierda1Click(Sender: TObject);
+    procedure Derecha1Click(Sender: TObject);
+    procedure RepararDatos1Click(Sender: TObject);
+    procedure SeleccinManual1Click(Sender: TObject);
+    procedure PlandeCuentas1Click(Sender: TObject);
+    procedure DefinirEjercicioEconmico1Click(Sender: TObject);
+    procedure AsientosContables1Click(Sender: TObject);
+    procedure DefdeAsientosModelo1Click(Sender: TObject);
+    procedure RenumerarAsientos1Click(Sender: TObject);
+    procedure ExportacindeAsientos1Click(Sender: TObject);
+    procedure ImportacindeAsientos1Click(Sender: TObject);
+    procedure InformesAdicionalesdeAuditora1Click(Sender: TObject);
+    procedure InformesContables1Click(Sender: TObject);
+    procedure ParmetrosdeAuditoria1Click(Sender: TObject);
+    procedure FormCanResize(Sender: TObject; var NewWidth, NewHeight: Integer;
+      var Resize: Boolean);
+    procedure GeneracinEstadsticasIAPOS1Click(Sender: TObject);
+    procedure AuditoriaCentral1Click(Sender: TObject);
+    procedure AuditoraDiferencial1Click(Sender: TObject);
+    procedure AgruparObrasSocialesparaFacturar1Click(Sender: TObject);
+    procedure ConfiguracinAccesosRemotos1Click(Sender: TObject);
+    procedure Coseguros1Click(Sender: TObject);
+    procedure ConfigurarAccesoFTP1Click(Sender: TObject);
+    procedure PrcticasRealizadas1Click(Sender: TObject);
+    procedure FacturacinAFIP1Click(Sender: TObject);
+  private
+    { Private declarations }
+    FIniFileName : String;
+    FInitialized : boolean;
+    iniciado, cerrarap, dialogoimpresoras: boolean;
+    abt: Integer;
+    procedure AbandonarSistema;
+    procedure CerrarAplicaciones;
+    procedure GuardarConfiguracion;
+    procedure EstablecerFondo;
+  public
+    { Public declarations }
+  end;
+
+var
+  fmSistem: TfmSistem;
+  Fondo: TBitmap;
+                                   
+implementation
+
+uses CUtiles, CBDT, ImgForms, NominaPacientes, NominaNomeclador,
+  NominaObrasSociales, NominaComprobantes, ComprobantesRegistrables,
+  DepurarInformacion, Unit1, datosiniciosistema,
+  agenda, IngSistema, ConfigurarImpresora, DefinicionFacturas,
+  FacturacionManual, NominaDeCategorias, defusuarios, CUsuario,
+  acerca_de, RptControlesAuditoria, CActualizacionesCentroComputosCB,
+  CFacturacionCCB, NominaDeCategoriasLab, Estadisticas, LiquidacionObrasSoc,
+  NominaDeProfesionalesLiquidacionOS, NominaAjustesIndiv, NominaDebCred,
+  NominaRet, CCBandejaSalida, MsgEditor, 
+  DatosAuditoria, NominaDeZonas, NominaDeMedicos, NominaPadronObrasSociales,
+  NominaAfiliado, CConfigForms, ConfiguracionBackup, CUtilidadesArchivos,
+  PropiedadesEscritorio, ActualizarPadrones, VentasInsumos, NominaDePrecios,
+  ProcesarActualizacionesOnLine, NominaDeBancos,
+  CBackup, CExpira, PresupuestoRapido, NominaProveedores, FactCompras,
+  RestaurarDatos, NominaNomeclaturaObrasSociales, NominaDeDiagnosticos,
+  CAuditoriaCCB, Nomina_NBU, ArancelesAuditoria, InformesAdicionales,
+  NominaDeDiagnosticosOMS, GestionNBU, ControlVersiones, CContabilidadAsociacion,
+  ExportarDatosOSPami, ActualizarMontosFijosNBU, RepararDatosParadox,
+  MAINRP, plctas, Periodo_Economico, AsientosContables, AsientosModelos,
+  RenumerarAsientos, ExportarAsientos, ImportacionAsientos,
+  InformesContables, ParametrosAuditoria, EstadisticasIAPOS, AuditoriaOnLine,
+  AgruparObrasSociales, configaccesoremoto, Coseguros, fmConfigFTP,
+  ListPracticasRealizadas, facturacionAFIP;
+
+{$R *.DFM}
+
+const
+    SectionData     = 'Data';
+    BarraEstandar   = 'BarraEst';
+    BarraExtra      = 'BarraExt';
+    ConfigImpresora = 'ConfImp';
+    fexpira         =  ''; //'30/04/06'; //'30/05/06';
+    BTareas       = 'BT';
+
+procedure TfmSistem.AbandonarSistema;
+var
+  l: TStringList;
+  i: Integer;
+begin
+  Application.CreateForm(TfmDatosSistema, fmDatosSistema);
+  fmDatosSistema.NoCerrarFinal := True;
+  fmDatosSistema.ActiveControl := fmDatosSistema.cerrar;
+  fmDatosSistema.ShowModal;
+  CerrarAplicaciones;
+  if fmDatosSistema.seleccion > 0 then Begin
+    Enabled  := False;
+    cerrarap := True;
+    fmSistem.Refresh;
+    fmDatosSistema.Bloquear;
+    fmDatosSistema.idusuario.Text := usuario.usuario;
+    fmDatosSistema.Shape1.Visible := True;
+    fmDatosSistema.Label2.Caption := 'Realizando Backup ...!';
+    fmDatosSistema.Label3.Caption := ''; fmDatosSistema.Refresh;
+    fmDatosSistema.Show; fmDatosSistema.Refresh;
+    fmDatosSistema.BackupCierre;
+    if (usuario.usuario = 'Administrador') then
+      if dbs.setOpcionBackup = 1 then Begin
+        // Backup Módulos Generales
+        auditoriacb.RealizarBackup;
+      end;
+    fmDatosSistema.release; fmDatosSistema := nil;
+    GuardarConfiguracion;
+
+    dbs.desconectarDB;
+    dbs.desconectarDB2;
+
+    Application.Terminate;
+  end;
+end;
+
+procedure TfmSistem.CerrarAplicaciones;
+var
+  I: Integer;
+begin
+ with fmSistem do
+    for I := MDIChildCount-1 downto 0 do
+      MDIChildren[I].Close;
+end;
+
+procedure TfmSistem.GuardarConfiguracion;
+var
+  Estados : array[1..2] of Byte;
+  IniFile : TIniFile;
+begin
+  Estados[1] := 0; Estados[2] := 0;
+  if Panel1.Visible then Estados[1] := 1 else Estados[1] := 0;
+  //if Panel2.Visible then Estados[2] := 1 else Estados[2] := 0;
+
+  IniFile := TIniFile.Create(FIniFileName);
+  IniFile.WriteInteger(SectionData, BarraEstandar, Estados[1]);
+  IniFile.WriteInteger(SectionData, BarraExtra, Estados[2]);
+  IniFile.WriteInteger(SectionData, ConfigImpresora, 1);
+  if Panel1.Align = alTop   then IniFile.WriteInteger(SectionData, BTareas, 1);
+  if Panel1.Align = alLeft  then IniFile.WriteInteger(SectionData, BTareas, 2);
+  if Panel1.Align = alRight then IniFile.WriteInteger(SectionData, BTareas, 3);
+  IniFile.Free;
+end;
+
+procedure TfmSistem.EstablecerFondo;
+var
+  img, stk: String; lista: TStringList; v, i: ShortInt;
+  archivo: TextFile;
+begin
+  img := configform.RecuperarImagenDeFondo(fmSistem);
+  if Length(Trim(img)) > 0 then Begin
+    LMDFormFill.FillObject.Bitmap.LoadFromFile(img);
+    LMDFormFill.FillObject.Style    := sfBitmap;
+    LMDFormFill.FillObject.TileMode := estilos[configform.EstiloFondo];
+    LMDFormFill.Align               := alClient;
+  end else Begin
+    LMDFormFill.FillObject.Style    := sfNone;
+  end;
+
+  // Controlamos Botones
+  lista := TStringList.Create;
+  lista.Clear; v := 0;
+  lista := configform.setListaBotonesVisiblesMDI;
+  for i := 1 to lista.Count do
+    if lista.Strings[i-1] = 'N' then ToolBar1.Buttons[i-1].Visible := True else Begin
+      ToolBar1.Buttons[i-1].Visible := False;
+      Inc(v);
+    end;
+  if v = lista.Count then Panel1.Visible := False else Panel1.Visible := True;
+  lista.Clear; lista.Destroy;
+
+  // Skin
+  if FileExists(dbs.DirSistema + '\' + Name + 'skinfile.ini') then Begin
+    AssignFile(archivo, dbs.DirSistema + '\' + Name + 'skinfile.ini');
+    Reset(archivo);
+    ReadLn(archivo, stk);
+    closeFile(archivo);
+    if Length(Trim(stk)) > 0 then Begin
+      skd.SkinFile := stk;
+      if not skd.Active then skd.Active := True;
+    end;
+  end;
+
+  Refresh;
+end;
+
+{------------------------------------------------------------------------------}
+
+procedure TfmSistem.FacturacinAFIP1Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmFacturacionAfip, fmFacturacionAfip);
+  fmFacturacionAfip.ShowModal;
+end;
+
+procedure TfmSistem.FormActivate(Sender: TObject);
+begin
+  if not iniciado then Begin
+    if distribucion = 'Laboratorio' then Begin
+      sistLiquidacion.Visible := False;
+      sistAuditoria.Visible   := False;
+    end;
+
+    Application.CreateForm(TcontenedorImg, contenedorImg);
+//    Superior1Click(Sender);
+    if abt = 1 then Superior1Click(Self);
+    if abt = 2 then Izquierda1Click(Self);
+    if abt = 3 then Derecha1Click(Self);
+
+    Application.CreateForm(TfmDatosSistema, fmDatosSistema);
+    fmDatosSistema.FIniFileName  := FIniFileName;
+    fmDatosSistema.NoCerrarFinal := True;
+    fmDatosSistema.ShowModal;
+    if fmDatosSistema.seleccion > 0 then Application.Terminate;
+    fmDatosSistema.Release; fmDatosSistema := nil;
+    Refresh; iniciado := True;
+    if dialogoimpresoras then Impresoras1Click(Sender);   // Solo cuando ingresa por primera vez al sistema
+
+    if actualizaciones.ReinicarAplicacion then Begin
+      utiles.msgError('Se han Instalado Nuevas Actualizaciones, ' + chr(13) + 'Debe Reiniciar la Aplicación.');
+      Application.Terminate;
+    end;
+  end;
+end;
+
+procedure TfmSistem.sistObrasSocialesClick(Sender: TObject);
+begin
+  if not Assigned(fmListObrasSociales) then Begin
+    Application.CreateForm(TfmListObrasSociales, fmListObrasSociales);
+    fmListObrasSociales.FormStyle := FsMDIChild;
+    fmListObrasSociales.Show;
+  end;
+end;
+
+procedure TfmSistem.Salir1Click(Sender: TObject);
+begin
+  AbandonarSistema;
+end;
+
+procedure TfmSistem.GeneracinEstadsticasIAPOS1Click(Sender: TObject);
+begin
+  if not Assigned(fmEstadisticasIAPOS) then Begin
+    Application.CreateForm(TfmEstadisticasIAPOS, fmEstadisticasIAPOS);
+    fmEstadisticasIAPOS.FormStyle := FsMDIChild;
+  end;
+  fmEstadisticasIAPOS.Show;
+end;
+
+procedure TfmSistem.General1Click(Sender: TObject);
+begin
+  if Panel1.Visible then Begin
+    Panel1.Visible   := False;
+    General1.Checked := False;
+  end else Begin
+    Panel1.Visible   := True;
+    General1.Checked := True;
+  end;
+end;
+
+procedure TfmSistem.MainMenuChange(Sender: TObject; Source: TMenuItem;
+  Rebuild: Boolean);
+begin
+  if Panel1.Visible then General1.Checked := True else General1.Checked := False;
+end;
+
+procedure TfmSistem.sistNomecladorClick(Sender: TObject);
+begin
+  if not Assigned(fmListNomeclador) then Begin
+    Application.CreateForm(TfmListNomeclador, fmListNomeclador);
+    fmListNomeclador.FormStyle := FsMDIChild;
+  end;
+  fmListNomeclador.Show;
+end;
+
+procedure TfmSistem.Comprobantes1Click(Sender: TObject);
+begin
+  if not Assigned(fmListComprobantes) then Begin
+    Application.CreateForm(TfmListComprobantes, fmListComprobantes);
+    fmListComprobantes.FormStyle := FsMDIChild;
+  end;
+  fmListComprobantes.Show;
+end;
+
+procedure TfmSistem.ComprobantesRegistrables1Click(Sender: TObject);
+begin
+  if not Assigned(fmComprobantesRegistrables) then Begin
+    Application.CreateForm(TfmComprobantesRegistrables, fmComprobantesRegistrables);
+    fmComprobantesRegistrables.FormStyle := FsMDIChild;
+  end;
+  fmComprobantesRegistrables.Show;
+end;
+
+procedure TfmSistem.FormShow(Sender: TObject);
+var
+    IniFile : TIniFile;
+begin
+  if not FInitialized then begin
+    FInitialized := TRUE;
+    IniFile := TIniFile.Create(FIniFileName);
+    if IniFile.ReadInteger(SectionData, BarraEstandar, 1)   = 1 then Panel1.Visible := True else Panel1.Visible := False;
+    //if IniFile.ReadInteger(SectionData, BarraExtra, 0)      = 1 then Panel2.Visible := True else Panel2.Visible := False;
+    if IniFile.ReadInteger(SectionData, ConfigImpresora, 0) = 0 then dialogoimpresoras := True else dialogoimpresoras := False;
+    // Activa/Inactiva las opciones del menu
+    if Panel1.Visible then General1.Checked := True else General1.Checked := False;
+    //if Panel2.Visible then Estadisticas1.Checked := True else Estadisticas1.Checked := False;
+    if IniFile.ReadInteger(SectionData, BTareas, 1) = 1 then abt := 1;
+    if IniFile.ReadInteger(SectionData, BTareas, 1) = 2 then abt := 2;
+    if IniFile.ReadInteger(SectionData, BTareas, 1) = 3 then abt := 3;
+    IniFile.Free;
+  end;
+
+  {Panel1.Align   := alTop;
+  ToolBar1.Align := alTop;
+
+  Top := 0; Left := 0;
+  Panel1.Width := Width - 10;
+  Panel2.Width := Width - 10;}
+  StatusBar1.Panels[0].Width := Width - (Width div 6);
+
+  //if distribucion = 'Laboratorio' then usuario.usuario := 'Laboratorio' else usuario.usuario := 'Administrador';
+  if distribucion > '' then usuario.usuario := distribucion else usuario.usuario := 'Administrador';
+
+  // Borramos los directorios depurados
+  ///facturacion.BorrarDirectoriosDepurados;
+
+  // Incactivamos las opciones para la version de Laboratorios
+  if usuario.usuario <> 'Administrador' then Begin
+    General2.Items[4].Enabled         := False;
+    if General2.Count > 10 then General2.Items[10].Enabled := False;
+    PopupMenuArchivo.Items[6].Enabled := False;
+    PopupMenuArchivo.Items[7].Enabled := False;
+    Comprobantes1.Enabled             := False;
+    ComprobantesRegistrables1.Enabled := False;
+  end;
+  if usuario.usuario = 'Administrador' then Begin  // Upgrades
+    Caption := 'shmSOFT - Administración Central de Bioquímicos';
+    {
+    actualizaciones.Version('1.0.01');
+    actualizaciones.Version('1.10.00');
+    actualizaciones.Version('1.50.00');
+    actualizaciones.Version('2.00.00');
+    actualizaciones.Version('2.00.10');
+    actualizaciones.Version('2.00.15');
+    actualizaciones.Version('2.50.00');
+    actualizaciones.Version('3.00.00');
+    actualizaciones.Version('3.00.10');
+    actualizaciones.Version('3.00.20');
+    actualizaciones.Version('3.00.50');
+    actualizaciones.Version('3.01.00');
+    actualizaciones.Version('3.01.05');
+    actualizaciones.Version('3.01.10');
+    actualizaciones.Version('3.01.15');
+    actualizaciones.Version('3.01.17');
+    actualizaciones.Version('3.01.18');   // Solo para Sistema Central
+    actualizaciones.Version('3.05.00');
+    actualizaciones.Version('3.05.01');   // Solo para Sistema Central
+    actualizaciones.Version('3.05.07');   // Solo para Sistema Central
+    actualizaciones.Version('3.05.09');
+    actualizaciones.Version('3.05.10');
+    actualizaciones.Version('3.05.11');
+    actualizaciones.Version('3.05.15');   // Solo para Sistema Central
+    actualizaciones.Version('3.05.17');
+    actualizaciones.Version('3.05.18');
+    actualizaciones.Version('3.05.20');
+    actualizaciones.Version('3.06.001');
+    if actualizaciones.reinicia then Begin
+      utiles.msgError('Se han Instalado Nuevas Actualizaciones, ' + chr(13) + 'Debe Reiniciar la Aplicación.', 'Importante !');
+      Application.Terminate;
+    end;
+    actualizaciones.Version('3.06.002');
+    actualizaciones.Version('3.06.005');
+    if actualizaciones.reinicia then Begin
+      utiles.msgError('Se han Instalado Nuevas Actualizaciones, ' + chr(13) + 'Debe Reiniciar la Aplicación.', 'Importante !');
+      Application.Terminate;
+    end;
+    actualizaciones.Version('3.06.007');
+    if actualizaciones.reinicia then Begin
+      utiles.msgError('Se han Instalado Nuevas Actualizaciones, ' + chr(13) + 'Debe Reiniciar la Aplicación.', 'Importante !');
+      Application.Terminate;
+    end;
+
+    actualizaciones.Version('3.07.009');
+    if actualizaciones.reinicia then Begin
+      utiles.msgError('Se han Instalado Nuevas Actualizaciones, ' + chr(13) + 'Debe Reiniciar la Aplicación.', 'Importante !');
+      Application.Terminate;
+    end; 
+    actualizaciones.Version('4.01.001');
+    }
+
+    actualizaciones.Version('4.01.005');
+    
+    InformeEstadstico1.Enabled := True;
+  end;
+
+  EstablecerFondo;
+  Refresh;
+  utilesarchivos.BorrarArchivos(dbs.DirSistema, '_Q*.db');
+
+  expira.Fecha := fexpira;
+  expira.Verificar(utiles.setFechaActual);
+end;
+
+procedure TfmSistem.sisBackupClick(Sender: TObject);
+begin
+  if not Assigned(fmBackup) then Begin
+    usuario.desconectar;
+    Application.CreateForm(TfmBackup, fmBackup);
+    // Predeterminamos la Vía a Respaldar
+    fmBackup.FileListBox.Items.Clear;
+    fmBackup.FileListBox.Items.Add(dbs.DirSistema + '\arch\*.*');
+    fmBackup.FileListBox.Items.Add(dbs.DirSistema + '\archdat\*.*');
+    fmBackup.FileListBox.Items.Add(dbs.DirSistema + '\auditoria\*.*');
+    ChDir(dbs.DirSistema);
+    fmBackup.ShowModal;
+    usuario.conectar;
+  end;
+end;
+
+procedure TfmSistem.Datosdelsistema1Click(Sender: TObject);
+begin
+  if not Assigned(fmDatosSistema) then Begin
+    Application.CreateForm(TfmDatosSistema, fmDatosSistema);
+    fmDatosSistema.FormStyle := FsMDIChild;
+  end;
+  fmDatosSistema.Show;
+end;
+
+procedure TfmSistem.agendaClick(Sender: TObject);
+begin
+  if not Assigned(fmAgenda) then Begin
+    Application.CreateForm(TfmAgenda, fmAgenda);
+    fmAgenda.FormStyle := FsMDIChild;
+  end;
+  fmAgenda.Show;
+end;
+
+procedure TfmSistem.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  CanClose := False;
+  AbandonarSistema;
+  CanClose := cerrarap;
+end;
+
+procedure TfmSistem.Accesos1Click(Sender: TObject);
+begin
+  if utiles.IdUsuario('Administrador') then
+    if not Assigned(fmIngSistema) then Begin
+      Application.CreateForm(TfmIngSistema, fmIngSistema);
+      fmIngSistema.FormStyle := FsMDIChild;
+      fmIngSistema.Show;
+    end;
+end;
+
+procedure TfmSistem.FormCanResize(Sender: TObject; var NewWidth,
+  NewHeight: Integer; var Resize: Boolean);
+begin
+  StatusBar1.Panels[0].Width := (Width - (Width div 5));
+  LMDFormFill.Top            := 0;
+  LMDFormFill.Repaint;
+end;
+
+procedure TfmSistem.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  GuardarConfiguracion;
+  contenedorImg.Release; contenedorImg := nil;
+  Release; fmSistem := nil;
+end;
+
+procedure TfmSistem.Impresoras1Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmConfigImpresora, fmConfigImpresora);
+  fmConfigImpresora.ShowModal;
+  fmConfigImpresora.Release; fmConfigImpresora := nil;
+end;
+
+procedure TfmSistem.MosaicoVerical1Click(Sender: TObject);
+begin
+  configform.guardarSeteos := False;
+  TileMode := tbVertical;
+  Tile;
+end;
+
+procedure TfmSistem.MosaicoHorizontal1Click(Sender: TObject);
+begin
+  configform.guardarSeteos := False;
+  TileMode := tbHorizontal;
+  Tile;
+end;
+
+procedure TfmSistem.Cascada1Click(Sender: TObject);
+begin
+  Cascade;
+  configform.guardarSeteos := False;
+end;
+
+procedure TfmSistem.DatosdeLaboratorios1Click(Sender: TObject);
+begin
+  if not Assigned(fmListProfesionalesLiq) then Begin
+    Application.CreateForm(TfmListProfesionalesLiq, fmListProfesionalesLiq);
+    fmListProfesionalesLiq.FormStyle := FsMDIChild;
+  end;
+  fmListProfesionalesLiq.Show;
+end;
+
+procedure TfmSistem.Categoras1Click(Sender: TObject);
+begin
+  if not Assigned(fmListCategoriasLab) then Begin
+    Application.CreateForm(TfmListCategoriasLab, fmListCategoriasLab);
+    fmListCategoriasLab.FormStyle := FsMDIChild;
+  end;
+  fmListCategoriasLab.Show;
+end;
+
+procedure TfmSistem.sistPacientesClick(Sender: TObject);
+begin
+  if not Assigned(fmListPacientes) then Begin
+    Application.CreateForm(TfmListPacientes, fmListPacientes);
+    fmListPacientes.FormStyle := FsMDIChild;
+  end;
+  fmListPacientes.Show;
+end;
+
+procedure TfmSistem.PlandeCuentas2Click(Sender: TObject);
+begin
+  if not Assigned(fmFactManual) then Begin
+    Application.CreateForm(TfmFactManual, fmFactManual);
+    fmFactManual.FormStyle := FsMDIChild;
+    fmFactManual.PageControl1.ActivePage := fmFactManual.TabSheet2;
+  end;
+  fmFactManual.Show;
+end;
+
+procedure TfmSistem.Usuarios1Click(Sender: TObject);
+begin
+  if usuario.usuario <> 'Administrador' then utiles.msgError(usuario.usuario + ' no tiene permiso para modificar usuarios del sistema') else Begin
+    Application.CreateForm(TfmUsuarios, fmUsuarios);
+    fmUsuarios.ShowModal;
+  end;
+end;
+
+procedure TfmSistem.Acercade1Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmAcerca, fmAcerca);
+  fmAcerca.version.Caption := version;
+  fmAcerca.Label3.Caption  := 'Administración Central de Bioquímicos';
+  fmAcerca.ShowModal;
+  fmAcerca.Release; fmAcerca := nil;
+end;
+
+procedure TfmSistem.CopiasSeguridadIngresosdelda1Click(Sender: TObject);
+var
+  r: TQuery;
+begin
+  if not Assigned(fmBackup) then Begin
+    usuario.desconectar;
+    Application.CreateForm(TfmBackup, fmBackup);
+    // Predeterminamos la Vía a Respaldar
+    fmBackup.FileListBox.Items.Clear;
+    r := facturacion.setDatosIngresadosEnElDia;
+    r.Open;
+    while not r.EOF do Begin
+      if Copy(r.FieldByName('fechahora').AsString, 1, 8) = utiles.setFechaActual then fmBackup.FileListBox.Items.Add(r.FieldByName('directorio').AsString + '\*.*');
+      r.Next;
+    end;
+    r.Close; r.Free;
+    ChDir(dbs.DirSistema);
+    fmBackup.CrearBackup('', dbs.DirSistema + '\backup\' + utiles.sExprFecha(utiles.setFechaActual) + 'bak.bck');
+    Application.MessageBox(PChar('Backup Realizado: ' + utiles.sExprFecha(utiles.setFechaActual) + 'bak.bck' + CHR(13) + 'Directorio: ' + dbs.DirSistema + '\backup\'), 'Backup', MB_OK);
+    usuario.conectar;
+  end;
+end;
+
+procedure TfmSistem.Coseguros1Click(Sender: TObject);
+begin
+  if not Assigned(fmCoseguros) then Begin
+    Application.CreateForm(TfmCoseguros, fmCoseguros);
+    fmCoseguros.FormStyle := FsMDIChild;
+  end;
+  fmCoseguros.Show;
+end;
+
+procedure TfmSistem.FormCreate(Sender: TObject);
+var
+  Sem: THandle;
+var
+  R: TRect;
+begin
+  dbs.DirSistema := Copy(ExtractFilePath(Application.ExeName), 1, Length(ExtractFilePath(Application.ExeName)) -1);
+
+  SystemParametersInfo(SPI_GETWORKAREA, 0, @R, 0);
+  SetBounds(R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top);
+  Sem := CreateSemaphore(nil,0,1,'PROGRAM_NAME');
+  if ((Sem <> 0) and (GetLastError = ERROR_ALREADY_EXISTS)) then
+  begin
+    CloseHandle( Sem );
+    ShowMessage('Este programa ya se está ejecutando...');
+    Halt;
+  end;
+  FIniFileName := dbs.dirSistema + '\ccomputoscb.ini';
+end;
+
+procedure TfmSistem.DatosFactLaboratorios1Click(Sender: TObject);
+begin
+  if MDIChildCount > 0 then utiles.msgError('Debe Cerrar El Resto de las Operaciones para Proceder') else
+    if utiles.DepurarInformacion('Depuración de Información') then
+      if not Assigned(fmDepurarInformacion) then Begin
+        Application.CreateForm(TfmDepurarInformacion, fmDepurarInformacion);
+        fmDepurarInformacion.Caption := 'Depurar Períodos Facturados';
+        fmDepurarInformacion.ShowModal;
+      end;
+end;
+
+procedure TfmSistem.InformeEstadstico1Click(Sender: TObject);
+begin
+  if not Assigned(fmEstadisticas) then Begin
+    Application.CreateForm(TfmEstadisticas, fmEstadisticas);
+    fmEstadisticas.FormStyle := FsMDIChild;
+  end;
+  fmEstadisticas.Show;
+end;
+
+procedure TfmSistem.DbitosyCrditosaProfesionales1Click(Sender: TObject);
+begin
+  if not Assigned(fmListDebCred) then Begin
+    Application.CreateForm(TfmListDebCred, fmListDebCred);
+    fmListDebCred.FormStyle := FsMDIChild;
+  end;
+  fmListDebCred.Show;
+end;
+
+procedure TfmSistem.Retenciones1Click(Sender: TObject);
+begin
+  if not Assigned(fmListRetenciones) then Begin
+    Application.CreateForm(TfmListRetenciones, fmListRetenciones);
+    fmListRetenciones.FormStyle := FsMDIChild;
+  end;
+  fmListRetenciones.Show;
+end;
+
+procedure TfmSistem.MontosFacturadosporObraSocial1Click(Sender: TObject);
+begin
+  if not Assigned(fmListObrasSociales) then Begin
+    Application.CreateForm(TfmListObrasSociales, fmListObrasSociales);
+    fmListObrasSociales.FormStyle := FsMDIChild;
+    fmListObrasSociales.IngresoMontosFact := True;
+  end;
+  fmListObrasSociales.Show;
+end;
+
+procedure TfmSistem.DistribucinPagosdeObrasSociales2Click(Sender: TObject);
+begin
+  if not Assigned(fmLiquidacionOS) then Begin
+    Application.CreateForm(TfmLiquidacionOS, fmLiquidacionOS);
+    //fmLiquidacionOS.FormStyle := FsMDIChild;
+  end;
+  fmLiquidacionOS.ShowModal;
+end;
+
+procedure TfmSistem.RegistracinOperacionesBingo1Click(Sender: TObject);
+begin
+  if not Assigned(fmFactManual) then Begin
+    Application.CreateForm(TfmFactManual, fmFactManual);
+    //fmFactManual.FormStyle := FsMDIChild;
+    fmFactManual.CheckBox2.Visible := True;
+  end;
+  fmFactManual.ShowModal;
+end;
+
+procedure TfmSistem.sistAuditoriaClick(Sender: TObject);
+begin
+  if not Assigned(fmAuditoria) then Begin
+    Application.CreateForm(TfmAuditoria, fmAuditoria);
+    //fmAuditoria.FormStyle := FsMDIChild;
+  end;
+  fmAuditoria.ShowModal;
+end;
+
+procedure TfmSistem.Zonas1Click(Sender: TObject);
+begin
+  if not Assigned(fmListZonas) then Begin
+    Application.CreateForm(TfmListZonas, fmListZonas);
+    fmListZonas.FormStyle := FsMDIChild;
+  end;
+  fmListZonas.Show;
+end;
+
+procedure TfmSistem.Mdicos1Click(Sender: TObject);
+begin
+  if not Assigned(fmListMedicos) then Begin
+    Application.CreateForm(TfmListMedicos, fmListMedicos);
+    fmListMedicos.FormStyle := FsMDIChild;
+  end;
+  fmListMedicos.Show;
+end;
+
+procedure TfmSistem.PadrnAfiliadosaObrasSociales1Click(Sender: TObject);
+begin
+  if not Assigned(fmListPadronObrasSociales) then Begin
+    Application.CreateForm(TfmListPadronObrasSociales, fmListPadronObrasSociales);
+    fmListPadronObrasSociales.FormStyle := FsMDIChild;
+  end;
+  fmListPadronObrasSociales.Show;
+end;
+
+procedure TfmSistem.ConfiguracinAccesosRemotos1Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmConfigFirebird, fmConfigFirebird);
+  fmConfigFirebird.ShowModal;
+end;
+
+procedure TfmSistem.ConfigurarAccesoFTP1Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmConfigurarFTP, fmConfigurarFTP);
+  fmConfigurarFTP.ShowModal;
+end;
+
+procedure TfmSistem.ConfigurarBackup1Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmConfigBackup, fmConfigBackup);
+  fmConfigBackup.ShowModal;
+end;
+
+procedure TfmSistem.PersonalizarEntornodeTrabajo1Click(Sender: TObject);
+var
+  i, p: Integer; n: String;
+  archivo: TextFile;
+begin
+  Application.CreateForm(TfmPropiedades, fmPropiedades);
+  fmPropiedades.imagen := configform.RecuperarImagenDeFondo(fmSistem);
+  for i := 1 to toolbar1.ButtonCount do Begin
+    n := Trim(toolbar1.Buttons[i-1].Caption);
+    p := pos('&', n);
+    delete(n, p, 1);
+    fmPropiedades.botones.Items.Add(n);
+  end;
+  fmPropiedades.ShowModal;
+  if fmPropiedades.aplicar then Begin
+    configform.GuardarImagenDeFondo(fmSistem, fmPropiedades.imagen, fmPropiedades.selPres);
+    EstablecerFondo;
+  end;
+
+  // Skins
+  if fmPropiedades.CheckBox2.Checked then Begin
+    AssignFile(archivo, dbs.DirSistema + '\' + Name + 'skinfile.ini');
+    Rewrite(archivo);
+    closeFile(archivo);
+    skd.Active := False;
+  end;
+  if fmPropiedades.skinsel then Begin
+    if not skd.Active then skd.Active := False;
+    skd.SkinFile :=  dbs.DirSistema + '\skins\' + fmPropiedades.ListBox1.Items[fmPropiedades.ListBox1.ItemIndex];
+    skd.Active := True;
+    AssignFile(archivo, dbs.DirSistema  + '\' + Name + 'skinfile.ini');
+    Rewrite(archivo);
+    WriteLn(archivo, dbs.DirSistema + '\skins\' + fmPropiedades.ListBox1.Items[fmPropiedades.ListBox1.ItemIndex]);
+    closeFile(archivo);
+  end;
+  Refresh;
+
+  fmPropiedades.Release; fmPropiedades := nil;
+end;
+
+procedure TfmSistem.ActualizarPadronesObrasSociales1Click(Sender: TObject);
+begin
+  if not Assigned(fmActPOS) then Begin
+    Application.CreateForm(TfmActPOS, fmActPOS);
+    fmActPOS.FormStyle := FsMDIChild;
+  end;
+  fmActPOS.Show;
+end;
+
+procedure TfmSistem.VentadeInsumos1Click(Sender: TObject);
+begin
+  if not Assigned(fmVentasInsumos) then Begin
+    Application.CreateForm(TfmVentasInsumos, fmVentasInsumos);
+    //fmVentasInsumos.FormStyle := FsMDIChild;
+  end;
+  fmVentasInsumos.ShowModal;
+end;
+
+procedure TfmSistem.PadrndeInsumos1Click(Sender: TObject);
+begin
+  if not Assigned(fmListInsumos) then Begin
+    Application.CreateForm(TfmListInsumos, fmListInsumos);
+    fmListInsumos.FormStyle := FsMDIChild;
+  end;
+  fmListInsumos.Show;
+end;
+
+procedure TfmSistem.GenerarDatosparaActualizacionesOnLine1Click(
+  Sender: TObject);
+begin
+  Application.CreateForm(TfmActualizacionesOnline, fmActualizacionesOnline);
+  fmActualizacionesOnline.ShowModal;
+  fmActualizacionesOnline.Release; fmActualizacionesOnline := nil;
+end;
+
+procedure TfmSistem.EntidadesBancarias1Click(Sender: TObject);
+begin
+  if not Assigned(fmListBancos) then Begin
+    Application.CreateForm(TfmListBancos, fmListBancos);
+    fmListBancos.FormStyle := FsMDIChild;
+  end;
+  fmListBancos.Show;
+end;
+
+procedure TfmSistem.DeduccinMontoDeterminaciones1Click(Sender: TObject);
+begin
+  if not Assigned(fmPresupuestoRapido) then Begin
+    Application.CreateForm(TfmPresupuestoRapido, fmPresupuestoRapido);
+    fmPresupuestoRapido.FormStyle := FsMDIChild;
+    fmPresupuestoRapido.Show;
+  end;
+end;
+
+procedure TfmSistem.PrcticasRealizadas1Click(Sender: TObject);
+begin
+  if not Assigned(fmListPracticasRealizadas) then Begin
+    Application.CreateForm(TfmListPracticasRealizadas, fmListPracticasRealizadas);
+    fmListPracticasRealizadas.FormStyle := FsMDIChild;
+    fmListPracticasRealizadas.Show;
+  end;
+end;
+
+procedure TfmSistem.ProveedoresdeInsumos2Click(Sender: TObject);
+begin
+  if not Assigned(fmListProveedores) then Begin
+    Application.CreateForm(TfmListProveedores, fmListProveedores);
+    fmListProveedores.FormStyle := FsMDIChild;
+    fmListProveedores.Show;
+  end;
+end;
+
+procedure TfmSistem.CompradeInsumos1Click(Sender: TObject);
+begin
+  if not Assigned(fmFacturacionCompras) then Begin
+    Application.CreateForm(TfmFacturacionCompras, fmFacturacionCompras);
+    fmFacturacionCompras.FormStyle := FsMDIChild;
+    fmFacturacionCompras.Show;
+  end;
+end;
+
+procedure TfmSistem.RestaurarBackup1Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmRestaurarBackup, fmRestaurarBackup);
+  fmRestaurarBackup.ShowModal;
+  fmRestaurarBackup.Release; fmRestaurarBackup := Nil;
+end;
+
+procedure TfmSistem.NomeclaturasObrasSociales1Click(Sender: TObject);
+begin
+  if not Assigned(fmListNomeclaturaObrasSociales) then Begin
+    Application.CreateForm(TfmListNomeclaturaObrasSociales, fmListNomeclaturaObrasSociales);
+    fmListNomeclaturaObrasSociales.FormStyle := FsMDIChild;
+    fmListNomeclaturaObrasSociales.Show;
+  end;
+end;
+
+procedure TfmSistem.abladeDiagnsitcos2Click(Sender: TObject);
+begin
+  if not Assigned(fmListDiagnosticos) then Begin
+    Application.CreateForm(TfmListDiagnosticos, fmListDiagnosticos);
+    fmListDiagnosticos.FormStyle := FsMDIChild;
+    fmListDiagnosticos.Show;
+  end;
+end;
+
+procedure TfmSistem.NomencladorBioqumicoUnificado2Click(Sender: TObject);
+begin
+  if not Assigned(fmListNBU) then Begin
+    Application.CreateForm(TfmListNBU, fmListNBU);
+    fmListNBU.FormStyle := FsMDIChild;
+    fmListNBU.Show;
+  end;
+end;
+
+procedure TfmSistem.AgruparObrasSocialesparaFacturar1Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmAgruparObrasSociales, fmAgruparObrasSociales);
+  fmAgruparObrasSociales.ShowModal;
+  fmAgruparObrasSociales.Release; fmAgruparObrasSociales := Nil;
+end;
+
+procedure TfmSistem.ArancelesDiferencialesObrasSociales1Click(
+  Sender: TObject);
+begin
+  if not Assigned(fmArancelesDiferenciales) then Begin
+    Application.CreateForm(TfmArancelesDiferenciales, fmArancelesDiferenciales);
+    fmArancelesDiferenciales.FormStyle := FsMDIChild;
+    fmArancelesDiferenciales.Show;
+  end;
+end;
+
+procedure TfmSistem.ablaDiagnsticosOMS1Click(Sender: TObject);
+begin
+  if not Assigned(fmListDiagnosticosOMS) then Begin
+    Application.CreateForm(TfmListDiagnosticosOMS, fmListDiagnosticosOMS);
+    fmListDiagnosticosOMS.FormStyle := FsMDIChild;
+    fmListDiagnosticosOMS.Show;
+  end;
+end;
+
+procedure TfmSistem.IncluiryExcluirCdigosNomenclatura1Click(
+  Sender: TObject);
+begin
+  if not Assigned(fmConversionNBU) then Begin
+    Application.CreateForm(TfmConversionNBU, fmConversionNBU);
+    fmConversionNBU.FormStyle := FsMDIChild;
+    fmConversionNBU.Show;
+  end;
+end;
+
+procedure TfmSistem.Veriones1Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmVersiones, fmVersiones);
+  fmVersiones.ShowModal;
+end;
+
+procedure TfmSistem.ActualizarMontosFijosNBUdesdeArchivo1Click(
+  Sender: TObject);
+begin
+  if not Assigned(fmActMontosFijosNBU) then Begin
+    Application.CreateForm(TfmActMontosFijosNBU, fmActMontosFijosNBU);
+    fmActMontosFijosNBU.FormStyle := FsMDIChild;
+    fmActMontosFijosNBU.Show;
+  end;
+end;
+
+procedure TfmSistem.Superior1Click(Sender: TObject);
+begin
+  Panel1.Align   := alTop;
+  ToolBar1.Align := alTop;
+  if ToolBar1.ShowCaptions then Panel1.Height  := 54 else Panel1.Height  := 25;
+end;
+
+procedure TfmSistem.Izquierda1Click(Sender: TObject);
+begin
+  Panel1.Align   := alNone;
+  Panel1.Align   := alLeft;
+  ToolBar1.Align := alClient;
+  if ToolBar1.ShowCaptions then Panel1.Width   := 72 else Panel1.Width   := 33;
+end;
+
+procedure TfmSistem.Derecha1Click(Sender: TObject);
+begin
+  Panel1.Align   := alRight;
+  ToolBar1.Align := alClient;
+  if ToolBar1.ShowCaptions then Panel1.Width   := 72 else Panel1.Width   := 33;
+end;
+
+procedure TfmSistem.RepararDatos1Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmRepararDatosPdx, fmRepararDatosPdx);
+  fmRepararDatosPdx.ShowModal;
+  fmRepararDatosPdx.Release; fmRepararDatosPdx := Nil;
+end;
+
+procedure TfmSistem.SeleccinManual1Click(Sender: TObject);
+begin
+  Application.CreateForm(TMainForm, MainForm);
+  MainForm.ShowModal;
+  MainForm.Release; MainForm := Nil;
+end;
+
+procedure TfmSistem.PlandeCuentas1Click(Sender: TObject);
+begin
+  if not Assigned(fmPlanDeCuentas) then Begin
+    Application.CreateForm(TfmPlanDeCuentas, fmPlanDeCuentas);
+    //fmPlanDeCuentas.FormStyle := FsMDIChild;
+    fmPlanDeCuentas.ShowModal;
+  end;
+end;
+
+procedure TfmSistem.DefinirEjercicioEconmico1Click(Sender: TObject);
+begin
+  if not Assigned(fmEjercicioEconomico) then Begin
+    Application.CreateForm(TfmEjercicioEconomico, fmEjercicioEconomico);
+    //fmEjercicioEconomico.FormStyle := FsMDIChild;
+    fmEjercicioEconomico.ShowModal;
+  end;
+end;
+
+procedure TfmSistem.AsientosContables1Click(Sender: TObject);
+begin
+  if not Assigned(fmLibroDiario) then Begin
+    Application.CreateForm(TfmLibroDiario, fmLibroDiario);
+    //fmLibroDiario.FormStyle := FsMDIChild;
+    fmLibroDiario.ShowModal;
+  end;
+end;
+
+procedure TfmSistem.AuditoraDiferencial1Click(Sender: TObject);
+begin
+  if not Assigned(fmAuditoriaOnLine) then Begin
+    Application.CreateForm(TfmAuditoriaOnLine, fmAuditoriaOnLine);
+    //fmAuditoriaOnLine.FormStyle := FsMDIChild;
+  end;
+  fmAuditoriaOnLine.ShowModal;
+end;
+
+procedure TfmSistem.AuditoriaCentral1Click(Sender: TObject);
+begin
+  if not Assigned(fmListadoControlesAuditoria) then Begin
+    Application.CreateForm(TfmListadoControlesAuditoria, fmListadoControlesAuditoria);
+    //fmListadoControlesAuditoria.FormStyle := FsMDIChild;
+  end;
+  fmListadoControlesAuditoria.ShowModal;
+end;
+
+procedure TfmSistem.DefdeAsientosModelo1Click(Sender: TObject);
+begin
+  if not Assigned(fmAsientosModelos) then Begin
+    Application.CreateForm(TfmAsientosModelos, fmAsientosModelos);
+    //fmAsientosModelos.FormStyle := FsMDIChild;
+    fmAsientosModelos.ShowModal;
+  end;
+end;
+
+procedure TfmSistem.RenumerarAsientos1Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmRenumerarAsientos, fmRenumerarAsientos);
+  fmRenumerarAsientos.ShowModal;
+end;
+
+procedure TfmSistem.ExportacindeAsientos1Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmExportarAsientos, fmExportarAsientos);
+  fmExportarAsientos.ShowModal;
+end;
+
+procedure TfmSistem.ImportacindeAsientos1Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmImportarAsientos, fmImportarAsientos);
+  fmImportarAsientos.ShowModal;
+end;
+
+procedure TfmSistem.InformesAdicionalesdeAuditora1Click(Sender: TObject);
+begin
+  if not Assigned(fmInformesAdicionales) then Begin
+    Application.CreateForm(TfmInformesAdicionales, fmInformesAdicionales);
+    fmInformesAdicionales.FormStyle := FsMDIChild;
+    fmInformesAdicionales.Show;
+  end;
+end;
+
+procedure TfmSistem.InformesContables1Click(Sender: TObject);
+begin
+  if not Assigned(fmListarInformesContables) then Begin
+    Application.CreateForm(TfmListarInformesContables, fmListarInformesContables);
+    fmListarInformesContables.FormStyle := FsMDIChild;
+    fmListarInformesContables.Show;
+  end;
+end;
+
+procedure TfmSistem.ParmetrosdeAuditoria1Click(Sender: TObject);
+begin
+  if not Assigned(fmParametrosAuditoria) then Begin
+    Application.CreateForm(TfmParametrosAuditoria, fmParametrosAuditoria);
+    fmParametrosAuditoria.FormStyle := FsMDIChild;
+    fmParametrosAuditoria.Show;
+  end;
+end;
+
+end.

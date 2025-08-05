@@ -1,0 +1,16 @@
+  
+Escriba el Nombre de su Laboratorio
+Resumen por Profesionales
+Periodo de Facturacion: 02/2019                              1
+ 
+--------------------------------------------------------------------------------
+Codigo  Obra Social                               Nro.Ord. Cant.Det.      Subtotal    Exento    I.V.A.     Total
+--------------------------------------------------------------------------------
+Profesional:  211010  LICHERI  Adriana Myriam
+
+ASOCIACION MUTUAL JERARQUICOS DE BANCOS OFICI Avda. Facundo Zuviria 4586     SANTA FE             30-68695518-0
+  121057 JERARQUICOS                                     3   23               0.00   3195.50      0.00   3195.50
+
+--------------------------------------------------------------------------------
+Subtotal:                                               3      23            0.00   3195.50      0.00      0.00
+ 

@@ -1,0 +1,35 @@
+unit ListPracticasRealizadas;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, Grids, StdCtrls, Mask, ExtCtrls;
+
+type
+  TfmListPracticasRealizadas = class(TForm)
+    Panel2: TPanel;
+    ScrollBox: TScrollBox;
+    Panel1: TPanel;
+    Panel3: TPanel;
+    Label1: TLabel;
+    desde: TMaskEdit;
+    Label2: TLabel;
+    MaskEdit1: TMaskEdit;
+    btnBuscar: TButton;
+    Panel4: TPanel;
+    F: TStringGrid;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  fmListPracticasRealizadas: TfmListPracticasRealizadas;
+
+implementation
+
+{$R *.dfm}
+
+end.

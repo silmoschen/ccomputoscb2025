@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2014/10/23 09:09:53.250.pas,C:\Users\silvio\Documents\RAD Studio\Projects\Unit2.pas=C:\sidelphi32\SGen\ccomputoscb\Migrar2014\act_nbu.pas</Transaction>
+    <Transaction>2014/10/23 09:09:53.250.dfm,C:\Users\silvio\Documents\RAD Studio\Projects\Unit2.dfm=C:\sidelphi32\SGen\ccomputoscb\Migrar2014\act_nbu.dfm</Transaction>
+    <Transaction>2014/10/23 09:09:57.946.dproj,C:\Users\silvio\Documents\RAD Studio\Projects\Project2.dproj=C:\sidelphi32\SGen\ccomputoscb\Migrar2014\actNBU.dproj</Transaction>
+  </Transactions>
+</BorlandProject>

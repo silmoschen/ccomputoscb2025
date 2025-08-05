@@ -1,0 +1,36 @@
+  
+Escriba el Nombre de su Laboratorio
+Facturacion Resumen a Profesionales
+Periodo de Facturacion: 03/2022                              Hoja Nro.: 1
+ 
+--------------------------------------------------------------------------------
+Paciente       Cod.   Arancel Cod.   Arancel Cod.   Arancel Cod.   Arancel Cod.   Arancel   
+--------------------------------------------------------------------------------
+
+Profesional: Delbino Susana Elsita            211058   Periodo: 03/2022
+ 
+Obra Social: PREVENCION SALUD S.A             121018
+ 
+                
+MASAT DIANA [N] 660475     286.65 660412     143.33 660902     143.33 660297     95.55 660481     477.75 
+                660174     143.33 660876     238.88 660711     238.88 660001     286.65 
+NICLE FACAL [N] 660475     286.65 660297     95.55 660412     143.33 660902     143.33 660174     143.33 
+                660876     238.88 660865     859.95 660867     859.95 660711     238.88 669913     3535.35 
+                660001     286.65 
+MACHA MAIDA [N] 660736     382.20 664632     1337.70 669622     2197.65 660865     859.95 660001     286.65 
+                
+
+Nro. de Ordenes:    3 Comp. Arancelaria:    0.00 Subtotal Facturado:   13950.30
+--------------------------------------------------------------------------------
+                          Total de Ordenes        :            3
+                          Total de Prestaciones   :           25
+                          Unidades Gasto          :         0.00 $        0.00
+                          Unidades Honorario      :         0.00 $        0.00
+                          Compensacion Arancelaria:              $        0.00
+                                                                  ------------
+                          Total Facturado         :              $    13950.30
+                          Subtotal Grabado        :              $        0.00
+                          Subtotal Exento         :              $    13950.30
+                          I.V.A.                  :              $        0.00
+                          Total Facturado         :              $    13950.30
+--------------------------------------------------------------------------------

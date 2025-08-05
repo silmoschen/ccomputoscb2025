@@ -1,0 +1,340 @@
+unit NominaNomeclador;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Db, Grids, DBGrids, Buttons, DBCtrls, ExtCtrls, ComCtrls, StdCtrls, Mask, IniFiles;
+
+type
+  TfmListNomeclador = class(TForm)
+    StatusBar1: TStatusBar;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    DBNavigator: TDBNavigator;
+    SpeedButton1: TSpeedButton;
+    SpeedButton2: TSpeedButton;
+    SpeedButton3: TSpeedButton;
+    DBGrid: TDBGrid;
+    DTS: TDataSource;
+    Panel3: TPanel;
+    Label3: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    desde: TMaskEdit;
+    hasta: TMaskEdit;
+    dispositivo: TComboBox;
+    Panel4: TPanel;
+    emitir: TBitBtn;
+    cerrar: TBitBtn;
+    Panel5: TPanel;
+    codigo: TRadioButton;
+    alfabetico: TRadioButton;
+    Panel6: TPanel;
+    entorno: TRadioButton;
+    exclusion: TRadioButton;
+    Splitter1: TSplitter;
+    SpeedButton4: TSpeedButton;
+    SpeedButton5: TSpeedButton;
+    SpeedButton6: TSpeedButton;
+    Panel8: TPanel;
+    Label1: TLabel;
+    criterio: TComboBox;
+    Label2: TLabel;
+    expresion: TMaskEdit;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure expresionChange(Sender: TObject);
+    procedure criterioClick(Sender: TObject);
+    procedure expresionKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure SpeedButton1Click(Sender: TObject);
+    procedure SpeedButton3Click(Sender: TObject);
+    procedure SpeedButton2Click(Sender: TObject);
+    procedure DBGridKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure criterioChange(Sender: TObject);
+    procedure codigoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure codigoClick(Sender: TObject);
+    procedure alfabeticoClick(Sender: TObject);
+    procedure alfabeticoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure desdeKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure hastaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure dispositivoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure emitirClick(Sender: TObject);
+    procedure cerrarClick(Sender: TObject);
+    procedure SpeedButton4Click(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure desdeClick(Sender: TObject);
+    procedure hastaClick(Sender: TObject);
+    procedure SpeedButton5Click(Sender: TObject);
+    procedure expresionClick(Sender: TObject);
+    procedure DBGridDrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure FormResize(Sender: TObject);
+  private
+    { Private declarations }
+    ordenact: string; control: byte;
+  public
+    { Public declarations }
+    introSalir, seleccionOK, NoCerrarFinal, redim: boolean; xcodnom: string;
+  end;
+
+var
+  fmListNomeclador: TfmListNomeclador;
+
+implementation
+
+uses CNomeclaCCB, CUtiles, NomecladorAn, CConfigForms;
+
+{$R *.DFM}
+
+procedure TfmListNomeclador.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  DTS.DataSet := nil;
+  if not introSalir then Begin
+    nomeclatura.desconectar;
+    configform.Guardar(fmListNomeclador, redim);
+    Release; fmListNomeclador := nil;
+  end;
+end;
+
+procedure TfmListNomeclador.expresionChange(Sender: TObject);
+begin
+  if criterio.Text = 'Descripción' then nomeclatura.BuscarPorNombre(expresion.Text);
+  if criterio.Text = 'Código'      then nomeclatura.BuscarPorCodigo(expresion.Text);
+end;
+
+procedure TfmListNomeclador.criterioClick(Sender: TObject);
+begin
+  ActiveControl := expresion;
+end;
+
+procedure TfmListNomeclador.expresionKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Begin
+    seleccionOK := False;
+    Close;
+  end;
+  if Key = VK_INSERT then SpeedButton1Click(Sender);
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then ActiveControl := DBGrid;
+end;
+
+procedure TfmListNomeclador.SpeedButton1Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmNomeclador, fmNomeclador);
+  fmNomeclador.NoCerrarFinal := True;
+  fmNomeclador.codigo.Text   := utiles.sLlenarIzquierda(nomeclatura.Nuevo, 4, '0');
+  fmNomeclador.ShowModal;
+  fmNomeclador.Release; fmNomeclador := nil;
+  ActiveControl := DBGrid;
+end;
+
+procedure TfmListNomeclador.SpeedButton3Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmNomeclador, fmNomeclador);
+  fmNomeclador.codigo.Text := nomeclatura.tabla.FieldByName('codigo').AsString;
+  fmNomeclador.BajaClick(Sender);
+  fmNomeclador.Release; fmNomeclador := nil;
+  expresionChange(Sender);
+end;
+
+procedure TfmListNomeclador.SpeedButton2Click(Sender: TObject);
+begin
+  if nomeclatura.Buscar(nomeclatura.tabla.FieldByName('codigo').AsString) then Begin
+    Application.CreateForm(TfmNomeclador, fmNomeclador);
+    fmNomeclador.NoCerrarFinal := True;
+    fmNomeclador.codigo.Text   := nomeclatura.tabla.FieldByName('codigo').AsString;
+    fmNomeclador.ShowModal;
+    fmNomeclador.Release; fmNomeclador := nil;
+  end;
+end;
+
+procedure TfmListNomeclador.DBGridKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_INSERT then SpeedButton1Click(Sender);
+  if Key = VK_DELETE then SpeedButton3Click(Sender);
+  if Key = VK_RETURN then Begin
+   if introSalir then Begin
+     seleccionOk := True;
+     Close;
+   end else Begin
+     if Not Panel3.Visible then SpeedButton2Click(Sender) else Begin
+        if control = 0 then Begin    // El control es del id
+          if codigo.Checked then desde.Text := nomeclatura.tabla.FieldByName('codigo').AsString else desde.Text := nomeclatura.tabla.FieldByName('descrip').AsString;
+          ActiveControl := hasta;
+        end;
+        if control = 1 then Begin    // El control es de la descripción
+          if codigo.Checked then hasta.Text := nomeclatura.tabla.FieldByName('codigo').AsString else hasta.Text := nomeclatura.tabla.FieldByName('descrip').AsString;
+          ActiveControl := dispositivo;
+        end;
+     end;
+   end;
+  end;
+  if Key = VK_ESCAPE then Close;
+end;
+
+procedure TfmListNomeclador.criterioChange(Sender: TObject);
+begin
+  expresionChange(Sender);
+end;
+
+procedure TfmListNomeclador.codigoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then ActiveControl := desde;
+end;
+
+procedure TfmListNomeclador.codigoClick(Sender: TObject);
+begin
+  criterio.Text := 'Código';
+  expresionChange(Sender);
+  desde.Text := ''; hasta.Text := ''; dispositivo.Text := 'Presentación Preliminar';
+end;
+
+procedure TfmListNomeclador.alfabeticoClick(Sender: TObject);
+begin
+  Criterio.Text := 'Descripción';
+  expresionChange(Sender);
+  desde.Text := ''; hasta.Text := ''; dispositivo.Text := 'Presentación Preliminar';
+end;
+
+procedure TfmListNomeclador.alfabeticoKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then ActiveControl := desde;
+end;
+
+procedure TfmListNomeclador.desdeKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then
+    if codigo.Checked then ActiveControl := codigo else ActiveControl := alfabetico;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if Length(Trim(expresion.Text)) = 0 then ActiveControl := expresion else ActiveControl := hasta;
+    control := 0;
+  end;
+end;
+
+procedure TfmListNomeclador.hastaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := desde;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if Length(Trim(expresion.Text)) = 0 then ActiveControl := expresion else ActiveControl := dispositivo;
+    control := 1;
+  end;
+end;
+
+procedure TfmListNomeclador.dispositivoKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then ActiveControl := emitir;
+end;
+
+procedure TfmListNomeclador.emitirClick(Sender: TObject);
+var
+  salida, ordensalida, entornosal: char;
+begin
+  if (Length(Trim(desde.Text)) = 0) or (Length(Trim(hasta.Text)) = 0) then utiles.msgError('No se han definido suficientes parámetros ...!') else Begin
+    //DTS.DataSet := nil;
+    salida := 'P'; ordensalida := 'C'; entornosal := 'E';
+    if dispositivo.Text = 'Impresora' then salida := 'I';
+    if alfabetico.Checked then ordensalida := 'A';
+    if exclusion.Checked then entornosal := 'X';
+    nomeclatura.Listar(ordensalida, desde.Text, hasta.Text, entornosal, salida);
+    DTS.DataSet   := nomeclatura.tabla;
+  end;
+  ActiveControl := cerrar;
+end;
+
+procedure TfmListNomeclador.cerrarClick(Sender: TObject);
+begin
+  Panel3.Visible := False;
+  criterio.Text  := ordenact;
+  expresionChange(Sender);
+  ActiveControl  := expresion;
+end;
+
+procedure TfmListNomeclador.SpeedButton4Click(Sender: TObject);
+begin
+  ordenact := criterio.Text;
+  if Not Panel3.Visible then Begin
+    Panel3.Visible  := True;
+    codigo.Checked  := True; entorno.Checked := True;
+    desde.Text := ''; hasta.Text := ''; expresion.Text := '';
+    criterio.Text   := 'Código';
+    expresionChange(Sender);
+    ActiveControl   := desde;
+  end else
+    Panel3.Visible := False;
+end;
+
+procedure TfmListNomeclador.FormShow(Sender: TObject);
+begin
+  if introSalir then Begin
+    if FormStyle = fsMDIChild then Begin
+      Height := 380; Width := 571; Top := 25; Left:=(Screen.Width - Width) div 2;
+    end;
+  end else
+    if not configform.setear(fmListNomeclador) then Begin
+      Height := 380; Width := 571; Top := 25; Left:=(Screen.Width - Width) div 2;
+    end;
+  if not introSalir then nomeclatura.conectar;
+  nomeclatura.NoUtilizarLista := True;
+  DTS.DataSet := nomeclatura.tabla;
+  expresionChange(Sender);
+  if Length(Trim(xcodnom)) > 0 then nomeclatura.Buscar(xcodnom);
+  redim := False;
+end;
+
+procedure TfmListNomeclador.desdeClick(Sender: TObject);
+begin
+  control := 0;
+end;
+
+procedure TfmListNomeclador.hastaClick(Sender: TObject);
+begin
+  control := 1;
+end;
+
+procedure TfmListNomeclador.SpeedButton5Click(Sender: TObject);
+begin
+  nomeclatura.FijarCodigoFacturacion;
+end;
+
+procedure TfmListNomeclador.expresionClick(Sender: TObject);
+begin
+  expresion.Text := '';
+end;
+
+procedure TfmListNomeclador.DBGridDrawColumnCell(Sender: TObject;
+  const Rect: TRect; DataCol: Integer; Column: TColumn;
+  State: TGridDrawState);
+const
+  clPaleGreen = clSkyBlue;
+  clPaleRed   = clBlack;
+begin
+  if not introSalir then Begin
+    if Column.Field.Dataset.FieldbyName('RIE').AsString = '*' then
+     if (gdFocused in State)
+      then DBGrid.canvas.brush.color := clBlack
+      else DBGrid.canvas.brush.color := clPaleGreen;
+    DBGrid.DefaultDrawColumnCell(rect,DataCol,Column,State);
+  end;
+end;
+
+procedure TfmListNomeclador.FormResize(Sender: TObject);
+begin
+  redim := True;
+end;
+
+end.

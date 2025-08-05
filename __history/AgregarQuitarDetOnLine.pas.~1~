@@ -1,0 +1,24 @@
+unit AgregarQuitarDetOnLine;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs;
+
+type
+  TfmDeterminacionOnLine = class(TForm)
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  fmDeterminacionOnLine: TfmDeterminacionOnLine;
+
+implementation
+
+{$R *.dfm}
+
+end.

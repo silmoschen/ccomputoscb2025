@@ -1,0 +1,160 @@
+object fmListPracticasRealizadas: TfmListPracticasRealizadas
+  Left = 0
+  Top = 0
+  Caption = 'Practicas Realizadas'
+  ClientHeight = 291
+  ClientWidth = 454
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poMainFormCenter
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel2: TPanel
+    Left = 0
+    Top = 0
+    Width = 454
+    Height = 291
+    Align = alClient
+    BevelInner = bvLowered
+    BorderWidth = 4
+    Caption = 'Panel2'
+    TabOrder = 0
+    ExplicitTop = 22
+    ExplicitWidth = 368
+    ExplicitHeight = 82
+    object ScrollBox: TScrollBox
+      Left = 6
+      Top = 6
+      Width = 442
+      Height = 279
+      HorzScrollBar.Increment = 1
+      HorzScrollBar.Margin = 1
+      HorzScrollBar.Range = 10
+      VertScrollBar.Margin = 6
+      VertScrollBar.Range = 10
+      Align = alClient
+      AutoScroll = False
+      BorderStyle = bsNone
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 0
+      ExplicitWidth = 356
+      ExplicitHeight = 70
+      object Panel1: TPanel
+        Left = 0
+        Top = 238
+        Width = 442
+        Height = 41
+        Align = alBottom
+        BevelOuter = bvNone
+        TabOrder = 0
+        ExplicitLeft = 152
+        ExplicitTop = 184
+        ExplicitWidth = 185
+      end
+      object Panel3: TPanel
+        Left = 0
+        Top = 0
+        Width = 442
+        Height = 38
+        Align = alTop
+        BevelOuter = bvNone
+        TabOrder = 1
+        ExplicitTop = 200
+        object Label1: TLabel
+          Left = 6
+          Top = 9
+          Width = 75
+          Height = 13
+          Alignment = taRightJustify
+          Caption = 'Per'#237'odo Desde:'
+        end
+        object Label2: TLabel
+          Left = 182
+          Top = 8
+          Width = 31
+          Height = 13
+          Alignment = taRightJustify
+          Caption = 'Hasta:'
+        end
+        object desde: TMaskEdit
+          Left = 84
+          Top = 7
+          Width = 61
+          Height = 21
+          CharCase = ecUpperCase
+          EditMask = '99/9999;1; '
+          MaxLength = 7
+          TabOrder = 0
+          Text = '  /    '
+          OnKeyDown = desdeKeyDown
+        end
+        object hasta: TMaskEdit
+          Left = 216
+          Top = 6
+          Width = 61
+          Height = 21
+          CharCase = ecUpperCase
+          EditMask = '99/9999;1; '
+          MaxLength = 7
+          TabOrder = 1
+          Text = '  /    '
+          OnKeyDown = hastaKeyDown
+        end
+        object btnBuscar: TButton
+          Left = 320
+          Top = 7
+          Width = 75
+          Height = 25
+          Caption = 'Buscar'
+          TabOrder = 2
+        end
+      end
+      object Panel4: TPanel
+        Left = 0
+        Top = 38
+        Width = 442
+        Height = 200
+        Align = alClient
+        BevelInner = bvLowered
+        TabOrder = 2
+        ExplicitTop = 50
+        ExplicitWidth = 345
+        ExplicitHeight = 259
+        object F: TStringGrid
+          Left = 2
+          Top = 2
+          Width = 438
+          Height = 196
+          Align = alClient
+          BorderStyle = bsNone
+          ColCount = 3
+          DefaultRowHeight = 15
+          FixedCols = 0
+          RowCount = 10000
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect]
+          ParentFont = False
+          TabOrder = 0
+          ColWidths = (
+            67
+            306
+            16)
+        end
+      end
+    end
+  end
+end

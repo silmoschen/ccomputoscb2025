@@ -1,0 +1,175 @@
+object fmAjustesTotalesIVA: TfmAjustesTotalesIVA
+  Left = 0
+  Top = 0
+  Caption = 'Ajustar Totales Facturados en Profesionales Inscriptos en I.V.A.'
+  ClientHeight = 392
+  ClientWidth = 459
+  Color = clBtnFace
+  Font.Charset = ANSI_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poMainFormCenter
+  OnResize = FormResize
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 373
+    Width = 459
+    Height = 19
+    Panels = <
+      item
+        Width = 280
+      end
+      item
+        Width = 50
+      end>
+    ExplicitTop = 292
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 459
+    Height = 373
+    Align = alClient
+    BevelInner = bvLowered
+    BorderWidth = 4
+    TabOrder = 1
+    ExplicitHeight = 292
+    object Panel2: TPanel
+      Left = 6
+      Top = 6
+      Width = 447
+      Height = 67
+      Align = alTop
+      BevelOuter = bvNone
+      TabOrder = 0
+      object Label14: TLabel
+        Left = 4
+        Top = 3
+        Width = 41
+        Height = 13
+        Alignment = taRightJustify
+        Caption = 'Per'#237'odo '
+      end
+      object Label27: TLabel
+        Left = 11
+        Top = 15
+        Width = 32
+        Height = 13
+        Alignment = taRightJustify
+        Caption = 'Ajuste:'
+      end
+      object Label47: TLabel
+        Left = 102
+        Top = 9
+        Width = 55
+        Height = 13
+        Alignment = taRightJustify
+        Caption = 'Profesional:'
+      end
+      object np: TLabel
+        Left = 234
+        Top = 9
+        Width = 30
+        Height = 13
+        Caption = '          '
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clNavy
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        ParentFont = False
+      end
+      object periodo: TMaskEdit
+        Left = 48
+        Top = 6
+        Width = 48
+        Height = 21
+        EditMask = '99/9999;1; '
+        MaxLength = 7
+        TabOrder = 0
+        Text = '  /    '
+      end
+      object idlab: TMaskEdit
+        Left = 160
+        Top = 6
+        Width = 47
+        Height = 21
+        EditMask = '######;1; '
+        MaxLength = 6
+        TabOrder = 1
+        Text = '      '
+      end
+      object BuscarProfes: TBitBtn
+        Left = 210
+        Top = 5
+        Width = 20
+        Height = 22
+        Hint = 'Buscar Profesional'
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 2
+        Glyph.Data = {
+          F6000000424DF600000000000000760000002800000010000000100000000100
+          0400000000008000000000000000000000001000000010000000000000000000
+          8000008000000080800080000000800080008080000080808000C0C0C0000000
+          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+          FFFFFFFFFFF000FFFFFFFFFFFF0BB00FFFFFFFFFFF0BB00FFFFFFFFFFFF00FFF
+          FFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0BB00F
+          FFFFFFFF00F0BB00FFFFFFF0B00F0BB00FFFFFF0B00FF0B00FFFFFF0BB000BB0
+          0FFFFFFF0BBBBB00FFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFF}
+      end
+      object RadioButton1: TRadioButton
+        Left = 8
+        Top = 40
+        Width = 197
+        Height = 17
+        Caption = '&Obras Sociales Grabadas con I.V.A.'
+        TabOrder = 3
+      end
+      object RadioButton2: TRadioButton
+        Left = 218
+        Top = 40
+        Width = 215
+        Height = 17
+        Caption = 'Obras Sociales &No Grabadas con I.V.A.'
+        TabOrder = 4
+      end
+    end
+    object Panel3: TPanel
+      Left = 6
+      Top = 73
+      Width = 447
+      Height = 294
+      Align = alClient
+      BevelInner = bvLowered
+      TabOrder = 1
+      ExplicitHeight = 213
+      object S: TStringGrid
+        Left = 2
+        Top = 2
+        Width = 443
+        Height = 290
+        Align = alClient
+        BorderStyle = bsNone
+        ColCount = 4
+        DefaultRowHeight = 15
+        FixedCols = 0
+        RowCount = 500
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowSelect]
+        TabOrder = 0
+        ExplicitHeight = 209
+        ColWidths = (
+          54
+          18
+          283
+          70)
+      end
+    end
+  end
+end

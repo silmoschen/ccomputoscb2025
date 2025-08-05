@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2008/10/11 19:26:13.656.pas,C:\sidelphi32\SGen\ccomputoscb\Unit2.pas=C:\sidelphi32\Interfases\AbrirCarpeta.pas</Transaction>
+    <Transaction>2008/10/11 19:26:13.687.dfm,C:\sidelphi32\SGen\ccomputoscb\Unit2.dfm=C:\sidelphi32\Interfases\AbrirCarpeta.dfm</Transaction>
+    <Transaction>2008/10/19 20:12:45.828.pas,C:\sidelphi32\SGen\ccomputoscb\tablaNBU.pas=C:\sidelphi32\SGen\ccomputoscb\clases\tablaNBU.pas</Transaction>
+    <Transaction>2008/10/19 20:12:45.843.dfm,C:\sidelphi32\SGen\ccomputoscb\tablaNBU.dfm=C:\sidelphi32\SGen\ccomputoscb\clases\tablaNBU.dfm</Transaction>
+    <Transaction>2008/10/19 20:15:05.015.pas,C:\sidelphi32\SGen\ccomputoscb\clases\CNBU.pas=</Transaction>
+    <Transaction>2008/10/19 20:15:38.140.pas,C:\sidelphi32\SGen\ccomputoscb\Nomina_NBU.pas=C:\sidelphi32\SGen\ccomputoscb\clases\Nomina_NBU.pas</Transaction>
+    <Transaction>2008/10/19 20:15:38.140.dfm,C:\sidelphi32\SGen\ccomputoscb\Nomina_NBU.dfm=C:\sidelphi32\SGen\ccomputoscb\clases\Nomina_NBU.dfm</Transaction>
+  </Transactions>
+</BorlandProject>

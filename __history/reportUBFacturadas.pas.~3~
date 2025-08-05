@@ -1,0 +1,67 @@
+unit reportUBFacturadas;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Buttons, Mask, ExtCtrls, ComCtrls, CFacturacionCCB;
+
+type
+  TfmUBFacturadas = class(TForm)
+    StatusBar1: TStatusBar;
+    Panel2: TPanel;
+    ScrollBox: TScrollBox;
+    Label11: TLabel;
+    desde: TMaskEdit;
+    hasta: TMaskEdit;
+    Label1: TLabel;
+    dispSalida: TBitBtn;
+    emitir: TBitBtn;
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure dispSalidaClick(Sender: TObject);
+    procedure emitirClick(Sender: TObject);
+  private
+    { Private declarations }
+    salida: char;
+  public
+    { Public declarations }
+  end;
+
+var
+  fmUBFacturadas: TfmUBFacturadas;
+
+implementation
+
+uses Disposit;
+
+{$R *.dfm}
+
+procedure TfmUBFacturadas.dispSalidaClick(Sender: TObject);
+begin
+  if not Assigned(Dispositivo) then Application.CreateForm(TDispositivo, Dispositivo);
+  Dispositivo.ShowModal;
+  ActiveControl := emitir;
+end;
+
+procedure TfmUBFacturadas.emitirClick(Sender: TObject);
+begin
+  salida := 'P';
+  if Dispositivo.Impresor.Checked then salida := 'I';
+
+  facturacion.listarUBFacturadas(desde.Text, hasta.Text, salida);
+
+end;
+
+procedure TfmUBFacturadas.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  facturacion.desconectar;
+  Dispositivo.Release; Dispositivo := nil;
+end;
+
+procedure TfmUBFacturadas.FormShow(Sender: TObject);
+begin
+  facturacion.conectar;
+end;
+
+end.

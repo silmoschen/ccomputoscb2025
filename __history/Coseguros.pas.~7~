@@ -1,0 +1,77 @@
+unit Coseguros;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, ComCtrls, CCoseguros, Grids, StdCtrls, Editv, Buttons, Mask;
+
+type
+  TfmCoseguros = class(TForm)
+    StatusBar1: TStatusBar;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    Panel3: TPanel;
+    S: TStringGrid;
+    Label1: TLabel;
+    codos: TMaskEdit;
+    BuscarProfesional: TBitBtn;
+    nos: TLabel;
+    Label2: TLabel;
+    periodo: TMaskEdit;
+    Label15: TLabel;
+    porcentaje: TEditValid;
+    Panel4: TPanel;
+    Button1: TButton;
+    Button2: TButton;
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure BuscarProfesionalClick(Sender: TObject);
+  private
+    { Private declarations }
+    procedure CargarDatosObraSocial;
+  public
+    { Public declarations }
+  end;
+
+var
+  fmCoseguros: TfmCoseguros;
+
+implementation
+
+uses NominaObrasSociales, CObrasSocialesCCB;
+
+{$R *.dfm}
+
+procedure TfmCoseguros.CargarDatosObraSocial;
+// Objetivo...: Cargar Datos Obra Social
+Begin
+  obsocial.getDatos(codos.Text);
+  nos.Caption    := obsocial.Nombre;
+end;
+
+procedure TfmCoseguros.BuscarProfesionalClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmListObrasSociales, fmListObrasSociales);
+  fmListObrasSociales.introSalir := True;
+  fmListObrasSociales.expresion.CharCase := ecUpperCase;
+  fmListObrasSociales.ShowModal;
+  Refresh;
+  if fmListObrasSociales.seleccionOK then Begin
+    codos.Text := obsocial.tabla.FieldByName('codos').AsString;
+    CargarDatosObraSocial;
+  end;
+  fmListObrasSociales.Release; fmListObrasSociales := nil;
+end;
+
+procedure TfmCoseguros.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  coseguro.desconectar;
+end;
+
+procedure TfmCoseguros.FormShow(Sender: TObject);
+begin
+  coseguro.conectar;
+end;
+
+end.

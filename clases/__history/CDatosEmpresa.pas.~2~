@@ -1,0 +1,108 @@
+unit CDatosEmpresa;
+
+interface
+
+uses SysUtils, DB, DBTables, CUtiles, CIDBFM, CBDT;
+
+type
+
+TTDatosEmpresa = class(TObject)            // Superclase
+  id, rsocial, direccion, telefono, cuit: string;
+  tabla: TTable;
+ public
+  { Declaraciones Públicas }
+  constructor Create;
+  destructor  Destroy;
+
+  procedure   Grabar(xid, xrsocial, xdireccion, xtelefono, xcuit: string);
+  function    Buscar(xid: string): boolean;
+  procedure   getDatos(xid: string);
+
+  procedure   conectar;
+  procedure   desconectar;
+ private
+  { Declaraciones Privadas }
+end;
+
+function empresa: TTDatosEmpresa;
+
+implementation
+
+var
+  xempresa: TTDatosEmpresa = nil;
+
+constructor TTDatosEmpresa.Create;
+begin
+  inherited Create;
+  tabla := datosdb.openDB('datosempresa', 'id');
+  conectar;
+end;
+
+destructor TTDatosEmpresa.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TTDatosEmpresa.Grabar(xid, xrsocial, xdireccion, xtelefono, xcuit: string);
+// Objetivo...: Grabar Atributos del Objeto
+begin
+  if Buscar(xid) then tabla.Edit else tabla.Append;
+  tabla.FieldByName('rsocial').AsString   := TrimLeft(xrsocial);
+  tabla.FieldByName('direccion').AsString := TrimLeft(xdireccion);
+  tabla.FieldByName('telefono').AsString  := TrimLeft(xtelefono);
+  tabla.FieldByName('cuit').AsString      := TrimLeft(xcuit);
+  try
+    tabla.Post
+  except
+    tabla.Cancel
+  end;
+end;
+
+function TTDatosEmpresa.Buscar(xid: string): boolean;
+// Objetivo...: Buscar el Objeto solicitado
+begin
+ result := datosdb.Buscar(tabla, 'id', xid);
+end;
+
+procedure  TTDatosEmpresa.getDatos(xid: string);
+// Objetivo...: Retornar/Iniciar Atributos
+begin
+  if Buscar(xid) then Begin
+    rsocial     := tabla.FieldByName('rsocial').AsString;
+    direccion   := tabla.FieldByName('direccion').AsString;
+    telefono    := tabla.FieldByName('telefono').AsString;
+    cuit        := tabla.FieldByName('cuit').AsString;
+  end else begin
+    rsocial := ''; direccion := ''; telefono := ''; cuit := '';
+  end;
+end;
+
+procedure TTDatosEmpresa.conectar;
+// Objetivo...: conectar tablas de persistencia
+begin
+  if not tabla.Active then tabla.Open;
+end;
+
+procedure TTDatosEmpresa.desconectar;
+// Objetivo...: cerrar tablas de persistencia
+begin
+  datosdb.closeDB(tabla);
+end;
+
+{===============================================================================}
+
+function empresa: TTDatosEmpresa;
+begin
+  if xempresa = nil then
+    xempresa := TTDatosEmpresa.Create;
+  Result := xempresa;
+end;
+
+{===============================================================================}
+
+initialization
+
+finalization
+  xempresa.Free;
+
+end.

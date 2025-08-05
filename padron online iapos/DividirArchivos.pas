@@ -1,0 +1,61 @@
+unit DividirArchivos;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls;
+
+type
+  TForm3 = class(TForm)
+    Label1: TLabel;
+    archivo: TEdit;
+    Button1: TButton;
+    Label2: TLabel;
+    tope: TEdit;
+    Label3: TLabel;
+    Label4: TLabel;
+    procedure Button1Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form3: TForm3;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm3.Button1Click(Sender: TObject);
+var
+  narchivo, salida: textfile;
+  linea, n: string;
+  lineas, bloque: integer;
+begin
+  lineas := 0; bloque := 1;
+  assignfile(narchivo, archivo.text);
+  assignfile(salida, 'lote' + inttostr(bloque) + '.sql');
+  reset(narchivo);
+  rewrite(salida);
+  Label4.Caption := 'segmento ' + inttostr(bloque); Label4.Refresh;
+  while not EOF(narchivo) do begin
+    readln(narchivo, linea);
+    writeln(salida, linea);
+    inc(lineas);
+    if (lineas > strtoint(tope.Text)) then begin
+      closeFile(salida);
+      Inc(bloque);
+      assignfile(salida, 'lote' + inttostr(bloque) + '.sql');
+      rewrite(salida);
+      Label4.Caption := 'segmento ' + inttostr(bloque); Label4.Refresh;
+      lineas := 0;
+    end;
+  end;
+  closeFile(narchivo);
+  closeFile(salida);
+end;
+
+end.

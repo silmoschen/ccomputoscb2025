@@ -1,0 +1,45 @@
+object fmAjustesTotalesIVA: TfmAjustesTotalesIVA
+  Left = 0
+  Top = 0
+  Caption = 'Ajustar Totales Facturados en Profesionales Inscriptos en I.V.A.'
+  ClientHeight = 311
+  ClientWidth = 501
+  Color = clBtnFace
+  Font.Charset = ANSI_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  OnResize = FormResize
+  PixelsPerInch = 96
+  TextHeight = 13
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 292
+    Width = 501
+    Height = 19
+    Panels = <
+      item
+        Width = 280
+      end
+      item
+        Width = 50
+      end>
+    ExplicitWidth = 486
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 501
+    Height = 292
+    Align = alClient
+    BevelInner = bvLowered
+    BorderWidth = 4
+    TabOrder = 1
+    ExplicitLeft = 256
+    ExplicitTop = 128
+    ExplicitWidth = 185
+    ExplicitHeight = 41
+  end
+end

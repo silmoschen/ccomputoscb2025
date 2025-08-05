@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{23b5cc59-b0d1-4d7d-9835-d103a84277fc}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+    <DCC_DependencyCheckOutputName>C:\shmsoft\MigracionIB2013.exe</DCC_DependencyCheckOutputName>
+    <MainSource>MigracionIB2013.dpr</MainSource>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_DebugInformation>False</DCC_DebugInformation>
+    <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
+    <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+    <DCC_Define>RELEASE</DCC_Define>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_Define>DEBUG</DCC_Define>
+    <DCC_UnitSearchPath>\sidelphi32\clases;\sidelphi32\interfases;\sidelphi32\cExtras;\sidelphi32\sounds;\sidelphi32\cExtras\chequeadores;C:\sidelphi32\cExtras\mxCaptionBarButton\Component;C:\LMD70SE\vclskin2\d6;\sidelphi32\cExtras\vclskin421\source;C:\LMD2007\lib\d11</DCC_UnitSearchPath>
+    <DCC_ResourcePath>\sidelphi32\clases;\sidelphi32\interfases;\sidelphi32\cExtras;\sidelphi32\sounds;\sidelphi32\cExtras\chequeadores;C:\sidelphi32\cExtras\mxCaptionBarButton\Component;C:\LMD70SE\vclskin2\d6;\sidelphi32\cExtras\vclskin421\source;C:\LMD2007\lib\d11</DCC_ResourcePath>
+    <DCC_ObjPath>\sidelphi32\clases;\sidelphi32\interfases;\sidelphi32\cExtras;\sidelphi32\sounds;\sidelphi32\cExtras\chequeadores;C:\sidelphi32\cExtras\mxCaptionBarButton\Component;C:\LMD70SE\vclskin2\d6;\sidelphi32\cExtras\vclskin421\source;C:\LMD2007\lib\d11</DCC_ObjPath>
+    <DCC_IncludePath>\sidelphi32\clases;\sidelphi32\interfases;\sidelphi32\cExtras;\sidelphi32\sounds;\sidelphi32\cExtras\chequeadores;C:\sidelphi32\cExtras\mxCaptionBarButton\Component;C:\LMD70SE\vclskin2\d6;\sidelphi32\cExtras\vclskin421\source;C:\LMD2007\lib\d11</DCC_IncludePath>
+    <DCC_ExeOutput>C:\shmsoft</DCC_ExeOutput>
+  </PropertyGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Delphi.Personality</Borland.Personality>
+    <Borland.ProjectType />
+    <BorlandProject>
+<BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">0</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">11274</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription"></VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName"></VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Excluded_Packages>
+      
+      
+      
+      
+      
+      
+      
+      
+      <Excluded_Packages Name="$(BDS)\bin\bcboffice2k100.bpl">CodeGear C++Builder Office 2000 Servers Package</Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\bcbofficexp100.bpl">CodeGear C++Builder Office XP Servers Package</Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+    </Excluded_Packages><Source><Source Name="MainSource">MigracionIB2013.dpr</Source></Source></Delphi.Personality></BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
+  <ItemGroup>
+    <DelphiCompile Include="MigracionIB2013.dpr">
+      <MainSource>MainSource</MainSource>
+    </DelphiCompile>
+    <DCCReference Include="..\..\..\CLASES\CUtilidadesArchivos.pas" />
+    <DCCReference Include="..\..\..\Varios\Backup\backup.pas" />
+    <DCCReference Include="..\..\..\Varios\Backup\comodines.pas">
+      <Form>fmAgregarArchivos</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\..\Varios\Backup\Lzrw1kh.pas" />
+    <DCCReference Include="..\..\..\Varios\Backup\Selectarchivos.pas">
+      <Form>fmSeleArchivos</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\..\Varios\Backup\Unit1.pas">
+      <Form>fmBackup</Form>
+    </DCCReference>
+    <DCCReference Include="FormMigrar2013.pas">
+      <Form>Form1</Form>
+    </DCCReference>
+  </ItemGroup>
+</Project>

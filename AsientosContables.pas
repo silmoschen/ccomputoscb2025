@@ -1,0 +1,892 @@
+unit AsientosContables;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  ComCtrls, ToolWin, StdCtrls, Buttons, Mask, DBCtrls, ExtCtrls, Grids,
+  DBGrids, DB, DBTables, Editv, ImgList, LMDCustomButton, LMDButton, Menus;
+
+type
+  TfmLibroDiario = class(TForm)
+    Panel2: TPanel;
+    ScrollBox: TScrollBox;
+    Nivel: TLabel;
+    StatusBar1: TStatusBar;
+    Totales: TLabel;
+    Label13: TLabel;
+    DTS: TDataSource;
+    Panel1: TPanel;
+    Label3: TLabel;
+    nroasiento: TMaskEdit;
+    fecha: TMaskEdit;
+    Label8: TLabel;
+    Label6: TLabel;
+    Label11: TLabel;
+    Panel3: TPanel;
+    Label1: TLabel;
+    Label4: TLabel;
+    observaciones: TMaskEdit;
+    Panel4: TPanel;
+    Panel5: TPanel;
+    Panel6: TPanel;
+    Panel7: TPanel;
+    ToolBar1: TToolBar;
+    DBNavigator: TDBNavigator;
+    Alta: TToolButton;
+    Baja: TToolButton;
+    Modificar: TToolButton;
+    Buscar: TToolButton;
+    Deshacer: TToolButton;
+    renumerar: TToolButton;
+    Salir: TToolButton;
+    PopupMenu: TPopupMenu;
+    BuscarAsientoModelo1: TMenuItem;
+    DefinirAsientoModelo1: TMenuItem;
+    GroupBox2: TGroupBox;
+    Label2: TLabel;
+    Label12: TLabel;
+    Label9: TLabel;
+    DH: TMaskEdit;
+    codcta: TMaskEdit;
+    Label10: TLabel;
+    codrap: TMaskEdit;
+    SeleCuenta: TBitBtn;
+    cuenta: TLabel;
+    importe: TEditValid;
+    Label7: TLabel;
+    Label5: TLabel;
+    concepto: TMaskEdit;
+    btnCancelar: TBitBtn;
+    btnRegistrar: TBitBtn;
+    Panel9: TPanel;
+    Panel10: TPanel;
+    Panel11: TPanel;
+    asiento: TStringGrid;
+    tdebe: TLabel;
+    thaber: TLabel;
+    Label15: TLabel;
+    dif: TLabel;
+    Label18: TLabel;
+    Label14: TLabel;
+    cotizacion: TEditValid;
+    finalizar: TBitBtn;
+    Panel8: TPanel;
+    N1: TMenuItem;
+    GenerarAsientosAutomticos1: TMenuItem;
+    N2: TMenuItem;
+    GeneracindeAsientosAutomticos1: TMenuItem;
+    Label16: TLabel;
+    ComboBox1: TComboBox;
+    procedure SelCuenta(Sender: TObject);
+    procedure nroasientoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure fechaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure codctaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure ImporteKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure observacionesKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure ControlarBalanceo;
+    procedure BajaAsiento(Sender: TObject);
+    procedure acKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure DHKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure conceptoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure renumerarClick(Sender: TObject);
+    procedure ActivarAsiento(Sender: TObject);
+    procedure InactivarAsiento(Sender: TObject);
+    procedure asientoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure asientoSelectCell(Sender: TObject; Col, Row: Integer;
+      var CanSelect: Boolean);
+    procedure asientoModeloClick(Sender: TObject);
+    procedure DefasientosModelosClick(Sender: TObject);
+    procedure asientoDblClick(Sender: TObject);
+    procedure btnRegistrarClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure SalirClick(Sender: TObject);
+    procedure AltaClick(Sender: TObject);
+    procedure ModificarClick(Sender: TObject);
+    procedure DBNavigatorClick(Sender: TObject; Button: TNavigateBtn);
+    procedure codrapKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure finalizarClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure cotizacionKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure Panel2Resize(Sender: TObject);
+    procedure FormResize(Sender: TObject);
+    procedure GenerarAsientosAutomticos1Click(Sender: TObject);
+    procedure ComboBox1Change(Sender: TObject);
+  private
+    { Private declarations }
+    Nromovi, indice, xfil: integer;
+    Editar, autorizargrabacion, redim, asmodelo: boolean;
+    Totaldebe, Totalhaber: real;
+    procedure GrabarAsiento;
+    procedure CargarDatos;
+    procedure CargarCuenta;
+    procedure CargarDatosGrilla;
+  public
+    { Public declarations }
+  end;
+
+var
+  fmLibroDiario: TfmLibroDiario;
+
+implementation
+
+uses CUtiles, CLDiarioAsociacion, CPlanctasAsociacion, CPeriodoAsociacion, ImgForms, plctas,
+  RenumerarAsientos, CUtilidadesStringGrid, CConfigForms, AsientosModelos,
+  IngresoAsientosModelos, AsientosAutomaticos, Contnrs, CBalgenAsociacion;
+
+{$R *.DFM}
+
+procedure TfmLibroDiario.CargarDatos;
+var
+  l: TStringList;
+  i, p: integer;
+begin
+  ldiario.getDatos(StatusBar1.Panels[1].Text, nroasiento.Text);
+  fecha.Text            := ldiario.Fecha;
+  observaciones.Enabled := True;
+  observaciones.Text    := ldiario.Observac;
+  observaciones.Enabled := False;
+  if Length(Trim(ldiario.Clave)) = 0 then StatusBar1.Panels[2].Text := 'Manual' else StatusBar1.Panels[2].Text := 'Automático';
+
+  nromovi := 0; 
+  grid.IniciarGrilla(asiento);
+  if ldiario.Buscar(StatusBar1.Panels[1].Text, nroasiento.Text) then begin
+    l := ldiario.setItemsLista;
+    For i := 1 to l.Count do Begin
+      p := Pos(';1', l.Strings[i-1]);
+      planctas.getDatos(Copy(l.Strings[i-1], 1, 12));
+      asiento.cells[0, i] := Copy(l.Strings[i-1], 1, 12);
+      if Copy(l.Strings[i-1], 13, 1) = '1' then asiento.cells[1, i] := planctas.Cuenta else asiento.cells[1, i] := '   ' + planctas.Cuenta;
+      if Copy(l.Strings[i-1], 13, 1) = '1' then asiento.cells[2, i] := utiles.FormatearNumero(Copy(l.Strings[i-1], 14, p-14)) else asiento.cells[3, i] := utiles.FormatearNumero(Copy(l.Strings[i-1], 14, p-14));
+      asiento.cells[4, i] := Copy(l.Strings[i-1], p+2, 100);
+      nromovi             := i;
+    end;
+    ControlarBalanceo;
+    l.Destroy;
+  end;
+  asiento.row := 1;
+  asiento.Refresh;
+  if Length(Trim(asiento.Cells[0, 2])) > 0 then asiento.Row := i -1 else asiento.Row := 1;
+
+  GroupBox2.Enabled := ldiario.ExisteAsiento;
+end;
+
+procedure TfmLibroDiario.SelCuenta(Sender: TObject);
+begin
+  Application.CreateForm(TfmPlanDeCuentas, fmPlanDeCuentas);
+  planctas.FiltrarCtasImputables;
+  fmPlanDeCuentas.introsalir := True;
+  fmPlanDeCuentas.ShowModal;
+  if fmPlanDeCuentas.seleccionok then Begin
+    codcta.Text    := planctas.planctas.FieldByName('codcta').AsString;
+    CargarCuenta;
+    ActiveControl  := dh;
+  end;
+  fmPlanDeCuentas.Release; fmPlanDeCuentas := Nil;
+  planctas.conectar;
+end;
+
+procedure TfmLibroDiario.CargarCuenta;
+begin
+  planctas.getDatos(codcta.Text);
+  cuenta.Caption := planctas.Cuenta;
+end;
+
+procedure TfmLibroDiario.ControlarBalanceo;
+var
+  j: integer;
+begin
+  Totaldebe  := 0; Totalhaber := 0;
+  For j := 1 to asiento.RowCount do begin
+    if Length(Trim(asiento.cells[0, j])) = 0 then Break;
+    if Length(Trim(asiento.cells[2, j])) > 0 then Totaldebe  := Totaldebe  + StrToFloat(asiento.cells[2, j]);
+    if Length(Trim(asiento.cells[3, j])) > 0 then Totalhaber := Totalhaber + StrToFloat(asiento.cells[3, j]);
+  end;
+  tdebe.Caption  := utiles.FormatearNumero(FloatToStr(totaldebe));
+  thaber.Caption := utiles.FormatearNumero(FloatToStr(totalhaber));
+  dif.Caption      := utiles.FormatearNumero(FloatToStr(totaldebe - totalhaber));
+  if StrToFloat(dif.Caption) = 0 then finalizar.Enabled := True else finalizar.Enabled := False;
+  Refresh;
+end;
+
+procedure TfmLibroDiario.InactivarAsiento(Sender: TObject);
+{Objetivo...: Inactivar Asiento, automaticos, cerrados, etc}
+begin
+  Fecha.Enabled := False; codcta.Enabled := False; DH.Enabled := False; Importe.Enabled := False; concepto.Enabled := False; observaciones.Enabled := False; autorizargrabacion := False;
+end;
+
+procedure TfmLibroDiario.ActivarAsiento(Sender: TObject);
+{Objetivo...: Activar Asientos, Modificables}
+begin
+  Fecha.Enabled := True; codcta.Enabled := True; DH.Enabled := True; Importe.Enabled := True; concepto.Enabled := True; observaciones.Enabled := True; autorizargrabacion := True;
+end;
+
+procedure TfmLibroDiario.BajaAsiento(Sender: TObject);
+var
+  bok: boolean;
+begin
+  bok := True;
+  if ldiario.Buscar(StatusBar1.Panels[1].Text, nroasiento.Text) then
+   if StatusBar1.Panels[2].Text = 'Automático' then
+     if utiles.msgSiNo('Asiento Automático, Dar de Baja!') then bok := True else bok := False;
+  if bok then
+    if utiles.BajaRegistro('Seguro para Borrar Asiento Nº ' + nroasiento.Text + ' ?') then begin
+      ldiario.Borrar(StatusBar1.Panels[1].Text, nroasiento.Text);
+      nroasiento.Text := ldiario.Nroasien;
+      CargarDatos;
+      ActiveControl := nroasiento;
+    end;
+end;
+
+procedure TfmLibroDiario.CargarDatosGrilla;
+// Objetivo...: Pasar los datos del Registro Seleccionado para su modificación
+begin
+  codcta.Text    := asiento.cells[0, asiento.row];
+  cuenta.Caption := TrimLeft(asiento.cells[1, asiento.row]);
+  if Length(Trim(asiento.cells[2, asiento.row])) > 0 then begin
+    dh.Text      := '1';
+    importe.Text := asiento.cells[2, asiento.row];
+  end;
+  if Length(Trim(asiento.cells[3, asiento.row])) > 0 then  begin
+    dh.Text      := '2';
+    importe.Text := asiento.cells[3, asiento.row];
+  end;
+  concepto.Text := asiento.cells[4, asiento.row];
+end;
+
+procedure TfmLibroDiario.GrabarAsiento;
+// Objetivo...: Grabar los movimientos del Asiento
+var
+  j: integer; dh: string;
+  importe: real;
+begin
+  if (Length(Trim(nroasiento.Text)) > 0) and (utiles.ctrlFecha(fecha.Text, '')) and (StrToFloat(dif.Caption) = 0) and (Length(Trim(asiento.Cells[0, 2])) > 0) and (Length(Trim(observaciones.Text)) > 0) then Begin
+    StatusBar1.Panels[0].Text := 'Registrando Asiento ...!'; StatusBar1.Refresh;
+    For j := 1 to asiento.RowCount do Begin
+      if Length(Trim(asiento.Cells[0, j])) = 0 then Break;
+      if Length(Trim(asiento.Cells[4, j])) = 0 then asiento.Cells[4, j] := observaciones.Text;
+    end;
+    ldiario.Grabar(StatusBar1.Panels[1].Text, nroasiento.Text, fecha.Text, observaciones.Text);
+    dh := ''; importe := 0;
+    For j := 1 to asiento.RowCount do begin
+      if Length(Trim(asiento.cells[0, j])) = 0 then break;
+      if Length(Trim(asiento.cells[2, j])) > 0 then begin
+        dh      := '1';
+        importe := StrToFloat(asiento.cells[2, j]);
+      end;
+      if Length(Trim(asiento.cells[3, j])) > 0 then begin
+        dh      := '2';
+        importe := StrToFloat(asiento.cells[3, j]);
+      end;
+      if importe <> 0 then ldiario.Grabar(StatusBar1.Panels[1].Text, nroasiento.Text, fecha.Text, asiento.cells[0, j], utiles.sLlenarIzquierda(IntToStr(j), 3, '0'), asiento.cells[4, j], dh, importe);
+    end;
+    AltaClick(Self);
+    StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+  end else
+    utiles.msgError('Controle, hay Datos Incorrectos ...!');
+end;
+
+procedure TfmLibroDiario.nroasientoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if Key = VK_INSERT then AltaClick(Sender);
+  if (Shift = [ssCtrl]) and (Key = Word('B')) then BajaAsiento(Sender);
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then begin
+    utiles.LlenarIzquierda(nroasiento, 6, '0');
+    autorizargrabacion := True;
+    CargarDatos;
+    ActiveControl := fecha;
+  end;
+end;
+
+procedure TfmLibroDiario.fechaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  ctrlok: boolean;
+begin
+  if Key = VK_ESCAPE then Close;
+  ctrlok := False;
+  if Key = VK_UP then begin
+    Baja.Enabled := True;
+    ActiveControl := NroAsiento;
+  end;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if utiles.ctrlFecha(fecha) then
+      if utiles.rangofechas(per.Dfecha, per.Hfecha, fecha.Text) then
+        if StatusBar1.Panels[2].Text = 'Manual' then ctrlok := True else
+          if utiles.msgSiNo('As. Automático, Seguro de Mod.?') then ctrlok := True else ctrlok := False;
+
+        if ctrlok then Begin
+          ActiveControl    := cotizacion;
+          StatusBar1.Panels[0].Text := 'ESC Finalizar Asiento';
+        end;
+  end;
+end;
+
+procedure TfmLibroDiario.codctaKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then finalizarClick(Sender);
+  if Key = VK_F1 then SelCuenta(Sender);
+  if Key = VK_UP then ActiveControl   := asiento;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then begin
+    if not planctas.Buscar(codcta.Text) then ActiveControl := codrap else Begin
+      CargarCuenta;
+      ActiveControl := DH;
+    end;
+    if Key = VK_RIGHT then ActiveControl := codrap;
+  end;
+end;
+
+procedure TfmLibroDiario.ImporteKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := dh;
+  if (Key = VK_RETURN) or (Key = VK_DOWN)  then begin
+    importe.Text := utiles.FormatearNumero(importe.Text);
+    if StrToFloat(importe.Text) <> 0 then ActiveControl := Concepto;
+    if (StrToFloat(importe.Text) = 0) and (asmodelo) then ActiveControl := Concepto;
+  end;
+end;
+
+procedure TfmLibroDiario.observacionesKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := Importe;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(observaciones.Text)) > 0 then Begin
+      btnRegistrar.Enabled := True;
+      btnCancelar.Enabled  := True;
+      Baja.Enabled := True;
+      ActiveControl := btnRegistrar;
+    end;
+end;
+
+procedure TfmLibroDiario.acKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  ActiveControl := codcta;
+end;
+
+procedure TfmLibroDiario.DHKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := codcta;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.sionoct(string( DH.Text), '12', 'Tipo Movimiento: 1- DEBE / 2- HABER') then
+      if importe.Enabled then begin
+        ActiveControl := Importe;
+        StatusBar1.Panels[0].Text := '';
+      end
+    else
+      ActiveControl := concepto;
+end;
+
+procedure TfmLibroDiario.conceptoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := importe;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then begin
+    // Llenamos la Grilla
+    if (planctas.Buscar(codcta.Text)) and ( (dh.Text = '1') or (dh.Text = '2') ) and (StrToFloat(importe.Text) <> 0) then begin
+      if not Editar then inc(nromovi);
+      if not Editar then indice := nromovi else indice := asiento.row;
+      asiento.Cells[2, indice] := ''; asiento.Cells[3, indice] := ''; // Ponemos en blanco los Indices
+      asiento.Cells[0, indice] := codcta.Text;
+      if dh.Text = '1' then asiento.Cells[1, indice] := cuenta.Caption else asiento.Cells[1, indice] := '   ' + Cuenta.Caption;
+      if dh.Text = '1' then asiento.Cells[2, indice] := FormatFloat('######0.00', StrToFloat(importe.Text)) else asiento.Cells[3, indice] := FormatFloat('######0.00', StrToFloat(importe.Text));
+      asiento.Cells[4, indice] := concepto.Text;
+      ControlarBalanceo;
+      asiento.row   := indice;
+      Editar        := False;
+      importe.Enabled := True;
+
+      //Inicializamos los datos
+      codcta.Text := ''; codrap.Text := ''; DH.Text := ''; importe.Text := utiles.FormatearNumero('0');
+      StatusBar1.Panels[0].Text := 'ESC Finalizar Asiento';
+      if not asmodelo then ActiveControl := codcta else Begin
+        if Length(Trim(asiento.Cells[0, asiento.Row + 1])) > 0 then asiento.Row := asiento.Row + 1 else Begin
+          asiento.Row := asiento.Row + 1;
+          asiento.Row := asiento.Row - 1;
+        end;
+        ActiveControl := asiento;
+        asiento.Refresh;
+      End
+    end else begin
+      utiles.msgError('Verifique, algunos Datos son Incorrectos o están Incompletos ...!');
+      codcta.SetFocus; 
+    end;
+  end;
+end;
+
+procedure TfmLibroDiario.renumerarClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmRenumerarAsientos, fmRenumerarAsientos);
+  fmRenumerarAsientos.ShowModal;
+  fmRenumerarAsientos.Free;
+  ldiario.conectar;
+  nroasiento.Text := ldiario.cabasien.FieldByName('nroasien').AsString;
+  CargarDatos;
+end;
+
+procedure TfmLibroDiario.asientoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_DELETE then
+    if utiles.msgSiNo('Seguro para Borrar Cuenta ' + asiento.Cells[1, asiento.Row] + ' ?') then Begin
+      grid.BorrarRenglon_SinRenumerar(asiento);
+      ControlarBalanceo;
+    end;
+  if Key = VK_RETURN then begin
+    Editar := True;
+    if asiento.cells[0, asiento.row] <> 'Nueva Linea' then  CargarDatosGrilla;
+    if GroupBox2.Enabled then
+      if not asmodelo then ActiveControl := codcta else ActiveControl := importe;
+  end;
+  if Key = VK_INSERT then grid.InsertarLineasSinRenumerar(asiento);
+  if Key = VK_ESCAPE then
+    if not asmodelo then ActiveControl := nroasiento else finalizarClick(Self);
+end;
+
+procedure TfmLibroDiario.asientoSelectCell(Sender: TObject; Col,
+  Row: Integer; var CanSelect: Boolean);
+begin
+  xfil := row;
+end;
+
+procedure TfmLibroDiario.asientoModeloClick(Sender: TObject);
+var
+  m, j: integer; copiar: boolean;
+begin
+  Application.CreateForm(TfmCargaAsientoModelo, fmCargaAsientoModelo);
+  fmCargaAsientoModelo.ShowModal;
+  if fmCargaAsientoModelo.seleccionOK then Begin
+    // Transferimos los movimientos al Formulario Actual
+    grid.IniciarGrilla(asiento);
+    copiar := False; j := 0; copiar := True;
+    For m := 1 to fmCargaAsientoModelo.cantmovim do begin
+      if copiar then begin
+        Inc(j);
+        asiento.cells[0, j] := fmCargaAsientoModelo.asiento.cells[0, m];
+        asiento.cells[1, j] := fmCargaAsientoModelo.asiento.cells[1, m];
+        asiento.cells[2, j] := fmCargaAsientoModelo.asiento.cells[2, m];
+        asiento.cells[3, j] := fmCargaAsientoModelo.asiento.cells[3, m];
+        asiento.cells[4, j] := fmCargaAsientoModelo.asiento.cells[4, m];
+      end;
+    end;
+    if copiar then begin
+      nromovi       := j;
+      asiento.row   := j;
+      ControlarBalanceo;
+    end;
+    ldiario.conectar;   // Por si se interrumpe la conexión
+    if nromovi > 0 then Begin
+      GroupBox2.Enabled := True;
+      asiento.Row       := 1;
+      ActiveControl     := asiento;
+      asmodelo          := True;
+    end else
+      asiento.Row := 1;
+  end;
+  asiento.Refresh;
+  fmCargaAsientoModelo.Release;  fmCargaAsientoModelo := Nil;
+end;
+
+procedure TfmLibroDiario.DefasientosModelosClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmAsientosModelos, fmAsientosModelos);
+  fmAsientosModelos.ShowModal;
+  ldiario.conectar;
+end;
+
+procedure TfmLibroDiario.asientoDblClick(Sender: TObject);
+begin
+  if GroupBox2.Enabled then Begin
+    Editar := True;
+    if asiento.cells[0, asiento.row] <> 'Nueva Linea' then  CargarDatosGrilla;
+    StatusBar1.Panels[0].Text := 'F1 Ayuda - Flecha Arriba Mod. Datos';
+    if not asmodelo then ActiveControl := codcta else ActiveControl := importe;
+  end;
+end;
+
+procedure TfmLibroDiario.btnRegistrarClick(Sender: TObject);
+begin
+  btnRegistrar.Enabled  := False;
+  GrabarAsiento;
+end;
+
+procedure TfmLibroDiario.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  configform.Guardar(fmLibroDiario, redim);
+  grid.GuardarAnchoColumnas(fmLibroDiario, asiento);
+  ldiario.desconectar;
+  Release; fmLibroDiario := nil;
+end;
+
+procedure TfmLibroDiario.SalirClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfmLibroDiario.AltaClick(Sender: TObject);
+begin
+  observaciones.Enabled := False;
+  GroupBox2.Enabled     := False;
+  finalizar.Enabled     := False;
+  nroasiento.Text       := utiles.sLlenarIzquierda(ldiario.NuevoAsiento(StatusBar1.Panels[1].Text), 6, '0');
+  cotizacion.Text       := utiles.FormatearNumero(cotizacion.Text, '##0.0000');
+  importe.Text          := utiles.FormatearNumero(importe.Text);
+  dif.Caption           := utiles.FormatearNumero('0');
+  tdebe.Caption         := dif.Caption;
+  thaber.Caption        := dif.Caption;
+  finalizar.Enabled     := False;
+  grid.IniciarGrilla(asiento);
+  autorizargrabacion    := True;
+  codcta.Text           := ''; cuenta.Caption := ''; dh.Text := ''; importe.Text := ''; concepto.Text := '';
+  CargarDatos;
+  fecha.Text            := utiles.setFechaActual;
+  asmodelo              := False;
+  ActiveControl         := fecha;
+end;
+
+procedure TfmLibroDiario.ModificarClick(Sender: TObject);
+begin
+  ActiveControl := nroasiento;
+end;
+
+procedure TfmLibroDiario.DBNavigatorClick(Sender: TObject;
+  Button: TNavigateBtn);
+begin
+  nroasiento.Text := ldiario.cabasien.FieldByName('nroasien').AsString;
+  CargarDatos;
+end;
+
+procedure TfmLibroDiario.codrapKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := codcta;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then begin
+    if Length(Trim(codrap.Text)) > 0 then
+      if planctas.BuscarCodigoRapido(codrap.Text) then codcta.Text := planctas.planctas.FieldByName('codcta').AsString;
+    if not planctas.Buscar(codcta.Text) then SelCuenta(Sender) else Begin
+      CargarCuenta;
+      if not Editar then DH.Text := '';
+      ActiveControl := DH;
+      end;
+    end;
+end;
+
+procedure TfmLibroDiario.ComboBox1Change(Sender: TObject);
+begin
+  if ComboBox1.ItemIndex = 0 then asientoModeloClick(Self);
+  if ComboBox1.ItemIndex = 1 then DefasientosModelosClick(Self);
+  if ComboBox1.ItemIndex = 2 then GenerarAsientosAutomticos1Click(Self);
+end;
+
+procedure TfmLibroDiario.finalizarClick(Sender: TObject);
+begin
+  {Verificamos que coincidan Debe y Haber}
+  ControlarBalanceo;
+  {Si las sumas son 0 no hay movimientos, regreso al Nro. de asiento}
+  if totaldebe + totalhaber = 0 then ActiveControl := Nroasiento else Begin
+    if utiles.msgSiNo('Seguro para Finalizar Asiento Contable ?') then begin
+      if StrToFloat(dif.Caption) = 0 then begin
+        observaciones.Enabled := True;
+        ActiveControl         := observaciones;
+        StatusBar1.Panels[0].Text := '';
+      end else
+        utiles.msgError('El Total del Debe debe ser igual al del Haber ...!');
+    end;
+  end;
+end;
+
+procedure TfmLibroDiario.FormShow(Sender: TObject);
+begin
+ if not configform.Setear(fmLibroDiario) then Begin
+   Width := 586; Height := 390;
+ end;
+ asiento.cells[0, 0] := 'Cód. Cuenta'; asiento.cells[1, 0] := 'Cuenta'; asiento.cells[2, 0] := 'Debe'; asiento.cells[3, 0] := 'Haber'; asiento.cells[4, 0] := 'Concepto Renglón';
+ grid.RecuperarAnchoColumnas(fmLibroDiario, asiento);
+ ldiario.conectar;
+ planctas.FiltrarCtasImputables;
+ redim := False;
+ if per.VerificarPeriodoActivo then Begin
+   DTS.DataSet := ldiario.cabasien;
+   nroasiento.Text := utiles.sLlenarIzquierda(ldiario.NuevoAsiento(StatusBar1.Panels[1].Text), 6, '0');
+   StatusBar1.Panels[1].Text := per.Periodo;
+   ldiario.Filtrar(StatusBar1.Panels[1].Text);
+   AltaClick(Self);
+ end else Begin
+   utiles.msgError('No hay Ejercicio Económico Definido o Activo ...!');
+   Panel7.Enabled := False;
+   Panel2.Enabled := False;
+   //Close;
+ end;
+ Caption := 'Asientos Contables - Ejercicio (' + per.dfecha + ' - ' + per.hfecha + ')';
+end;
+
+procedure TfmLibroDiario.cotizacionKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then fecha.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    cotizacion.Text := utiles.FormatearNumero(cotizacion.Text, '##0.0000');
+    GroupBox2.Enabled := True;
+    codcta.SetFocus;
+  end;
+end;
+
+procedure TfmLibroDiario.Panel2Resize(Sender: TObject);
+begin
+  redim := True;
+end;
+
+procedure TfmLibroDiario.FormResize(Sender: TObject);
+begin
+  StatusBar1.Panels[0].Width := Width - 150;
+end;
+
+procedure TfmLibroDiario.GenerarAsientosAutomticos1Click(Sender: TObject);
+var
+  l: TObjectList;
+  objeto: TTPlanctas;
+  i, j: Integer;
+  cod, nas: String;
+begin
+  Application.CreateForm(TfmAsientosAutomaticos, fmAsientosAutomaticos);
+  fmAsientosAutomaticos.ShowModal;
+
+  // Asiento de Refundición de Cuentas de Resultado
+  if (fmAsientosAutomaticos.RadioButton1.Checked) and (fmAsientosAutomaticos.proceder) then Begin
+    AltaClick(Self);
+
+    planctas.getDatos;   // Código de AREA entre otros
+
+    fecha.Text := per.hfecha;
+
+    l := planctas.setCuentasIngresosEgresos;
+    j := 0;
+    For i := 1 to l.Count do Begin
+      objeto := TTPlanctas(l.Items[i-1]);
+      if (objeto.totaldebe - objeto.totalhaber < 0) and (objeto.imputable = 'S') and (planctas.codarea <> objeto.codcta) then Begin
+        Inc(j);
+        asiento.Cells[0, j] := objeto.codcta;
+        asiento.Cells[1, j] := objeto.cuenta;
+        asiento.Cells[2, j] := utiles.FormatearNumero(FloatToStr( (objeto.totaldebe - objeto.totalhaber) * (-1) ));
+        asiento.Cells[4, j] := 'Refundición Cuentas de Resultado Ej. ' + per.periodo;
+      end;
+    end;
+    For i := 1 to l.Count do Begin
+      objeto := TTPlanctas(l.Items[i-1]);
+      if (objeto.totaldebe - objeto.totalhaber > 0) and (objeto.imputable = 'S') and (planctas.codarea <> objeto.codcta) then Begin
+        Inc(j);
+        asiento.Cells[0, j] := objeto.codcta;
+        asiento.Cells[1, j] := '  ' + objeto.cuenta;
+        asiento.Cells[3, j] := utiles.FormatearNumero(FloatToStr(objeto.totaldebe - objeto.totalhaber));
+        asiento.Cells[4, j] := 'Refundición Cuentas de Resultado Ej. ' + per.periodo;
+      end;
+    end;
+
+    if j > 0 then asiento.Row := j;
+
+    l.Free; l := Nil;
+
+    ControlarBalanceo;
+
+    // Anexamos la Cuenta de balanceo
+    cod := planctas.codref;
+    if Length(Trim(cod)) = 0 then utiles.msgError('El Código de Refundición de Cuentas No está Definido, Operación Cancelada ...!') else Begin
+      Inc(j);
+      asiento.Cells[0, j] := cod;
+      planctas.getDatos(cod);
+      if StrToFloat(dif.Caption) >= 0 then Begin
+        asiento.Cells[1, j] := planctas.cuenta;
+        asiento.Cells[3, j] := dif.Caption;
+      end else Begin
+        asiento.Cells[1, j] := '  ' + planctas.cuenta;
+        asiento.Cells[2, j] := utiles.FormatearNumero(FloatToStr ( StrToFloat(dif.Caption) * (-1) ));
+      end;
+      asiento.Cells[4, j] := 'Ref. Ctas. Resultado Ej. ' + per.periodo;
+      asiento.Row := j;
+
+      observaciones.Text := 'Asiento Ref. Ctas. de Resultado';
+
+      ControlarBalanceo;
+
+      if (StrToFloat(dif.Caption) = 0) and (Length(Trim(asiento.Cells[0, 1])) > 0) then Begin
+        if utiles.msgSiNo('Seguro para Registrar Asiento Refundición Cuentas de Resultado ?') then Begin
+          Refresh;
+          StatusBar1.Panels[0].Text := ' Registrando ...!'; StatusBar1.Refresh;
+          nas := nroasiento.Text;
+          btnRegistrarClick(Self);
+          ldiario.MarcarAsientoAutomatico(per.periodo, nas, 'A');
+          //StatusBar1.Panels[0].Text := ' Renumerando ...!'; StatusBar1.Refresh;
+          //ldiario.Renumerar;
+          StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+        end;
+      end;
+
+    end;
+  end;
+
+  // Asiento de Refundición de Cuentas Patrimoniales
+  if (fmAsientosAutomaticos.RadioButton2.Checked) and (fmAsientosAutomaticos.proceder) then Begin
+    AltaClick(Self);
+
+    fecha.Text := per.hfecha;
+
+    l := planctas.setCuentasActivoPasivoPatrimonio;
+    j := 0;
+    For i := 1 to l.Count do Begin
+      objeto := TTPlanctas(l.Items[i-1]);
+      if (objeto.totaldebe - objeto.totalhaber < 0) and (objeto.imputable = 'S') then Begin
+        Inc(j);
+        asiento.Cells[0, j] := objeto.codcta;
+        asiento.Cells[1, j] := objeto.cuenta;
+        asiento.Cells[2, j] := utiles.FormatearNumero(FloatToStr( (objeto.totaldebe - objeto.totalhaber) * (-1) ));
+        asiento.Cells[4, j] := 'Ref. Cuentas Patrimoniales Ej. ' + per.periodo;
+      end;
+    end;
+    For i := 1 to l.Count do Begin
+      objeto := TTPlanctas(l.Items[i-1]);
+      if (objeto.totaldebe - objeto.totalhaber > 0) and (objeto.imputable = 'S') then Begin
+        Inc(j);
+        asiento.Cells[0, j] := objeto.codcta;
+        asiento.Cells[1, j] := '  ' + objeto.cuenta;
+        asiento.Cells[3, j] := utiles.FormatearNumero(FloatToStr(objeto.totaldebe - objeto.totalhaber));
+        asiento.Cells[4, j] := 'Ref. Cuentas Patrimoniales Ej. ' + per.periodo;
+      end;
+    end;
+
+    if j > 0 then asiento.Row := j;
+
+    l.Free; l := Nil;
+
+    ControlarBalanceo;
+
+    // Anexamos la Cuenta de balanceo
+    cod := planctas.codref;
+    if Length(Trim(cod)) = 0 then utiles.msgError('El Código de Refundición de Cuentas No está Definido, Operación Cancelada ...!') else Begin
+      Inc(j);
+      asiento.Cells[0, j] := cod;
+      planctas.getDatos(cod);
+      if StrToFloat(dif.Caption) >= 0 then Begin
+        asiento.Cells[1, j] := planctas.cuenta;
+        asiento.Cells[3, j] := dif.Caption;
+      end else Begin
+        asiento.Cells[1, j] := '  ' + planctas.cuenta;
+        asiento.Cells[2, j] := utiles.FormatearNumero(FloatToStr ( StrToFloat(dif.Caption) * (-1) ));
+      end;
+      asiento.Cells[4, j] := 'Ref. Ctas. Patrimoniales Ej. ' + per.periodo;
+      asiento.Row := j;
+
+      observaciones.Text := 'Asiento Ref. Ctas. Patrimoniales';
+
+      ControlarBalanceo;
+
+      if (StrToFloat(dif.Caption) = 0) and (Length(Trim(asiento.Cells[0, 1])) > 0) then Begin
+        if utiles.msgSiNo('Seguro para Registrar Asiento Refundición Cuentas Patrimoniales ?') then Begin
+          Refresh;
+          StatusBar1.Panels[0].Text := ' Registrando ...!'; StatusBar1.Refresh;
+          nas := nroasiento.Text;
+          btnRegistrarClick(Self);
+          ldiario.MarcarAsientoAutomatico(per.periodo, nas, 'B');
+          //StatusBar1.Panels[0].Text := ' Renumerando ...!'; StatusBar1.Refresh;
+          //ldiario.Renumerar;
+          StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+        end;
+      end;
+
+    end;
+  end;
+
+  // Asiento de Refundición de Apertura
+  if (fmAsientosAutomaticos.RadioButton3.Checked) and (fmAsientosAutomaticos.proceder) then Begin
+    AltaClick(Self);
+
+    fecha.Text := per.dfecha;
+
+    l := planctas.setCuentasActivoPasivoPatrimonio;
+    j := 0;
+    For i := 1 to l.Count do Begin
+      objeto := TTPlanctas(l.Items[i-1]);
+      if (objeto.totaldebe - objeto.totalhaber >= 0) and (objeto.imputable = 'S') then Begin
+        Inc(j);
+        asiento.Cells[0, j] := objeto.codcta;
+        asiento.Cells[1, j] := '  ' + objeto.cuenta;
+        asiento.Cells[2, j] := utiles.FormatearNumero(FloatToStr(objeto.totaldebe - objeto.totalhaber));
+        asiento.Cells[4, j] := 'Asiento de Apertura Ej. ' + per.periodo;
+      end;
+    end;
+    For i := 1 to l.Count do Begin
+      objeto := TTPlanctas(l.Items[i-1]);
+      if (objeto.totaldebe - objeto.totalhaber < 0) and (objeto.imputable = 'S') then Begin
+        Inc(j);
+        asiento.Cells[0, j] := objeto.codcta;
+        asiento.Cells[1, j] := objeto.cuenta;
+        asiento.Cells[3, j] := utiles.FormatearNumero(FloatToStr( (objeto.totaldebe - objeto.totalhaber) * (-1) ));
+        asiento.Cells[4, j] := 'Asiento de Apertura Ej. ' + per.periodo;
+      end;
+    end;
+
+    if j > 0 then asiento.Row := j;
+
+    l.Free; l := Nil;
+
+    ControlarBalanceo;
+
+    // Anexamos la Cuenta de balanceo
+    cod := planctas.codref;
+    if Length(Trim(cod)) = 0 then utiles.msgError('El Código de la de Balanceo No está Definido, Operación Cancelada ...!') else Begin
+      Inc(j);
+      asiento.Cells[0, j] := cod;
+      planctas.getDatos(cod);
+      if StrToFloat(dif.Caption) >= 0 then Begin
+        asiento.Cells[1, j] := planctas.cuenta;
+        asiento.Cells[3, j] := dif.Caption;
+      end else Begin
+        asiento.Cells[1, j] := '  ' + planctas.cuenta;
+        asiento.Cells[2, j] := utiles.FormatearNumero(FloatToStr ( StrToFloat(dif.Caption) * (-1) ));
+      end;
+      asiento.Cells[4, j] := 'Asiento de Apertura Ej. ' + per.periodo;
+      asiento.Row := j;
+
+      observaciones.Text := 'Asiento de Apertura';
+
+      ControlarBalanceo;
+
+      if (StrToFloat(dif.Caption) = 0) and (Length(Trim(asiento.Cells[0, 1])) > 0) then Begin
+        if utiles.msgSiNo('Seguro para Registrar Asiento de Apertura ?') then Begin
+          Refresh;
+          StatusBar1.Panels[0].Text := ' Registrando ...!'; StatusBar1.Refresh;
+          nas := nroasiento.Text;
+          btnRegistrarClick(Self);
+          ldiario.MarcarAsientoAutomatico(per.periodo, nas, 'C');
+          //StatusBar1.Panels[0].Text := ' Renumerando ...!'; StatusBar1.Refresh;
+          //ldiario.Renumerar;
+          StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+        end;
+      end;
+
+    end;
+  end;
+
+  fmAsientosAutomaticos.Release; fmAsientosAutomaticos := Nil;
+
+  fecha.SetFocus;
+end;
+
+end.

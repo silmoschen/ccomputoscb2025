@@ -1,0 +1,344 @@
+unit NominaPacientes;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Db, Grids, DBGrids, Buttons, DBCtrls, ExtCtrls, ComCtrls, StdCtrls, Mask,
+  LMDCustomButton, LMDButton, Menus;
+
+type
+  TfmListPacientes = class(TForm)
+    StatusBar1: TStatusBar;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    DBNavigator: TDBNavigator;
+    DBGrid: TDBGrid;
+    DTS: TDataSource;
+    criterio: TComboBox;
+    Label1: TLabel;
+    expresion: TMaskEdit;
+    Label2: TLabel;
+    Panel3: TPanel;
+    Label3: TLabel;
+    desde: TMaskEdit;
+    hasta: TMaskEdit;
+    Label4: TLabel;
+    Label5: TLabel;
+    dispositivo: TComboBox;
+    Label6: TLabel;
+    Splitter1: TSplitter;
+    Panel4: TPanel;
+    emitir: TBitBtn;
+    cerrar: TBitBtn;
+    Panel5: TPanel;
+    codigo: TRadioButton;
+    alfabetico: TRadioButton;
+    Panel6: TPanel;
+    entorno: TRadioButton;
+    exclusion: TRadioButton;
+    Panel7: TPanel;
+    idprof: TLabel;
+    prof: TLabel;
+    CheckBox1: TCheckBox;
+    SpeedButton1: TSpeedButton;
+    SpeedButton2: TSpeedButton;
+    SpeedButton3: TSpeedButton;
+    SpeedButton4: TSpeedButton;
+    PopupMenu: TPopupMenu;
+    ExportarPacientes1: TMenuItem;
+    ImportarPacientes1: TMenuItem;
+    filtroprof: TBitBtn;
+    IE: TBitBtn;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure expresionChange(Sender: TObject);
+    procedure criterioClick(Sender: TObject);
+    procedure expresionKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure SpeedButton1Click(Sender: TObject);
+    procedure SpeedButton3Click(Sender: TObject);
+    procedure SpeedButton2Click(Sender: TObject);
+    procedure DBGridKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure criterioChange(Sender: TObject);
+    procedure SpeedButton4Click(Sender: TObject);
+    procedure cerrarClick(Sender: TObject);
+    procedure codigoClick(Sender: TObject);
+    procedure alfabeticoClick(Sender: TObject);
+    procedure codigoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure desdeKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure hastaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure dispositivoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure emitirClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure desdeClick(Sender: TObject);
+    procedure hastaClick(Sender: TObject);
+    procedure filtroProfClick(Sender: TObject);
+    procedure CheckBox1Click(Sender: TObject);
+    procedure Panel2Resize(Sender: TObject);
+  private
+    { Private declarations }
+    ordenact: string; control: byte;
+  public
+    { Public declarations }
+    introSalir, seleccionOK, redim: boolean;
+    iva_obrasocial: Real;
+  end;
+
+var
+  fmListPacientes: TfmListPacientes;
+
+implementation
+
+uses CPacienteCCB, CProfesionalCCB, CUtiles, FichaPaciente,
+     NominaDeProfesionales, CConfigForms;
+
+{$R *.DFM}
+
+procedure TfmListPacientes.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  configform.Guardar(fmListPacientes, redim);
+  if not introSalir then Begin
+    profesional.desconectar;
+    paciente.desconectar;
+    Release; fmListPacientes := nil;
+  end;
+end;
+
+procedure TfmListPacientes.expresionChange(Sender: TObject);
+begin
+  if criterio.Text = 'Nombre' then paciente.BuscarPorNombre(expresion.Text);
+  if criterio.Text = 'Código' then paciente.BuscarPorCodigo(idprof.Caption, expresion.Text);
+  if criterio.Text = 'Nro.Doc.' then paciente.BuscarPorNroDoc(expresion.Text);
+end;
+
+procedure TfmListPacientes.criterioClick(Sender: TObject);
+begin
+  ActiveControl := expresion;
+end;
+
+procedure TfmListPacientes.expresionKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if Key = VK_INSERT then SpeedButton1Click(Sender);
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then ActiveControl := DBGrid;
+end;
+
+procedure TfmListPacientes.SpeedButton1Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmFichaPacientes, fmFichaPacientes);
+  fmFichaPacientes.NoCerrarFinal  := True;
+  fmFichaPacientes.idprof.Caption := idprof.Caption;
+  fmFichaPacientes.codpac.Text    := utiles.sLlenarIzquierda(paciente.Nuevo, 4, '0');
+  fmFichaPacientes.nombre.Text    := expresion.Text;
+  fmFichaPacientes.ivaret         := iva_obrasocial;
+  fmFichaPacientes.ShowModal;
+  fmFichaPacientes.Release; fmFichaPacientes := nil;
+  ActiveControl := DBGrid;
+end;
+
+procedure TfmListPacientes.SpeedButton3Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmFichaPacientes, fmFichaPacientes);
+  fmFichaPacientes.idprof.Caption := paciente.tpaciente.FieldByName('idprof').AsString;
+  fmFichaPacientes.codpac.Text    := paciente.tpaciente.FieldByName('codpac').AsString;
+  fmFichaPacientes.BajaC(Sender);
+  fmFichaPacientes.Release; fmFichaPacientes := nil;
+  expresionChange(Sender);
+end;
+
+procedure TfmListPacientes.SpeedButton2Click(Sender: TObject);
+begin
+  if paciente.Buscar(paciente.tpaciente.FieldByName('idprof').AsString, paciente.tpaciente.FieldByName('codpac').AsString) then Begin
+    Application.CreateForm(TfmFichaPacientes, fmFichaPacientes);
+    fmFichaPacientes.idprof.Caption := paciente.tpaciente.FieldByName('idprof').AsString;
+    fmFichaPacientes.NoCerrarFinal  := True;
+    fmFichaPacientes.codpac.Text    := paciente.tpaciente.FieldByName('codpac').AsString;
+    fmFichaPacientes.ivaret         := iva_obrasocial;
+    fmFichaPacientes.ShowModal;
+    fmFichaPacientes.Release; fmFichaPacientes := nil;
+  end;
+  DBGrid.SetFocus;
+end;
+
+procedure TfmListPacientes.DBGridKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_INSERT then SpeedButton1Click(Sender);
+  if Key = VK_DELETE then SpeedButton3Click(Sender);
+  if Key = VK_RETURN then
+   if introSalir then Begin
+     if (Length(Trim(paciente.tpaciente.FieldByName('gravadoiva').AsString)) = 0) and (iva_obrasocial > 0) then SpeedButton2Click(Sender) else Begin
+       seleccionOk := True;
+       Close;
+     end;
+   end else
+     if Not Panel3.Visible then SpeedButton2Click(Sender) else Begin
+        if control = 0 then Begin    // El control es del id
+          if codigo.Checked then desde.Text := paciente.tpaciente.FieldByName('codpac').AsString else desde.Text := paciente.tpaciente.FieldByName('nombre').AsString;
+          ActiveControl := hasta;
+        end;
+        if control = 1 then Begin    // El control es de la descripción
+          if codigo.Checked then hasta.Text := paciente.tpaciente.FieldByName('codpac').AsString else hasta.Text := paciente.tpaciente.FieldByName('nombre').AsString;
+          ActiveControl := dispositivo;
+        end;
+     end;
+  if Key = VK_ESCAPE then Close;
+end;
+
+procedure TfmListPacientes.criterioChange(Sender: TObject);
+begin
+  expresionChange(Sender);
+end;
+
+procedure TfmListPacientes.SpeedButton4Click(Sender: TObject);
+begin
+  ordenact := criterio.Text;
+  if Not Panel3.Visible then Begin
+    Panel3.Visible  := True;
+    codigo.Checked  := True; entorno.Checked := True;
+    desde.Text := ''; hasta.Text := ''; expresion.Text := '';
+    criterio.Text   := 'Código';
+    expresionChange(Sender);
+    ActiveControl   := desde;
+  end else
+    Panel3.Visible := False;
+end;
+
+procedure TfmListPacientes.cerrarClick(Sender: TObject);
+begin
+  Panel3.Visible := False;
+  criterio.Text  := ordenact;
+  expresionChange(Sender);
+  ActiveControl  := expresion;
+end;
+
+procedure TfmListPacientes.codigoClick(Sender: TObject);
+begin
+  criterio.Text := 'Código';
+  expresionChange(Sender);
+  desde.Text := ''; hasta.Text := ''; dispositivo.Text := 'Presentación Preliminar';
+end;
+
+procedure TfmListPacientes.alfabeticoClick(Sender: TObject);
+begin
+  Criterio.Text := 'Descripción';
+  expresionChange(Sender);
+  desde.Text := ''; hasta.Text := ''; dispositivo.Text := 'Presentación Preliminar';
+end;
+
+procedure TfmListPacientes.codigoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then ActiveControl := desde;
+end;
+
+procedure TfmListPacientes.desdeKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then
+    if codigo.Checked then ActiveControl := codigo else ActiveControl := alfabetico;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if Length(Trim(expresion.Text)) = 0 then ActiveControl := expresion else ActiveControl := hasta;
+    control := 0;
+  end;
+end;
+
+procedure TfmListPacientes.hastaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := desde;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if Length(Trim(expresion.Text)) = 0 then ActiveControl := expresion else ActiveControl := dispositivo;
+    control := 1;
+  end;
+end;
+
+procedure TfmListPacientes.dispositivoKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then ActiveControl := emitir;
+end;
+
+procedure TfmListPacientes.emitirClick(Sender: TObject);
+var
+  salida, ordensalida, entornosal: char;
+begin
+  if (Length(Trim(desde.Text)) = 0) or (Length(Trim(hasta.Text)) = 0) then utiles.msgError('No se han definido suficientes parámetros ...!') else Begin
+    //DTS.DataSet := nil;
+    salida := 'P'; ordensalida := 'C'; entornosal := 'E';
+    if dispositivo.Text = 'Impresora' then salida := 'I';
+    if alfabetico.Checked then ordensalida := 'A';
+    if exclusion.Checked then entornosal := 'X';
+    paciente.Listar(ordensalida, desde.Text, hasta.Text, entornosal, salida);
+    DTS.DataSet   := paciente.tpaciente;
+  end;
+  ActiveControl := cerrar;
+end;
+
+procedure TfmListPacientes.FormShow(Sender: TObject);
+begin
+  if not configform.Setear(fmListPacientes) then Begin
+    Height := 382; Width := 571; Top := 25; Left:=(Screen.Width - Width) div 2;
+  end;
+  if not introSalir then Begin
+    profesional.conectar;
+    paciente.conectar;
+  end;
+  if Length(Trim(idprof.Caption)) = 0 then idprof.Caption := profesional.tperso.FieldByName('idprof').AsString;
+  profesional.getDatos(idprof.Caption);
+  CheckBox1Click(Self);
+  prof.Caption := profesional.nombre;
+  DTS.DataSet := paciente.tpaciente;
+  expresionChange(Sender);
+  redim := False;
+end;
+
+procedure TfmListPacientes.desdeClick(Sender: TObject);
+begin
+  control := 0;
+end;
+
+procedure TfmListPacientes.hastaClick(Sender: TObject);
+begin
+  control := 1;
+end;
+
+procedure TfmListPacientes.filtroProfClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmListProfesionales, fmListProfesionales);
+  fmListProfesionales.introSalir := True;
+  fmListProfesionales.dimension  := False;
+  fmListProfesionales.Height := 340; fmListProfesionales.Width := 580;
+  fmListProfesionales.ShowModal;
+  idprof.Caption := profesional.tperso.FieldByName('idprof').AsString;
+  profesional.getDatos(idprof.Caption);
+  prof.Caption := profesional.nombre;
+  paciente.Filtrar(idprof.Caption);
+  fmListProfesionales.Release; fmListProfesionales := nil;
+  ActiveControl := DBGrid;
+end;
+
+procedure TfmListPacientes.CheckBox1Click(Sender: TObject);
+begin
+  if CheckBox1.Checked then Begin
+    paciente.DesactivarFiltro;
+    SpeedButton1.Enabled := False; SpeedButton2.Enabled := False; SpeedButton3.Enabled := False;
+  end else Begin
+    paciente.Filtrar(idprof.Caption);
+    SpeedButton1.Enabled := True; SpeedButton2.Enabled := True; SpeedButton3.Enabled := True;
+  end;
+end;
+
+procedure TfmListPacientes.Panel2Resize(Sender: TObject);
+begin
+  redim := True;
+end;
+
+end.

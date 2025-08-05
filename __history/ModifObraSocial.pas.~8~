@@ -1,0 +1,190 @@
+unit ModifObraSocial;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Buttons, Mask, ExtCtrls, Grids, Menus;
+
+type
+  TfmModificarObraSocial = class(TForm)
+    Panel22: TPanel;
+    ScrollBox5: TScrollBox;
+    Panel1: TPanel;
+    A: TStringGrid;
+    S: TStringGrid;
+    Panel2: TPanel;
+    Label1: TLabel;
+    cod: TLabel;
+    Label4: TLabel;
+    os: TLabel;
+    Label2: TLabel;
+    obsoc: TLabel;
+    Label3: TLabel;
+    periodo: TLabel;
+    idprof: TLabel;
+    codos: TMaskEdit;
+    BuscarOS: TBitBtn;
+    Panel3: TPanel;
+    OK: TBitBtn;
+    Cancelar: TBitBtn;
+    PopupMenu: TPopupMenu;
+    SiNoSeleccin1: TMenuItem;
+    procedure BuscarOSClick(Sender: TObject);
+    procedure codosKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure OKClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure AKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure CancelarClick(Sender: TObject);
+    procedure SiNoSeleccin1Click(Sender: TObject);
+  private
+    { Private declarations }
+    procedure DatosObraSocial;
+  public
+    { Public declarations }
+    seleccionOK: Boolean;
+  end;
+
+var
+  fmModificarObraSocial: TfmModificarObraSocial;
+
+implementation
+
+uses CFacturacionCCB, NominaObrasSociales, CObrasSocialesCCB, CUtiles;
+
+{$R *.dfm}
+
+procedure TfmModificarObraSocial.DatosObraSocial;
+begin
+  obsocial.getDatos(codos.Text);
+  os.Caption    := obsocial.Nombre;
+  if codos.Text <> cod.Caption then Begin
+    A.Enabled     := True;
+    ActiveControl := A;
+  end else Begin
+    utiles.msgError('No Pueden Efectuarse Cambios sobre la misma Obra Social ...!');
+    A.Enabled     := False;
+  end;
+end;
+
+procedure TfmModificarObraSocial.BuscarOSClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmListObrasSociales, fmListObrasSociales);
+  fmListObrasSociales.introSalir := True;
+  fmListObrasSociales.ShowModal;
+  fmListObrasSociales.Release; fmListObrasSociales := nil;
+  codos.Text := obsocial.tabla.FieldByName('codos').AsString;
+  if Length(Trim(codos.Text)) > 0 then DatosObraSocial else ActiveControl := codos;
+end;
+
+procedure TfmModificarObraSocial.codosKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if Length(Trim(codos.Text)) > 0 then codos.Text := utiles.sLlenarIzquierda(codos.Text, 4, '0');
+    if not obsocial.Buscar(codos.Text) then BuscarOSClick(Sender) else Begin
+      DatosObraSocial;
+      A.Enabled     := True;
+      ActiveControl := A;
+    end;
+  end;
+end;
+
+procedure TfmModificarObraSocial.OKClick(Sender: TObject);
+var
+  i, nuevoIt: Integer; codosanter, idanter, ordenInt: String;
+begin
+  // Modificamos información en Grilla
+  nuevoIt := 0; OrdenInt := ''; idanter := S.Cells[1, 1];
+  For i := 1 to A.RowCount do Begin
+   if Length(Trim(A.Cells[0, i])) = 0 then Break;
+   if A.Cells[7, i] <> cod.Caption then Begin
+     if Length(Trim(OrdenInt)) = 0 then OrdenInt := facturacion.NuevaOrdenInterna(periodo.Caption, idprof.Caption, A.Cells[7, i]);
+     if A.Cells[7, i] <> codosanter then nuevoIt := facturacion.NuevoItems(periodo.Caption, idprof.Caption, A.Cells[7, i]);
+
+     if S.Cells[1, i] <> idanter then OrdenInt := IntToStr(StrToInt(OrdenInt) + 1);
+
+     A.Cells[0, i] := utiles.sLlenarIzquierda(IntToStr(nuevoIt), 3, '0');
+     A.Cells[4, i] := utiles.sLlenarIzquierda(OrdenInt, 4, '0');
+
+     codosanter := A.Cells[7, i];
+     idanter    := S.Cells[1, i];
+     Inc(nuevoIt);
+   end;
+  end;
+
+  For i := 1 to A.RowCount do Begin                       // Grabamos los cambios
+    if Length(Trim(A.Cells[0, i])) = 0 then Break;
+    if A.Cells[3, i] = 'S' then Begin
+      facturacion.BorrarOrden(periodo.Caption, S.Cells[1, i]);
+      facturacion.Grabar(periodo.Caption, idprof.Caption, A.Cells[7, i], A.cells[0, i], A.cells[6, i], A.cells[5, i], A.cells[1, i], A.cells[4, i], A.cells[9, i], A.cells[10, i], False, true);
+    end;
+  end;
+
+  if i > 0 then facturacion.GuardarOrdenInterna(periodo.Caption, idprof.Caption, utiles.sLlenarIzquierda(OrdenInt, 4, '0'));  // Si se efectuaron cambios
+
+  seleccionOK := True;
+  Close;
+end;
+
+procedure TfmModificarObraSocial.FormShow(Sender: TObject);
+begin
+  seleccionOK := False;
+  A.cells[0, 0] := 'Items'; A.cells[1, 0] := 'Código'; A.cells[2, 0] := 'Descripción del Análisis'; A.cells[3, 0] := 'S'; A.cells[4, 0] := 'Id. Int.'; A.cells[5, 0] := 'Nombre del Paciente'; A.cells[6, 0] := 'Cód.'; A.cells[7, 0] := 'Cód.OS.'; A.cells[8, 0] := 'Obra Social';
+  A.cells[9, 0] := 'Per.Orden';  A.cells[10, 0] := 'Ret.IVA';
+end;
+
+procedure TfmModificarObraSocial.AKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  i: Integer;
+begin
+  if Key = VK_SPACE then SiNoSeleccin1Click(Sender);
+
+  if Key = VK_RETURN then
+    For i := 1 to A.RowCount do Begin
+      ok.Enabled := False;
+      if Length(Trim(A.Cells[0, i])) = 0 then Break;
+      if A.Cells[3, i] = 'S' then Begin
+        ok.Enabled := True;
+        ActiveControl := OK;
+        Break;
+      end;
+    end;
+end;
+
+procedure TfmModificarObraSocial.CancelarClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfmModificarObraSocial.SiNoSeleccin1Click(Sender: TObject);
+var
+  j: String; i: Integer;
+begin
+  j := A.Cells[4, A.row];
+  For i := 1 to A.RowCount do Begin
+    if Length(Trim(A.Cells[0, i])) = 0 then Break;
+    if A.Cells[4, i] = j then
+      if A.Cells[3, i] = 'S' then Begin
+        A.Cells[3, i] := ' ';
+        A.Cells[7, i] := cod.Caption;
+        A.Cells[8, i] := obsoc.Caption;
+      end else Begin
+        ok.Enabled    := True;
+        A.Cells[3, i] := 'S';
+        A.Cells[7, i] := codos.Text;
+      end;
+  end;
+  ok.Enabled := False;
+  For i := 1 to A.RowCount do Begin
+    if Length(Trim(A.Cells[0, i])) = 0 then Break;
+    if A.Cells[3, i] = 'S' then Begin
+       ok.Enabled := True;
+       Break;
+    end;
+  end;
+end;
+
+end.

@@ -1,0 +1,164 @@
+object fmSeleccionOrdenes: TfmSeleccionOrdenes
+  Left = 0
+  Top = 0
+  Caption = 'Selecci'#243'n de Ordenes Auditadas a Facturar'
+  ClientHeight = 376
+  ClientWidth = 576
+  Color = clBtnFace
+  Font.Charset = ANSI_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  OnClose = FormClose
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 357
+    Width = 576
+    Height = 19
+    Panels = <
+      item
+        Width = 400
+      end
+      item
+        Width = 50
+      end>
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 576
+    Height = 62
+    Align = alTop
+    BevelInner = bvLowered
+    BorderWidth = 4
+    TabOrder = 1
+    object Label1: TLabel
+      Left = 30
+      Top = 33
+      Width = 34
+      Height = 13
+      Alignment = taRightJustify
+      Caption = 'Desde:'
+    end
+    object Label2: TLabel
+      Left = 143
+      Top = 33
+      Width = 64
+      Height = 13
+      Alignment = taRightJustify
+      Caption = 'Hasta Fecha:'
+    end
+    object Label3: TLabel
+      Left = 9
+      Top = 9
+      Width = 55
+      Height = 13
+      Alignment = taRightJustify
+      Caption = 'Profesional:'
+    end
+    object idprof: TLabel
+      Left = 70
+      Top = 9
+      Width = 36
+      Height = 13
+      Caption = '211065'
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clNavy
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+    end
+    object nprofesional: TLabel
+      Left = 118
+      Top = 9
+      Width = 36
+      Height = 13
+      Caption = '211065'
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clNavy
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+    end
+    object desde: TMaskEdit
+      Left = 68
+      Top = 30
+      Width = 60
+      Height = 21
+      EditMask = '99/99/99;1; '
+      MaxLength = 8
+      TabOrder = 0
+      Text = '  /  /  '
+      OnKeyDown = desdeKeyDown
+    end
+    object hasta: TMaskEdit
+      Left = 211
+      Top = 30
+      Width = 60
+      Height = 21
+      EditMask = '99/99/99;1; '
+      MaxLength = 8
+      TabOrder = 1
+      Text = '  /  /  '
+      OnKeyDown = hastaKeyDown
+    end
+    object btnFacturar: TButton
+      Left = 279
+      Top = 28
+      Width = 177
+      Height = 25
+      Caption = '&Facturar Ordenes Seleccionadas'
+      Enabled = False
+      TabOrder = 2
+    end
+  end
+  object Panel2: TPanel
+    Left = 0
+    Top = 62
+    Width = 576
+    Height = 295
+    Align = alClient
+    BevelInner = bvLowered
+    TabOrder = 2
+    OnResize = Panel2Resize
+    object S: TStringGrid
+      Left = 2
+      Top = 2
+      Width = 572
+      Height = 291
+      Align = alClient
+      BevelOuter = bvNone
+      BorderStyle = bsNone
+      ColCount = 7
+      Ctl3D = True
+      DefaultRowHeight = 15
+      Enabled = False
+      FixedCols = 0
+      RowCount = 2500
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSelect]
+      ParentCtl3D = False
+      ParentFont = False
+      TabOrder = 0
+      ColWidths = (
+        96
+        21
+        58
+        80
+        206
+        64
+        152)
+    end
+  end
+end

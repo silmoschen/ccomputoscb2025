@@ -1,0 +1,415 @@
+unit distribucionOrdenesFacturadas;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ComCtrls, StdCtrls, Mask, ExtCtrls, Grids;
+
+type
+  TfmDistribucionOrdenesFacturadas = class(TForm)
+    StatusBar1: TStatusBar;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    Panel3: TPanel;
+    btnProcesar: TButton;
+    btnCerrar: TButton;
+    Panel5: TPanel;
+    A: TStringGrid;
+    C: TStringGrid;
+    Panel7: TPanel;
+    Panel8: TPanel;
+    Label1: TLabel;
+    periodo: TMaskEdit;
+    Label2: TLabel;
+    listLaboratorios: TComboBox;
+    Label3: TLabel;
+    listLaboratoriosDist: TComboBox;
+    Label4: TLabel;
+    listLaboratorioDistID: TComboBox;
+    listLaboratoriosID: TComboBox;
+    GroupBox1: TGroupBox;
+    Button1: TButton;
+    Button2: TButton;
+    Panel4: TPanel;
+    Label5: TLabel;
+    total: TLabel;
+    Label6: TLabel;
+    tf: TLabel;
+    Label8: TLabel;
+    tp: TLabel;
+    Panel6: TPanel;
+    P: TStringGrid;
+    Label7: TLabel;
+    listOS: TComboBox;
+    listCodos: TComboBox;
+    btnRecargar: TButton;
+    procedure FormResize(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure btnCerrarClick(Sender: TObject);
+    procedure listLaboratoriosChange(Sender: TObject);
+    procedure btnRecargarClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+    procedure AKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure listLaboratoriosDistChange(Sender: TObject);
+    procedure btnProcesarClick(Sender: TObject);
+    procedure FormCanResize(Sender: TObject; var NewWidth, NewHeight: Integer;
+      var Resize: Boolean);
+    procedure listOSChange(Sender: TObject);
+    procedure Panel1Resize(Sender: TObject);
+  private
+    { Private declarations }
+    total1: real;
+    redim: boolean;
+    procedure loadLaboratorios;
+    procedure loadDeterminaciones;
+    procedure loadObrasSociales;
+    procedure totaldist;
+  public
+    { Public declarations }
+  end;
+
+var
+  fmDistribucionOrdenesFacturadas: TfmDistribucionOrdenesFacturadas;
+
+implementation
+
+uses CFacturacionCCB, CProfesionalCCB, CObrasSocialesCCB, CNomeclaCCB, CPacienteCCB,
+     CUtiles, CUtilidadesStringGrid, IBQuery, DBTables, CConfigForms, CNBU;
+
+{$R *.dfm}
+
+procedure TfmDistribucionOrdenesFacturadas.listLaboratoriosChange(
+  Sender: TObject);
+begin
+  listLaboratoriosID.ItemIndex := listLaboratorios.ItemIndex;
+  loadDeterminaciones;
+end;
+
+procedure TfmDistribucionOrdenesFacturadas.listLaboratoriosDistChange(
+  Sender: TObject);
+begin
+  listLaboratorioDistID.ItemIndex := listLaboratoriosDist.ItemIndex;
+end;
+
+procedure TfmDistribucionOrdenesFacturadas.listOSChange(Sender: TObject);
+begin
+  listcodos.ItemIndex := listos.ItemIndex;
+end;
+
+procedure TfmDistribucionOrdenesFacturadas.loadLaboratorios;
+var
+  r: TQuery;
+begin
+  r := profesional.setProfesionalesAlf;
+  r.open;
+  while not r.eof do begin
+    profesional.getDatos(r.FieldByName('idprof').asstring);
+    if (profesional.Factglobal = 'S') then begin
+      if (listLaboratorios.Text = '') then begin
+        listLaboratorios.Text := r.FieldByName('nombre').asstring;
+        listLaboratoriosID.Text := r.FieldByName('idprof').asstring;
+      end;
+      listLaboratorios.Items.Add(r.FieldByName('nombre').asstring);
+      listLaboratoriosID.Items.Add(r.FieldByName('idprof').asstring);
+    end else begin
+      if (listLaboratoriosDist.Text = '') then begin
+        listLaboratoriosDist.Text := r.FieldByName('nombre').asstring;
+        listLaboratorioDistID.Text := r.FieldByName('idprof').asstring;
+      end;
+      listLaboratoriosDist.Items.Add(r.FieldByName('nombre').asstring);
+      listLaboratorioDistID.Items.Add(r.FieldByName('idprof').asstring);
+    end;
+    r.Next;
+  end;
+  r.close; r.Free;
+end;
+
+procedure TfmDistribucionOrdenesFacturadas.loadObrasSociales;
+var
+  r: TQuery;
+begin
+  listos.Items.Clear;
+  listcodos.Items.clear;
+  listos.Items.Add('< Todas las Obras Sociales >');
+  listcodos.Items.Add('------');
+  listos.Text := '< Todas las Obras Sociales >';
+  listcodos.Text := '------';
+  r := obsocial.setobsocialsAlf;
+  r.open;
+  while not r.Eof do begin
+    listos.Items.Add(r.fieldbyname('nombre').asstring);
+    listcodos.Items.Add(r.fieldbyname('codos').asstring);
+    r.next;
+  end;
+  r.close; r.free;
+end;
+
+procedure TfmDistribucionOrdenesFacturadas.Panel1Resize(Sender: TObject);
+begin
+  redim := true;
+end;
+
+procedure TfmDistribucionOrdenesFacturadas.loadDeterminaciones;
+var
+  r: TIBQuery;
+  i, j, it, orden: integer;
+  monto, m9984: real;
+  codigo, per, cod, ctoma, ordenanter: string;
+begin
+  StatusBar1.Panels[0].Text := 'Recuperando Ordenes ...!'; StatusBar1.Refresh;
+  facturacion.DireccionarLaboratorio(periodo.Text, listLaboratoriosID.Text);
+  facturacion.FiltrarPeriodo(periodo.Text);
+  facturacion.getDatos;
+
+  grid.IniciarGrilla_Total(A);
+  grid.IniciarGrilla_Total(C);
+
+  r := facturacion.setItemsIBAll(periodo.Text, listLaboratoriosID.Text, listcodos.Text);
+  r.Open; i := 0; total1 := 0; it := 0;
+  while not r.eof do begin
+    if (r.fieldbyname('items').asstring = '001') or (r.fieldbyname('orden').asstring <> ordenanter) then begin
+      inc(i);
+      it := 0;  // renumeramos los items
+      A.Cells[0, i] := r.FieldByName('periodo').asstring;
+      A.Cells[2, i] := r.FieldByName('nombre').asstring;
+      A.Cells[3, i] := r.FieldByName('codos').asstring;
+      obsocial.getDatos(r.FieldByName('codos').asstring);
+      A.Cells[4, i] := obsocial.Nombre;
+      A.Cells[5, i] := r.FieldByName('idproffact').asstring;
+
+      C.cells[0, i] := r.FieldByName('codpac').asstring;
+      C.cells[1, i] := r.FieldByName('codanalisis').asstring;
+      C.cells[2, i] := r.FieldByName('codos').asstring;
+      C.cells[3, i] := r.FieldByName('orden').asstring;
+      C.Cells[4, i] := r.FieldByName('idproffact').asstring;
+      C.Cells[5, i] := utiles.sLlenarIzquierda(inttostr(it), 3, '0'); //r.FieldByName('items').asstring;
+      C.Cells[6, i] := r.FieldByName('nombre').asstring;
+      C.Cells[7, i] := r.FieldByName('ref1').asstring;
+      C.Cells[8, i] := r.FieldByName('retiva').asstring;
+    end;
+    inc(i);
+
+    ordenanter := r.fieldbyname('orden').asstring;
+    inc(it);
+
+    if (length(trim(r.FieldByName('ref1').AsString)) = 7) then per := r.FieldByName('ref1').AsString else per := periodo.Text;
+
+    if (length(trim(r.FieldByName('codanalisis').asstring)) = 4) then begin
+      nomeclatura.getDatos(r.FieldByName('codanalisis').asstring);
+      A.cells[2, i] := nomeclatura.descrip;
+      obsocial.SincronizarArancel(r.FieldByName('codos').asstring, per);
+      nomeclatura.getDatos(r.FieldByName('codanalisis').asstring);
+      monto := facturacion.setImporteAnalisis(r.FieldByName('codos').asstring, r.FieldByName('codanalisis').asstring, per);
+      if obsocial.porcentaje > 0 then m9984 := facturacion.setTot9984 * (obsocial.porcentaje * 0.01) else m9984 := facturacion.setTot9984;
+      total1 := total1 + m9984;
+    end;
+    if (length(trim(r.FieldByName('codanalisis').asstring)) = 6) then begin
+      nbu.getDatos(r.FieldByName('codanalisis').asstring);
+      A.cells[2, i] := nbu.descrip;
+      obsocial.SincronizarArancelNBU(r.FieldByName('codos').asstring, per);
+      monto := facturacion.setImporteAnalisis(r.FieldByName('codos').asstring, r.FieldByName('codanalisis').asstring, per);
+    end;
+    A.cells[1, i] := r.FieldByName('codanalisis').asstring;
+    A.cells[3, i] := utiles.FormatearNumero(floattostr(monto));
+
+    C.cells[0, i] := r.FieldByName('codpac').asstring;
+    C.cells[1, i] := r.FieldByName('codanalisis').asstring;
+    C.cells[2, i] := r.FieldByName('codos').asstring;
+    C.cells[3, i] := r.FieldByName('orden').asstring;
+    C.Cells[4, i] := r.FieldByName('idproffact').asstring;
+    C.Cells[5, i] := utiles.sLlenarIzquierda(inttostr(it), 3, '0'); //  r.FieldByName('items').asstring;
+    C.Cells[6, i] := r.FieldByName('nombre').asstring;
+    C.Cells[7, i] := r.FieldByName('ref1').asstring;
+    C.Cells[8, i] := r.FieldByName('retiva').asstring;
+
+    r.Next;
+  end;
+  r.close; r.Free;
+
+  // Reasignamos los números de orden
+  for i := 1 to listLaboratorioDistID.Items.Count do begin
+    it := 0;
+    for j := 1 to C.RowCount do begin
+      if (C.Cells[0, j] + C.Cells[1, j] = '') then break;
+      if (C.Cells[4, j] = listLaboratorioDistID.Items[i-1]) then begin
+        if (C.Cells[5, j] = '000') then inc(it);
+        C.Cells[9, j] := 'R' + utiles.sLlenarIzquierda(inttostr(it), 3, '0');
+      end;
+    end;
+  end;
+
+  totaldist;
+  StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+end;
+
+procedure TfmDistribucionOrdenesFacturadas.totaldist;
+var
+  i, j, k: integer;
+  t, t1, t2: real;
+begin
+  t := 0; t1 := 0; t2 := 0;
+  for i := 1 to A.RowCount do begin
+    if (length(trim(A.Cells[2, i])) = 0) then break;
+    if (length(trim(A.Cells[0, i])) = 0) then begin
+      t := t + strtofloat(A.Cells[3, i]);
+    end else begin
+      if (A.Cells[5, i] <> '') then t1 := t1 + 1 else t2 := t2 + 1;
+    end;
+  end;
+  total.Caption := utiles.FormatearNumero(floattostr(t + total1));
+  tf.Caption := floattostr(t1);
+  tp.Caption := floattostr(t2);
+
+  // Totales profesionales
+  grid.IniciarGrilla(P);
+  k := 0;
+  for j := 1 to listLaboratoriosDist.Items.Count do begin
+    t := 0;
+    for i := 1 to A.RowCount do begin
+      if (length(trim(A.Cells[2, i])) = 0) then break;
+      if (length(trim(A.Cells[0, i])) = 0) and (C.Cells[4, i] = listLaboratorioDistID.Items[j-1]) then t := t + strtofloat(A.Cells[3, i]);
+    end;
+    if (t > 0) then begin
+      inc(k);
+      P.Cells[0, k] := listLaboratorioDistID.Items[j-1];
+      P.Cells[1, k] := listLaboratoriosDist.Items[j-1];
+      P.Cells[2, k] := utiles.FormatearNumero(floattostr(t));
+    end;
+  end;
+end;
+
+procedure TfmDistribucionOrdenesFacturadas.AKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+var
+  i: integer;
+begin
+  if (Key = VK_SPACE) then
+    if (length(trim(A.Cells[0, A.Row])) > 0) then begin
+       A.Cells[5, A.Row] := listLaboratorioDistID.Text;
+       C.Cells[4, A.Row] := listLaboratorioDistID.Text;
+       facturacion.marcarOrdenesFactGlobal(periodo.Text, listLaboratoriosID.Text, C.cells[2, A.Row], C.cells[3, A.Row], listLaboratorioDistID.Text);
+       A.Row := A.Row + 1;
+       // remarcamos los items
+       for i := A.Row to A.RowCount do begin
+         if (A.Cells[0, i] <> '') or (A.Cells[2, i] = '') then break;
+         C.Cells[4, i] := listLaboratorioDistID.Text;
+       end;
+       totaldist;
+    end;
+
+end;
+
+procedure TfmDistribucionOrdenesFacturadas.btnCerrarClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfmDistribucionOrdenesFacturadas.btnProcesarClick(Sender: TObject);
+var
+  i: integer;
+begin
+  if (length(trim(A.Cells[2, 0])) = 0) then begin
+    utiles.msgError('No hay Items para Facturar ...!');
+    exit;
+  end;
+  if (utiles.msgSiNo('Este Proceso Anularará el Registro de Ordenes Existentes. Utilice este Proceso con Precaución ...!')) then begin
+    Refresh;
+
+    if (listcodos.Text <> '------') then begin
+      listos.ItemIndex := 0;
+      listcodos.ItemIndex := 0;
+      loadDeterminaciones;
+    end;
+
+    StatusBar1.Panels[0].Text := 'Iniciando Proceso ...!'; StatusBar1.Refresh;
+    facturacion.iniciarFacturacionIB(periodo.Text);
+    for i := 1 to A.RowCount do begin
+      if (A.Cells[2, i] + A.Cells[3, i] = '') then break;
+      if (C.Cells[4, i] <> '') and (C.Cells[5, i] <> '000') then begin
+        StatusBar1.Panels[0].Text := 'Procesando Orden ' + C.Cells[6, i] + ' ...!'; StatusBar1.Refresh;
+        facturacion.Grabar(
+          periodo.Text,   // periodo
+          C.Cells[4, i],  // idprof
+          C.Cells[2, i],  // codos
+          C.Cells[5, i],  // items
+          C.Cells[0, i],  // codpac
+          C.Cells[6, i],  // nombre
+          C.Cells[1, i],  // codanalisis
+          C.Cells[9, i],  // orden
+          C.Cells[7, i],  // periodo1
+          C.Cells[8, i],  // retiva
+          false,          // modifica
+          true);          // guarda orden interna
+      end;
+    end;
+
+    facturacion.vaciarBuffer;
+
+    StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+    btnCerrar.SetFocus;
+  end;
+end;
+
+procedure TfmDistribucionOrdenesFacturadas.btnRecargarClick(Sender: TObject);
+begin
+  loadDeterminaciones;
+end;
+
+procedure TfmDistribucionOrdenesFacturadas.Button1Click(Sender: TObject);
+begin
+  if (A.Cells[0, 1] = '') then begin
+    utiles.msgError('No Existen Items para Procesar ...!');
+    exit;
+  end;
+  A.Enabled := true;
+  Panel8.Enabled := false;
+end;
+
+procedure TfmDistribucionOrdenesFacturadas.Button2Click(Sender: TObject);
+begin
+  A.Enabled := false;
+  Panel8.Enabled := true;
+end;
+
+procedure TfmDistribucionOrdenesFacturadas.FormCanResize(Sender: TObject;
+  var NewWidth, NewHeight: Integer; var Resize: Boolean);
+begin
+  redim := true;
+end;
+
+procedure TfmDistribucionOrdenesFacturadas.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  facturacion.reconectarFacturacionIB;
+  facturacion.desconectar;
+  grid.GuardarAnchoColumnas(fmDistribucionOrdenesFacturadas, A);
+  configform.Guardar(fmDistribucionOrdenesFacturadas, redim);
+  fmDistribucionOrdenesFacturadas.Release; fmDistribucionOrdenesFacturadas := nil;
+end;
+
+procedure TfmDistribucionOrdenesFacturadas.FormResize(Sender: TObject);
+begin
+  StatusBar1.Panels[0].Width := (Width - (Width div 5)); 
+end;
+
+procedure TfmDistribucionOrdenesFacturadas.FormShow(Sender: TObject);
+begin
+  configform.Setear(fmDistribucionOrdenesFacturadas);
+  grid.RecuperarAnchoColumnas(fmDistribucionOrdenesFacturadas, A);
+  periodo.Text := utiles.setPeriodoActual;
+  facturacion.factglobal := true;
+  facturacion.conectar;
+  loadLaboratorios;
+  loadObrasSociales;
+  periodo.SetFocus;
+  redim := false;
+
+  A.Cells[0, 0] := 'Período'; A.Cells[1, 0] := 'Código'; A.Cells[2, 0] := 'Paciente / Determinación';
+  A.Cells[3, 0] := 'Monto'; A.Cells[4, 0] := 'Obra Social'; A.Cells[5, 0] := 'Cód. Fact.';
+  P.Cells[0, 0] := 'Código'; P.Cells[1, 0] := 'Profesional'; P.Cells[2, 0] := 'Monto Fact.';
+end;
+
+end.

@@ -1,0 +1,181 @@
+unit BuscarAuditorias;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, BorBtns, StdCtrls, Buttons, Mask, Grids, ExtCtrls, ComCtrls, DBTables,
+  CAuditoriaCCB, CPadronOSCCB, CUtilidadesStringGrid, CUtiles, CConfigForms, CObrasSocialesCCB;
+
+type
+  TfmBuscarAuditoria = class(TForm)
+    StatusBar1: TStatusBar;
+    Panel2: TPanel;
+    ScrollBox: TScrollBox;
+    Panel1: TPanel;
+    Panel4: TPanel;
+    Label6: TLabel;
+    codos: TMaskEdit;
+    BuscarOS: TBitBtn;
+    des: TLabel;
+    fecha: TMaskEdit;
+    Label1: TLabel;
+    Label2: TLabel;
+    Panel3: TPanel;
+    btnOK: TButton;
+    btnCancelar: TButton;
+    A: TStringGrid;
+    procedure BorRadio1Click(Sender: TObject);
+    procedure BorRadio1KeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure BorRadio2KeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure FormShow(Sender: TObject);
+    procedure AKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure btnOKClick(Sender: TObject);
+    procedure fechaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure codosKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure BuscarOSClick(Sender: TObject);
+    procedure btnCancelarClick(Sender: TObject);
+    procedure Panel2Resize(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+  private
+    { Private declarations }
+    redim: Boolean;
+    procedure CargarDatosObraSocial;
+    procedure BuscarOrdenes;
+  public
+    { Public declarations }
+  end;
+
+var
+  fmBuscarAuditoria: TfmBuscarAuditoria;
+
+implementation
+
+uses NominaObrasSociales;
+
+{$R *.dfm}
+
+procedure TfmBuscarAuditoria.CargarDatosObraSocial;
+begin
+  obsocial.getDatos(codos.Text);
+  des.Caption := obsocial.Nombre;
+  Refresh;
+  BuscarOrdenes;
+  A.SetFocus;
+end;
+
+procedure TfmBuscarAuditoria.BuscarOrdenes;
+var
+  r: TQuery; i: Integer;
+begin
+  grid.IniciarGrilla(A);
+  r := auditoriacb.setDeterminacionesObraSocial(codos.Text, fecha.Text);
+  r.Open; r.Last; i := 0;
+  while not r.Bof do Begin
+    Inc(i);
+    A.Cells[0, i] := r.FieldByName('nroauditoria').AsString;
+    padron.getDatos(r.FieldByName('codos').AsString, r.FieldByName('nrodoc').AsString);
+    A.Cells[1, i] := padron.Nombre;
+    A.Cells[2, i] := r.FieldByName('diagnostico').AsString;
+    A.Cells[3, i] := utiles.sFormatoFecha(r.FieldByName('fecha').AsString);
+    r.Prior;
+  end;
+  r.Close; r.Free;
+  if i > 0 then A.SetFocus else codos.SetFocus;
+end;
+
+procedure TfmBuscarAuditoria.BorRadio1Click(Sender: TObject);
+begin
+  codos.Enabled := False;
+end;
+
+procedure TfmBuscarAuditoria.BorRadio1KeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then Begin
+    fecha.Enabled := True;
+    fecha.SetFocus;
+  end;
+end;
+
+procedure TfmBuscarAuditoria.BorRadio2KeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then Begin
+    codos.Enabled := True;
+    codos.SetFocus;
+  end;
+end;
+
+procedure TfmBuscarAuditoria.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  configform.Guardar(fmBuscarAuditoria, redim);
+end;
+
+procedure TfmBuscarAuditoria.FormShow(Sender: TObject);
+begin
+  configform.Setear(fmBuscarAuditoria);
+  A.Cells[0, 0] := 'Nro.Audit.'; A.Cells[1, 0] := 'Nombre del Afiliado'; A.Cells[2, 0] := 'Diagnóstico'; A.Cells[3, 0] := 'Fecha';
+  fecha.Text := utiles.setFechaActual;
+  redim := false;
+end;
+
+procedure TfmBuscarAuditoria.Panel2Resize(Sender: TObject);
+begin
+  redim := true;
+end;
+
+procedure TfmBuscarAuditoria.AKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    if Length(Trim(A.Cells[0, A.Row])) > 0 then Begin
+      btnOK.Enabled := True;
+      btnOK.SetFocus;
+    end;
+end;
+
+procedure TfmBuscarAuditoria.btnOKClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfmBuscarAuditoria.fechaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    if utiles.ctrlFecha(fecha) then codos.setfocus;
+end;
+
+procedure TfmBuscarAuditoria.codosKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then fecha.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if not obsocial.Buscar(codos.Text) then BuscarOSClick(Sender) else CargarDatosObraSocial;
+end;
+
+procedure TfmBuscarAuditoria.BuscarOSClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmListObrasSociales, fmListObrasSociales);
+  fmListObrasSociales.introSalir := True;
+  fmListObrasSociales.ShowModal;
+  if fmListObrasSociales.seleccionOK then Begin
+    codos.Text := obsocial.tabla.FieldByName('codos').AsString;
+    CargarDatosObraSocial;
+  end;
+  fmListObrasSociales.Release; fmListObrasSociales := nil;
+
+end;
+
+procedure TfmBuscarAuditoria.btnCancelarClick(Sender: TObject);
+begin
+  Close;
+end;
+
+end.

@@ -1,0 +1,373 @@
+unit NominaDeProfesionalesLiquidacionOS;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Db, Grids, DBGrids, Buttons, DBCtrls, ExtCtrls, ComCtrls, StdCtrls, Mask,
+  Menus, IdMessage;
+
+type
+  TfmListProfesionalesLiq = class(TForm)
+    StatusBar1: TStatusBar;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    DBNavigator: TDBNavigator;
+    SpeedButton1: TSpeedButton;
+    SpeedButton2: TSpeedButton;
+    SpeedButton3: TSpeedButton;
+    DTS: TDataSource;
+    criterio: TComboBox;
+    Label1: TLabel;
+    expresion: TMaskEdit;
+    Label2: TLabel;
+    Panel3: TPanel;
+    Label3: TLabel;
+    desde: TMaskEdit;
+    hasta: TMaskEdit;
+    Label4: TLabel;
+    Label5: TLabel;
+    dispositivo: TComboBox;
+    Label6: TLabel;
+    Splitter1: TSplitter;
+    Panel4: TPanel;
+    emitir: TBitBtn;
+    cerrar: TBitBtn;
+    SpeedButton4: TSpeedButton;
+    Panel5: TPanel;
+    codigo: TRadioButton;
+    alfabetico: TRadioButton;
+    Panel6: TPanel;
+    entorno: TRadioButton;
+    exclusion: TRadioButton;
+    DBGrid: TDBGrid;
+    email: TSpeedButton;
+    PopupMenu: TPopupMenu;
+    Para1: TMenuItem;
+    CC1: TMenuItem;
+    CCO1: TMenuItem;
+    N1: TMenuItem;
+    RedactarMensaje1: TMenuItem;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure expresionChange(Sender: TObject);
+    procedure criterioClick(Sender: TObject);
+    procedure expresionKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure SpeedButton1Click(Sender: TObject);
+    procedure SpeedButton3Click(Sender: TObject);
+    procedure SpeedButton2Click(Sender: TObject);
+    procedure DBGridKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure criterioChange(Sender: TObject);
+    procedure SpeedButton4Click(Sender: TObject);
+    procedure cerrarClick(Sender: TObject);
+    procedure codigoClick(Sender: TObject);
+    procedure alfabeticoClick(Sender: TObject);
+    procedure codigoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure desdeKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure hastaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure dispositivoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure emitirClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure desdeClick(Sender: TObject);
+    procedure hastaClick(Sender: TObject);
+    procedure Para1Click(Sender: TObject);
+    procedure CC1Click(Sender: TObject);
+    procedure CCO1Click(Sender: TObject);
+    procedure RedactarMensaje1Click(Sender: TObject);
+    procedure expresionClick(Sender: TObject);
+    procedure Panel2Resize(Sender: TObject);
+  private
+    { Private declarations }
+    ordenact: string; control: byte; redim: Boolean;
+  public
+    { Public declarations }
+    introSalir, seleccionOK, dimension, IngresoMontosFact, on2: boolean;
+    Periodo, listmailcc, listmailcco: String; cantCC, cantCCO: Integer;
+  end;
+
+var
+  fmListProfesionalesLiq: TfmListProfesionalesLiq;
+
+implementation
+
+uses CProfesionalCCB, CUtiles, FichaProfesionalLiquidacionOS, CCategoriasCCB,
+     CConfigForms, MsgEditor;
+
+{$R *.DFM}
+
+procedure TfmListProfesionalesLiq.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  configform.Guardar(fmListProfesionalesLiq, redim); 
+  if not introSalir then Begin
+    profesional.desconectar;
+    categoria.desconectar;
+    Release; fmListProfesionalesLiq := nil;
+  end;
+end;
+
+procedure TfmListProfesionalesLiq.expresionChange(Sender: TObject);
+begin
+  if criterio.Text = 'Nombre' then profesional.BuscarPorNombre(expresion.Text);
+  if criterio.Text = 'Código' then profesional.BuscarPorCodigo(expresion.Text);
+end;
+
+procedure TfmListProfesionalesLiq.criterioClick(Sender: TObject);
+begin
+  ActiveControl := expresion;
+end;
+
+procedure TfmListProfesionalesLiq.expresionKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if Key = VK_INSERT then SpeedButton1Click(Sender);
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then ActiveControl := DBGrid;
+end;
+
+procedure TfmListProfesionalesLiq.SpeedButton1Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmFichaProfesionalCCB, fmFichaProfesionalCCB);
+  fmFichaProfesionalCCB.NoCerrarFinal := True;
+  fmFichaProfesionalCCB.on2           := on2;
+  fmFichaProfesionalCCB.ShowModal;
+  profesional.BuscarPorNombre(fmFichaProfesionalCCB.nombre.Text);
+  fmFichaProfesionalCCB.Release; fmFichaProfesionalCCB := nil;
+  ActiveControl := DBGrid;
+end;
+
+procedure TfmListProfesionalesLiq.SpeedButton3Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmFichaProfesionalCCB, fmFichaProfesionalCCB);
+  fmFichaProfesionalCCB.NoCerrarFinal := False;
+  fmFichaProfesionalCCB.idprof.Text   := profesional.tperso.FieldByName('idprof').AsString;
+  fmFichaProfesionalCCB.BajaC(Sender);
+  fmFichaProfesionalCCB.Release; fmFichaProfesionalCCB := nil;
+  expresionChange(Sender);
+end;
+
+procedure TfmListProfesionalesLiq.SpeedButton2Click(Sender: TObject);
+begin
+  if profesional.Buscar(profesional.tperso.FieldByName('idprof').AsString) then Begin
+    if not IngresoMontosFact then Begin
+      Application.CreateForm(TfmFichaProfesionalCCB, fmFichaProfesionalCCB);
+      fmFichaProfesionalCCB.NoCerrarFinal := True;
+      fmFichaProfesionalCCB.idprof.Text   := profesional.tperso.FieldByName('idprof').AsString;
+      fmFichaProfesionalCCB.on2           := on2;
+      fmFichaProfesionalCCB.ShowModal;
+      profesional.BuscarPorNombre(fmFichaProfesionalCCB.nombre.Text);
+      fmFichaProfesionalCCB.Release; fmFichaProfesionalCCB := nil;
+    end else Begin
+      {Application.CreateForm(TfmMontosProfesional, fmMontosProfesional);
+      fmMontosProfesional.periodo.Text    := periodo;
+      fmMontosProfesional.idprof.Text     := profesional.tperso.FieldByName('idprof').AsString;
+      fmMontosProfesional.descrip.Caption := profesional.tperso.FieldByName('nombre').AsString;
+      fmMontosProfesional.ShowModal;
+      profesional.BuscarPorNombre(fmMontosProfesional.descrip.Caption);
+      fmMontosProfesional.Release; fmMontosProfesional := nil;}
+    end;
+  end;
+end;
+
+procedure TfmListProfesionalesLiq.DBGridKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_INSERT then SpeedButton1Click(Sender);
+  if Key = VK_DELETE then SpeedButton3Click(Sender);
+  if Key = VK_RETURN then
+   if introSalir then Begin
+     seleccionOk := True;
+     Close;
+   end else
+     if Not Panel3.Visible then SpeedButton2Click(Sender) else Begin
+        if control = 0 then Begin    // El control es del id
+          if codigo.Checked then desde.Text := profesional.tperso.FieldByName('idprof').AsString else desde.Text := profesional.tperso.FieldByName('nombre').AsString;
+          ActiveControl := hasta;
+        end;
+        if control = 1 then Begin    // El control es de la descripción
+          if codigo.Checked then hasta.Text := profesional.tperso.FieldByName('idprof').AsString else hasta.Text := profesional.tperso.FieldByName('nombre').AsString;
+          ActiveControl := dispositivo;
+        end;
+     end;
+  if Key = VK_ESCAPE then Close;
+end;
+
+procedure TfmListProfesionalesLiq.criterioChange(Sender: TObject);
+begin
+  expresionChange(Sender);
+end;
+
+procedure TfmListProfesionalesLiq.SpeedButton4Click(Sender: TObject);
+begin
+  ordenact := criterio.Text;
+  if Not Panel3.Visible then Begin
+    Panel3.Visible  := True;
+    codigo.Checked  := True; entorno.Checked := True;
+    desde.Text := ''; hasta.Text := ''; expresion.Text := '';
+    criterio.Text   := 'Código';
+    expresionChange(Sender);
+    ActiveControl   := desde;
+  end else
+    Panel3.Visible := False;
+end;
+
+procedure TfmListProfesionalesLiq.cerrarClick(Sender: TObject);
+begin
+  Panel3.Visible := False;
+  criterio.Text  := ordenact;
+  expresionChange(Sender);
+  ActiveControl  := expresion;
+end;
+
+procedure TfmListProfesionalesLiq.codigoClick(Sender: TObject);
+begin
+  criterio.Text := 'Código';
+  expresionChange(Sender);
+  desde.Text := ''; hasta.Text := ''; dispositivo.Text := 'Presentación Preliminar';
+end;
+
+procedure TfmListProfesionalesLiq.alfabeticoClick(Sender: TObject);
+begin
+  Criterio.Text := 'Nombre';
+  expresionChange(Sender);
+  desde.Text := ''; hasta.Text := ''; dispositivo.Text := 'Presentación Preliminar';
+end;
+
+procedure TfmListProfesionalesLiq.codigoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then ActiveControl := desde;
+end;
+
+procedure TfmListProfesionalesLiq.desdeKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then
+    if codigo.Checked then ActiveControl := codigo else ActiveControl := alfabetico;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if Length(Trim(expresion.Text)) = 0 then ActiveControl := expresion else ActiveControl := hasta;
+    control := 0;
+  end;
+end;
+
+procedure TfmListProfesionalesLiq.hastaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := desde;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if Length(Trim(expresion.Text)) = 0 then ActiveControl := expresion else ActiveControl := dispositivo;
+    control := 1;
+  end;
+end;
+
+procedure TfmListProfesionalesLiq.dispositivoKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then ActiveControl := emitir;
+end;
+
+procedure TfmListProfesionalesLiq.emitirClick(Sender: TObject);
+var
+  salida, ordensalida, entornosal: char;
+begin
+  if (Length(Trim(desde.Text)) = 0) or (Length(Trim(hasta.Text)) = 0) then utiles.msgError('No se han definido suficientes parámetros ...!') else Begin
+    //DTS.DataSet := nil;
+    salida := 'P'; ordensalida := 'C'; entornosal := 'E';
+    if dispositivo.Text = 'Impresora' then salida := 'I';
+    if alfabetico.Checked then ordensalida := 'A';
+    if exclusion.Checked then entornosal := 'X';
+    profesional.Listar(ordensalida, desde.Text, hasta.Text, entornosal, salida);
+    DTS.DataSet   := profesional.tperso;
+  end;
+  ActiveControl := cerrar;
+end;
+
+procedure TfmListProfesionalesLiq.FormShow(Sender: TObject);
+begin
+  if on2 then email.Visible := False;
+  if not configform.Setear(fmListProfesionalesLiq) then Begin
+    Height := 380; Width := 571; Top := 25; Left:=(Screen.Width - Width) div 2;
+  end;
+  if not introSalir then Begin
+    profesional.conectar;
+    categoria.conectar;
+  end else begin
+    profesional.FiltrarLaboratoriosActivos;
+    profesional.Enccol;
+  end;
+  DTS.DataSet := profesional.tperso;
+  expresionChange(Sender);
+  cantCC := 0; cantCCO := 0;
+  redim := False;
+end;
+
+procedure TfmListProfesionalesLiq.desdeClick(Sender: TObject);
+begin
+  control := 0;
+end;
+
+procedure TfmListProfesionalesLiq.hastaClick(Sender: TObject);
+begin
+  control := 1;
+end;
+
+procedure TfmListProfesionalesLiq.Para1Click(Sender: TObject);
+begin
+  profesional.getDatos(profesional.tperso.FieldByName('idprof').AsString);
+  expresion.Text := profesional.tperso.FieldByName('nombre').AsString;
+  if Length(Trim(profesional.Email)) = 0 then utiles.msgError('El Profesional No tiene Dirección de Email ...!') else Begin
+    Application.CreateForm(TfmMessageEditor, fmMessageEditor);
+    fmMessageEditor.edtTo.Text := profesional.Email;
+    fmMessageEditor.ShowModal;
+    fmMessageEditor.Release; fmMessageEditor := nil;
+  end;
+end;
+
+procedure TfmListProfesionalesLiq.CC1Click(Sender: TObject);
+begin
+  profesional.getDatos(profesional.tperso.FieldByName('idprof').AsString);
+  expresion.Text := profesional.tperso.FieldByName('nombre').AsString;
+  if Length(Trim(profesional.Email)) = 0 then utiles.msgError('El Profesional No tiene Dirección de Email ...!') else
+    if Length(Trim(listmailcc)) = 0 then listmailcc := profesional.Email else listmailcc := listmailcc + ';' + profesional.Email;
+  expresionChange(Sender);
+  Inc(cantCC);
+  StatusBar1.Panels[0].Text := 'CC: ' + IntToStr(cantCC) + '  CCO: ' + IntToStr(cantCCO) + ' pendiente(s).'; StatusBar1.Refresh;
+end;
+
+procedure TfmListProfesionalesLiq.CCO1Click(Sender: TObject);
+begin
+  profesional.getDatos(profesional.tperso.FieldByName('idprof').AsString);
+  expresion.Text := profesional.tperso.FieldByName('nombre').AsString;
+  if Length(Trim(profesional.Email)) = 0 then utiles.msgError('El Profesional No tiene Dirección de Email ...!') else
+    if Length(Trim(listmailcco)) = 0 then listmailcco := profesional.Email else listmailcco := listmailcco + ';' + profesional.Email;
+  expresionChange(Sender);
+  StatusBar1.Panels[0].Text := 'CC: ' + IntToStr(cantCC) + '  CCO: ' + IntToStr(cantCCO) + ' pendiente(s).'; StatusBar1.Refresh;
+end;
+
+procedure TfmListProfesionalesLiq.RedactarMensaje1Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmMessageEditor, fmMessageEditor);
+  fmMessageEditor.edtCC.Text  := listmailcc;
+  fmMessageEditor.edtBCC.Text := listmailcco;
+  fmMessageEditor.ShowModal;
+  fmMessageEditor.Release; fmMessageEditor := nil;
+  listmailcc := ''; listmailcco := ''; cantCC := 0; cantCCO := 0;
+  StatusBar1.Panels[0].Text := '';
+end;
+
+procedure TfmListProfesionalesLiq.expresionClick(Sender: TObject);
+begin
+  expresion.Text := '';
+end;
+
+procedure TfmListProfesionalesLiq.Panel2Resize(Sender: TObject);
+begin
+  redim := True;
+end;
+
+end.

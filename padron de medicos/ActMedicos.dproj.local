@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2009/10/15 08:27:41.500.pas,C:\Documents and Settings\silvio.SERVER\Mis documentos\RAD Studio\Projects\Unit3.pas=C:\sidelphi32\SGen\ccomputoscb\padron de medicos\ActualizarMedicos.pas</Transaction>
+    <Transaction>2009/10/15 08:27:41.515.dfm,C:\Documents and Settings\silvio.SERVER\Mis documentos\RAD Studio\Projects\Unit3.dfm=C:\sidelphi32\SGen\ccomputoscb\padron de medicos\ActualizarMedicos.dfm</Transaction>
+    <Transaction>2009/10/15 08:27:47.843.dproj,C:\Documents and Settings\silvio.SERVER\Mis documentos\RAD Studio\Projects\Project3.dproj=C:\sidelphi32\SGen\ccomputoscb\padron de medicos\ActMedicos.dproj</Transaction>
+  </Transactions>
+</BorlandProject>

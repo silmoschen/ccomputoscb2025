@@ -1,0 +1,516 @@
+object fmBajarActualizaciones: TfmBajarActualizaciones
+  Left = 251
+  Top = 186
+  BorderIcons = [biSystemMenu, biMinimize]
+  Caption = 'Actualizaci'#243'n de Datos del Sistema'
+  ClientHeight = 364
+  ClientWidth = 431
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  OnClose = FormClose
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 345
+    Width = 431
+    Height = 19
+    Panels = <
+      item
+        Width = 320
+      end
+      item
+        Width = 50
+      end>
+  end
+  object PageControl1: TPageControl
+    Left = 0
+    Top = 0
+    Width = 431
+    Height = 345
+    ActivePage = TabSheet1
+    Align = alClient
+    TabOrder = 1
+    object TabSheet1: TTabSheet
+      Caption = '&Servicio'
+      object Panel1: TPanel
+        Left = 0
+        Top = 0
+        Width = 423
+        Height = 317
+        Align = alClient
+        BevelInner = bvLowered
+        BorderWidth = 4
+        TabOrder = 0
+        OnResize = Panel1Resize
+        object Panel3: TPanel
+          Left = 6
+          Top = 6
+          Width = 411
+          Height = 305
+          Align = alClient
+          BevelOuter = bvNone
+          TabOrder = 0
+          object Panel4: TPanel
+            Left = 0
+            Top = 256
+            Width = 411
+            Height = 49
+            Align = alBottom
+            BevelInner = bvLowered
+            TabOrder = 0
+            object estado: TMemo
+              Left = 2
+              Top = 2
+              Width = 407
+              Height = 45
+              Align = alClient
+              BorderStyle = bsNone
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -11
+              Font.Name = 'Courier New'
+              Font.Style = []
+              ParentFont = False
+              ScrollBars = ssBoth
+              TabOrder = 0
+            end
+          end
+          object Panel2: TPanel
+            Left = 0
+            Top = 0
+            Width = 411
+            Height = 126
+            Align = alTop
+            BevelOuter = bvNone
+            TabOrder = 1
+            object Label26: TLabel
+              Left = 9
+              Top = 54
+              Width = 88
+              Height = 13
+              Alignment = taRightJustify
+              Caption = 'Unidad a Exportar:'
+            end
+            object Panel7: TPanel
+              Left = 337
+              Top = 0
+              Width = 74
+              Height = 97
+              Align = alRight
+              BevelOuter = bvNone
+              TabOrder = 0
+              object cerrar: TButton
+                Left = 6
+                Top = 3
+                Width = 65
+                Height = 25
+                Caption = '&Cerrar'
+                TabOrder = 0
+                OnClick = cerrarClick
+              end
+            end
+            object DriveComboBox: TDriveComboBox
+              Left = 100
+              Top = 53
+              Width = 136
+              Height = 19
+              Enabled = False
+              TabOrder = 1
+            end
+            object RadioButton1: TRadioButton
+              Left = 6
+              Top = 33
+              Width = 187
+              Height = 17
+              Caption = '&Actualizar Datos desde Diskette'
+              TabOrder = 2
+              OnClick = RadioButton1Click
+            end
+            object RadioButton2: TRadioButton
+              Left = 6
+              Top = 76
+              Width = 227
+              Height = 17
+              Caption = '&Realizar Actualizaciones v'#237'a FTP/NTFS'
+              Checked = True
+              TabOrder = 3
+              TabStop = True
+            end
+            object Panel9: TPanel
+              Left = 0
+              Top = 97
+              Width = 411
+              Height = 29
+              Align = alBottom
+              BevelOuter = bvNone
+              TabOrder = 4
+              object Si: TSpeedButton
+                Left = 147
+                Top = 0
+                Width = 18
+                Height = 25
+                Hint = 'S'#237'/No Selecci'#243'n'
+                Caption = '&S'
+                Flat = True
+                ParentShowHint = False
+                ShowHint = True
+                OnClick = SiClick
+              end
+              object Ninguno: TSpeedButton
+                Left = 165
+                Top = 0
+                Width = 18
+                Height = 25
+                Hint = 'Quitar Todos'
+                Caption = '&N'
+                Flat = True
+                ParentShowHint = False
+                ShowHint = True
+                OnClick = NingunoClick
+              end
+              object Todos: TSpeedButton
+                Left = 183
+                Top = 0
+                Width = 18
+                Height = 25
+                Hint = 'Seleccionar Todos'
+                Caption = '&T'
+                Flat = True
+                ParentShowHint = False
+                ShowHint = True
+                OnClick = TodosClick
+              end
+              object Panel10: TPanel
+                Left = 282
+                Top = 0
+                Width = 129
+                Height = 29
+                Align = alRight
+                BevelOuter = bvNone
+                TabOrder = 0
+                object transferir: TButton
+                  Left = 0
+                  Top = 2
+                  Width = 125
+                  Height = 25
+                  Caption = '&Procesar Actualizaci'#243'n'
+                  Enabled = False
+                  TabOrder = 0
+                  OnClick = actualizarClick
+                end
+              end
+              object btnTransferir: TButton
+                Left = 8
+                Top = 1
+                Width = 132
+                Height = 25
+                Caption = 'Transferir &Datos'
+                TabOrder = 1
+                OnClick = transferirClick
+              end
+            end
+            object btnActualizarDesdeArchivo: TButton
+              Left = 8
+              Top = 3
+              Width = 175
+              Height = 25
+              Caption = 'A&ctualizar Datos desde Archivo'
+              TabOrder = 5
+              OnClick = btnActualizarDesdeArchivoClick
+            end
+          end
+          object Panel8: TPanel
+            Left = 0
+            Top = 126
+            Width = 411
+            Height = 130
+            Align = alClient
+            BevelInner = bvLowered
+            TabOrder = 2
+            object S: TStringGrid
+              Left = 2
+              Top = 2
+              Width = 407
+              Height = 126
+              Align = alClient
+              BorderStyle = bsNone
+              ColCount = 3
+              DefaultRowHeight = 15
+              FixedCols = 0
+              RowCount = 1000
+              Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowSelect]
+              TabOrder = 0
+              OnKeyDown = SKeyDown
+              ColWidths = (
+                58
+                21
+                363)
+            end
+          end
+        end
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = '&Configuraciones'
+      ImageIndex = 1
+      object Panel5: TPanel
+        Left = 0
+        Top = 0
+        Width = 423
+        Height = 317
+        Align = alClient
+        BevelInner = bvLowered
+        BorderWidth = 4
+        TabOrder = 0
+        object Panel6: TPanel
+          Left = 295
+          Top = 6
+          Width = 122
+          Height = 305
+          Align = alRight
+          BevelOuter = bvNone
+          TabOrder = 0
+          object Label4: TLabel
+            Left = 7
+            Top = 84
+            Width = 110
+            Height = 12
+            Caption = '(ADSL, Cablemodem, etc)'
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -9
+            Font.Name = 'Arial'
+            Font.Style = []
+            ParentFont = False
+          end
+          object btnAplicar: TButton
+            Left = 43
+            Top = 8
+            Width = 75
+            Height = 25
+            Caption = '&Aplicar'
+            TabOrder = 0
+            OnClick = btnAplicarClick
+          end
+          object cond: TCheckBox
+            Left = 6
+            Top = 64
+            Width = 107
+            Height = 17
+            Caption = 'Conexi'#243'n Directa'
+            TabOrder = 1
+          end
+        end
+        object GroupBox2: TGroupBox
+          Left = 12
+          Top = 114
+          Width = 359
+          Height = 102
+          Caption = ' Datos a Actualizar '
+          TabOrder = 1
+          object act2: TCheckBox
+            Left = 10
+            Top = 31
+            Width = 153
+            Height = 17
+            Caption = '&Padr'#243'n de Obras Sociales'
+            Checked = True
+            State = cbChecked
+            TabOrder = 0
+          end
+          object act3: TCheckBox
+            Left = 10
+            Top = 48
+            Width = 157
+            Height = 17
+            Caption = '&Aranceles de Obras Sociales'
+            Checked = True
+            State = cbChecked
+            TabOrder = 1
+          end
+          object act1: TCheckBox
+            Left = 10
+            Top = 14
+            Width = 177
+            Height = 17
+            Caption = '&Determinaciones con Monto Fijo'
+            Checked = True
+            State = cbChecked
+            TabOrder = 2
+          end
+          object act4: TCheckBox
+            Left = 10
+            Top = 65
+            Width = 157
+            Height = 17
+            Caption = 'Aranceles del  &Nomeclador'
+            Checked = True
+            State = cbChecked
+            TabOrder = 3
+          end
+          object act5: TCheckBox
+            Left = 10
+            Top = 82
+            Width = 183
+            Height = 17
+            Caption = 'Posici'#243'n &Fiscal Obras Sociales'
+            Checked = True
+            State = cbChecked
+            TabOrder = 4
+          end
+          object act6: TCheckBox
+            Left = 193
+            Top = 15
+            Width = 119
+            Height = 17
+            Caption = 'Aranceles N&BU'
+            Checked = True
+            State = cbChecked
+            TabOrder = 5
+          end
+          object act7: TCheckBox
+            Left = 193
+            Top = 31
+            Width = 119
+            Height = 17
+            Caption = '&Montos Fijos NBU'
+            Checked = True
+            State = cbChecked
+            TabOrder = 6
+          end
+          object act8: TCheckBox
+            Left = 193
+            Top = 48
+            Width = 119
+            Height = 17
+            Caption = '&Unidades NBU'
+            Checked = True
+            State = cbChecked
+            TabOrder = 7
+          end
+          object act9: TCheckBox
+            Left = 193
+            Top = 65
+            Width = 159
+            Height = 17
+            Caption = 'Nomenclador N. Normalizado'
+            Checked = True
+            State = cbChecked
+            TabOrder = 8
+          end
+          object act10: TCheckBox
+            Left = 193
+            Top = 82
+            Width = 119
+            Height = 17
+            Caption = 'Nomenclaturas NBU'
+            Checked = True
+            State = cbChecked
+            TabOrder = 9
+          end
+        end
+        object GroupBox1: TGroupBox
+          Left = 12
+          Top = 6
+          Width = 287
+          Height = 107
+          Caption = ' Conexi'#243'n '
+          TabOrder = 2
+          object Label1: TLabel
+            Left = 52
+            Top = 15
+            Width = 25
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Host:'
+          end
+          object Label2: TLabel
+            Left = 38
+            Top = 61
+            Width = 39
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Usuario:'
+          end
+          object Label3: TLabel
+            Left = 28
+            Top = 84
+            Width = 49
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Password:'
+          end
+          object Label6: TLabel
+            Left = 6
+            Top = 38
+            Width = 71
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Directorio FTP:'
+          end
+          object ftphost: TMaskEdit
+            Left = 80
+            Top = 12
+            Width = 200
+            Height = 21
+            TabOrder = 0
+          end
+          object usuario: TMaskEdit
+            Left = 80
+            Top = 58
+            Width = 200
+            Height = 21
+            TabOrder = 1
+          end
+          object contrasenia: TMaskEdit
+            Left = 80
+            Top = 81
+            Width = 143
+            Height = 21
+            PasswordChar = '*'
+            TabOrder = 2
+          end
+          object dirftp: TMaskEdit
+            Left = 80
+            Top = 35
+            Width = 143
+            Height = 21
+            TabOrder = 3
+          end
+        end
+      end
+    end
+  end
+  object IdFTP1: TIdFTP
+    AutoLogin = True
+    Passive = True
+    Password = 'idftp@client.com'
+    ProxySettings.ProxyType = fpcmNone
+    ProxySettings.Port = 0
+    Left = 304
+    Top = 264
+  end
+  object IdLogDebug1: TIdLogDebug
+    LogTime = False
+    Left = 264
+    Top = 264
+  end
+  object IdAntiFreeze1: TIdAntiFreeze
+    Left = 336
+    Top = 264
+  end
+  object OpenDialog: TOpenDialog
+    Filter = 
+      'Archivos de Actualizaci'#243'n (*.bck)|*.bck|Todos los Archivos (*.*)' +
+      '|*.*'
+    Left = 224
+    Top = 264
+  end
+end

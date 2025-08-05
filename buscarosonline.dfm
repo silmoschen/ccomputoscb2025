@@ -1,0 +1,160 @@
+object fmBuscarOrdenesOnLine: TfmBuscarOrdenesOnLine
+  Left = 0
+  Top = 0
+  Caption = 'Buscar Ordenes On Line'
+  ClientHeight = 377
+  ClientWidth = 615
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poDefault
+  OnCanResize = FormCanResize
+  OnClose = FormClose
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 358
+    Width = 615
+    Height = 19
+    Panels = <
+      item
+        Width = 450
+      end
+      item
+        Width = 50
+      end>
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 615
+    Height = 358
+    Align = alClient
+    BevelInner = bvLowered
+    BorderWidth = 4
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 1
+    object btnTransferir: TButton
+      Left = 375
+      Top = 9
+      Width = 149
+      Height = 25
+      Caption = '&Transferir Datos al Servidor'
+      Enabled = False
+      TabOrder = 0
+    end
+    object Panel5: TPanel
+      Left = 6
+      Top = 6
+      Width = 603
+      Height = 30
+      Align = alTop
+      BevelOuter = bvNone
+      TabOrder = 1
+      object Label3: TLabel
+        Left = 30
+        Top = 6
+        Width = 34
+        Height = 13
+        Alignment = taRightJustify
+        Caption = 'Desde:'
+      end
+      object Label4: TLabel
+        Left = 130
+        Top = 6
+        Width = 64
+        Height = 13
+        Alignment = taRightJustify
+        Caption = 'Hasta Fecha:'
+      end
+      object desde: TMaskEdit
+        Left = 68
+        Top = 3
+        Width = 58
+        Height = 21
+        EditMask = '99/99/99;1; '
+        MaxLength = 8
+        TabOrder = 0
+        Text = '  /  /  '
+        OnKeyDown = desdeKeyDown
+      end
+      object hasta: TMaskEdit
+        Left = 197
+        Top = 3
+        Width = 58
+        Height = 21
+        EditMask = '99/99/99;1; '
+        MaxLength = 8
+        TabOrder = 1
+        Text = '  /  /  '
+        OnKeyDown = hastaKeyDown
+      end
+      object Panel6: TPanel
+        Left = 523
+        Top = 0
+        Width = 80
+        Height = 30
+        Align = alRight
+        BevelOuter = bvNone
+        TabOrder = 2
+        object btnDescargar: TButton
+          Left = 6
+          Top = 3
+          Width = 66
+          Height = 25
+          Caption = '&Buscar'
+          Enabled = False
+          TabOrder = 0
+          OnClick = btnDescargarClick
+        end
+      end
+    end
+    object Panel11: TPanel
+      Left = 6
+      Top = 36
+      Width = 603
+      Height = 316
+      Align = alClient
+      BevelInner = bvLowered
+      Enabled = False
+      TabOrder = 2
+      object E: TStringGrid
+        Left = 2
+        Top = 2
+        Width = 599
+        Height = 312
+        Align = alClient
+        BorderStyle = bsNone
+        ColCount = 9
+        DefaultRowHeight = 15
+        FixedCols = 0
+        RowCount = 5000
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowSelect]
+        TabOrder = 0
+        OnDblClick = EDblClick
+        OnKeyDown = EKeyDown
+        ColWidths = (
+          83
+          55
+          174
+          158
+          122
+          64
+          71
+          104
+          128)
+      end
+    end
+  end
+end

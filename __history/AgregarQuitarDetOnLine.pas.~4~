@@ -1,0 +1,66 @@
+unit AgregarQuitarDetOnLine;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Buttons, Mask, CNBU;
+
+type
+  TfmDeterminacionOnLine = class(TForm)
+    Label3: TLabel;
+    des: TLabel;
+    Label41: TLabel;
+    codanalisis: TMaskEdit;
+    BuscarAnalisis: TBitBtn;
+    procedure codanalisisKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure BuscarAnalisisClick(Sender: TObject);
+  private
+    { Private declarations }
+    procedure CargarDatos;
+  public
+    { Public declarations }
+  end;
+
+var
+  fmDeterminacionOnLine: TfmDeterminacionOnLine;
+
+implementation
+
+uses Nomina_NBU;
+
+{$R *.dfm}
+
+procedure TfmDeterminacionOnLine.CargarDatos;
+begin
+  nbu.getDatos(codanalisis.Text);
+  des.Caption := nbu.Descrip;
+  codanalisis.setFocus; 
+end;
+
+procedure TfmDeterminacionOnLine.BuscarAnalisisClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmListNBU, fmListNBU);
+  fmListNBU.introSalir := True;
+  fmListNBU.ShowModal;
+  if fmListNBU.seleccionOK then Begin
+    codanalisis.Text := nbu.tabla.FieldByName('codigo').AsString;
+    CargarDatos;
+  end;
+  fmListNBU.Release; fmListNBU := nil;
+end;
+
+procedure TfmDeterminacionOnLine.codanalisisKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_ESCAPE) then Close;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if (nbu.Buscar(codanalisis.Text)) then begin
+      CargarDatos;
+      Close;
+    end else
+      BuscarAnalisisClick(Sender);
+end;
+
+end.

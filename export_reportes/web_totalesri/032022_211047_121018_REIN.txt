@@ -1,0 +1,36 @@
+  
+Escriba el Nombre de su Laboratorio
+Facturacion Resumen a Profesionales
+Periodo de Facturacion: 03/2022                              Hoja Nro.: 1
+ 
+--------------------------------------------------------------------------------
+Paciente       Cod.   Arancel Cod.   Arancel Cod.   Arancel Cod.   Arancel Cod.   Arancel   
+--------------------------------------------------------------------------------
+
+Profesional: Frigieri Beatriz Teresa          211047   Periodo: 03/2022
+ 
+Obra Social: PREVENCION SALUD S.A             121018
+ 
+                
+SILVA CECIL [N] 661086     1146.60 660933     191.10 660063     1051.05 660931     1146.60 660001     286.65 
+                
+FARIOLI MAR [S] 660481     477.75 660174     143.33 661040     382.20 660876     238.88 660902     143.33 
+                660192     191.10 660001     286.65 
+RUEFF SILVI [N] 660475     286.65 660539     955.50 660174     143.33 660876     238.88 660412     143.33 
+                660865     859.95 660867     859.95 660297     95.55 660902     143.33 660192     191.10 
+                660001     286.65 
+
+Nro. de Ordenes:    3 Comp. Arancelaria:    0.00 Subtotal Facturado:    9889.43
+--------------------------------------------------------------------------------
+                          Total de Ordenes        :            3
+                          Total de Prestaciones   :           23
+                          Unidades Gasto          :         0.00 $        0.00
+                          Unidades Honorario      :         0.00 $        0.00
+                          Compensacion Arancelaria:              $        0.00
+                                                                  ------------
+                          Subtotal Facturado      :              $     9889.43
+                          Subtotal Grabado        :              $     1863.23
+                          Subtotal Exento         :              $     8026.20
+                          I.V.A.                  :              $      195.64
+                          Total Facturado         :              $    10085.07
+--------------------------------------------------------------------------------

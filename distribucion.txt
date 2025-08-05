@@ -1,0 +1,4 @@
+debcred - archdat
+meses
+detcredcateg
+devindividuales

@@ -1,0 +1,71 @@
+unit reportAfip;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, RpCon, RpConDS, RpBase, RpSystem, RpDefine, RpRave, DB, DBTables,
+  StdCtrls;
+
+type
+  TfmReportsAFIP = class(TForm)
+    Button1: TButton;
+    Database: TDatabase;
+    Query: TQuery;
+    RvProject: TRvProject;
+    RvSystem: TRvSystem;
+    RvDataSetConnectionDetail: TRvDataSetConnection;
+    QueryMaster: TQuery;
+    RvDataSetConnectionMaster: TRvDataSetConnection;
+    QueryMasterCOPIA: TStringField;
+    QueryMasterPERIODO: TStringField;
+    QueryMasterCODOS: TStringField;
+    QueryMasterIDCOMPR: TStringField;
+    QueryMasterTIPO: TStringField;
+    QueryMasterSUCURSAL: TStringField;
+    QueryMasterNUMERO: TStringField;
+    QueryMasterFECHAVTO1: TStringField;
+    QueryMasterFECHAVTO2: TStringField;
+    QueryMasterFECHA: TStringField;
+    QueryMasterCAE: TStringField;
+    QueryMasterOBRASOCIAL: TStringField;
+    QueryMasterCUIT: TStringField;
+    QueryMasterMONTO: TFloatField;
+    QueryITEMS: TStringField;
+    QueryDESCRIP: TStringField;
+    QueryMONTOITEM: TFloatField;
+    QueryOBSERVACION: TStringField;
+    QueryPERIODO: TStringField;
+    QueryCODOS: TStringField;
+    QueryMasterVTOCAE: TStringField;
+    QueryMasterCOMPROBANTE: TStringField;
+    procedure Button1Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  fmReportsAFIP: TfmReportsAFIP;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfmReportsAFIP.Button1Click(Sender: TObject);
+begin
+  Database.Params.Clear;
+  Database.AliasName := 'centrobioq';
+  Database.Params.Add('USER NAME=sysdba');
+  Database.Params.Add('PASSWORD=masterkey');
+  Query.Open;
+  rvProject.ProjectFile := 'reports/factura.rav';
+  QueryMaster.Open;
+  RvProject.Open;
+  RvProject.Execute;
+  Query.Close;
+  QueryMaster.Close;
+end;
+
+end.

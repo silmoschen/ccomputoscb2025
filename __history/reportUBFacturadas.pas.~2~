@@ -1,0 +1,33 @@
+unit reportUBFacturadas;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Buttons, Mask, ExtCtrls, ComCtrls;
+
+type
+  TfmUBFacturadas = class(TForm)
+    StatusBar1: TStatusBar;
+    Panel2: TPanel;
+    ScrollBox: TScrollBox;
+    Label11: TLabel;
+    desde: TMaskEdit;
+    hasta: TMaskEdit;
+    Label1: TLabel;
+    dispSalida: TBitBtn;
+    emitir: TBitBtn;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  fmUBFacturadas: TfmUBFacturadas;
+
+implementation
+
+{$R *.dfm}
+
+end.

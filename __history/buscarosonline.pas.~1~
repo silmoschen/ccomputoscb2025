@@ -1,0 +1,39 @@
+unit buscarosonline;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Grids, Mask, ExtCtrls, ComCtrls;
+
+type
+  TfmBuscarOrdenesOnLine = class(TForm)
+    StatusBar1: TStatusBar;
+    Panel1: TPanel;
+    Panel3: TPanel;
+    btnTransferir: TButton;
+    Panel5: TPanel;
+    Label3: TLabel;
+    Label4: TLabel;
+    desde: TMaskEdit;
+    hasta: TMaskEdit;
+    Panel6: TPanel;
+    btnSubir: TButton;
+    Panel11: TPanel;
+    E: TStringGrid;
+    Label1: TLabel;
+    ComboBox1: TComboBox;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  fmBuscarOrdenesOnLine: TfmBuscarOrdenesOnLine;
+
+implementation
+
+{$R *.dfm}
+
+end.

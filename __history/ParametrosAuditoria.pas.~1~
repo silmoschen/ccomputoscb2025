@@ -1,0 +1,430 @@
+unit ParametrosAuditoria;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, Grids, StdCtrls, Buttons, Mask, ExtCtrls, ComCtrls, Contnrs,
+  Editv;
+
+type
+  TfmParametrosAuditoria = class(TForm)
+    StatusBar1: TStatusBar;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    Panel28: TPanel;
+    Label84: TLabel;
+    Label85: TLabel;
+    nosex: TLabel;
+    Label87: TLabel;
+    detex: TLabel;
+    codosex: TMaskEdit;
+    BuscarOS: TBitBtn;
+    codex: TMaskEdit;
+    BuscarDet: TBitBtn;
+    Panel41: TPanel;
+    D: TStringGrid;
+    Panel45: TPanel;
+    Label92: TLabel;
+    Label93: TLabel;
+    Label94: TLabel;
+    Label95: TLabel;
+    Label96: TLabel;
+    Label97: TLabel;
+    Label98: TLabel;
+    Label99: TLabel;
+    codosmc: TMaskEdit;
+    BuscarOSMC: TBitBtn;
+    idprofmc: TMaskEdit;
+    BuscarMedicoCabecera: TBitBtn;
+    cantcapitas: TEditValid;
+    Label1: TLabel;
+    Label2: TLabel;
+    periodo: TMaskEdit;
+    Panel3: TPanel;
+    Panel46: TPanel;
+    M: TStringGrid;
+    C: TStringGrid;
+    procedure FormShow(Sender: TObject);
+    procedure BuscarOSClick(Sender: TObject);
+    procedure BuscarDetClick(Sender: TObject);
+    procedure codosexKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure codexKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure DKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure BuscarOSMCClick(Sender: TObject);
+    procedure BuscarMedicoCabeceraClick(Sender: TObject);
+    procedure codosmcKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure idprofmcKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure cantcapitasKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure MKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormResize(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure Panel1Resize(Sender: TObject);
+    procedure periodoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure CKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+  private
+    { Private declarations }
+    redim: Boolean;
+    procedure CargarDet;
+    procedure CargarDetRech;
+    procedure CargarDatosObraSocial2;
+    procedure CargarDatosObraSocial3;
+    procedure CargarMedicosCabecera1;
+    procedure CargarMedicosCabecera;
+    procedure CargarCapitas;
+  public
+    { Public declarations }
+  end;
+
+var
+  fmParametrosAuditoria: TfmParametrosAuditoria;
+
+implementation
+
+uses CAuditoriaCCB, CMedicosCabCCB, CObrasSocialesCCB, CUtiles, CNomeclaCCB, NominaObrasSociales,
+     NominaNomeclador, CUtilidadesStringGrid, CNBU, NominaDeMedicos, CMedicosCCB,
+     CConfigForms, Nomina_NBU;
+
+{$R *.dfm}
+
+procedure TfmParametrosAuditoria.CargarDet;
+// Objetivo...: Cargar Determinación
+var
+  i: Integer;
+  n: boolean;
+Begin
+  nomeclatura.getDatos(codex.Text);
+  detex.Caption := nomeclatura.descrip;
+
+  // Anexamos el Items
+  n := false;
+  if (length(trim(codex.Text)) = 4) then
+    if (obsocial.Buscar(codosex.Text)) and (nomeclatura.Buscar(codex.Text)) then n := true;
+  if (length(trim(codex.Text)) = 6) then
+    if (obsocial.Buscar(codosex.Text)) and (nbu.Buscar(codex.Text)) then n := true;
+  if (n) then begin
+    For i := 1 to D.RowCount do Begin
+      if Length(Trim(D.Cells[0, i])) = 0 then Break;
+      if D.Cells[0, i] = codex.Text then Break;
+    end;
+    D.Cells[0, i] := codex.Text;
+    D.Cells[1, i] := detex.Caption;
+    D.Row         := i;
+
+    auditoriacb.RegistrarDetRechazada(codosex.Text, codex.Text);
+    CargarDetRech;
+
+    codex.Text := ''; detex.Caption := '';
+  end;
+end;
+
+procedure TfmParametrosAuditoria.CargarDetRech;
+// Objetivo...: Cargar Determinaciones
+var
+  l: TObjectList;
+  objeto: TTAuditoriaCCB;
+  i: Integer;
+Begin
+  StatusBar1.Panels[0].Text := 'Cargando Datos ...!'; StatusBar1.Refresh;
+  obsocial.getDatos(codosex.Text);
+  grid.BorrarRenglon_SinRenumerar(D);
+  l := auditoriacb.setDetRechazadas(codosex.Text);
+  For i := 1 to l.Count do Begin
+    objeto := TTAuditoriaCCB(l.Items[i-1]);
+    D.Cells[0, i] := objeto.Codigo;
+    if (obsocial.Factnbu = 'N') or (length(trim(objeto.Codigo)) = 4) then Begin
+      nomeclatura.getDatos(D.Cells[0, i]);
+      D.Cells[1, i] := nomeclatura.descrip;
+    end;
+    if (obsocial.Factnbu = 'S') and (length(trim(objeto.Codigo)) = 6) then Begin
+      nbu.getDatos(D.Cells[0, i]);
+      D.Cells[1, i] := nbu.Descrip;
+    end;
+  end;
+  if (i > 0) then D.Row := i else D.Row := 1;  
+  D.Refresh;
+  l.Free; l := Nil;
+  StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+end;
+
+procedure TfmParametrosAuditoria.CargarDatosObraSocial2;
+Begin
+  obsocial.getDatos(codosex.Text);
+  nosex.Caption := obsocial.Nombre;
+  if obsocial.Factnbu = 'N' then codex.EditMask := '9999;1; ';
+  if obsocial.Factnbu = 'S' then codex.EditMask := '999999;1; ';
+  CargarDetRech;
+  codex.SetFocus;
+end;
+
+procedure TfmParametrosAuditoria.CargarDatosObraSocial3;
+Begin
+  obsocial.getDatos(codosmc.Text);
+  label94.Caption := obsocial.Nombre;
+  CargarMedicosCabecera;
+  idprofmc.SetFocus;
+end;
+
+procedure TfmParametrosAuditoria.CargarMedicosCabecera1;
+// Objetivo...: Cargar datos Médico de Cabecera
+Begin
+  medico.getDatos(idprofmc.Text);
+  Label97.Caption := medico.Nombre;
+  CargarCapitas;
+  cantcapitas.SetFocus;
+end;
+
+procedure TfmParametrosAuditoria.CargarMedicosCabecera;
+// Objetivo...: Cargar Medicos de Cabecera
+var
+  l: TStringList;
+  i, p: Integer;
+Begin
+  StatusBar1.Panels[0].Text := 'Cargando Datos ...!'; StatusBar1.Refresh;
+  grid.IniciarGrilla(M);
+  l := medcab.setListaMedicosCabecera(codosmc.Text);
+  M.Row := 1;
+  For i := 1 to l.Count do Begin
+    p := Pos(';1', l.Strings[i-1]);
+    M.Cells[0, i] := Copy(l.Strings[i-1], p+2, 4);
+    M.Cells[1, i] := Copy(l.Strings[i-1], 1, p-1);
+    M.Cells[2, i] := Trim(Copy(l.Strings[i-1], p+6, 10));
+    if M.Cells[0, i] = idprofmc.Text then M.Row := i;
+  end;
+  l.Destroy;
+  StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+end;
+
+procedure TfmParametrosAuditoria.CargarCapitas;
+// Objetivo...: Cargar Capitas
+var
+  l: TObjectList;
+  objeto: TTMedicosCabCCB;
+  i, j: Integer;
+Begin
+  grid.IniciarGrilla(C);
+  C.Row := 1; j := 0;
+  l := medcab.setCapitas(codosmc.Text, idprofmc.Text);
+  For i := l.Count downto 1 do Begin
+    Inc(j);
+    objeto := TTMedicosCabCCB(l.Items[i-1]);
+    C.Cells[0, j] := objeto.Periodo;
+    C.Cells[1, j] := FloatToStr(objeto.Cantcapitas);
+    if objeto.Periodo = periodo.Text then C.Row := j;
+  end;
+  l.Free; l := Nil;
+end;
+
+// -----------------------------------------------------------------------------
+
+procedure TfmParametrosAuditoria.FormShow(Sender: TObject);
+begin
+  if not configform.Setear(fmParametrosAuditoria) then Begin
+    Height := 334; Width := 494;
+  end;
+  D.Cells[0, 0] := 'Cód.'; D.Cells[1, 0] := 'Determinación';
+  M.Cells[0, 0] := 'Id.'; M.Cells[1, 0] := 'Nombre del Médico'; M.Cells[2, 0] := 'C.Cap.'; M.Cells[3, 0] := 'Vigencia';
+  C.Cells[0, 0] := 'Período'; C.Cells[1, 0] := 'C.Cap.';
+  auditoriacb.conectar;
+  medcab.conectar;
+  codosmc.setFocus;
+end;
+
+procedure TfmParametrosAuditoria.BuscarOSClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmListObrasSociales, fmListObrasSociales);
+  fmListObrasSociales.introSalir := True;
+  fmListObrasSociales.expresion.CharCase := ecUpperCase;
+  fmListObrasSociales.ShowModal;
+  Refresh;
+  if fmListObrasSociales.seleccionOK then Begin
+    codosex.Text := obsocial.tabla.FieldByName('codos').AsString;
+    CargarDatosObraSocial2;
+  end;
+  fmListObrasSociales.Release; fmListObrasSociales := nil;
+end;
+
+procedure TfmParametrosAuditoria.BuscarDetClick(Sender: TObject);
+begin
+  if (obsocial.Factnbu = 'N') then begin
+    Application.CreateForm(TfmListNomeclador, fmListNomeclador);
+    fmListNomeclador.introSalir := True;
+    fmListNomeclador.ShowModal;
+    Refresh;
+    if fmListNomeclador.seleccionOK then Begin
+      codex.Text := nomeclatura.tabla.FieldByName('codigo').AsString;
+      CargarDet;
+    end;
+    fmListNomeclador.Release; fmListNomeclador := nil;
+  end;
+  if (obsocial.Factnbu = 'S') then begin
+    Application.CreateForm(TfmListNBU, fmListNBU);
+    fmListNBU.introSalir := True;
+    fmListNBU.ShowModal;
+    Refresh;
+    if fmListNBU.seleccionOK then Begin
+      codex.Text := nbu.tabla.FieldByName('codigo').AsString;
+      CargarDet;
+    end;
+    fmListNBU.Release; fmListNBU := nil;
+  end;
+end;
+
+procedure TfmParametrosAuditoria.codosexKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if not obsocial.Buscar(codosex.Text) then BuscarOSClick(Sender) else CargarDatosObraSocial2;
+end;
+
+procedure TfmParametrosAuditoria.codexKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then codosex.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if not nomeclatura.Buscar(codex.Text) then BuscarDetClick(Sender) else CargarDet;
+end;
+
+procedure TfmParametrosAuditoria.DKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_DELETE then begin
+    if Length(trim(D.Cells[0, D.Row])) > 0 then Begin
+      if (utiles.msgSiNo('Seguro para Borrar Determinación ' + D.Cells[0, D.Row] + ' - ' + D.Cells[1, D.Row] + ' ?')) then begin
+        auditoriacb.BorrarDetRechazada(codosex.Text, D.Cells[0, D.Row]);
+        CargarDetRech;
+      end;
+    end;
+  end;
+end;
+
+procedure TfmParametrosAuditoria.BuscarOSMCClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmListObrasSociales, fmListObrasSociales);
+  fmListObrasSociales.introSalir := True;
+  fmListObrasSociales.expresion.CharCase := ecUpperCase;
+  fmListObrasSociales.ShowModal;
+  Refresh;
+  if fmListObrasSociales.seleccionOK then Begin
+    codosmc.Text := obsocial.tabla.FieldByName('codos').AsString;
+    CargarDatosObraSocial3;
+  end;
+  fmListObrasSociales.Release; fmListObrasSociales := nil;
+
+end;
+
+procedure TfmParametrosAuditoria.BuscarMedicoCabeceraClick(
+  Sender: TObject);
+begin
+  Application.CreateForm(TfmListMedicos, fmListMedicos);
+  fmListMedicos.introSalir := True;
+  //fmListMedicos.expresion.Text := nprofesional.Text;
+  fmListMedicos.ShowModal;
+  if fmListMedicos.seleccionOK then Begin
+    idprofmc.Text := medico.tabla.FieldByName('idprof').AsString;
+    CargarMedicosCabecera1;
+  end;
+  fmListMedicos.Release; fmListMedicos := nil;
+end;
+
+procedure TfmParametrosAuditoria.codosmcKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if not obsocial.Buscar(codosmc.Text) then BuscarOSMCClick(Sender) else CargarDatosObraSocial3;
+end;
+
+procedure TfmParametrosAuditoria.idprofmcKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then codosmc.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if Length(Trim(idprofmc.Text)) = 0 then BuscarMedicoCabeceraClick(Self) else Begin
+      idprofmc.Text := utiles.sLlenarIzquierda(idprofmc.Text, 4, '0');
+      if not medico.Buscar(idprofmc.Text) then BuscarMedicoCabeceraClick(Sender) else CargarMedicosCabecera1;
+    end;
+  end;
+end;
+
+procedure TfmParametrosAuditoria.cantcapitasKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then idprofmc.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(cantcapitas.Text)) > 0 then periodo.SetFocus;
+end;
+
+procedure TfmParametrosAuditoria.MKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_DELETE then
+    if Length(trim(M.Cells[0, M.Row])) > 0 then Begin
+      if utiles.msgSiNo('Seguro para Eliminar Médico ' + M.Cells[1, M.Row] + ' ?') then Begin
+        medcab.BorrarMedicoCabecera(codosmc.Text, M.Cells[0, M.Row]);
+        CargarMedicosCabecera;
+      end;
+    end;
+end;
+
+procedure TfmParametrosAuditoria.FormResize(Sender: TObject);
+begin
+  StatusBar1.Panels[0].Width := Width - (Width div 5);
+end;
+
+procedure TfmParametrosAuditoria.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  auditoriacb.desconectar;
+  medcab.desconectar;
+  configform.Guardar(fmParametrosAuditoria, redim);
+  Release; fmParametrosAuditoria := Nil;
+end;
+
+procedure TfmParametrosAuditoria.Panel1Resize(Sender: TObject);
+begin
+  redim := True;
+end;
+
+procedure TfmParametrosAuditoria.periodoKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then cantcapitas.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.verificarPeriodo(periodo.Text) then Begin
+      if (obsocial.Buscar(codosmc.Text)) and (medico.Buscar(idprofmc.Text)) and (Length(Trim(cantcapitas.Text)) > 0) and (utiles.verificarPeriodo(periodo.Text)) then Begin
+        medcab.RegistrarMedicoCabecera(codosmc.Text, idprofmc.Text, StrToInt(cantcapitas.Text));
+        medcab.RegistrarCapita(codosmc.Text, idprofmc.Text, periodo.Text, StrToFloat(cantcapitas.Text));
+        CargarMedicosCabecera;
+        CargarCapitas;
+        idprofmc.Text := ''; Label97.Caption := ''; cantcapitas.Text := ''; periodo.Text := '';
+        idprofmc.SetFocus;
+      end;
+    end;
+
+end;
+
+procedure TfmParametrosAuditoria.CKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_DELETE then
+    if Length(trim(C.Cells[0, C.Row])) > 0 then Begin
+      if utiles.msgSiNo('Seguro para Eliminar Período ' + C.Cells[0, C.Row] + ' ?') then Begin
+        medcab.BorrarCapita(codosmc.Text, idprofmc.Text, C.Cells[0, C.Row]);
+        CargarCapitas;
+      end;
+    end else
+     utiles.msgError('El Registro Seleccionado es Incorrecto ...!');
+end;
+
+end.

@@ -1,0 +1,261 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{d3095a6b-1918-481e-aa62-e83866f02871}</ProjectGuid>
+    <MainSource>ShmsoftFCCBC.dpr</MainSource>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+    <DCC_DependencyCheckOutputName>ShmsoftFCCBC.exe</DCC_DependencyCheckOutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_DebugInformation>False</DCC_DebugInformation>
+    <DCC_WriteableConstants>True</DCC_WriteableConstants>
+    <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
+    <DCC_PentiumSafeDivide>True</DCC_PentiumSafeDivide>
+    <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+    <DCC_ExeOutput>c:\shmsoft</DCC_ExeOutput>
+    <DCC_UnitSearchPath>\sidelphi32\clases;\sidelphi32\interfases;\sidelphi32\cExtras;\sidelphi32\sounds;\sidelphi32\cExtras\chequeadores;C:\sidelphi32\cExtras\mxCaptionBarButton\Component;\LMD60SE\LIB\D6;C:\LMD70SE\vclskin2\d6;\sidelphi32\cExtras\Xdom_3_1;\sidelphi32\cExtras\Utilities</DCC_UnitSearchPath>
+    <DCC_ResourcePath>\sidelphi32\clases;\sidelphi32\interfases;\sidelphi32\cExtras;\sidelphi32\sounds;\sidelphi32\cExtras\chequeadores;C:\sidelphi32\cExtras\mxCaptionBarButton\Component;\LMD60SE\LIB\D6;C:\LMD70SE\vclskin2\d6;\sidelphi32\cExtras\Xdom_3_1;\sidelphi32\cExtras\Utilities</DCC_ResourcePath>
+    <DCC_ObjPath>\sidelphi32\clases;\sidelphi32\interfases;\sidelphi32\cExtras;\sidelphi32\sounds;\sidelphi32\cExtras\chequeadores;C:\sidelphi32\cExtras\mxCaptionBarButton\Component;\LMD60SE\LIB\D6;C:\LMD70SE\vclskin2\d6;\sidelphi32\cExtras\Xdom_3_1;\sidelphi32\cExtras\Utilities</DCC_ObjPath>
+    <DCC_IncludePath>\sidelphi32\clases;\sidelphi32\interfases;\sidelphi32\cExtras;\sidelphi32\sounds;\sidelphi32\cExtras\chequeadores;C:\sidelphi32\cExtras\mxCaptionBarButton\Component;\LMD60SE\LIB\D6;C:\LMD70SE\vclskin2\d6;\sidelphi32\cExtras\Xdom_3_1;\sidelphi32\cExtras\Utilities</DCC_IncludePath>
+    <DCC_Define>RELEASE</DCC_Define>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_WriteableConstants>True</DCC_WriteableConstants>
+    <DCC_PentiumSafeDivide>True</DCC_PentiumSafeDivide>
+    <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+    <DCC_UnitSearchPath>\sidelphi32\clases;\sidelphi32\interfases;\sidelphi32\cExtras;\sidelphi32\sounds;\sidelphi32\cExtras\chequeadores;\sidelphi32\cExtras\mxCaptionBarButton\Component;c:\LMD70SE\vclskin2\d6;\sidelphi32\cExtras\vclskin421\source;C:\LMD2007\lib\d11</DCC_UnitSearchPath>
+    <DCC_ResourcePath>\sidelphi32\clases;\sidelphi32\interfases;\sidelphi32\cExtras;\sidelphi32\sounds;\sidelphi32\cExtras\chequeadores;\sidelphi32\cExtras\mxCaptionBarButton\Component;c:\LMD70SE\vclskin2\d6;\sidelphi32\cExtras\vclskin421\source;C:\LMD2007\lib\d11</DCC_ResourcePath>
+    <DCC_ObjPath>\sidelphi32\clases;\sidelphi32\interfases;\sidelphi32\cExtras;\sidelphi32\sounds;\sidelphi32\cExtras\chequeadores;\sidelphi32\cExtras\mxCaptionBarButton\Component;c:\LMD70SE\vclskin2\d6;\sidelphi32\cExtras\vclskin421\source;C:\LMD2007\lib\d11</DCC_ObjPath>
+    <DCC_IncludePath>\sidelphi32\clases;\sidelphi32\interfases;\sidelphi32\cExtras;\sidelphi32\sounds;\sidelphi32\cExtras\chequeadores;\sidelphi32\cExtras\mxCaptionBarButton\Component;c:\LMD70SE\vclskin2\d6;\sidelphi32\cExtras\vclskin421\source;C:\LMD2007\lib\d11</DCC_IncludePath>
+    <DCC_Define>DEBUG</DCC_Define>
+  </PropertyGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Delphi.Personality</Borland.Personality>
+    <Borland.ProjectType>VCLApplication</Borland.ProjectType>
+    <BorlandProject>
+<BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><Language><Language Name="ProjectLang">$00000C0A</Language></Language><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">0</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">3082</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription"></VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName"></VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">ShmsoftFCCBC.dpr</Source></Source></Delphi.Personality></BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
+  <ItemGroup>
+    <DelphiCompile Include="ShmsoftFCCBC.dpr">
+      <MainSource>MainSource</MainSource>
+    </DelphiCompile>
+    <DCCReference Include="..\..\CLASES\CActualizaciones.pas" />
+    <DCCReference Include="..\..\CLASES\CActualizacionesCentroComputosCB.pas" />
+    <DCCReference Include="..\..\CLASES\CAdmNumCompr.pas" />
+    <DCCReference Include="..\..\clases\CBDT.pas" />
+    <DCCReference Include="..\..\clases\CConfigImpresora.pas" />
+    <DCCReference Include="..\..\CLASES\CEstadisticas.pas" />
+    <DCCReference Include="..\..\CLASES\CEstadisticasFacturacionCCB.pas" />
+    <DCCReference Include="..\..\CLASES\CExpira.pas" />
+    <DCCReference Include="..\..\CLASES\CFacturacionCCB.pas" />
+    <DCCReference Include="..\..\clases\CIDBFM.pas" />
+    <DCCReference Include="..\..\CLASES\CLiquidacionObrasSocCCB.pas" />
+    <DCCReference Include="..\..\CLASES\CListar.pas" />
+    <DCCReference Include="..\..\CLASES\CLog.pas" />
+    <DCCReference Include="..\..\CLASES\CNomeclaCCB.pas" />
+    <DCCReference Include="..\..\CLASES\CObrasSocialesCCB.pas" />
+    <DCCReference Include="..\..\CLASES\CPacienteCCB.pas" />
+    <DCCReference Include="..\..\CLASES\CProfesionalCCB.pas" />
+    <DCCReference Include="..\..\clases\CUsuario.pas" />
+    <DCCReference Include="..\..\clases\CUtiles.pas" />
+    <DCCReference Include="..\..\CLASES\CUtilidadesArchivos.pas" />
+    <DCCReference Include="..\..\clases\Listado.pas" />
+    <DCCReference Include="..\..\Interfases\acerca_de.pas">
+      <Form>fmAcerca</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\Interfases\agenda.pas">
+      <Form>fmAgenda</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\Interfases\ConfigurarImpresora.pas">
+      <Form>fmConfigImpresora</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\Interfases\ContenedorMemo.pas">
+      <Form>fmGMemo</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\Interfases\datosiniciosistema.pas">
+      <Form>fmDatosDelSistema</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\Interfases\defusuarios.pas">
+      <Form>fmUsuarios</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\Interfases\DepurarDatos.pas">
+      <Form>fmDepurarDatos</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\Interfases\Disposit.pas">
+      <Form>Dispositivo</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\Interfases\IngSistema.pas">
+      <Form>fmIngSistema</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\Interfases\intro04072004.pas">
+      <Form>fmIntroForm</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\Interfases\Margenes.pas">
+      <Form>fmMargenes</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\Interfases\MsgExpiracion.pas">
+      <Form>fmExpira</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\Interfases\MsgSiNo.pas">
+      <Form>MensajeSiNo</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\Interfases\MsgSiNo1.pas">
+      <Form>MensajeSiNo1</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\Interfases\pasword.pas">
+      <Form>fmPasword</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\Interfases\ProgBackup.pas">
+      <Form>fmConfigBackup</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\Interfases\PropiedadesEscritorio.pas">
+      <Form>frmPropiedades</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\Interfases\scrReporte.pas">
+      <Form>scrList</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\INTERNET\MailClient\MsgEdtAdv.pas">
+      <Form>frmAdvancedOptions</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\INTERNET\MailClient\Setup.pas">
+      <Form>fmSetup</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\INTERNET\MailClient\smtpauth.pas">
+      <Form>frmSMTPAuthentication</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\INTERNET\pop3\DELPHI\VC32\MD5.PAS" />
+    <DCCReference Include="..\..\INTERNET\rasdial\DELPHI\RAS\Formauto.pas">
+      <Form>AutoForm</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\INTERNET\rasdial\DELPHI\RAS\FormPos.pas" />
+    <DCCReference Include="..\..\INTERNET\rasdial\DELPHI\RAS\LogMsg.pas" />
+    <DCCReference Include="..\..\INTERNET\rasdial\DELPHI\RAS\RAS.PAS" />
+    <DCCReference Include="..\..\INTERNET\rasdial\DELPHI\RAS\RasDial1.pas">
+      <Form>RasDialerForm</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\INTERNET\rasdial\DELPHI\RAS\RasDial2.pas">
+      <Form>AboutForm</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\INTERNET\rasdial\DELPHI\RAS\RasDial3.pas">
+      <Form>ConfigureAutoForm</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\INTERNET\rasdial\DELPHI\RAS\RasDial4.pas">
+      <Form>TimeAutoForm</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\INTERNET\rasdial\DELPHI\RAS\RasDial5.pas">
+      <Form>TimePasswordAutoForm</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\INTERNET\rasdial\DELPHI\RAS\VERLOGS.pas">
+      <Form>fmConsultar</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\INTERNET\smtp\DELPHI\VC32\MBXFILE.PAS" />
+    <DCCReference Include="..\..\INTERNET\smtp\DELPHI\VC32\SMTPPROT.PAS" />
+    <DCCReference Include="..\..\INTERNET\smtp\DELPHI\VC32\WAIT.PAS" />
+    <DCCReference Include="..\..\INTERNET\smtp\DELPHI\VC32\WSOCKBUF.PAS" />
+    <DCCReference Include="..\..\INTERNET\smtp\DELPHI\VC32\WSOCKET.PAS" />
+    <DCCReference Include="..\..\SME\IVA\NominaComprobantes.pas">
+      <Form>fmListComprobantes</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\SME\IVA\PreparacionViaTrabajo.pas">
+      <Form>fmPreparacionVia</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\Varios\Backup\backup.pas" />
+    <DCCReference Include="..\..\Varios\Backup\comodines.pas">
+      <Form>fmAgregarArchivos</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\Varios\Backup\Lzrw1kh.pas" />
+    <DCCReference Include="..\..\Varios\Backup\Selectarchivos.pas">
+      <Form>fmSeleArchivos</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\Varios\Backup\Unit1.pas">
+      <Form>fmBackup</Form>
+    </DCCReference>
+    <DCCReference Include="..\damevin\NominaDeCategorias.pas">
+      <Form>fmListCategorias</Form>
+    </DCCReference>
+    <DCCReference Include="..\SFact\Comprobantes.pas">
+      <Form>fmComprobantes</Form>
+    </DCCReference>
+    <DCCReference Include="clases\CAgrupacionOSFact.pas" />
+    <DCCReference Include="clases\CCoseguros.pas" />
+    <DCCReference Include="clases\CDebitosCreditosIAPOS.pas" />
+    <DCCReference Include="clases\CMedicosCabAO.pas" />
+    <DCCReference Include="clases\CNBU.pas" />
+    <DCCReference Include="clases\CUBReferentes.pas" />
+    <DCCReference Include="clases\CUnidadesNBU.pas" />
+    <DCCReference Include="clases\Nomina_NBU.pas">
+      <Form>fmListNBU</Form>
+    </DCCReference>
+    <DCCReference Include="clases\tablaNBU.pas">
+      <Form>fmTablaNBU</Form>
+    </DCCReference>
+    <DCCReference Include="DefinicionFacturas.pas">
+      <Form>fmDefFacturas</Form>
+    </DCCReference>
+    <DCCReference Include="DepurarInformacion.pas">
+      <Form>fmDepurarInformacion</Form>
+    </DCCReference>
+    <DCCReference Include="EleccionObrasSociales.pas">
+      <Form>fmEleObraSociales</Form>
+    </DCCReference>
+    <DCCReference Include="EleccionProfesionales.pas">
+      <Form>fmEleProfesional</Form>
+    </DCCReference>
+    <DCCReference Include="Estadisticas.pas">
+      <Form>fmEstadisticas</Form>
+    </DCCReference>
+    <DCCReference Include="FacturacionManual.pas">
+      <Form>fmFactManual</Form>
+    </DCCReference>
+    <DCCReference Include="FichaPaciente.pas">
+      <Form>fmFichaPacientes</Form>
+    </DCCReference>
+    <DCCReference Include="FichaProfesionalLiquidacionOS.pas">
+      <Form>fmFichaProfesionalCCB</Form>
+    </DCCReference>
+    <DCCReference Include="fmBuscarProfesional.pas">
+      <Form>fmBuscarProf</Form>
+    </DCCReference>
+    <DCCReference Include="ImgForms.pas">
+      <Form>contenedorImg</Form>
+    </DCCReference>
+    <DCCReference Include="MDIFormC.pas">
+      <Form>fmSistemFact</Form>
+    </DCCReference>
+    <DCCReference Include="ModifObraSocial.pas">
+      <Form>fmModificarObraSocial</Form>
+    </DCCReference>
+    <DCCReference Include="MsgEditor.pas">
+      <Form>fmMessageEditor</Form>
+    </DCCReference>
+    <DCCReference Include="NomecladorAn.pas">
+      <Form>fmNomeclador</Form>
+    </DCCReference>
+    <DCCReference Include="NominaDeCategoriasLab.pas">
+      <Form>fmListCategoriasLab</Form>
+    </DCCReference>
+    <DCCReference Include="NominaDeProfesionales.pas">
+      <Form>fmListProfesionales</Form>
+    </DCCReference>
+    <DCCReference Include="NominaNomeclador.pas">
+      <Form>fmListNomeclador</Form>
+    </DCCReference>
+    <DCCReference Include="NominaObrasSociales.pas">
+      <Form>fmListObrasSociales</Form>
+    </DCCReference>
+    <DCCReference Include="NominaPacientes.pas">
+      <Form>fmListPacientes</Form>
+    </DCCReference>
+    <DCCReference Include="obrasocial.pas">
+      <Form>fmObsociales</Form>
+    </DCCReference>
+    <DCCReference Include="tabladecategoriasLab.pas">
+      <Form>fmTablaCategoriasLab</Form>
+    </DCCReference>
+    <None Include="ccomputoscb.ini" />
+  </ItemGroup>
+</Project>

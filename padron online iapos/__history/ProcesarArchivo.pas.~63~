@@ -1,0 +1,309 @@
+unit ProcesarArchivo;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, CUtiles, Grids;
+
+type
+  TForm1 = class(TForm)
+    Button1: TButton;
+    Label1: TLabel;
+    archivo: TEdit;
+    tope: TEdit;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
+    codos: TEdit;
+    Button2: TButton;
+    Label5: TLabel;
+    Button3: TButton;
+    Button4: TButton;
+    Button5: TButton;
+    lista: TListBox;
+    Button6: TButton;
+    Edit1: TEdit;
+    OpenDialog1: TOpenDialog;
+    StringGrid1: TStringGrid;
+    procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
+    procedure Button5Click(Sender: TObject);
+    procedure Button6Click(Sender: TObject);
+  private
+    { Private declarations }
+    procedure PopulateStringGrid(Grid: TStringGrid; const FileName: string);
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  narchivo, salida: textfile;
+  linea, n: string;
+  lineas, bloque: integer;
+begin
+  lineas := 0; bloque := 1;
+  assignfile(narchivo, archivo.text);
+  assignfile(salida, 'salida' + inttostr(bloque) + '.sql');
+  reset(narchivo);
+  rewrite(salida);
+  Label4.Caption := 'segmento ' + inttostr(bloque); Label4.Refresh;
+  while not EOF(narchivo) do begin
+    readln(narchivo, linea);
+    n := trimright(copy(linea, 34, 20));
+    n := utiles.StringRemplazarCaracteres(n, '''' + '''' + '''', ' ');
+    n := utiles.StringRemplazarCaracteres(n, '''' + '`' + '''', ' ');
+
+    if (length(trim(copy(linea, 25, 9))) > 0) then begin
+      writeln(salida, 'insert ignore into bioqafil (codos, nrodoc, nombre, fechanac) values (' +
+            '"' + codos.Text + '"' + ', ' + '"' + trim(copy(linea, 25, 9)) + '"' + ', ' +
+            '"' + n + '"' + ', ' + '"' + copy(linea, 65, 2) + '/' + copy(linea, 63, 2) + '/' + copy(linea, 59, 4) + '"' + ');');
+      label3.Caption := linea; label3.Refresh;
+    end;
+    inc(lineas);
+    if (lineas > strtoint(tope.Text)) then begin
+      closeFile(salida);
+      Inc(bloque);
+      assignfile(salida, 'salida' + inttostr(bloque) + '.sql');
+      rewrite(salida);
+      Label4.Caption := 'segmento ' + inttostr(bloque); Label4.Refresh;
+      lineas := 0;
+    end;
+  end;
+  closeFile(narchivo);
+  closeFile(salida);
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+var
+  narchivo: textfile;
+  linea: string;
+  i: integer;
+begin
+  assignfile(narchivo, archivo.text);
+  reset(narchivo); i := 0;
+  while not EOF(narchivo) do begin
+    readln(narchivo, linea);
+    inc(i);
+  end;
+  Label5.Caption := inttostr(i);
+end;
+
+procedure TForm1.Button3Click(Sender: TObject);
+var
+  narchivo, salida: textfile;
+  linea, n: string;
+  lineas, bloque: integer;
+begin
+  lineas := 0; bloque := 1;
+  assignfile(narchivo, archivo.text);
+  assignfile(salida, 'salida_pami' + inttostr(bloque) + '.sql');
+  reset(narchivo);
+  rewrite(salida);
+  Label4.Caption := 'segmento ' + inttostr(bloque); Label4.Refresh;
+
+  writeln(salida, 'update bioqafil set inactivo = ' + '''' + 'S' + '''' + ' where codos = ' + '''' + codos.Text + '''' + ';');
+
+  while not EOF(narchivo) do begin
+    readln(narchivo, linea);
+    n := trimright(copy(linea, 32, 35));
+    n := utiles.StringRemplazarCaracteres(n, '''' + '''' + '''', ' ');
+    n := utiles.StringRemplazarCaracteres(n, '''' + '`' + '''', ' ');
+
+    if (length(trim(copy(linea, 25, 9))) > 0) then begin
+      writeln(salida, 'insert into bioqafil (codos, nrodoc, nombre, id_beneficio, fechanac, tipo_doc, id_parentesco, direccion, sexo, inactivo) values (' +
+            '"' + codos.Text + '"' + ', ' + '"' + trim(copy(linea, 83, 8)) + '"' + ', ' +
+            '"' + n + '"' + ', ' + '"' + copy(linea, 5, 12) + '"' + ', ' + '"' + copy(linea, 78, 2) + '/' + copy(linea, 76, 2) + '/' + copy(linea, 72, 4) + '"' + ', ' + '"' + copy(linea, 80, 3) + '"' + ', ' +
+            '"' + copy(linea, 17, 2) {copy(linea, 11, 2)} + '"' + ', ' + '"' + '' + '"' + ', ' + '"' + copy(linea, 98, 1) + '"' + ', ""' + ');');
+      label3.Caption := linea; label3.Refresh;
+    end;
+
+    inc(lineas);
+    if (lineas > strtoint(tope.Text)) then begin
+      closeFile(salida);
+      Inc(bloque);
+      assignfile(salida, 'salida_pami' + inttostr(bloque) + '.sql');
+      rewrite(salida);
+      Label4.Caption := 'segmento ' + inttostr(bloque); Label4.Refresh;
+      lineas := 0;
+    end;
+  end;
+
+  closeFile(narchivo);
+
+  assignfile(narchivo, archivo.text);
+  assignfile(narchivo, archivo.text);
+  reset(narchivo);
+
+  while not EOF(narchivo) do begin
+      readln(narchivo, linea);
+      writeln(salida, 'update bioqafil set inactivo = "" where codos = ' + '''' + codos.Text + '''' + ' and nrodoc = ' + '"' + trim(copy(linea, 83, 8)) + '";');
+  end;
+
+  closeFile(narchivo);
+  closeFile(salida);
+
+  close;
+end;
+
+procedure TForm1.Button4Click(Sender: TObject);
+var
+  narchivo, salida: textfile;
+  linea, codigo, retiva: string;
+  lineas, bloque: integer;
+begin
+  lineas := 0; bloque := 1;
+  assignfile(narchivo, archivo.text);
+  assignfile(salida, 'salida_federada' + inttostr(bloque) + '.sql');
+  reset(narchivo);
+  rewrite(salida);
+  Label4.Caption := 'segmento ' + inttostr(bloque); Label4.Refresh;
+  while not EOF(narchivo) do begin
+    readln(narchivo, linea);
+
+    if (copy(linea, 54, 2) = 'G1') then codigo := '121029' else codigo := '121129';
+    if (copy(linea, 78, 1) = 'O') then retiva := 'S' else retiva := 'N';
+
+    if (length(trim(copy(linea, 22, 5))) > 0) then begin
+      writeln(salida, 'insert ignore into bioqafil (codos, nrodoc, nombre, sexo, tipo_doc, retiva) values (' +
+            '"' + codigo + '"' + ', ' + '"' + trim(copy(linea, 64, 8)) + '"' + ', ' +
+            '"' + trim(copy(linea, 19, 30)) + '"' + ', ' + '"' + copy(linea, 18, 1) + '"' + ', ' + '"' + copy(linea, 60, 3) + '"' + ', ' + '"' + retiva + '"' + ');');
+
+      label3.Caption := linea; label3.Refresh;
+    end;
+    inc(lineas);
+    if (lineas > strtoint(tope.Text)) then begin
+      closeFile(salida);
+      Inc(bloque);
+      assignfile(salida, 'salida_federada' + inttostr(bloque) + '.sql');
+      rewrite(salida);
+      Label4.Caption := 'segmento ' + inttostr(bloque); Label4.Refresh;
+      lineas := 0;
+    end;
+  end;
+  closeFile(narchivo);
+  closeFile(salida);
+end;
+
+procedure TForm1.Button5Click(Sender: TObject);
+var
+  csv : TStringList;
+  i, j : Integer;
+  salida: TextFile;
+  fila, nom, n: string;
+begin
+
+  //LoadCSV('Z:\prescriptores.csv', sg);
+
+  //exit;
+
+
+
+	try
+		csv := TStringList.Create;
+		// cargar a partir del fichero csv
+		//csv.LoadFromFile('Z:\prescriptores.csv');
+    csv.LoadFromFile('Z:\prescriptores.prn');
+
+    assignfile(salida, 'z:\precriptores_' + codos.Text + '.sql');
+    rewrite(salida);
+
+    writeln(salida, 'update medicos set estado = ' + '''' + 'S' + '''' + ' where codos = ' + '''' + codos.Text + '''' + ';');
+
+		// recorrer las filas
+		for i := 1 to csv.Count -2 do
+		begin
+			fila := csv.Strings[i];
+
+      nom := copy(fila, 14, 30);
+      if (pos('|', nom) > 0) then n := copy(nom, 1, pos('|', nom) -1) else n := nom;
+
+
+      writeln(salida, 'insert ignore medicos values (' +
+      '''' + codos.Text + '''' + ', ' +
+      '''' + copy(fila, 1, 2) + copy(fila, 4, 3) + copy(fila, 8, 5) + '''' + ', ' +
+      '"' + n + '"' + ', ' +
+      '''' + copy(fila, 1, 2) + '''' + ', ' +
+      '''' + copy(fila, 4, 3) + '''' + ', ' +
+      '''' + copy(fila, 8, 5) + '''' + ', ' +
+      '''' + 'N' + '''' + ');');
+
+		end;
+
+    for i := 1 to csv.Count -2 do
+		begin
+			fila := csv.Strings[i];
+
+      writeln(salida, 'update medicos set estado = ' + '''' + 'N' + '''' + ' where codos = ' + '''' + codos.Text + '''' + ' and idprof = ' + '''' + copy(fila, 1, 2) + copy(fila, 4, 3) + copy(fila, 8, 5) + '''' + ';');
+
+		end;
+
+    closeFile(salida);
+
+    close;
+
+	Except
+	    on E : Exception do
+	    begin
+			MessageDlg('Ocurrio un Error: ' + E.Message, mtInformation, [mbOK], 0);
+	    end;
+	end;
+	// liberar la memoria
+	csv.Free;
+  end;
+
+procedure TForm1.Button6Click(Sender: TObject);
+begin
+if OpenDialog1.Execute then
+begin
+Edit1.Text:= OpenDialog1.FileName;
+PopulateStringGrid(StringGrid1, Edit1.Text);
+//memo1.Lines.LoadFromFile(Edit1.Text);
+end
+else ShowMessage ('Open File was cancelled');
+
+end;
+
+procedure TForm1.PopulateStringGrid(Grid: TStringGrid; const FileName: string);
+var
+  TextFile, Line: TStringList;
+  Row,Col: Integer;
+begin
+  Grid.RowCount := 0;//clear any previous data
+  TextFile := TStringList.Create;
+  try
+    Line := TStringList.Create;
+    try
+      Line.Delimiter := ';';
+      TextFile.LoadFromFile(FileName);
+      Grid.RowCount := TextFile.Count;
+
+      for Row := 0 to TextFile.Count-1 do
+      begin
+        Line.DelimitedText := TextFile[Row];
+        Grid.ColCount:= Line.Count;
+        for Col := 0 to Grid.ColCount-1 do
+          if Col<Line.Count then
+            Grid.Cells[Col, Row] := Line[Col]
+          else
+            Grid.Cells[Col, Row] := '0';
+      end;
+    finally
+      Line.Free;
+    end;
+  finally
+    TextFile.Free;
+  end;
+end;
+
+end.

@@ -1,0 +1,12 @@
+C:\sidelphi32\SGen\ccomputoscb\padron online iapos\c#\testws\testws\bin\Debug\testws.exe.config
+C:\sidelphi32\SGen\ccomputoscb\padron online iapos\c#\testws\testws\obj\x86\Debug\testws.csproj.AssemblyReference.cache
+C:\sidelphi32\SGen\ccomputoscb\padron online iapos\c#\testws\testws\obj\x86\Debug\testws.Form1.resources
+C:\sidelphi32\SGen\ccomputoscb\padron online iapos\c#\testws\testws\obj\x86\Debug\testws.Properties.Resources.resources
+C:\sidelphi32\SGen\ccomputoscb\padron online iapos\c#\testws\testws\obj\x86\Debug\testws.csproj.GenerateResource.cache
+C:\sidelphi32\SGen\ccomputoscb\padron online iapos\c#\testws\testws\obj\x86\Debug\testws.csproj.CoreCompileInputs.cache
+C:\sidelphi32\SGen\ccomputoscb\padron online iapos\c#\testws\testws\bin\Debug\testws.exe
+C:\sidelphi32\SGen\ccomputoscb\padron online iapos\c#\testws\testws\bin\Debug\testws.pdb
+C:\sidelphi32\SGen\ccomputoscb\padron online iapos\c#\testws\testws\bin\Debug\RestSharp.dll
+C:\sidelphi32\SGen\ccomputoscb\padron online iapos\c#\testws\testws\obj\x86\Debug\testws.csproj.CopyComplete
+C:\sidelphi32\SGen\ccomputoscb\padron online iapos\c#\testws\testws\obj\x86\Debug\testws.exe
+C:\sidelphi32\SGen\ccomputoscb\padron online iapos\c#\testws\testws\obj\x86\Debug\testws.pdb

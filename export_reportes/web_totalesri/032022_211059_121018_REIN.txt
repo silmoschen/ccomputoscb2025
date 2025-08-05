@@ -1,0 +1,40 @@
+  
+Escriba el Nombre de su Laboratorio
+Facturacion Resumen a Profesionales
+Periodo de Facturacion: 03/2022                              Hoja Nro.: 1
+ 
+--------------------------------------------------------------------------------
+Paciente       Cod.   Arancel Cod.   Arancel Cod.   Arancel Cod.   Arancel Cod.   Arancel   
+--------------------------------------------------------------------------------
+
+Profesional: Vidoz Liliana                    211059   Periodo: 03/2022
+ 
+Obra Social: PREVENCION SALUD S.A             121018
+ 
+                
+                
+BERON MARIA [N] 660475     286.65 660902     143.33 660904     143.33 660413     429.98 660933     191.10 
+                660711     238.88 660911     1051.05 660001     286.65 
+MICELLI NAH [N] 660309     477.75 660035     382.20 660001     286.65 
+SOLIS BELEN [N] 660475     286.65 660412     143.33 660902     143.33 660192     191.10 660481     477.75 
+                660594     286.65 660174     143.33 661035     286.65 660876     238.88 660904     143.33 
+                660865     859.95 660867     859.95 660539     955.50 665230     1433.25 664632     1337.70 
+                669622     2197.65 660001     286.65 
+DEL ZOTTO G [N] 660475     286.65 660297     95.55 660761     238.88 660902     143.33 660192     191.10 
+                660594     286.65 665230     1433.25 660539     955.50 660481     477.75 660001     286.65 
+                
+
+Nro. de Ordenes:    4 Comp. Arancelaria:    0.00 Subtotal Facturado:   18584.48
+--------------------------------------------------------------------------------
+                          Total de Ordenes        :            4
+                          Total de Prestaciones   :           38
+                          Unidades Gasto          :         0.00 $        0.00
+                          Unidades Honorario      :         0.00 $        0.00
+                          Compensacion Arancelaria:              $        0.00
+                                                                  ------------
+                          Total Facturado         :              $    18584.48
+                          Subtotal Grabado        :              $        0.00
+                          Subtotal Exento         :              $    18584.48
+                          I.V.A.                  :              $        0.00
+                          Total Facturado         :              $    18584.48
+--------------------------------------------------------------------------------

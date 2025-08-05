@@ -1,0 +1,126 @@
+object Form1: TForm1
+  Left = 0
+  Top = 0
+  Caption = 'Form1'
+  ClientHeight = 395
+  ClientWidth = 594
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object res: TLabel
+    Left = 16
+    Top = 95
+    Width = 39
+    Height = 13
+    Caption = '             '
+  end
+  object Label1: TLabel
+    Left = 248
+    Top = 192
+    Width = 68
+    Height = 13
+    Caption = 'base de datos'
+  end
+  object Edit1: TEdit
+    Left = 8
+    Top = 8
+    Width = 225
+    Height = 21
+    TabOrder = 0
+    Text = 'c:\shmsoft'
+  end
+  object Button1: TButton
+    Left = 8
+    Top = 35
+    Width = 225
+    Height = 54
+    Caption = 'Migrar'
+    TabOrder = 1
+    OnClick = Button1Click
+  end
+  object Edit2: TEdit
+    Left = 256
+    Top = 8
+    Width = 121
+    Height = 21
+    TabOrder = 2
+    Text = '01/2005'
+  end
+  object Edit3: TEdit
+    Left = 256
+    Top = 35
+    Width = 121
+    Height = 21
+    TabOrder = 3
+    Text = '01/2012'
+  end
+  object CheckBox1: TCheckBox
+    Left = 8
+    Top = 136
+    Width = 161
+    Height = 17
+    Caption = 'Migras Datos Maestros'
+    Checked = True
+    State = cbChecked
+    TabOrder = 4
+  end
+  object Edit4: TEdit
+    Left = 8
+    Top = 184
+    Width = 225
+    Height = 21
+    TabOrder = 5
+    Text = 'c:\shmsoft'
+  end
+  object ListBox1: TListBox
+    Left = 256
+    Top = 72
+    Width = 121
+    Height = 97
+    ItemHeight = 13
+    TabOrder = 6
+  end
+  object Button2: TButton
+    Left = 8
+    Top = 240
+    Width = 201
+    Height = 25
+    Caption = 'Ordenes Auditoria'
+    TabOrder = 7
+    OnClick = Button2Click
+  end
+  object Button3: TButton
+    Left = 8
+    Top = 304
+    Width = 201
+    Height = 25
+    Caption = 'Migrar Detfact Central'
+    TabOrder = 8
+    OnClick = Button3Click
+  end
+  object Button4: TButton
+    Left = 320
+    Top = 304
+    Width = 185
+    Height = 25
+    Caption = 'Migrar Distribucion'
+    TabOrder = 9
+    OnClick = Button4Click
+  end
+  object ListBox2: TListBox
+    Left = 424
+    Top = 184
+    Width = 153
+    Height = 97
+    ItemHeight = 13
+    TabOrder = 10
+  end
+end

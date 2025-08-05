@@ -1,0 +1,34 @@
+  
+Escriba el Nombre de su Laboratorio
+Facturacion Resumen a Profesionales
+Periodo de Facturacion: 03/2022                              Hoja Nro.: 1
+ 
+--------------------------------------------------------------------------------
+Paciente       Cod.   Arancel Cod.   Arancel Cod.   Arancel Cod.   Arancel Cod.   Arancel   
+--------------------------------------------------------------------------------
+
+Profesional: GOMEZ ESTEBAN                    211014   Periodo: 03/2022
+ 
+Obra Social: PREVENCION SALUD S.A             121018
+ 
+                
+BULACIO JOS [N] 660475     286.65 660297     95.55 660412     143.33 660174     143.33 660876     238.88 
+                660481     477.75 660192     191.10 660133     143.33 660865     859.95 660867     859.95 
+                660543     1051.05 660001     286.65 
+FANTIN MARI [S] 660758     1051.05 660001     286.65 
+FANTIN MARI [S] 660370     955.50 660612     955.50 660300     955.50 660001     286.65 
+
+Nro. de Ordenes:    3 Comp. Arancelaria:    0.00 Subtotal Facturado:    9268.35
+--------------------------------------------------------------------------------
+                          Total de Ordenes        :            3
+                          Total de Prestaciones   :           18
+                          Unidades Gasto          :         0.00 $        0.00
+                          Unidades Honorario      :         0.00 $        0.00
+                          Compensacion Arancelaria:              $        0.00
+                                                                  ------------
+                          Subtotal Facturado      :              $     9268.35
+                          Subtotal Grabado        :              $     4490.85
+                          Subtotal Exento         :              $     4777.50
+                          I.V.A.                  :              $      471.54
+                          Total Facturado         :              $     9739.89
+--------------------------------------------------------------------------------

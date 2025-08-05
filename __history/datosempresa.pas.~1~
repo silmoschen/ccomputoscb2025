@@ -1,0 +1,40 @@
+unit datosempresa;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Mask, ExtCtrls;
+
+type
+  TfmDatosEmpresa = class(TForm)
+    Panel1: TPanel;
+    Label2: TLabel;
+    rsocial: TMaskEdit;
+    Label1: TLabel;
+    direccion: TMaskEdit;
+    Label3: TLabel;
+    telefono: TMaskEdit;
+    Label4: TLabel;
+    cuit: TMaskEdit;
+    Label5: TLabel;
+    ptovta: TMaskEdit;
+    Label6: TLabel;
+    tipo: TMaskEdit;
+    Label7: TLabel;
+    inicioactividad: TMaskEdit;
+    btnGuardar: TButton;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  fmDatosEmpresa: TfmDatosEmpresa;
+
+implementation
+
+{$R *.dfm}
+
+end.

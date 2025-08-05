@@ -1,0 +1,1 @@
+agregar campo montoonline(double) en det_auditoria y det_auditoria_hist

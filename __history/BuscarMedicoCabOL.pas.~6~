@@ -1,0 +1,107 @@
+unit BuscarMedicoCabOL;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, Grids, StdCtrls, Mask, ExtCtrls, CMedicosCCBOS, CMedicosCCB, CUtiles,
+  CConfigForms, DBTables;
+
+type
+  TfmBuscarMedicoCabeceraOL = class(TForm)
+    Panel2: TPanel;
+    S: TStringGrid;
+    Panel1: TPanel;
+    buscar: TMaskEdit;
+    Label1: TLabel;
+    procedure FormShow(Sender: TObject);
+    procedure SKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure buscarChange(Sender: TObject);
+    procedure buscarKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure Panel2Resize(Sender: TObject);
+  private
+    { Private declarations }
+    nroItems: Integer;
+    redim: Boolean;
+  public
+    { Public declarations }
+    codos: String;
+    seleccionOK: Boolean;
+  end;
+
+var
+  fmBuscarMedicoCabeceraOL: TfmBuscarMedicoCabeceraOL;
+
+implementation
+
+uses BuscarMedicoCab;
+
+{$R *.dfm}
+
+procedure TfmBuscarMedicoCabeceraOL.FormShow(Sender: TObject);
+var
+  r: TQuery;
+  i: Integer;
+begin
+  configform.Setear(fmBuscarMedicoCabeceraOL);
+  S.Cells[0, 0] := 'Nombre del Profesional'; S.Cells[1, 0] := 'Id.'; S.Cells[2, 0] := 'Nº Cápitas';
+  r := medicoos.getMedicos(codos);
+  r.open; i := 0;
+  while not r.eof do begin
+    inc(i);
+    S.Cells[0, i] := r.FieldByName('codos').AsString;
+    S.Cells[1, i] := r.FieldByName('idprof').AsString;
+    S.Cells[2, i] := r.FieldByName('nombre').AsString;
+    nroItems      := i;
+  end;
+  r.Close; r.free;
+  redim := False;
+  buscarChange(Self);
+  if Length(Trim(buscar.Text)) > 0 then buscar.SelLength := Length(TrimRight(buscar.Text));
+end;
+
+procedure TfmBuscarMedicoCabeceraOL.SKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if (Key = VK_RETURN) then
+    if Length(Trim(S.Cells[0, S.Row])) > 0 then Begin
+      seleccionOK := True;
+      Close;
+    end else
+      utiles.msgError('El Registro Seleccionado es Incorrecto ...!');
+end;
+
+procedure TfmBuscarMedicoCabeceraOL.buscarChange(Sender: TObject);
+var
+  caracteres, i: integer;
+begin
+  caracteres := Length(Trim(buscar.Text));
+  For i := 1 to nroItems do Begin
+    if UpperCase(buscar.Text) = UpperCase(Copy(S.cells[0, i], 1, caracteres)) then Begin
+      S.row := i; S.Refresh; Break;
+    end;
+  end;
+end;
+
+procedure TfmBuscarMedicoCabeceraOL.buscarKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then S.SetFocus;
+end;
+
+procedure TfmBuscarMedicoCabeceraOL.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  configform.Guardar(fmBuscarMedicoCabecera, redim);
+end;
+
+procedure TfmBuscarMedicoCabeceraOL.Panel2Resize(Sender: TObject);
+begin
+  redim := True;
+end;
+
+end.

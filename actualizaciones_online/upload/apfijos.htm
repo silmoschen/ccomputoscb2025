@@ -1,0 +1,49 @@
+<!-- Archivo: index.htm -->
+<!-- Lectura de Stock.xml. Listado con paginación -->
+<HTML>
+
+<LINK REL="STYLESHEET" HREF="apfijos.css" TYPE="text/css">
+
+<HEAD>
+   <TITLE>Determinaciones con Monto Fijo</TITLE>
+</HEAD>
+
+<BODY><CENTER>
+
+   <XML ID="dsoNom" SRC="apfijos.xml"></XML>
+
+   <BUTTON ONCLICK="NomTabla.firstPage()">
+      &lt;&lt; Primera página
+   </BUTTON>
+
+   <BUTTON ONCLICK="NomTabla.previousPage()">
+      &lt; Anterior
+   </BUTTON>
+
+   <BUTTON ONCLICK="NomTabla.nextPage()">
+      Siguiente &gt;
+   </BUTTON>
+
+   <BUTTON ONCLICK="NomTabla.lastPage()">
+      Ultima página &gt;&gt;
+   </BUTTON>
+   <p>
+   
+   <TABLE WIDTH=750 ID="NomTabla" DATASRC="#dsoNom" DATAPAGESIZE="10" BORDER="1" CELLPADDING="2" BORDERCOLOR="black" CELLSPACING=0>
+      <THEAD>
+         <TH>Codigo</TH>
+         <TH>Obra Social</TH>
+         <TH>Codigo</TH>
+         <TH>Monto</TH>
+      </THEAD>     
+      <TR ALIGN="center">
+         <TD WIDTH=60><SPAN DATAFLD="codos"></SPAN></TD>
+         <TD WIDTH=370><SPAN DATAFLD="obsocial"></SPAN></TD>
+         <TD WIDTH=60><SPAN DATAFLD="codanalisis"></SPAN></TD>
+         <TD WIDTH=60><SPAN DATAFLD="monto"></SPAN></TD>
+      </TR>
+   </TABLE>
+
+</CENTER></BODY>
+
+</HTML>

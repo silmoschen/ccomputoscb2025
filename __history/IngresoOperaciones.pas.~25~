@@ -1,0 +1,731 @@
+unit IngresoOperaciones;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, ComCtrls, Grids, DBTables, StdCtrls, Buttons,
+  Menus, IBQuery;
+
+type
+  TfmIngreso = class(TForm)
+    StatusBar1: TStatusBar;
+    Panel3: TPanel;
+    Panel5: TPanel;
+    Guardar: TBitBtn;
+    Label5: TLabel;
+    perLiq: TLabel;
+    PopupMenu: TPopupMenu;
+    BuscarProfesional1: TMenuItem;
+    Parametros1: TMenuItem;
+    Recalcular1: TMenuItem;
+    N1: TMenuItem;
+    EliminarItems1: TMenuItem;
+    Panel1: TPanel;
+    SpeedButton1: TSpeedButton;
+    SpeedButton2: TSpeedButton;
+    N2: TMenuItem;
+    SpeedButton3: TSpeedButton;
+    SpeedButton4: TSpeedButton;
+    Panel19: TPanel;
+    ScrollBox3: TScrollBox;
+    Panel2: TPanel;
+    Ir: TStringGrid;
+    A: TStringGrid;
+    Id: TStringGrid;
+    PG: TPanel;
+    S1: TSplitter;
+    P3: TPanel;
+    P4: TPanel;
+    Panel4: TPanel;
+    D: TStringGrid;
+    P1: TPanel;
+    P2: TPanel;
+    Label4: TLabel;
+    descrip: TLabel;
+    Panel6: TPanel;
+    M: TStringGrid;
+    Panel7: TPanel;
+    Label1: TLabel;
+    periodo: TLabel;
+    Label2: TLabel;
+    codos: TLabel;
+    Label3: TLabel;
+    fecha: TLabel;
+    nos: TLabel;
+    Label6: TLabel;
+    nrodist: TLabel;
+    It: TLabel;
+    Label7: TLabel;
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure AKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure GuardarClick(Sender: TObject);
+    procedure ASelectCell(Sender: TObject; ACol, ARow: Integer;
+      var CanSelect: Boolean);
+    procedure FormResize(Sender: TObject);
+    procedure DKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure DDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect;
+      State: TGridDrawState);
+    procedure Recalcular1Click(Sender: TObject);
+    procedure BuscarProfesional1Click(Sender: TObject);
+    procedure EliminarItems1Click(Sender: TObject);
+    procedure MKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure DClick(Sender: TObject);
+    procedure Panel19Resize(Sender: TObject);
+  private
+    { Private declarations }
+    Fila, Columna: Integer;
+    redim, BorradoDirecto: boolean;
+    archivo: TextFile;
+    objeto: String;
+    procedure Teclado(SG: TStringGrid; var Key: Word; Shift: TShiftState);
+    procedure CargarProfesionales(SG: TStringGrid; ColInicio: Integer; filtro: Boolean);
+    function  CantidadDeItemsIngresados(STG: TStringGrid): Integer;
+    function  NumeroDeColumna(STG: TStringGrid; xid: String): Integer;
+    function  NumeroDeFila(STG: TStringGrid; xid: String): Integer;
+    procedure CargarAjustesPersonales;
+    procedure CargarDebitosCreditos;
+    procedure DrawCell(SG: TStringGrid; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
+    procedure CargarDetalleDebitosCreditos;
+    procedure EliminarItems;
+    procedure AnularEntradasErroneas(SG: TStringGrid);
+  public
+    { Public declarations }
+    tipomov: String;
+    anchocol: Integer;
+    ALINEACION: Cardinal;
+    __c: boolean;
+  end;
+
+var
+  fmIngreso: TfmIngreso;
+
+implementation
+
+uses CLiquidacionObrasSocCCB, CProfesionalCCB, CDebitosCreditosCentroBioq, CFacturacionCCB, CUtiles,
+     CRetencionesCentroBioq, CUtilidadesStringGrid, CBDT, CConfigForms, CCVentas_CCB;
+
+{$R *.dfm}
+
+const
+    SectionData = 'Data';
+    Alto    = 'TAlto';
+    Ancho   = 'TAncho';
+    PosX    = 'TposX';
+    PosY    = 'TposY';
+    sepa    = 'TSepa';
+
+procedure TfmIngreso.Teclado(SG: TStringGrid; var Key: Word; Shift: TShiftState);
+var
+  i, j: Integer;
+  b: Boolean;
+Begin
+  if Key = VK_ESCAPE then Close;
+  if Key = VK_F11 then EliminarItems;
+  if (Key = VK_RETURN) or ((Key = VK_DOWN) and (Length(Trim(SG.Cells[SG.Col, SG.Row])) > 0)) then Begin
+    __c := true; 
+    if SG.Col > 0 then Begin
+        if not (SG.Cells[1, 0] = 'Sel') or (Columna > 1) then
+          if Length(Trim(SG.Cells[SG.Col, SG.Row])) > 0 then SG.Cells[SG.Col, SG.Row] := utiles.FormatearNumero(SG.Cells[SG.Col, SG.Row]);
+        if (SG.Col < SG.ColCount -1) and (Key = VK_RETURN) then SG.Col := SG.Col + 1 else Begin
+          if Key = VK_RETURN then
+            if SG.Name <> 'T' then SG.Col := 0 else SG.Col := 1;
+          if (SG.Row < SG.RowCount -1) and (Key = VK_RETURN) then SG.Row := SG.Row + 1;
+        end
+    end else
+      if (Length(Trim(SG.Cells[SG.Col, 0])) > 0) and (Key = VK_RETURN) then SG.Col := SG.Col + 1;
+
+    if ((Length(Trim(SG.Cells[0, SG.Row-1])) = 0) or ((SG.Col > 0) and (Length(Trim(SG.Cells[0, SG.Row])) = 0))) and (Key = VK_RETURN) then Begin
+      utiles.msgError('No está permitido dejar Items Intermedios en Blanco ...!');
+      if SG.Col = 0 then SG.Cells[0, SG.Row] := '' else
+        if SG.Col > 1 then A.Cells[SG.Col-1, SG.Row] := utiles.FormatearNumero(A.Cells[SG.Col-1, SG.Row]) else SG.Cells[SG.Col-1, SG.Row] := '';
+      if (SG.Row > 1) and (SG.Col = 0) then SG.Row := SG.Row - 1;
+      if (SG.Row > 0) and (SG.Col > 0) then SG.Col := Columna;
+      SG.Col := 0;
+    end;
+  end;
+
+  if (Key = VK_DELETE) or (Key = VK_SPACE) and (SG.Col > 0) then Begin // Verificamos que no se hayan borrado todos los items de la grilla
+    b := True;
+    For j := 1 to SG.ColCount - 1 do Begin
+      if j <> SG.Col then Begin
+        if Length(Trim(SG.Cells[j, SG.Row])) > 0 then Begin
+          b := False;
+          Break;
+        end;
+      end;
+    end;
+
+    if b then Begin             // Significa que no quedaron Items en el Renglon, entonces lo Eliminamos
+      BorradoDirecto := True;
+      SG.Cells[0, SG.Row] := 'El Items No Tiene Movimientos';
+      EliminarItems;
+      BorradoDirecto := False;
+    end;
+  end;
+
+end;
+
+procedure TfmIngreso.DrawCell(SG: TStringGrid; ACol, ARow: Integer;
+  Rect: TRect; State: TGridDrawState);
+begin
+  Fila := SG.Row; Columna := SG.Col;
+  StatusBar1.Panels[1].Text := 'F ' + IntToStr(SG.Row) + ', C ' + IntToStr(SG.Col);
+  if Length(Trim(SG.Cells[0, SG.Row])) > 0 then descrip.Caption := SG.Cells[0, SG.Row];
+  if tipomov = 'Ajustes Individuales' then it.Caption := SG.Cells[0, SG.Row];
+end;
+
+function  TfmIngreso.CantidadDeItemsIngresados(STG: TStringGrid): Integer;
+var
+  i: Integer;
+Begin
+  For i := 1 to STG.RowCount do
+    if Length(Trim(STG.Cells[0, i])) = 0 then Break;
+  Result := i - 1;
+end;
+
+function  TfmIngreso.NumeroDeColumna(STG: TStringGrid; xid: String): Integer;
+var
+  i: Integer;
+Begin
+  Result := -1;
+  For i := 1 to STG.ColCount do Begin
+    if Trim(STG.Cells[i, 0]) = Trim(xid) then Begin
+      Result := i;
+      Break;
+    end;
+  end;
+end;
+
+function  TfmIngreso.NumeroDeFila(STG: TStringGrid; xid: String): Integer;
+var
+  i: Integer;
+Begin
+  Result := -1;
+  For i := 1 to STG.RowCount do Begin
+    if Trim(STG.Cells[0, i]) = Trim(xid) then Begin
+      Result := i;
+      Break;
+    end;
+  end;
+end;
+
+procedure TfmIngreso.CargarProfesionales(SG: TStringGrid; ColInicio: Integer; filtro: Boolean);
+var
+  r: TQuery; i, j: Integer;
+begin
+  SG.DefaultColWidth := anchocol;
+  SG.ColWidths[0]    := 200;
+  SG.Cells[0, 0]     := 'Profesional/Items';
+  r := profesional.setProfesionalesAlf;
+  r.Open;
+  SG.ColCount := r.RecordCount + 1 + (ColInicio - 1); i := 0;
+  Id.ColCount := SG.ColCount; Ir.ColCount := SG.ColCount;
+  while not r.Eof do Begin
+    profesional.getDatos(r.FieldByName('idprof').AsString);
+    if Length(Trim(profesional.Codfact)) = 0 then Begin
+      Inc(i);
+      SG.Cells[i + ColInicio - 1, 0] := Copy(r.FieldByName('Nombre').AsString, 1, 23);
+      Id.Cells[i + ColInicio - 1, 0] := r.FieldByName('IdProf').AsString;
+      Ir.Cells[i + ColInicio - 1, 0] := r.FieldByName('IdProf').AsString;
+      For j := ColInicio to SG.ColCount - 1 do SG.Cells[j, i] := '';
+    end else Begin
+      SG.ColCount := SG.ColCount - 1;
+      Id.ColCount := Id.ColCount - 1;
+      Ir.ColCount := Ir.ColCount - 1;
+    end;
+    r.Next;
+  end;
+  r.Close; r.Free;
+end;
+
+procedure TfmIngreso.CargarDebitosCreditos;
+var
+  r: TQuery; i, j, k: Integer; f, lj: Boolean;
+  l: TStringList;
+begin
+  l := ventainsumos.setTotalVentaInsumosPorProfesional(perLiq.Caption);  // Venta de Reactivos
+
+  r := debitoscreditos.setItems;
+  r.Open;
+  Id.RowCount := D.RowCount; Ir.RowCount := D.RowCount;
+  while not r.Eof do Begin
+    if r.FieldByName('importe').AsFloat > 0 then Begin  // Cargamos los items con cálculo unico
+      Inc(i);
+      D.Cells [0, i] := Copy(r.FieldByName('Descrip').AsString, 1, 18);
+      Id.Cells[0, i] := r.FieldByName('Items').AsString;
+      Ir.Cells[0, i] := r.FieldByName('Items').AsString;
+      For j := 1 to D.ColCount do D.Cells[j, i] := utiles.FormatearNumero(FloatToStr(r.FieldByName('importe').AsFloat));
+    end;
+    r.Next;
+  end;
+
+  r.First;     // Ahora procesamos los items que van por categoría
+  while not r.Eof do Begin
+    if r.FieldByName('discrim').AsString = 'C' then Begin
+      Inc(i);
+      D.Cells[0, i]  := r.FieldByName('descrip').AsString;
+      Id.Cells[0, i] := r.FieldByName('Items').AsString;
+      Ir.Cells[0, i] := r.FieldByName('Items').AsString;
+      For j := 1 to Id.ColCount do Begin
+        profesional.getDatos(Id.Cells[j, 0]);
+        debitoscreditos.getDatos(r.FieldByName('items').AsString, profesional.Idcategoria);
+        D.Cells[j, i] := utiles.FormatearNumero(FloatToStr(debitoscreditos.ImporteCat));
+      end;
+    end;
+    r.Next;
+  end;
+
+  r.First; f := False;     // Ahora procesamos los items que se aplican a ciertos profesionales
+  while not r.Eof do Begin
+    if r.FieldByName('discrim').AsString = 'I' then Begin
+    f := False;
+    For j := 1 to Id.ColCount do Begin                        // Montos Normales
+      //debitoscreditos.getDatosDCProf(r.FieldByName('items').AsString, Id.Cells[j, 0], perLiq.Caption);  // Ajuste 26/12/2006
+      debitoscreditos.SincronizarDCProf(r.FieldByName('items').AsString, Id.Cells[j, 0], perLiq.Caption);  // Ajuste 26/12/2006
+      lj := False;
+      if Length(Trim(debitoscreditos.Per_inicio)) = 1  then lj := True else
+        if (Copy(perLiq.Caption, 4, 4) + Copy(perLiq.Caption, 1, 2) >= Copy(debitoscreditos.Per_inicio, 4, 4) + Copy(debitoscreditos.Per_inicio, 1, 2)) and (Copy(perLiq.Caption, 4, 4) + Copy(perLiq.Caption, 1, 2) <= Copy(debitoscreditos.Per_final, 4, 4) + Copy(debitoscreditos.Per_final, 1, 2)) then lj := True;
+
+      lj := True;
+      if lj then Begin
+        if debitoscreditos.MontoN > 0 then Begin
+          //if debitoscreditos.BuscarDCProf(r.FieldByName('items').AsString, Id.Cells[j, 0], perLiq.Caption) then Begin
+            if debitoscreditos.MontoN > 0 then Begin
+              if not f then Begin
+                Inc(i);
+                D.Cells[0, i]  := r.FieldByName('descrip').AsString;
+                Id.Cells[0, i] := r.FieldByName('Items').AsString;
+                Ir.Cells[0, i] := r.FieldByName('Items').AsString;
+                f := True;
+              end;
+              D.Cells[j, i] := utiles.FormatearNumero(FloatToStr(debitoscreditos.MontoN));
+            end;
+          //end;
+        end;
+      end;
+    end;
+
+    // Verificamos los Meses intermedios
+    f := False;
+    For j := 1 to Id.ColCount do Begin                        // Montos Normales
+      if debitoscreditos.BuscarMes(r.FieldByName('items').AsString, Id.Cells[j, 0], Copy(perLiq.Caption, 1, 2)) then Begin
+        debitoscreditos.getDatosMes(r.FieldByName('items').AsString, Id.Cells[j, 0], Copy(perLiq.Caption, 1, 2));
+        if not f then Begin
+          Inc(i);
+          D.Cells[0, i]  := r.FieldByName('descrip').AsString + ' (monto dif.)';
+          Id.Cells[0, i] := r.FieldByName('Items').AsString;
+          Ir.Cells[0, i] := r.FieldByName('Items').AsString;
+          f := True;
+        end;
+        if debitoscreditos.MontoD > 0 then D.Cells[j, i] := utiles.FormatearNumero(FloatToStr(debitoscreditos.MontoD));
+      end;
+    end;
+   end;
+   r.Next;
+  end;
+  r.Close; r.Free;
+
+  // Venta de Reactivos
+  for i := 1 to D.RowCount do Begin
+    if Length(Trim(D.Cells[0, i])) = 0 then Break;
+    if D.Cells[0, i] = 'Venta Reactivos Centro' then Break;
+  end;
+  j := i;
+
+  //l := ventainsumos.setTotalVentaInsumosPorProfesional(perLiq.Caption);
+  for i := 1 to l.Count do Begin
+    for k := 1 to Ir.ColCount do
+      if Ir.Cells[k, 0] = Copy(l.Strings[i-1], 1, 6) then Break;
+    D.Cells[0, j] := 'Venta Reactivos Centro';
+    D.Cells[k, j] := utiles.FormatearNumero(Copy(Trim(l.Strings[i-1]), 7, 20));
+  end;
+
+  AnularEntradasErroneas(D);
+end;
+
+procedure TfmIngreso.CargarAjustesPersonales;
+// Objetivo...: Cargar Ajustes Personales, si es que existen
+var
+  r: TQuery;
+  q: TIBQuery;
+Begin
+  if (distribucionos.interbase = 'N') then begin
+    r := distribucionos.setItemsAjustesIndividuales(periodo.Caption, codos.Caption, nrodist.Caption);
+    r.Open;
+    while not r.Eof Do Begin
+      A.Cells[0, r.FieldByName('Items').AsInteger] := r.FieldByName('Concepto').AsString;
+      A.Cells[NumeroDeColumna(Id, r.FieldByName('idprof').AsString), r.FieldByName('Items').AsInteger] := utiles.FormatearNumero(r.FieldByName('importe').AsString);
+      r.Next;
+    end;
+    r.Close; r.Free;
+  end;
+  if (distribucionos.interbase = 'S') then begin
+    q := distribucionos.setItemsAjustesIndividualesIB(periodo.Caption, codos.Caption, nrodist.Caption);
+    q.Open;
+    while not q.Eof Do Begin
+      A.Cells[0, q.FieldByName('Items').AsInteger] := q.FieldByName('Concepto').AsString;
+      A.Cells[NumeroDeColumna(Id, q.FieldByName('idprof').AsString), q.FieldByName('Items').AsInteger] := utiles.FormatearNumero(q.FieldByName('importe').AsString);
+      q.Next;
+    end;
+    q.Close; q.Free;
+  end;
+end;
+
+procedure TfmIngreso.CargarDetalleDebitosCreditos;
+// Objetivo...: Cargar Debitos Creditos Profesionales
+var
+  r: TQuery; c, f, fa, nf: Integer;
+  q: TIBQuery;
+Begin
+  if (distribucionos.interbase = 'N') then begin
+    r := distribucionos.setItemsDCProf(perLiq.Caption, nrodist.Caption);
+    r.Open; r.First; f := 0;
+    while not r.Eof Do Begin  // Items Manuales
+      if r.FieldByName('tipomov').AsString = 'M' then Begin
+
+        // Verificamos si el items ya esta cargado e identificamos la fila
+        f := 0;
+        for nf := 1 to M.RowCount do Begin
+          if Length(Trim(M.Cells[0, nf])) = 0 then Break;
+          if M.Cells[0, nf] = r.FieldByName('DescriPaj').AsString then Break;
+        end;
+        f := nf;
+
+        M.Cells[0, f] := r.FieldByName('DescriPaj').AsString;
+        c := NumeroDeColumna(Ir, r.FieldByName('Idprof').AsString);
+        if (c >= 0) and (f >= 0) then
+          if r.FieldByName('importeaj').AsFloat <> 0 then M.Cells[c, f] := utiles.FormatearNumero(r.FieldByName('importeaj').AsString) else D.Cells[NumeroDeColumna(Ir, r.FieldByName('Idprof').AsString), NumeroDeFila(Ir, r.FieldByName('Idajuste').AsString)] := '';
+      end;
+      r.Next;
+    end;
+
+    r.Close; r.Free;
+  end;
+
+  if (distribucionos.interbase = 'S') then begin
+    q := distribucionos.setItemsDCProfIB(perLiq.Caption, nrodist.Caption);
+    q.Open; q.First; f := 0;
+    while not q.Eof Do Begin  // Items Manuales
+      if q.FieldByName('tipomov').AsString = 'M' then Begin
+
+        // Verificamos si el items ya esta cargado e identificamos la fila
+        f := 0;
+        for nf := 1 to M.RowCount do Begin
+          if Length(Trim(M.Cells[0, nf])) = 0 then Break;
+          if M.Cells[0, nf] = q.FieldByName('DescriPaj').AsString then Break;
+        end;
+        f := nf;
+
+        M.Cells[0, f] := q.FieldByName('DescriPaj').AsString;
+        c := NumeroDeColumna(Ir, q.FieldByName('Idprof').AsString);
+        if (c >= 0) and (f >= 0) then
+          if q.FieldByName('importeaj').AsFloat <> 0 then M.Cells[c, f] := utiles.FormatearNumero(q.FieldByName('importeaj').AsString); // else D.Cells[NumeroDeColumna(Ir, q.FieldByName('Idprof').AsString), NumeroDeFila(Ir, q.FieldByName('Idajuste').AsString)] := '';
+      end;
+      q.Next;
+    end;
+
+    q.Close; q.Free;
+  end;
+end;
+
+procedure TfmIngreso.EliminarItems;
+var
+  SG: TStringGrid;
+  borrado: Boolean;
+begin
+  if objeto = 'A' then SG := A;
+  if objeto = 'D' then SG := D;
+  if objeto = 'M' then SG := M;
+  if Length(Trim(SG.Cells[0, SG.Row])) = 0 then utiles.msgError('El Items Debe tener una Descripción Asociada ...!') else Begin
+    if BorradoDirecto then borrado := True else
+      borrado := utiles.BajaRegistro('Seguro para Eliminar Items ' + SG.Cells[0, SG.Row] + ' ? (Incluye Items con Todos sus Operaciones Asociadas)');
+
+    if borrado then
+      grid.BorrarRenglon_SinRenumerar(SG);
+
+    // Ajustes Finales
+    if (objeto = 'M') and (Length(Trim(M.Cells[0, 1])) = 0) then distribucionos.BorrarDCProfManuales(perLiq.Caption, nrodist.Caption);
+    if (objeto = 'A') and (Length(Trim(A.Cells[0, 1])) = 0) then distribucionos.AjustarNumeroDeItems(periodo.Caption, codos.Caption, nrodist.Caption, 0);
+  end;
+end;
+
+procedure TfmIngreso.AnularEntradasErroneas(SG: TStringGrid);
+var
+  i, j, k, l, m: Integer;
+  lb: array[1..10] of Integer;
+Begin
+  k := 0;
+  For i := 1 to SG.RowCount do Begin
+    if Length(Trim(SG.Cells[0, i])) = 0 then Break;
+    l := 0;
+    for j := 1 to SG.ColCount - 1 do l := l + Length(Trim(SG.Cells[j, i]));
+    if l = 0 then Begin
+      Inc(k);
+      lb[k] := j;
+    end;
+  end;
+
+  m := 0;
+  for i := 1 to k do Begin
+    SG.Row := k-m;
+    grid.BorrarRenglon_SinRenumerar(SG);
+    Inc(m);
+  end;
+end;
+
+procedure TfmIngreso.FormShow(Sender: TObject);
+var
+  i, j, n: Integer;
+begin
+  Caption := tipomov;
+  configform.Setear(fmIngreso);
+  if FileExists(dbs.DirSistema + '\iop.ini') then Begin
+    AssignFile(archivo, dbs.DirSistema + '\iop.ini');
+    reset(archivo);
+    ReadLn(archivo, n);
+    P3.Height := n;
+    closeFile(archivo);
+  end else
+    P3.Height := 145;
+
+  if tipomov = 'Ajustes Individuales' then Begin
+    Refresh;
+    // Cargamos los débitos y créditos personales
+    CargarProfesionales(D, 1, False); StatusBar1.Panels[0].Text := 'Cargando Profesionales'; StatusBar1.Refresh;
+    CargarDebitosCreditos; StatusBar1.Panels[0].Text := 'Cargando Débitos y Créditos Individuales'; StatusBar1.Refresh;
+    CargarDetalleDebitosCreditos; StatusBar1.Panels[0].Text := 'Cargando Detalle de Débitos y Créditos Individuales'; StatusBar1.Refresh;
+
+    A.Visible := True;
+    StatusBar1.Panels[0].Text := 'Cargando Ajustes Individuales'; StatusBar1.Refresh;
+    CargarProfesionales(A, 1, True); StatusBar1.Panels[0].Text := 'Verificando Profesionales'; StatusBar1.Refresh;
+    CargarAjustesPersonales; StatusBar1.Panels[0].Text := 'Cargando Ajustes Personales'; StatusBar1.Refresh;
+    ActiveControl := A;
+    A.Refresh;
+    Panel7.Visible := True;
+    StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+  end;
+  if tipomov = 'Débitos y Créditos Personales' then Begin
+    PG.Visible := True;
+    StatusBar1.Panels[0].Text := 'Cargando Débitos y Créditos Individuales'; StatusBar1.Refresh;
+    D.Refresh;
+    CargarProfesionales(D, 1, False);
+    CargarProfesionales(M, 1, False);
+    CargarDebitosCreditos;
+    CargarDetalleDebitosCreditos;
+    //CargarDebitosCreditos;
+    for i := 1 to D.RowCount do if Length(Trim(D.Cells[0, i])) = 0 then Break;
+    D.Row := i;
+    for i := 1 to M.RowCount do if Length(Trim(M.Cells[0, i])) = 0 then Break;
+    M.Row := i;
+    ActiveControl  := M;
+    Panel7.Visible := False;
+    Label7.Visible := False;
+    Panel3.Height  := 15;
+    StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+  end;
+
+  if A.Visible then grid.RecuperarAnchoColumnas(fmIngreso, A);
+  if D.Visible then grid.RecuperarAnchoColumnas(fmIngreso, D);
+  if M.Visible then grid.RecuperarAnchoColumnas(fmIngreso, M);
+
+  D.Refresh; M.Refresh;
+  redim := False;
+end;
+
+procedure TfmIngreso.FormClose(Sender: TObject; var Action: TCloseAction);
+var
+  i: Integer;
+begin
+  GuardarClick(Sender);
+
+  configform.Guardar(fmIngreso, redim);
+  AssignFile(archivo, dbs.DirSistema + '\iop.ini');
+  rewrite(archivo);
+  WriteLn(archivo, P3.Height);
+  closeFile(archivo);
+
+  if A.Visible then grid.GuardarAnchoColumnas(fmIngreso, A);
+  if D.Visible then grid.GuardarAnchoColumnas(fmIngreso, D);
+  if M.Visible then grid.GuardarAnchoColumnas(fmIngreso, M);
+end;
+
+procedure TfmIngreso.AKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  Teclado(A, Key, Shift);
+  if Key = VK_F5 then
+end;
+
+procedure TfmIngreso.GuardarClick(Sender: TObject);
+var
+  i, j, it, h, ultimoItems, ultlist: Integer; total: Real;
+begin
+
+  StatusBar1.Panels[0].Text := 'Registrando Operaciones ...!'; StatusBar1.Refresh;
+  if tipomov = 'Ajustes Individuales' then Begin    // Debitos y Creditos Personales
+    it := CantidadDeItemsIngresados(A);
+    For i := 1 to A.RowCount do Begin
+      if Length(Trim(A.Cells[0, i])) = 0 then Break;
+      For j := 1 to A.ColCount do Begin
+        if Length(Trim(A.Cells[j, i])) = 0 then A.Cells[j, i] := '0';
+        //if StrToFloat(A.Cells[j, i]) <> 0 then
+          distribucionos.GuardarAjustesIndividuales(periodo.Caption, codos.Caption, Id.Cells[j, 0], utiles.sLlenarIzquierda(IntToStr(i), 3, '0'), A.Cells[0, i], fecha.Caption, 'S', perLiq.Caption, nrodist.Caption, StrToFloat(Trim(A.Cells[j, i])), it);
+      end;
+    end;
+
+    distribucionos.FinalizarTransaccion;
+
+    distribucionos.AjustarNumeroDeItems(periodo.Caption, codos.Caption, nrodist.Caption, i);
+
+    // Actualizamos el total de Retenciones del Profesional
+    total := 0;
+    For i := 1 to A.ColCount do Begin
+      For j := 1 to A.RowCount do Begin
+        if Length(Trim(A.Cells[i, j])) = 0 then Break;
+        total := total + StrToFloat(A.Cells[i, j]);
+      end;
+      if total <> 0 then facturacion.RegistrarNetoACobrarProfesional(periodo.Caption, Id.Cells[i, 0], codos.Caption, total);
+      total := 0;
+    end;
+  end;
+
+  if tipomov = 'Débitos y Créditos Personales' then Begin   // Debitos y Creditos Personales
+    distribucionos.BorrarDCProfFijos(perliq.Caption, nrodist.Caption);                        // Reajuste
+    it := CantidadDeItemsIngresados(D);                      // Ajustes Fijos
+    For i := 1 to D.RowCount do Begin
+      if Length(Trim(D.Cells[0, i])) = 0 then Break;
+      For j := 1 to D.ColCount do Begin
+        if Length(Trim(D.Cells[j, i])) = 0 then D.Cells[j, i] := '0';
+        if Length(Trim(Ir.Cells[j, 0])) > 0 then distribucionos.GuardarDCProf(perLiq.Caption, nrodist.Caption, Ir.Cells[j, 0], utiles.sLlenarIzquierda(IntToStr(i), 3, '0'), Ir.Cells[0, i], D.Cells[0, i] , StrToFloat(Trim(D.Cells[j, i])), it, 'F');
+      end;
+    end;
+  end;
+  ultimoItems := i;
+
+  distribucionos.FinalizarTransaccion;
+
+  if (__c = false) then exit else begin
+
+    if tipomov = 'Débitos y Créditos Personales' then Begin    // Debitos y Creditos Personales
+      distribucionos.BorrarDCProfManuales(perliq.Caption, nrodist.Caption);  // Reajuste
+      it := it + CantidadDeItemsIngresados(M);                 // Ajustes Manuales
+      For i := 1 to M.RowCount do Begin
+        if Length(Trim(M.Cells[0, i])) = 0 then Break;
+        Inc(ultimoItems);
+        For j := 1 to M.ColCount do Begin
+          if Length(Trim(M.Cells[j, i])) = 0 then M.Cells[j, i] := '0';
+          if Length(Trim(Ir.Cells[j, 0])) > 0 then distribucionos.GuardarDCProf(perLiq.Caption, nrodist.Caption, Ir.Cells[j, 0], utiles.sLlenarIzquierda(IntToStr(ultimoItems), 3, '0'), Ir.Cells[0, i], M.Cells[0, i] , StrToFloat(Trim(M.Cells[j, i])), it, 'M');
+        end;
+      end;
+    end;
+
+    distribucionos.FinalizarTransaccion;
+
+  end;
+
+  StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+end;
+
+procedure TfmIngreso.ASelectCell(Sender: TObject; ACol, ARow: Integer;
+  var CanSelect: Boolean);
+begin
+  guardar.Enabled := True;
+end;
+
+procedure TfmIngreso.FormResize(Sender: TObject);
+begin
+  StatusBar1.Panels[0].Width := Width - 220;
+end;
+
+procedure TfmIngreso.DKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  Teclado(D, Key, Shift);
+  if Key = VK_F5 then BuscarProfesional1Click(Sender);
+end;
+
+procedure TfmIngreso.DDrawCell(Sender: TObject; ACol, ARow: Integer;
+  Rect: TRect; State: TGridDrawState);
+var
+  Grid      : TStringGrid;
+  Texto     : String;
+begin
+  if (ACol = 0) or (ARow = 0) then ALINEACION := DT_LEFT else ALINEACION := DT_RIGHT;
+
+  Grid := TStringGrid(Sender);
+  objeto := Grid.Name;
+
+  if (ARow < Grid.FixedRows) or (ACol < Grid.FixedCols)
+  then
+    Grid.Canvas.Brush.Color := clBtnFace
+  else
+    Grid.Canvas.Brush.Color := clWhite;
+
+  Grid.Canvas.FillRect(Rect);
+  Texto := ' ' + Grid.Cells[ACol,ARow] + '  ';
+  DrawText( Grid.Canvas.Handle,
+            PChar(Texto),
+            StrLen(PChar(Texto)),
+            Rect,
+            ALINEACION);
+
+  if Sender = A then DrawCell(A, ACol, ARow, Rect, State);
+  if Sender = D then DrawCell(D, ACol, ARow, Rect, State);
+  if Sender = M then DrawCell(M, ACol, ARow, Rect, State);
+end;
+
+procedure TfmIngreso.Recalcular1Click(Sender: TObject);
+begin
+ StatusBar1.Panels[0].Text := 'Recalculando Items ...!'; StatusBar1.Refresh;
+ grid.IniciarGrilla(D);
+ if tipomov = 'Débitos y Créditos Personales' then CargarDebitosCreditos;
+ StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+end;
+
+procedure TfmIngreso.BuscarProfesional1Click(Sender: TObject);
+var
+  InputString: String; i: Integer;
+  SG: TStringGrid;
+begin
+  InputString:= InputBox('Buscar', 'Profesional', '');
+  if tipomov = 'Débitos y Créditos Personales' then Begin
+    if objeto = 'D' then SG := D;
+    if objeto = 'M' then SG := M;
+  end;
+  if tipomov = 'Ajustes Individuales' then SG := A;
+  For i := 1 to SG.ColCount do Begin
+    if Copy(trimLeft(lowercase(SG.Cells[i, 0])), 1, Length(trimLeft(inputString))) = trimLeft(lowercase(InputString)) then Begin
+      SG.Col := i; SG.Refresh;
+      Break;
+    end;
+  end;
+end;
+
+procedure TfmIngreso.EliminarItems1Click(Sender: TObject);
+begin
+  EliminarItems;
+end;
+
+procedure TfmIngreso.MKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  Teclado(M, Key, Shift);
+  if Key = VK_F5 then BuscarProfesional1Click(Sender);
+  descrip.Caption := M.Cells[0, M.Row];
+end;
+
+procedure TfmIngreso.DClick(Sender: TObject);
+begin
+  if Sender = D then objeto := 'D';
+  if Sender = M then objeto := 'M';
+  if Sender = A then objeto := 'A';
+end;
+
+procedure TfmIngreso.Panel19Resize(Sender: TObject);
+begin
+  redim := True;
+end;
+
+end.

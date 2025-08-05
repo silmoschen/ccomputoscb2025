@@ -1,0 +1,129 @@
+unit CFTP;
+
+interface
+
+uses CBDT, SysUtils, DBTables, CUtiles, CListar, CIDBFM;
+
+type
+
+TTFTP = class
+  id: integer;
+  host, ftp, usuario, pass, parametro1: string;
+  tabla: TTable;
+ public
+  { Declaraciones Públicas }
+  constructor Create;
+  destructor  Destroy; override;
+
+  procedure   Registrar(xid: integer; xhost, xftp, xusuario, xpass, xparametro: string);
+  procedure   Borrar(xid: integer);
+  function    Buscar(xid: integer): boolean;
+  procedure   getDatos(xid: integer);
+
+  procedure   conectar;
+  procedure   desconectar;
+ private
+  { Declaraciones Privadas }
+  conexiones: shortint;
+end;
+
+function ftp: TTFTP;
+
+implementation
+
+var
+  xftp: TTFTP = nil;
+
+constructor TTFTP.Create;
+begin
+  inherited Create;
+  tabla := datosdb.openDB('FTP', '');
+end;
+
+destructor TTFTP.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TTFTP.Registrar(xid: integer; xhost, xftp, xusuario, xpass, xparametro: string);
+begin
+  if (buscar(xid)) then tabla.edit else tabla.append;
+  tabla.FieldByName('id').asinteger := xid;
+  tabla.FieldByName('host').asstring := xhost;
+  tabla.FieldByName('ftp').asstring := xftp;
+  tabla.FieldByName('usuario').asstring := xusuario;
+  tabla.FieldByName('pass').asstring := xpass;
+  tabla.FieldByName('parametro').asstring := xparametro;
+  try
+    tabla.post
+   except
+    tabla.cancel
+  end;
+  tabla.Refresh;
+end;
+
+procedure TTFTP.Borrar(xid: integer);
+begin
+  if (buscar(xid)) then tabla.Delete;
+  tabla.Refresh;
+end;
+
+function  TTFTP.Buscar(xid: integer): boolean;
+begin
+  result := tabla.FindKey([xid]);
+end;
+
+procedure TTFTP.getDatos(xid: integer);
+begin
+  if (buscar(xid)) then begin
+    id := tabla.FieldByName('id').asinteger;
+    host := tabla.FieldByName('host').asstring;
+    ftp := tabla.FieldByName('ftp').asstring;
+    usuario := tabla.FieldByName('usuario').asstring;
+    pass := tabla.FieldByName('pass').asstring;
+    parametro1 := tabla.FieldByName('parametro1').asstring;
+  end else begin
+    id := 0;
+    host := '';
+    ftp := '';
+    usuario := '';
+    pass := '';
+    parametro1 := '';
+  end;
+end;
+
+procedure TTFTP.conectar;
+// Objetivo...: cerrar tablas de persistencia
+begin
+  if conexiones = 0 then Begin
+    if not (tabla.Active) then tabla.Open;    
+  end;
+  Inc(conexiones);
+end;
+
+procedure TTFTP.desconectar;
+// Objetivo...: cerrar tablas de persistencia
+begin
+  Dec(conexiones);
+  if conexiones = 0 then Begin
+    datosdb.closeDB(tabla);
+  end;
+end;
+
+{===============================================================================}
+
+function ftp: TTFTP;
+begin
+  if xftp = nil then
+    xftp := TTFTP.Create;
+  Result := xftp;
+end;
+
+{===============================================================================}
+
+initialization
+
+finalization
+  xftp.Free;
+
+end.

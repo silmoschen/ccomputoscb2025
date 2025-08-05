@@ -1,0 +1,527 @@
+unit EstadisticasIAPOS;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, Grids, StdCtrls, Editv, Buttons, Mask, ExtCtrls, ComCtrls,
+  CUBReferentes, Contnrs, DBTables, IBQuery;
+
+type
+  TfmEstadisticasIAPOS = class(TForm)
+    StatusBar1: TStatusBar;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
+    TabSheet3: TTabSheet;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    Label4: TLabel;
+    codos: TMaskEdit;
+    BuscarOS: TBitBtn;
+    os: TLabel;
+    Label1: TLabel;
+    periodo: TMaskEdit;
+    Label2: TLabel;
+    unidad: TEditValid;
+    Panel3: TPanel;
+    S: TStringGrid;
+    Panel4: TPanel;
+    Panel5: TPanel;
+    Label3: TLabel;
+    codos1: TMaskEdit;
+    BuscarOS1: TBitBtn;
+    os1: TLabel;
+    Label6: TLabel;
+    periodo1: TMaskEdit;
+    Panel6: TPanel;
+    R: TStringGrid;
+    Panel7: TPanel;
+    Panel8: TPanel;
+    Button4: TButton;
+    Button5: TButton;
+    Button6: TButton;
+    Label7: TLabel;
+    perliq: TLabel;
+    GroupBox1: TGroupBox;
+    Button1: TButton;
+    Button2: TButton;
+    Button3: TButton;
+    Label5: TLabel;
+    totos: TLabel;
+    Panel9: TPanel;
+    Button7: TButton;
+    Button8: TButton;
+    E: TStringGrid;
+    Button9: TButton;
+    CheckBox1: TCheckBox;
+    CheckBox2: TCheckBox;
+    btnRecalcular: TButton;
+    porcentaje: TEditValid;
+    procedure BuscarOSClick(Sender: TObject);
+    procedure codosKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure periodoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure unidadKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure TabSheet3Show(Sender: TObject);
+    procedure SDblClick(Sender: TObject);
+    procedure SKeyDow(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure codos1KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure BuscarOS1Click(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+    procedure TabSheet1Show(Sender: TObject);
+    procedure periodo1KeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure TabSheet2Show(Sender: TObject);
+    procedure EDblClick(Sender: TObject);
+    procedure Button7Click(Sender: TObject);
+    procedure TabSheet2Hide(Sender: TObject);
+    procedure Button8Click(Sender: TObject);
+    procedure Button6Click(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
+    procedure Button5Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
+    procedure Button9Click(Sender: TObject);
+    procedure EKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure CheckBox2Click(Sender: TObject);
+    procedure btnRecalcularClick(Sender: TObject);
+    procedure Panel4CanResize(Sender: TObject; var NewWidth, NewHeight: Integer;
+      var Resize: Boolean);
+  private
+    { Private declarations }
+    uref: TTUBReferente;
+    redim: boolean;
+    salida: char;
+    procedure DatosObraSocial;
+    procedure DatosObraSocial1;
+    procedure CargarUnidades;
+    procedure CargarTotales;
+  public
+    { Public declarations }
+  end;
+
+var
+  fmEstadisticasIAPOS: TfmEstadisticasIAPOS;
+
+implementation
+
+{$R *.dfm}
+
+uses
+  CObrasSocialesCCB, NominaObrasSociales, CUtiles, CUtilidadesStringGrid, CConfigForms,
+  Disposit, CEstadisticasFacturacionCCB, CFacturacionCCB, CProfesionalCCB,
+  AjustarDebitos, AjustarFechas, DebitosCreditosEstadisticaIAPOS;
+
+procedure TfmEstadisticasIAPOS.DatosObraSocial;
+begin
+  obsocial.getDatos(codos.Text);
+  os.Caption := obsocial.Nombre;
+  CargarUnidades;
+  periodo.setFocus;
+end;
+
+procedure TfmEstadisticasIAPOS.DatosObraSocial1;
+begin
+  obsocial.getDatos(codos1.Text);
+  os1.Caption := obsocial.Nombre;
+  Button1.setFocus;
+end;
+
+procedure TfmEstadisticasIAPOS.EDblClick(Sender: TObject);
+begin
+  CargarTotales;
+end;
+
+procedure TfmEstadisticasIAPOS.EKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_DELETE) then
+    if (length(trim(E.Cells[0, E.Row])) > 0) then begin
+      if (utiles.msgSiNo('Seguro para Borrar Total Obra Social ' + E.Cells[1, E.Row] + ' ?')) then begin
+        estadisticaccb.BorrarTotalesInicidenciaPorDeterminacion_Detallada(perliq.Caption, copy(E.Cells[1, E.Row], 1, 6));
+        TabSheet2Show(Self);
+      end;
+    end else
+      utiles.msgError('El Registro Seleccionado es Incorrecto ...!');
+end;
+
+procedure TfmEstadisticasIAPOS.CargarUnidades;
+var
+  l: TObjectList;
+  objeto: TTUBReferente;
+  i: integer;
+begin
+  grid.IniciarGrilla(S);
+  l := uref.getObjects(codos.Text);
+  for i := 1 to l.Count do begin
+    objeto := TTUBReferente(l.Items[i-1]);
+    S.Cells[0, i] := objeto.Periodo;
+    S.Cells[1, i] := utiles.FormatearNumero(FloatToStr(objeto.Unidad));
+    S.Row         := i;
+  end;
+  l.Destroy; l := Nil;
+end;
+
+procedure TfmEstadisticasIAPOS.CheckBox2Click(Sender: TObject);
+begin
+  if (CheckBox2.Checked) then begin
+    porcentaje.Enabled := true;
+    btnRecalcular.Enabled := true;
+  end else begin
+    porcentaje.Enabled := false;
+    btnRecalcular.Enabled := false;
+  end;
+end;
+
+procedure TfmEstadisticasIAPOS.CargarTotales;
+var
+  l, t: TStringList;
+  i, p: Integer;
+  x: real;
+Begin
+  StatusBar1.Panels[0].Text := 'Prorratenado Montos Pagos a Profesionales ...!'; StatusBar1.Refresh;
+  grid.IniciarGrilla(R);
+  t := TStringList.Create;
+  t.Add(copy(E.Cells[1, E.Row], 1, 6));
+  l := facturacion.setTotalProfesionalesLiquidacion(perliq.Caption, t, False);
+  For i := 1 to l.Count do Begin
+    profesional.getDatos(Copy(l.Strings[i-1], 1, 6));
+    p := Pos(';1', l.Strings[i-1]);
+    R.Cells[0, i] := Copy(l.Strings[i-1], 1, 6);
+    R.Cells[1, i] := profesional.nombre;
+    R.Cells[2, i] := utiles.FormatearNumero(Copy(l.Strings[i-1], p+2, 10));
+    estadisticaccb.getDatos(copy(E.Cells[1, E.Row], 1, 6), perLiq.Caption, profesional.codigo);
+    if (estadisticaccb.Pago = -100000) then begin
+      R.Cells[3, i] := R.Cells[2, i];
+      estadisticaccb.AjustarDebito(codos1.Text, perliq.Caption, profesional.codigo, estadisticaccb.Debito, StrToFloat(R.Cells[3, i]));
+    end else
+      R.Cells[3, i] := utiles.FormatearNumero(FloatToStr(estadisticaccb.Pago));
+    R.Cells[4, i] := estadisticaccb.Fepago;
+    R.Cells[5, i] := utiles.FormatearNumero(FloatToStr(estadisticaccb.Debito));
+    R.Cells[6, i] := copy(E.Cells[1, E.Row], 1, 6);
+  end;
+
+  x := 0;
+  For i := 1 to R.RowCount do Begin
+    if Length(Trim(R.Cells[0, i])) = 0 then Break;
+    x := x + StrToFloat(R.Cells[2, i]);
+  end;
+  totos.Caption := utiles.FormatearNumero(FloatToStr(x));
+  StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+  E.SetFocus;
+end;
+
+procedure TfmEstadisticasIAPOS.codos1KeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then begin 
+    if (obsocial.Buscar(codos1.Text)) then DatosObraSocial1 else BuscarOS1Click(Self);
+  end;
+end;
+
+procedure TfmEstadisticasIAPOS.codosKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then begin
+    if (obsocial.Buscar(codos.Text)) then DatosObraSocial else BuscarOSClick(Self);
+  end;
+end;
+
+procedure TfmEstadisticasIAPOS.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  profesional.desconectar;
+  uref.desconectar;
+  uref.Destroy; uref := nil;
+  configform.Guardar(fmEstadisticasIAPOS, redim);
+  Release; fmEstadisticasIAPOS := Nil;
+end;
+
+procedure TfmEstadisticasIAPOS.FormShow(Sender: TObject);
+begin
+  uref := TTUBReferente.Create;
+  uref.conectar;
+  if not configform.Setear(fmEstadisticasIAPOS) then begin
+    width := 486; height := 338; top := 25;
+  end;
+  S.Cells[0, 0] := 'Período'; S.Cells[1, 0] := 'Unidad de Referencia';
+  E.Cells[0, 0] := 'Período'; E.Cells[1, 0] := 'Obra Social'; E.Cells[2, 0] := 'Tot. Un. NBU'; E.Cells[3, 0] := 'Total Análisis';
+  R.Cells[0, 0] := 'Id.Prof.'; R.Cells[1, 0] := 'Nombre del Profesional'; R.Cells[2, 0] := 'Tot.Fact.'; R.Cells[3, 0] := 'Tot.Pagado';
+  R.Cells[4, 0] := 'F. Pago'; R.Cells[5, 0] := 'Débitos';
+  profesional.conectar;
+  periodo1.setFocus;
+  salida := 'P';
+  redim := false;
+end;
+
+procedure TfmEstadisticasIAPOS.Panel4CanResize(Sender: TObject; var NewWidth,
+  NewHeight: Integer; var Resize: Boolean);
+begin
+  redim := true;
+end;
+
+procedure TfmEstadisticasIAPOS.periodo1KeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_UP) then codos1.setFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if (utiles.verificarPeriodo(periodo1.Text)) then codos1.SetFocus;
+end;
+
+procedure TfmEstadisticasIAPOS.periodoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_UP) then codos.setFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if (utiles.verificarPeriodo(periodo.Text)) then unidad.SetFocus;
+end;
+
+procedure TfmEstadisticasIAPOS.SDblClick(Sender: TObject);
+begin
+  if (Length(trim(S.Cells[0, S.Row])) > 0) then begin
+    periodo.Text := S.Cells[0, S.Row];
+    unidad.Text  := S.Cells[1, S.Row];
+    periodo.setFocus;
+  end else
+    utiles.msgError('El Registro Seleccionado es Incorrecto ...!');
+end;
+
+procedure TfmEstadisticasIAPOS.SKeyDow(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) then SDblClick(Self);
+  if (Key = VK_DELETE) then begin
+    if (Length(trim(S.Cells[0, S.Row])) > 0) then begin
+      if (utiles.msgSiNo('Seguro para Borrar Período ' + S.Cells[0, S.Row] + ' ?')) then begin
+        uref.Borrar(codos.Text, S.Cells[0, S.Row]);
+        CargarUnidades;
+        periodo.setFocus;
+      end
+    end else
+      utiles.msgError('El Registro Seleccionado es Incorrecto ...!');
+  end;
+end;
+
+procedure TfmEstadisticasIAPOS.TabSheet1Show(Sender: TObject);
+begin
+  periodo1.setFocus;
+end;
+
+procedure TfmEstadisticasIAPOS.TabSheet2Hide(Sender: TObject);
+begin
+  if (utiles.verificarPeriodo(perLiq.Caption, '')) and (Length(trim(perLiq.Caption)) = 7)  then begin
+    estadisticaccb.DesconectarDebitosProfesionales;
+  end;
+end;
+
+procedure TfmEstadisticasIAPOS.TabSheet2Show(Sender: TObject);
+var
+  rs: TQuery;
+  i: integer;
+begin
+  perliq.Caption := periodo1.Text;
+  if (utiles.verificarPeriodo(perLiq.Caption, '')) and (length(trim(perLiq.Caption)) = 7) then begin
+    grid.IniciarGrilla(R);
+    StatusBar1.Panels[0].Text := 'Cargando Montos Obras Sociales ...!'; StatusBar1.Refresh;
+    Panel7.Enabled := true; Panel9.Enabled := true;
+    Refresh;
+    estadisticaccb.ConectarDebitosProfesionales(perLiq.Caption);
+    rs := estadisticaCCB.getTotalesInicidenciaPorDeterminacion_Detallada(perliq.Caption);
+    if (r <> nil) then begin
+      rs.Open; i := 0;
+      grid.IniciarGrilla(E);
+      while not rs.Eof do begin
+        obsocial.getDatos(rs.FieldByName('codos').AsString);
+        Inc(i);
+        E.Cells[0, i] := rs.FieldByName('periodo').AsString;
+        E.Cells[1, i] := obsocial.codos + '-' + obsocial.Nombre;
+        E.Cells[2, i] := utiles.FormatearNumero(rs.FieldByName('total1').AsString);
+        E.Cells[3, i] := utiles.FormatearNumero(rs.FieldByName('total2').AsString);
+        rs.Next;
+      end;
+      rs.Close; rs.Free;
+      if (i > 0) then CargarTotales;
+    end;
+
+    StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+  end else begin
+    Panel7.Enabled := false; Panel9.Enabled := false;
+  end;
+end;
+
+procedure TfmEstadisticasIAPOS.TabSheet3Show(Sender: TObject);
+begin
+  codos.setFocus;
+end;
+
+procedure TfmEstadisticasIAPOS.unidadKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_UP) then periodo.setFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then begin
+    unidad.Text := utiles.FormatearNumero(unidad.Text);
+    if (obsocial.Buscar(codos.Text)) and (utiles.verificarPeriodo(periodo.Text, '')) and (StrToFloat(unidad.Text) > 0) then begin
+      uref.Registrar(codos.Text, periodo.Text, StrToFloat(unidad.Text));
+      CargarUnidades;
+      periodo.Text := ''; unidad.Text := '';
+    end else
+      utiles.msgError('Verifique, hay Datos Incorrectos o Incompletos ...!');
+    codos.setFocus;
+  end;
+end;
+
+procedure TfmEstadisticasIAPOS.btnRecalcularClick(Sender: TObject);
+var
+  i: integer;
+begin
+  for i := 1 to R.RowCount do begin
+    if (length(trim(R.Cells[0, i])) = 0) then break;
+
+    R.Cells[3, i] := utiles.FormatearNumero( FloatToStr (StrToFloat(R.Cells[2, i]) * (StrToFloat(porcentaje.Text) * 0.01) ));
+    R.Row := i;
+    estadisticaccb.AjustarDebito( R.Cells[6, R.Row], perliq.Caption, R.Cells[0, R.Row], StrToFloat(R.Cells[5, R.Row]), StrToFloat(R.Cells[3, R.Row]));
+  end;
+  R.Row := 1;
+end;
+
+procedure TfmEstadisticasIAPOS.BuscarOS1Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmListObrasSociales, fmListObrasSociales);
+  fmListObrasSociales.introSalir := True;
+  fmListObrasSociales.ShowModal;
+  codos1.Text := obsocial.tabla.FieldByName('codos').AsString;
+  Refresh;
+  if fmListObrasSociales.seleccionOK then Begin
+    if Length(Trim(codos1.Text)) > 0 then Begin
+      DatosObraSocial1;
+    end else ActiveControl := codos1;
+  end;
+  fmListObrasSociales.Release; fmListObrasSociales := nil;
+end;
+
+procedure TfmEstadisticasIAPOS.BuscarOSClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmListObrasSociales, fmListObrasSociales);
+  fmListObrasSociales.introSalir := True;
+  fmListObrasSociales.ShowModal;
+  codos.Text := obsocial.tabla.FieldByName('codos').AsString;
+  Refresh;
+  if fmListObrasSociales.seleccionOK then Begin
+    if Length(Trim(codos.Text)) > 0 then Begin
+      DatosObraSocial;
+    end else ActiveControl := codos;
+  end;
+  fmListObrasSociales.Release; fmListObrasSociales := nil;
+end;
+
+procedure TfmEstadisticasIAPOS.Button1Click(Sender: TObject);
+begin
+  Application.CreateForm(TDispositivo, Dispositivo);
+  Dispositivo.ShowModal;
+  salida := 'P';
+  if (Dispositivo.Impresor.Checked) then salida := 'I';
+  Button2.setFocus;
+end;
+
+procedure TfmEstadisticasIAPOS.Button2Click(Sender: TObject);
+begin
+  if (obsocial.Buscar(codos1.Text)) and (utiles.verificarPeriodo(periodo1.Text, ''))  then begin
+    StatusBar1.Panels[0].Text := 'Generando Informe ...!'; StatusBar1.Refresh;
+    facturacion.conectar;
+    facturacion.ProcesarDatosCentrales(periodo1.Text);
+    estadisticaCCB.InicidenciaPorDeterminacion_Detallada(periodo1.Text, codos1.Text, '', salida, true, true, false, CheckBox1.Checked);
+    StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+    facturacion.desconectar;
+    estadisticaCCB.Listar(salida);
+    codos1.setFocus;
+  end else
+    utiles.msgError('La Obra Social o el Período son Incorrectos ...!');
+end;
+
+procedure TfmEstadisticasIAPOS.Button3Click(Sender: TObject);
+begin
+   if (obsocial.Buscar(codos1.Text)) and (utiles.verificarPeriodo(periodo1.Text, ''))  then begin
+    StatusBar1.Panels[0].Text := 'Generando Informe ...!'; StatusBar1.Refresh;
+    facturacion.conectar;
+    facturacion.ProcesarDatosCentrales(periodo1.Text);
+    estadisticaCCB.InicidenciaPorDeterminacion_Detallada(periodo1.Text, codos1.Text, '', 'X', true, true, false, CheckBox1.Checked);
+    StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+    facturacion.desconectar;
+    estadisticaCCB.Listar('X');
+    codos1.setFocus;
+  end else
+    utiles.msgError('La Obra Social o el Período son Incorrectos ...!');
+end;
+
+procedure TfmEstadisticasIAPOS.Button4Click(Sender: TObject);
+begin
+  Application.CreateForm(TDispositivo, Dispositivo);
+  Dispositivo.ShowModal;
+  salida := 'P';
+  if (Dispositivo.Impresor.Checked) then salida := 'I';
+  Button5.setFocus;
+end;
+
+procedure TfmEstadisticasIAPOS.Button5Click(Sender: TObject);
+begin
+  estadisticaccb.ListarResumenIAPOS(perliq.Caption, codos1.Text, salida);
+end;
+
+procedure TfmEstadisticasIAPOS.Button6Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmAjustesDepositosRetiros, fmAjustesDepositosRetiros);
+  fmAjustesDepositosRetiros.perliq.Caption := perLiq.Caption;
+  fmAjustesDepositosRetiros.ShowModal;
+  fmAjustesDepositosRetiros.Release; fmAjustesDepositosRetiros := Nil;
+end;
+
+procedure TfmEstadisticasIAPOS.Button7Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmAjustarDebitos, fmAjustarDebitos);
+  fmAjustarDebitos.pago.Text  := R.Cells[3, R.Row];
+  fmAjustarDebitos.monto.Text := R.Cells[5, R.Row];
+  fmAjustarDebitos.ShowModal;
+  R.Cells[5, R.Row]           := utiles.FormatearNumero(fmAjustarDebitos.monto.Text);
+  R.Cells[3, R.Row]           := utiles.FormatearNumero(fmAjustarDebitos.pago.Text);
+  estadisticaccb.AjustarDebito(codos1.Text, perliq.Caption, R.Cells[0, R.Row], StrToFloat(R.Cells[5, R.Row]), StrToFloat(R.Cells[3, R.Row]));
+  fmAjustarDebitos.Release; fmAjustarDebitos := nil;
+end;
+
+procedure TfmEstadisticasIAPOS.Button8Click(Sender: TObject);
+var
+  i: integer;
+begin
+  Application.CreateForm(TfmAjustarFechas, fmAjustarFechas);
+  fmAjustarFechas.fecha.Text := R.Cells[4, R.Row];
+  fmAjustarFechas.ShowModal;
+  if (fmAjustarFechas.CheckBox1.Checked) then begin
+    for i := 1 to R.RowCount do begin
+      if (length(trim(R.Cells[0, i])) = 0) then break;
+      R.Cells[4, i] := fmAjustarFechas.fecha.text;
+      estadisticaccb.AjustarFecha(copy(E.Cells[1, E.Row], 1, 6), perliq.Caption, R.Cells[0, i], R.Cells[4, i]);
+    end;
+  end else begin
+    R.Cells[4, R.Row]  := fmAjustarFechas.fecha.text;
+    estadisticaccb.AjustarFecha(copy(E.Cells[1, E.Row], 1, 6), perliq.Caption, R.Cells[0, R.Row], R.Cells[4, R.Row]);
+  end;
+  fmAjustarFechas.Release; fmAjustarFechas := nil;
+end;
+
+procedure TfmEstadisticasIAPOS.Button9Click(Sender: TObject);
+var
+  i: integer;
+begin
+  if (utiles.msgSiNo('Seguro para Sincronizar Montos Pagados con Montos Facturados ?')) then begin
+    for i := 1 to R.RowCount do begin
+      if (length(trim(R.Cells[0, i])) = 0) then break;
+      R.Cells[3, i] := R.Cells[2, i];
+      estadisticaccb.AjustarPago(copy(E.Cells[1, E.Row], 1, 6), perliq.Caption, R.Cells[0, i], StrToFloat(R.Cells[3, i]));
+    end;
+  end;
+  E.setFocus;
+end;
+
+end.

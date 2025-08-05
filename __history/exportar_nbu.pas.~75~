@@ -1,0 +1,353 @@
+unit exportar_nbu;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, CIDBFM, DBTables, CUtiles;
+
+type
+  TfmExportarNBU = class(TForm)
+    Button1: TButton;
+    Button2: TButton;
+    Button3: TButton;
+    Button4: TButton;
+    Button5: TButton;
+    Button6: TButton;
+    Button7: TButton;
+    Button8: TButton;
+    Button9: TButton;
+    Button10: TButton;
+    Edit1: TEdit;
+    Edit2: TEdit;
+    Button11: TButton;
+    procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
+    procedure Button5Click(Sender: TObject);
+    procedure Button6Click(Sender: TObject);
+    procedure Button7Click(Sender: TObject);
+    procedure Button8Click(Sender: TObject);
+    procedure Button9Click(Sender: TObject);
+    procedure Button10Click(Sender: TObject);
+    procedure Button11Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  fmExportarNBU: TfmExportarNBU;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfmExportarNBU.Button10Click(Sender: TObject);
+var
+  t: TQuery;
+  n: TTable;
+  a: TextFile;
+  au, pc: string;
+begin
+  AssignFile(a, 'c:\cab_auditoria.sql');
+  n := datosdb.openDB('cab_auditoria', '', '', 'datos');
+  n.open;
+  rewrite(a);
+  t := datosdb.tranSQL('datos', 'select * from cab_ref where fecha >= ' + '''' + edit1.text + '''' + ' and fecha <= ' + '''' + edit2.text  + '''');
+  t.Open;
+  while not t.Eof do begin
+    if (t.FieldByName('diferida').AsString = 'S') then au := 'S' else au := 'N';
+    pc := '';
+    if (n.FindKey([t.FieldByName('nroauditoria').AsString])) then begin
+       pc := n.FieldByName('profcab').AsString;
+    end;
+
+    writeln(a, 'insert into cab_auditoria(nroauditoria, efector, fecha, codos, idzona, ' +
+               'nrodoc, idprof, observacion, ' +
+               'fepedido, profcab, iddiag, diferida, auditada, anulada, auditor) values (' +
+               '''' + t.FieldByName('idonline').AsString + '''' + ', ' +
+               '''' + t.FieldByName('efector').AsString + '''' + ', ' +
+               '''' + t.FieldByName('fecha').AsString + '''' + ', ' +
+               '''' + t.FieldByName('codos').AsString + '''' + ', ' +
+               '''' + t.FieldByName('idzona').AsString + '''' + ', ' +
+               '''' + t.FieldByName('nrodoc').AsString + '''' + ', ' +
+               '''' + t.FieldByName('idprof').AsString + '''' + ', ' +
+               '''' + t.FieldByName('observacion').AsString + '''' + ', ' +
+               '''' + t.FieldByName('fepedido').AsString + '''' + ', ' +
+               '''' + pc + '''' + ', ' +
+               '''' + t.FieldByName('iddiag').AsString + '''' + ', ' +
+               '''' + t.FieldByName('diferida').AsString + '''' + ', ' +
+               '''' + au + '''' + ', ' +
+               '''' + t.FieldByName('anulada').AsString + '''' + ', ' +
+               '''' + 'administ' + '''' + ');');
+
+    t.Next;
+  end;
+  t.Close;
+  closeFile(a);
+  Close;
+end;
+
+procedure TfmExportarNBU.Button11Click(Sender: TObject);
+var
+  t1, t2: TTable;
+  a: TextFile;
+  valor, valor1: string;
+begin
+  AssignFile(a, 'c:\actualizar_profesionales.sql');
+  rewrite(a);
+  t1 := datosdb.openDB('profesio', '', '', 'datos');
+  t2 := datosdb.openDB('profesih', '', '', 'datos');
+  t1.Open; t2.open;
+  while not t1.Eof do begin
+    t2.FindKey([t1.FieldByName('idprof').AsString]);
+    writeln(a, 'update profesio set direccion = ' + '''' + t1.FieldByName('direccion').AsString + '''' + ', nrocuit = ' + '''' + t2.FieldByName('nrocuit').AsString + '''' +
+               ', email = ' + '''' + t2.FieldByName('email').AsString + '''' + ', matricula=' + '''' + t2.FieldByName('matricula').AsString + '''' + ', id_especialidad = ' + '''' + '500' + '''' +
+               ', fechamat = ' + '''' + copy(t2.FieldByName('fechamat').AsString, 1, 6) + '19' + copy(t2.FieldByName('fechamat').AsString, 7, 2) + '''' +
+               ' WHERE idprof = ' + '''' + t1.FieldByName('idprof').AsString + '''' + ';');
+    t1.Next;
+  end;
+  t1.Close; t2.close;
+  closeFile(a);
+  Close;
+end;
+
+procedure TfmExportarNBU.Button1Click(Sender: TObject);
+var
+  t: TTable;
+  a, b: TextFile;
+  valor, valor1: string;
+begin
+  AssignFile(a, 'c:\script_NBU.sql');
+  AssignFile(b, 'c:\script_NBU1.sql');
+  rewrite(a);
+  rewrite(b);
+  t := datosdb.openDB('nbu', '', '', 'datos');
+  t.Open;
+  while not t.Eof do begin
+    writeln(a, 'insert into nbu(codigo, descrip, unidad) values (' + '''' + utiles.StrQuitarCaracteresEspeciales(t.FieldByName('codigo').AsString) + '''' + ', ' + '''' + utiles.StrQuitarCaracteresEspeciales(trimright(t.FieldByName('descrip').AsString)) + '''' + ', ' + valor1 + ');');
+    valor := utiles.FormatearNumero(t.FieldByName('unidad').AsString);
+    valor1 := StringReplace(valor, ',', '.', [rfReplaceAll, rfIgnoreCase]);
+    writeln(b, 'update nbu set unidad = ' +  valor1 + ' where codigo = ' + '''' + t.FieldByName('codigo').AsString + '''' + ';');
+    t.Next;
+  end;
+  t.Close;
+  closeFile(a);
+  closeFile(b);
+  Close;
+end;
+
+procedure TfmExportarNBU.Button2Click(Sender: TObject);
+var
+  t: TTable;
+  a: TextFile;
+begin
+  AssignFile(a, 'c:\script_PROF.sql');
+  rewrite(a);
+  t := datosdb.openDB('profesio', '', '', 'datos');
+  t.Open;
+  while not t.Eof do begin
+    writeln(a, 'insert into profesio(idprof, nombre) values (' + '''' + utiles.StrQuitarCaracteresEspeciales(t.FieldByName('idprof').AsString) + '''' + ', ' + '''' + uppercase(utiles.StrQuitarCaracteresEspeciales(trimright(t.FieldByName('nombre').AsString))) + '''' + ');');
+    t.Next;
+  end;
+  t.Close;
+  closeFile(a);
+  Close;
+end;
+
+procedure TfmExportarNBU.Button3Click(Sender: TObject);
+var
+  t: TTable;
+  a: TextFile;
+begin
+  AssignFile(a, 'c:\script_obsocial.sql');
+  rewrite(a);
+  t := datosdb.openDB('obsocial', '');
+  t.Open;
+  while not t.Eof do begin
+    writeln(a, 'insert into obsocial(codos, nombre, factnbu) values (' + '''' + utiles.StrQuitarCaracteresEspeciales(t.FieldByName('codos').AsString) + '''' + ', ' + '''' + uppercase(utiles.StrQuitarCaracteresEspeciales(trimright(t.FieldByName('nombre').AsString))) + '''' + ', ' + '''' + uppercase(utiles.StrQuitarCaracteresEspeciales(trimright(t.FieldByName('factnbu').AsString))) + '''' + ');');
+    t.Next;
+  end;
+  t.Close;
+  closeFile(a);
+  Close;
+end;
+
+procedure TfmExportarNBU.Button4Click(Sender: TObject);
+var
+  t: TTable;
+  a: TextFile;
+begin
+  AssignFile(a, 'c:\script_diag_oms.sql');
+  rewrite(a);
+  t := datosdb.openDB('diagnosticos_oms', '', '', 'C:\sidelphi32\SGen\ccomputoscb\auditoria');
+  t.Open;
+  while not t.Eof do begin
+    writeln(a, 'insert into diagnosticos_oms(oms_cod, clave, orden, indice, codrap, descrip, oms) values (' + '''' + t.FieldByName('oms_cod').AsString + '''' + ', ' + '''' + t.FieldByName('clave').AsString + '''' + ', ' + '''' + t.FieldByName('orden').AsString + '''' +
+    ', ' + '''' + t.FieldByName('indice').AsString + '''' + ', ' + '''' + t.FieldByName('codrap').AsString + '''' + ', ' + '''' + t.FieldByName('descrip').AsString + '''' +  ', ' + '''' + t.FieldByName('oms').AsString + '''' + ');' );
+    t.Next;
+  end;
+  t.Close;
+  closeFile(a);
+  Close;
+end;
+
+procedure TfmExportarNBU.Button5Click(Sender: TObject);
+var
+  t: TTable;
+  a: TextFile;
+begin
+  AssignFile(a, 'c:\medicos.sql');
+  rewrite(a);
+  t := datosdb.openDB('medicos', '', '', 'C:\varios\datos');
+  t.Open;
+  while not t.Eof do begin
+    writeln(a, 'insert into medicos(codos, idprof, nombre) values (' + '''' + '000129' + '''' + ', ' + '''' + utiles.sLlenarIzquierda(t.FieldByName('idprof').AsString, 5, '0') + '''' + ', ' + '''' + t.FieldByName('nombre').AsString + '''' + ');');
+    t.Next;
+  end;
+  t.Close;
+  closeFile(a);
+
+  AssignFile(a, 'c:\medicos_cab.sql');
+  rewrite(a);
+  //t := datosdb.openDB('medicos_cab', '', '', 'C:\varios\datos');
+  t := datosdb.openDB('medicos', '', '', 'C:\varios\datos');
+  t.Open;
+  while not t.Eof do begin
+    writeln(a, 'insert into medicos_cab(codos, idprof, capitas) values (' + '''' + '000129' + '''' + ', ' + '''' + utiles.sLlenarIzquierda(t.FieldByName('idprof').AsString, 5, '0') + '''' + ', 10);');
+    t.Next;
+  end;
+  t.Close;
+  closeFile(a);
+
+  Close;
+end;
+
+procedure TfmExportarNBU.Button6Click(Sender: TObject);
+var
+  t: TTable;
+  a: TextFile;
+begin
+  AssignFile(a, 'c:\bioqafil.sql');
+  rewrite(a);
+  t := datosdb.openDB('bioqafil', '', '', 'datos');
+  t.Open;
+  while not t.Eof do begin
+    writeln(a, 'insert into bioqafil(codos, nrodoc, nombre, observacion, fechanac) values (' + '''' + t.FieldByName('codos').AsString + '''' + ', ' + '''' + t.FieldByName('nrodoc').AsString + '''' + ', ' + '"' + t.FieldByName('nombre').AsString + '"' + ', ' + '''' + t.FieldByName('observacion').AsString + '''' + ', ' + '''' + t.FieldByName('fechanac').AsString + '''' + ');');
+    t.Next;
+  end;
+  t.Close;
+  closeFile(a);
+  Close;
+end;
+
+procedure TfmExportarNBU.Button7Click(Sender: TObject);
+var
+  t, s, d: TTable;
+  a, b, c: TextFile;
+  diag: string;
+begin
+  AssignFile(a, 'c:\cab_auditoria.sql');
+  AssignFile(b, 'c:\det_auditoria.sql');
+  AssignFile(c, 'c:\bioqafil.sql');
+  rewrite(a);
+  rewrite(b);
+  rewrite(c);
+  t := datosdb.openDB('cab_auditoria', '', '', 'datos');
+  s := datosdb.openDB('det_auditoria', '', '', 'datos');
+  d := datosdb.openDB('diagnosticos_oms', '', '', 'datos');
+  //datosdb.Filtrar(t, 'codos = ' + '''' + '121005' + '''' + ' and fecha >= ' + '''' + '20090101' + '''');
+  datosdb.Filtrar(t, 'codos = ' + '''' + '000129' + '''' + ' and fecha >= ' + '''' + '20090101' + '''');
+  t.Open;
+  s.Open;
+  d.open;
+  d.indexfieldnames := 'codrap';
+  while not t.Eof do begin
+    d.FindKey([t.FieldByName('iddiag').AsString]);
+    diag := d.FieldByName('oms_cod').AsString;
+    writeln(a, 'insert into cab_auditoria(nroauditoria, fecha, codos, idzona, nrodoc, idprof, diagnostico, federivacion, nroderivacion, observacion, idfact, fechafac, laboratorio, codosfact, fepedido, profcab, iddiag, nombre, diferida, auditada, anulada, efector) values ' +
+           '(' + '''' + t.FieldByName('nroauditoria').AsString + '''' + ', ' + '''' + t.FieldByName('fecha').AsString + '''' + ', ' + '''' + t.FieldByName('codos').AsString + '''' + ', ' + '''' + t.FieldByName('idzona').AsString + '''' + ', ' + '''' + utiles.sLlenarIzquierda(t.FieldByName('nrodoc').AsString, 8, '0') + '''' + ', ' +
+           '''' + t.FieldByName('idprof').AsString + '''' + ', ' + '"' + t.FieldByName('diagnostico').AsString + '"' + ', ' + '''' + t.FieldByName('federivacion').AsString + '''' + ', ' + '''' + t.FieldByName('nroderivacion').AsString + '''' + ', ' + '"' + t.FieldByName('observacion').AsString + '"' + ', ' +
+           '''' + t.FieldByName('idfact').AsString + '''' + ', ' + '''' + t.FieldByName('fechafac').AsString + '''' + ', ' + '''' + t.FieldByName('laboratorio').AsString + '''' + ', ' + '''' + t.FieldByName('codosfact').AsString + '''' + ', ' + '''' + t.FieldByName('fepedido').AsString + '''' + ', ' +
+           '''' + t.FieldByName('profcab').AsString + '''' + ', ' + '''' + diag + '''' + ', ' + '"' + t.FieldByName('nombre').AsString + '"'  +
+           ', ' + '''' + 'S' + '''' + ', ' + '''' + 'S' + '''' + ', ' + '''' + 'N' + '''' + ', ' + '''' + t.FieldByName('laboratorio').AsString + '''' +
+           ');');
+    s.IndexFieldNames := 'nroauditoria;items';
+    s.SetKey;
+    s.FieldByName('nroauditoria').AsString := t.FieldByName('nroauditoria').AsString;
+    s.FieldByName('items').AsString := '001';
+    //utiles.msgError(t.FieldByName('nroauditoria').AsString);
+    if s.GotoKey then begin
+      while not s.eof do begin
+        if s.FieldByName('nroauditoria').AsString <> t.FieldByName('nroauditoria').AsString then break;
+        writeln(b, 'insert into det_auditoria(nroauditoria, items, codigo, monto, estado, montodif, efector, fecha, codos, nrodoc, anulada) values ' +
+           '(' + '''' + s.FieldByName('nroauditoria').AsString + '''' + ', ' + '''' + s.FieldByName('items').AsString + '''' + ', ' + '''' + s.FieldByName('codigo').AsString + '''' + ', ' + utiles.StringRemplazarCaracteres(s.FieldByName('monto').AsString, ',', '.') + ', ' + '''' + s.FieldByName('estado').AsString + '''' + ', ' +
+           utiles.StringRemplazarCaracteres(s.FieldByName('montodif').AsString, ',', '.') + ', ' + '''' + utiles.sLlenarIzquierda(t.FieldByName('laboratorio').AsString, 6, '0') + '''' + ', ' + '''' + t.FieldByName('fecha').AsString + '''' + ', ' + '''' + t.FieldByName('codos').AsString + '''' + ', ' + '''' + utiles.sLlenarIzquierda(t.FieldByName('nrodoc').AsString, 8, '0') + '''' + ', ' + '''' + 'N' + '''' +
+           ');' );
+        s.Next;
+      end;
+    end;
+    //writeln(c, 'insert into bioqafil(codos, nrodoc, nombre) values (' + '''' + t.FieldByName('codos').AsString + '''' + ', ' + '''' + t.FieldByName('nrodoc').AsString + '''' + ', ' + '''' + t.FieldByName('nombre').AsString + '''' + ');');
+    t.Next;
+  end;
+  t.Close;
+  s.Close;
+  closeFile(a);
+  closeFile(b);
+  closeFile(c);
+  Close;
+end;
+
+procedure TfmExportarNBU.Button8Click(Sender: TObject);
+  var
+  a, b: TextFile;
+  s, v1, v2, v3, v4: string;
+  i: integer;
+begin
+  AssignFile(a, 'c:\medicos_iapos.sql');
+  AssignFile(b, 'medicos_iapos.prn');
+  reset(b);
+  rewrite(a);
+  i := 0;
+  while not eof(b) do begin
+    inc(i);
+    readln(b, s);
+    v1 := trim(copy(s, 23, 10));
+    v2 := trim(copy(s, 1, 12));
+    v3 := trim(copy(s, 14, 9));
+    v4 := copy(s, 37, 50);
+    writeln(a, 'insert into medicos (codos, idprof, matricula, libro, folio, nombre) values (' + '''' + '121069' + '''' + ', ' + '''' + utiles.sLlenarIzquierda(inttostr(i), 5, '0') + '''' + ', ' + '''' + v1 + '''' + ', ' + '''' + v2 + '''' + ', ' + '''' + v3 + '''' + ', ' + '"' + v4 + '"' + ');');
+  end;
+  closefile(a);
+  closefile(b);
+  close;
+end;
+
+procedure TfmExportarNBU.Button9Click(Sender: TObject);
+  var
+  a, b: TextFile;
+  s, v1, v2, v3, v4: string;
+  i: integer;
+begin
+  AssignFile(a, 'c:\tramos_iapos.sql');
+  AssignFile(b, 'tramos.txt');
+  reset(b);
+  rewrite(a);
+  i := 0;
+  while not eof(b) do begin
+    inc(i);
+    readln(b, s);
+    v1 := '66' + trim(copy(s, 3, 4));
+    v2 := trim(copy(s, 8, 1));
+    v3 := trim(copy(s, 14, 9));
+    v4 := copy(s, 37, 50);
+    writeln(a, 'update nbu set tramo = ' + v2 + ' where codigo = ' + '''' + v1 + '''' + ';');
+  end;
+  closefile(a);
+  closefile(b);
+end;
+
+end.

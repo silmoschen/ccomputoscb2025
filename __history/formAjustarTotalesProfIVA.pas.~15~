@@ -1,0 +1,131 @@
+unit formAjustarTotalesProfIVA;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ComCtrls, ExtCtrls, Grids, StdCtrls, Buttons, Mask, CUtiles, CProfesionalCCB,
+  CUtilidadesStringgrid, CFacturacionCCB, DBTables, CObrassocialesCCB;
+
+type
+  TfmAjustesTotalesIVA = class(TForm)
+    StatusBar1: TStatusBar;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    Label14: TLabel;
+    Label27: TLabel;
+    periodo: TMaskEdit;
+    Label47: TLabel;
+    idprof: TMaskEdit;
+    BuscarProfes: TBitBtn;
+    np: TLabel;
+    RadioButton1: TRadioButton;
+    RadioButton2: TRadioButton;
+    Panel3: TPanel;
+    F: TStringGrid;
+    procedure FormResize(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure periodoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure idprofKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure BuscarProfesClick(Sender: TObject);
+    procedure RadioButton1Click(Sender: TObject);
+    procedure RadioButton2Click(Sender: TObject);
+  private
+    { Private declarations }
+    procedure CargarDatosProfesional;
+    procedure CargarTotales;
+  public
+    { Public declarations }
+  end;
+
+var
+  fmAjustesTotalesIVA: TfmAjustesTotalesIVA;
+
+implementation
+
+uses NominaDeProfesionalesLiquidacionOS;
+
+{$R *.dfm}
+
+procedure TfmAjustesTotalesIVA.CargarDatosProfesional;
+begin
+  profesional.getDatos(idprof.Text);
+  np.Caption := profesional.nombre;
+  profesional.SincronizarListaRetIVA(periodo.Text, idprof.Text);
+end;
+
+procedure TfmAjustesTotalesIVA.CargarTotales;
+var
+  r: TQuery;
+  i, j: integer;
+begin
+  grid.IniciarGrilla(F);
+  if (RadioButton1.Checked) then j := 2 else j := 1;
+  r := facturacion.setItemsTotalFacturadoProfesionales(periodo.Text, idprof.Text);
+  r.open; i := 0;
+  while not r.eof do begin
+    if (r.fieldbyname('tipoing').asinteger = j) then begin
+      inc(i);
+      obsocial.getDatos(r.FieldByName('codos').asstring);
+      F.Cells[0, i] := r.FieldByName('codos').asstring;
+      F.Cells[1, i] := obsocial.Nombre;
+      F.Cells[2, i] := utiles.FormatearNumero(r.FieldByName('monto').asstring);
+    end;
+    r.next;
+  end;
+  r.Close; r.free;
+
+  if (i > 0) then F.setFocus;
+end;
+
+procedure TfmAjustesTotalesIVA.BuscarProfesClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmListProfesionalesLiq, fmListProfesionalesLiq);
+  fmListProfesionalesLiq.introSalir := True;
+  fmListProfesionalesLiq.on2        := True;
+  fmListProfesionalesLiq.ShowModal;
+  if fmListProfesionalesLiq.seleccionOK then Begin
+    idprof.Text := profesional.tperso.FieldByName('idprof').AsString;
+    CargarDatosProfesional;
+  End;
+end;
+
+procedure TfmAjustesTotalesIVA.FormResize(Sender: TObject);
+begin
+  StatusBar1.Panels[0].Width := Width - 150;
+end;
+
+procedure TfmAjustesTotalesIVA.FormShow(Sender: TObject);
+begin
+  periodo.setFocus;
+end;
+
+procedure TfmAjustesTotalesIVA.idprofKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_UP) then periodo.setFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then begin
+    if (profesional.Buscar(idprof.Text)) then CargarDatosProfesional else BuscarProfesClick(Self);
+  end;
+end;
+
+procedure TfmAjustesTotalesIVA.periodoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_ESCAPE) then Close;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if (utiles.verificarPeriodo(periodo.Text)) then idprof.setFocus;
+end;
+
+procedure TfmAjustesTotalesIVA.RadioButton1Click(Sender: TObject);
+begin
+  CargarTotales;
+end;
+
+procedure TfmAjustesTotalesIVA.RadioButton2Click(Sender: TObject);
+begin
+  CargarTotales;
+end;
+
+end.

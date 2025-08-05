@@ -1,0 +1,239 @@
+unit AgruparObrasSociales;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Mask, ExtCtrls, ComCtrls, DBCtrls, Grids, DBTables, DB,
+  Editv;
+
+type
+  TfmAgruparObrasSociales = class(TForm)
+    StatusBar1: TStatusBar;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    GroupBox1: TGroupBox;
+    Label7: TLabel;
+    Label9: TLabel;
+    Label11: TLabel;
+    Label12: TLabel;
+    Label13: TLabel;
+    nombre: TMaskEdit;
+    direccion: TMaskEdit;
+    localidad: TMaskEdit;
+    codpfis: TMaskEdit;
+    nrocuit: TMaskEdit;
+    Panel3: TPanel;
+    Label1: TLabel;
+    id: TMaskEdit;
+    DBNavigator: TDBNavigator;
+    S: TStringGrid;
+    DTS: TDataSource;
+    Label2: TLabel;
+    tope: TEditValid;
+    btnAlta: TButton;
+    procedure idKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure nombreKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure direccionKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure localidadKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure codpfisKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure nrocuitKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure SKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure DBNavigatorClick(Sender: TObject; Button: TNavigateBtn);
+    procedure topeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure btnAltaClick(Sender: TObject);
+  private
+    { Private declarations }
+    procedure CargarOS;
+    procedure CargarObraSocial;
+  public
+    { Public declarations }
+  end;
+
+var
+  fmAgruparObrasSociales: TfmAgruparObrasSociales;
+
+implementation
+
+uses CAgrupacionOSFact, CUtiles, CObrasSocialesCCB, CUtilidadesStringGrid;
+
+{$R *.dfm}
+
+procedure TfmAgruparObrasSociales.CargarOS;
+var
+  r: TQuery;
+  i: integer;
+begin
+  grid.IniciarGrilla(S);
+  r := obsocial.setobsocialsAlf;
+  r.Open; i := 0;
+  while not r.eof do begin
+    inc(i);
+    S.Cells[0, i] := r.FieldByName('codos').AsString;
+    S.Cells[2, i] := r.FieldByName('nombre').AsString;
+    if (osagrupa.buscarosdet(id.Text, S.Cells[0, i])) then
+      S.Cells[1, i] := 'S';
+    r.Next;
+  end;
+  r.Close; r.Free;
+  Panel3.Enabled := true;
+  S.SetFocus;
+end;
+
+procedure TfmAgruparObrasSociales.btnAltaClick(Sender: TObject);
+begin
+  id.Text := osagrupa.alta;
+  id.Text := utiles.sLlenarIzquierda(id.Text, 3, '0');
+  osagrupa.getobject(id.Text);
+  nombre.Text    := osagrupa.Nombre;
+  direccion.Text := osagrupa.Direccion;
+  localidad.Text := osagrupa.Localidad;
+  codpfis.Text   := osagrupa.Codpfis;
+  tope.Text      := IntToStr(osagrupa.Tope);
+  nrocuit.Text   := osagrupa.Cuit;
+  CargarOS;
+  nombre.SetFocus;
+end;
+
+procedure TfmAgruparObrasSociales.CargarObraSocial;
+begin
+  osagrupa.getobject(id.Text);
+  nombre.Text    := osagrupa.Nombre;
+  direccion.Text := osagrupa.Direccion;
+  localidad.Text := osagrupa.Localidad;
+  codpfis.Text   := osagrupa.Codpfis;
+  tope.Text      := IntToStr(osagrupa.Tope);
+  nrocuit.Text   := osagrupa.Cuit;
+  CargarOS;
+end;
+
+procedure TfmAgruparObrasSociales.codpfisKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_UP) then localidad.setFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then begin
+    if (length(trim(codpfis.Text)) > 0) then tope.SetFocus;
+  end;
+end;
+
+procedure TfmAgruparObrasSociales.DBNavigatorClick(Sender: TObject;
+  Button: TNavigateBtn);
+begin
+  id.Text := osagrupa.tabla.FieldByName('id').AsString;        
+  CargarObraSocial;
+end;
+
+procedure TfmAgruparObrasSociales.direccionKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_UP) then nombre.setFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then begin
+    if (length(trim(direccion.Text)) > 0) then localidad.SetFocus;
+  end;
+end;
+
+procedure TfmAgruparObrasSociales.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  osagrupa.desconectar;
+  obsocial.desconectar;
+end;
+
+procedure TfmAgruparObrasSociales.FormShow(Sender: TObject);
+begin
+  S.Cells[0, 0] := 'Código'; S.Cells[1, 0] := 'S'; S.Cells[2, 0] := 'Obra Social';
+  osagrupa.conectar;
+  obsocial.conectar;
+  DTS.DataSet := osagrupa.tabla;
+  id.setFocus;
+end;
+
+procedure TfmAgruparObrasSociales.idKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_ESCAPE) then close;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then begin
+    id.Text := utiles.sLlenarIzquierda(id.Text, 3, '0');
+    CargarObraSocial;
+    nombre.SetFocus;
+  end;
+end;
+
+procedure TfmAgruparObrasSociales.localidadKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_UP) then direccion.setFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then begin
+    if (length(trim(localidad.Text)) > 0) then codpfis.SetFocus;
+  end;
+end;
+
+procedure TfmAgruparObrasSociales.nombreKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_UP) then id.setFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then begin
+    if (length(trim(nombre.Text)) > 0) then direccion.SetFocus;
+  end;
+end;
+
+procedure TfmAgruparObrasSociales.nrocuitKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+
+procedure Registrar;
+begin
+  if (length(trim(id.Text)) = 3) and (length(trim(nombre.Text)) > 0) and
+     (length(trim(direccion.Text)) > 0) and (length(trim(localidad.Text)) > 0) and
+     (length(trim(codpfis.Text)) > 0) and (length(trim(nrocuit.Text)) = 13) and (length(trim(tope.Text)) > 0) then begin
+      osagrupa.guardar(id.Text, nombre.Text, nrocuit.Text, direccion.Text, localidad.Text, codpfis.Text, StrToInt(tope.Text));
+      CargarOS;
+     end else begin
+      utiles.msgError('Los Datos están Incompletos ...!');
+     end;
+end;
+
+begin
+  if (Key = VK_UP) then id.setFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then begin
+    if (length(trim(nrocuit.Text)) = 13) then Registrar;
+  end;
+
+end;
+
+procedure TfmAgruparObrasSociales.SKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  avanza: boolean;
+begin
+  if (Key = VK_SPACE) then begin
+    avanza := true;
+    if (S.Cells[1, S.Row] = '') then S.Cells[1, S.Row] := 'S' else S.Cells[1, S.Row] := '';
+    if (S.Cells[1, S.Row] = 'S') then begin
+      if not (osagrupa.guardarosdet(id.Text, S.Cells[0, S.Row])) then begin
+        S.Cells[1, S.Row] := '';
+        avanza := false;
+        utiles.msgError('La Cantidad de Obras Sociales Seleccionadas Supera el Tope ...!');
+      end
+    end else
+      osagrupa.borrarosdet(id.Text, S.Cells[0, S.Row]);
+    if (avanza) then    
+      if (length(trim(S.Cells[0, S.Row+1])) > 0) then S.Row := S.Row + 1;
+  end;
+end;
+
+procedure TfmAgruparObrasSociales.topeKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_UP) then codpfis.setFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then begin
+    if (length(trim(tope.Text)) > 0) and (length(trim(tope.Text)) < 8) then nrocuit.SetFocus;
+  end;
+end;
+
+end.

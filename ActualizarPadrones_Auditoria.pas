@@ -1,0 +1,175 @@
+unit ActualizarPadrones_Auditoria;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Mask, ComCtrls, ExtCtrls, Buttons, Grids;
+
+type
+  TfrmActualizarPadrones = class(TForm)
+    OpenDialog: TOpenDialog;
+    Panel2: TPanel;
+    ScrollBox: TScrollBox;
+    Panel1: TPanel;
+    Label1: TLabel;
+    Label2: TLabel;
+    nos: TLabel;
+    codos: TMaskEdit;
+    BuscarObraSocial: TBitBtn;
+    Panel3: TPanel;
+    A: TStringGrid;
+    Panel4: TPanel;
+    reg: TLabel;
+    btnBuscarArchivo: TButton;
+    Panel5: TPanel;
+    btnActualizar: TButton;
+    btnCerrar: TButton;
+    StatusBar1: TStatusBar;
+    procedure BuscarObraSocialClick(Sender: TObject);
+    procedure codosKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure btnBuscarArchivoClick(Sender: TObject);
+    procedure btnActualizarClick(Sender: TObject);
+    procedure btnCerrarClick(Sender: TObject);
+    procedure AKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+  private
+    { Private declarations }
+    procedure CargarDatosObraSocial;
+    procedure CargarPadron(arch: String);
+  public
+    { Public declarations }
+  end;
+
+var
+  frmActualizarPadrones: TfrmActualizarPadrones;
+
+implementation
+
+uses CPadronOSCCB, CObrasSocialesCCB, CUtiles, CUtilidadesStringGrid, NominaObrasSociales, CConfigForms;
+
+{$R *.dfm}
+
+procedure TfrmActualizarPadrones.CargarDatosObraSocial;
+// Objetivo...: Cargar Datos Obra Social
+Begin
+  obsocial.getDatos(codos.Text);
+  nos.Caption := obsocial.Nombre;
+  Panel4.Visible := True;
+  btnBuscarArchivo.SetFocus;
+end;
+
+procedure TfrmActualizarPadrones.CargarPadron(arch: String);
+// Objetivo...: Cargar Padron de Archivos
+var
+  archivo: TextFile;
+  l1, nstr: String; p, j, l: Integer;
+Begin
+  grid.IniciarGrilla(A);
+  StatusBar1.Panels[0].Text := 'Cargando Padrón ...'; StatusBar1.Refresh;
+  AssignFile(archivo, arch);
+  reset(archivo); p := 0;
+  while not Eof(archivo) do Begin
+    ReadLn(archivo, l1);
+    for j := 0 to 9 do begin
+      l := Pos(Trim(IntToStr(j)), l1);
+      if l > 0 then
+        if Length(Trim(Copy(l1, l-1, 1))) = 0 then Break;
+    end;
+
+    if (Length(Trim(Copy(TrimLeft(l1), 1, l-1))) > 0) and (Length(Trim(Copy(l1, l, 10))) > 6) then Begin
+      Inc(p);
+      nstr := utiles.QuitarCaracteresIzquierda(TrimLeft(l1), 'm');
+      nstr := utiles.QuitarCaracteresIzquierda(TrimLeft(l1), 'f');
+      nstr := utiles.QuitarCaracteresIzquierda(nstr, '0');
+      A.Cells[0, p] := Copy(nstr, 1, l-1);
+      A.Cells[1, p] := Copy(l1, l, 10);
+    end;
+  end;
+  closeFile(archivo);
+  StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+  reg.Caption := IntToStr(p) + ' afiliados recuperados.'; reg.Refresh;
+  if p > 0 then btnActualizar.Enabled := True else btnActualizar.Enabled := False;
+  if btnActualizar.Enabled then btnActualizar.SetFocus;
+end;
+
+procedure TfrmActualizarPadrones.BuscarObraSocialClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmListObrasSociales, fmListObrasSociales);
+  fmListObrasSociales.introSalir := True;
+  fmListObrasSociales.ShowModal;
+  if fmListObrasSociales.seleccionOK then Begin
+    codos.Text := obsocial.tabla.FieldByName('codos').AsString;
+    CargarDatosObraSocial;
+  end;
+  fmListObrasSociales.Release; fmListObrasSociales := nil;
+end;
+
+procedure TfrmActualizarPadrones.codosKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if not obsocial.Buscar(codos.Text) then BuscarObraSocialClick(Sender) else CargarDatosObraSocial;
+end;
+
+procedure TfrmActualizarPadrones.FormShow(Sender: TObject);
+begin
+  configform.Setear(frmActualizarPadrones);
+  obsocial.conectar;
+  A.Cells[0, 0] := 'Nombre del Afiliado'; A.Cells[1, 0] := 'Nro. de Documento';
+end;
+
+procedure TfrmActualizarPadrones.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  configform.Guardar(frmActualizarPadrones);
+  obsocial.desconectar;
+  Release; frmActualizarPadrones := nil;
+end;
+
+procedure TfrmActualizarPadrones.btnBuscarArchivoClick(Sender: TObject);
+begin
+  if OpenDialog.Execute then
+    if Length(Trim(OpenDialog.FileName)) > 0 then CargarPadron(OpenDialog.FileName);
+end;
+
+procedure TfrmActualizarPadrones.btnActualizarClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  if utiles.msgSiNo('Seguro para Actualizar Padrón Obra Social' + chr(13) + codos.Text + ' - ' + nos.Caption) then Begin
+    if padron.conectar(codos.Text) then Begin
+      for i := 1 to A.RowCount do Begin
+        if Length(Trim(A.Cells[0, i])) = 0 then Break;
+        padron.Guardar(codos.Text, Trim(A.Cells[1, i]), A.Cells[0, i]);
+        reg.Caption := IntToStr(i) + '  registros procesados.'; reg.Refresh;
+      end;
+    end;
+    btnCerrarClick(Sender);
+  end;
+end;
+
+procedure TfrmActualizarPadrones.btnCerrarClick(Sender: TObject);
+begin
+  Panel4.Visible := False;
+  reg.Caption := '';
+  codos.Text := ''; nos.Caption := '';
+  btnActualizar.Enabled := False;
+  codos.SetFocus;
+  grid.IniciarGrilla(A);
+end;
+
+procedure TfrmActualizarPadrones.AKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_DELETE then
+    if utiles.msgSiNo('Seguro para Eliminar Afiliado ' + A.Cells[0, A.Row]) then Begin
+      A.Cells[0, A.Row] := 'XX';
+      grid.BorrarRenglon_SinRenumerar(A);
+    end;
+  if Key = VK_INSERT then grid.InsertarLineasSinRenumerar(A); 
+end;
+
+end.

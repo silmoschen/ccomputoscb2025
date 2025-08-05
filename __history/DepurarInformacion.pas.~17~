@@ -1,0 +1,169 @@
+unit DepurarInformacion;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, Buttons, ComCtrls, Db, Grids, DBGrids, Mask, ExtCtrls, BorBtns;
+
+type
+  TfmDepurarInformacion = class(TForm)
+    StatusBar1: TStatusBar;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    Label3: TLabel;
+    Label4: TLabel;
+    Panel3: TPanel;
+    iniciar: TBitBtn;
+    salir: TBitBtn;
+    Panel2: TPanel;
+    TabSheet2: TTabSheet;
+    Panel1: TPanel;
+    Label5: TLabel;
+    Label6: TLabel;
+    CheckBox1: TCheckBox;
+    Label7: TLabel;
+    Label8: TLabel;
+    Panel4: TPanel;
+    BitBtn1: TBitBtn;
+    BitBtn2: TBitBtn;
+    Panel5: TPanel;
+    Label9: TLabel;
+    Label10: TLabel;
+    CheckBox2: TCheckBox;
+    Panel6: TPanel;
+    GroupBox1: TGroupBox;
+    Label11: TLabel;
+    Label12: TLabel;
+    MaskEdit1: TMaskEdit;
+    CheckBox3: TCheckBox;
+    TabSheet3: TTabSheet;
+    Label13: TLabel;
+    Label14: TLabel;
+    Panel7: TPanel;
+    btnDepurarAuditoria: TBitBtn;
+    btnCerrarAuditoria: TBitBtn;
+    Panel8: TPanel;
+    Label15: TLabel;
+    Label16: TLabel;
+    CheckBox4: TCheckBox;
+    Panel9: TPanel;
+    GroupBox3: TGroupBox;
+    Label17: TLabel;
+    Label18: TLabel;
+    fechaaudit: TMaskEdit;
+    CheckBox5: TCheckBox;
+    Animate: TAnimate;
+    Label1: TLabel;
+    cmbPeriodos: TComboBox;
+    procedure salirClick(Sender: TObject);
+    procedure iniciarClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormShow(Sender: TObject);
+    procedure fechaauditKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure CheckBox5Click(Sender: TObject);
+    procedure btnDepurarAuditoriaClick(Sender: TObject);
+  private
+    { Private declarations }
+    l: TStringList;
+  public
+    { Public declarations }
+  end;
+
+var
+  fmDepurarInformacion: TfmDepurarInformacion;
+
+implementation
+
+uses CFacturacionCCB, CAuditoriaCCB, CUtiles;
+
+{$R *.DFM}
+
+procedure TfmDepurarInformacion.salirClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfmDepurarInformacion.iniciarClick(Sender: TObject);
+begin
+
+
+  Animate.Visible   := True;
+  Animate.Active    := True;
+  CheckBox1.Visible := False;
+  salir.Enabled     := False;
+  StatusBar1.Panels[0].Text := 'Depurando datos ...!'; StatusBar1.Refresh;
+  //facturacion.DepurarIB(periodo.Text);
+  StatusBar1.Panels[0].Text := 'Trabajo realizado ...!';
+  salir.Enabled     := True;
+  iniciar.Enabled   := False;
+  ActiveControl     := salir;
+  Animate.Visible   := False;
+  Animate.Active    := False;
+  CheckBox1.Visible := True;
+end;
+
+procedure TfmDepurarInformacion.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  facturacion.desconectar;
+  Release;
+  fmDepurarInformacion := nil;
+end;
+
+procedure TfmDepurarInformacion.FormShow(Sender: TObject);
+var
+  l: TStringList;
+  i: integer;
+begin
+  l := TStringList.Create;
+  facturacion.conectar;
+
+  l := facturacion.getPeriodosFacturadosDepurar;
+  for i := 1 to l.Count do begin
+    if (i = 1) then cmbPeriodos.Text := l.Strings[i-1];
+    cmbPeriodos.Items.Add(l.Strings[i-1]);
+  end;
+end;
+
+procedure TfmDepurarInformacion.fechaauditKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    if utiles.ctrlFecha(fechaaudit) then Begin
+      StatusBar1.Panels[0].Text := ' Recuperando Ordenes ...!'; StatusBar1.Refresh;
+      l := auditoriacb.setOrdenesDepurar(fechaaudit.Text);
+      StatusBar1.Panels[0].Text := IntToStr(l.Count) + ' Ordenes Recuperadas';
+      btnDepurarAuditoria.Enabled := True;
+      ActiveControl := btnDepurarAuditoria;
+    end;
+end;
+
+procedure TfmDepurarInformacion.CheckBox5Click(Sender: TObject);
+begin
+  if CheckBox5.Checked then Begin
+    GroupBox3.Enabled := True;
+    fechaaudit.SetFocus;
+  end else
+    GroupBox3.Enabled := False;
+end;
+
+procedure TfmDepurarInformacion.btnDepurarAuditoriaClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  StatusBar1.Panels[0].Text := ' Conectando ...!'; StatusBar1.Refresh;
+  auditoriacb.conectar;
+  auditoriacb.IniciarDepuracion;
+  for i := 1 to l.Count do Begin
+    StatusBar1.Panels[0].Text := IntToStr(i) + ' de ' + IntToStr(l.Count) + ' Ordenes Procesadas'; StatusBar1.Refresh;
+    auditoriacb.Depurar(l.Strings[i-1]);
+  end;
+  auditoriacb.FinalizarDepuracion;
+  auditoriacb.desconectar;
+  btnCerrarAuditoria.SetFocus;
+  StatusBar1.Panels[0].Text := ' Trabajo Realizado';
+end;
+
+end.

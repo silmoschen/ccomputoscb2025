@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2008/07/24 20:19:08.421.pas,C:\sidelphi32\Interbase\Backup\frmAdminToolU.pas=</Transaction>
+    <Transaction>2008/07/24 20:19:08.421.dfm,C:\sidelphi32\Interbase\Backup\frmAdminToolU.dfm=</Transaction>
+    <Transaction>2008/07/24 20:19:47.078.pas,C:\sidelphi32\Interbase\Backup\frmAddCertificateU.pas=</Transaction>
+    <Transaction>2008/07/24 20:19:47.078.dfm,C:\sidelphi32\Interbase\Backup\frmAddCertificateU.dfm=</Transaction>
+    <Transaction>2008/07/24 20:19:47.078.pas,C:\sidelphi32\Interbase\Backup\frmLoginU.pas=</Transaction>
+    <Transaction>2008/07/24 20:19:47.078.dfm,C:\sidelphi32\Interbase\Backup\frmLoginU.dfm=</Transaction>
+    <Transaction>2008/07/24 20:19:47.171.pas,C:\sidelphi32\Interbase\Backup\frmUserInformationU.pas=</Transaction>
+    <Transaction>2008/07/24 20:19:47.171.dfm,C:\sidelphi32\Interbase\Backup\frmUserInformationU.dfm=</Transaction>
+    <Transaction>2008/07/24 20:19:47.171.pas,C:\sidelphi32\Interbase\Backup\frmVerboseU.pas=</Transaction>
+    <Transaction>2008/07/24 20:19:47.171.dfm,C:\sidelphi32\Interbase\Backup\frmVerboseU.dfm=</Transaction>
+    <Transaction>2008/11/18 08:25:51.562.dproj,C:\sidelphi32\SGen\ccomputoscb\ShmsoftFCCBCentroBioq.dproj=C:\sidelphi32\SGen\ccomputoscb\ShmsoftFCCBCentroBioqCBVera.dproj</Transaction>
+  </Transactions>
+</BorlandProject>

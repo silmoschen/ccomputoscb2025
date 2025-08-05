@@ -1,0 +1,14 @@
+program exportnbu;
+
+uses
+  Forms,
+  exportar_nbu in 'exportar_nbu.pas' {fmExportarNBU};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TfmExportarNBU, fmExportarNBU);
+  Application.Run;
+end.

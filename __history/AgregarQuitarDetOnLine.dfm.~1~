@@ -1,0 +1,16 @@
+object fmDeterminacionOnLine: TfmDeterminacionOnLine
+  Left = 0
+  Top = 0
+  Caption = 'Agregar/Editar Determinaci'#243'n'
+  ClientHeight = 41
+  ClientWidth = 569
+  Color = clBtnFace
+  Font.Charset = ANSI_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  PixelsPerInch = 96
+  TextHeight = 13
+end

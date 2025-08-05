@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2008/07/24 20:19:08.421.pas,C:\sidelphi32\Interbase\Backup\frmAdminToolU.pas=</Transaction>
+    <Transaction>2008/07/24 20:19:08.421.dfm,C:\sidelphi32\Interbase\Backup\frmAdminToolU.dfm=</Transaction>
+    <Transaction>2008/07/24 20:19:47.078.pas,C:\sidelphi32\Interbase\Backup\frmAddCertificateU.pas=</Transaction>
+    <Transaction>2008/07/24 20:19:47.078.dfm,C:\sidelphi32\Interbase\Backup\frmAddCertificateU.dfm=</Transaction>
+    <Transaction>2008/07/24 20:19:47.078.pas,C:\sidelphi32\Interbase\Backup\frmLoginU.pas=</Transaction>
+    <Transaction>2008/07/24 20:19:47.078.dfm,C:\sidelphi32\Interbase\Backup\frmLoginU.dfm=</Transaction>
+    <Transaction>2008/07/24 20:19:47.171.pas,C:\sidelphi32\Interbase\Backup\frmUserInformationU.pas=</Transaction>
+    <Transaction>2008/07/24 20:19:47.171.dfm,C:\sidelphi32\Interbase\Backup\frmUserInformationU.dfm=</Transaction>
+    <Transaction>2008/07/24 20:19:47.171.pas,C:\sidelphi32\Interbase\Backup\frmVerboseU.pas=</Transaction>
+    <Transaction>2008/07/24 20:19:47.171.dfm,C:\sidelphi32\Interbase\Backup\frmVerboseU.dfm=</Transaction>
+    <Transaction>2010/11/23 12:05:27.890.pas,D:\sidelphi32\SGen\ccomputoscb\obrasocial.pas=D:\sidelphi32\SGen\ccomputoscb\sist_central\obrasocial.pas</Transaction>
+    <Transaction>2010/11/23 12:05:27.890.dfm,D:\sidelphi32\SGen\ccomputoscb\obrasocial.dfm=D:\sidelphi32\SGen\ccomputoscb\sist_central\obrasocial.dfm</Transaction>
+    <Transaction>2014/05/23 08:24:52.700.pas,C:\sidelphi32\SGen\SFact\Comprobantes.pas=C:\sidelphi32\SGen\ccomputoscb\Comprobantes.pas</Transaction>
+    <Transaction>2014/05/23 08:24:52.700.dfm,C:\sidelphi32\SGen\SFact\Comprobantes.dfm=C:\sidelphi32\SGen\ccomputoscb\Comprobantes.dfm</Transaction>
+    <Transaction>2014/07/25 15:21:47.677.pas,C:\sidelphi32\SGen\ccomputoscb\sist_central\obrasocial.pas=</Transaction>
+    <Transaction>2014/07/25 15:21:47.727.dfm,C:\sidelphi32\SGen\ccomputoscb\sist_central\obrasocial.dfm=</Transaction>
+    <Transaction>2014/08/01 11:17:03.163.pas,C:\sidelphi32\CLASES\CLiquidacionObrasSocCCB.pas=</Transaction>
+    <Transaction>2018/07/23 13:08:10.068.pas,C:\sidelphi32\SGen\ccomputoscb\Unit2.pas=C:\sidelphi32\SGen\ccomputoscb\buscarosonline.pas</Transaction>
+    <Transaction>2018/07/23 13:08:10.077.dfm,C:\sidelphi32\SGen\ccomputoscb\Unit2.dfm=C:\sidelphi32\SGen\ccomputoscb\buscarosonline.dfm</Transaction>
+  </Transactions>
+</BorlandProject>

@@ -1,0 +1,41 @@
+unit Coseguros;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, ComCtrls, CCoseguros, Grids;
+
+type
+  TfmCoseguros = class(TForm)
+    StatusBar1: TStatusBar;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    Panel3: TPanel;
+    S: TStringGrid;
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  fmCoseguros: TfmCoseguros;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfmCoseguros.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  coseguro.desconectar;
+end;
+
+procedure TfmCoseguros.FormShow(Sender: TObject);
+begin
+  coseguro.conectar;
+end;
+
+end.

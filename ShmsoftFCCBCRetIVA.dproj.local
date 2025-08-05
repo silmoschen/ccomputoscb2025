@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2008/10/19 20:54:57.453.pas,C:\sidelphi32\SGen\ccomputoscb\Nomina_NBU.pas=</Transaction>
+    <Transaction>2008/10/19 20:54:57.453.dfm,C:\sidelphi32\SGen\ccomputoscb\Nomina_NBU.dfm=</Transaction>
+    <Transaction>2008/10/28 09:34:38.437.PAS,C:\sidelphi32\Varios\repara_paradox\32BIT\MAIN.PAS=</Transaction>
+    <Transaction>2008/10/28 09:34:38.437.dfm,C:\sidelphi32\Varios\repara_paradox\32BIT\MAIN.dfm=</Transaction>
+    <Transaction>2008/10/28 09:35:41.484.PAS,C:\sidelphi32\Varios\repara_paradox\DEMO32\MAIN.PAS=</Transaction>
+    <Transaction>2008/10/28 09:35:41.484.dfm,C:\sidelphi32\Varios\repara_paradox\DEMO32\MAIN.dfm=</Transaction>
+    <Transaction>2009/03/12 09:09:36.171.pas,C:\sidelphi32\CLASES\CEstadisticasFacturacionCCB.pas=</Transaction>
+    <Transaction>2009/03/12 09:10:11.937.pas,C:\sidelphi32\SGen\ccomputoscb\Estadisticas.pas=</Transaction>
+    <Transaction>2009/03/12 09:10:11.937.dfm,C:\sidelphi32\SGen\ccomputoscb\Estadisticas.dfm=</Transaction>
+    <Transaction>2010/08/22 18:07:25.468.pas,C:\sidelphi32\SGen\ccomputoscb\clases\CNBU.pas=</Transaction>
+    <Transaction>2010/08/22 18:08:42.296.pas,C:\sidelphi32\CLASES\CFacturacionCCB.pas=</Transaction>
+    <Transaction>2010/08/22 18:09:17.578.pas,C:\sidelphi32\CLASES\CFacturacionCCB.pas=</Transaction>
+    <Transaction>2010/10/21 08:58:33.109.pas,D:\sidelphi32\SGen\ccomputoscb\clases\CFacturacionCCB.pas=</Transaction>
+    <Transaction>2012/04/03 15:34:52.202.pas,C:\sidelphi32\SGen\ccomputoscb\clases\CFacturacionCCB.pas=</Transaction>
+    <Transaction>2013/04/06 09:26:34.166.pas,C:\sidelphi32\SGen\ccomputoscb\FichaProfesionalLiquidacionOS.pas=C:\sidelphi32\SGen\ccomputoscb\FichaProfesionalLiquidacionOSGlobal.pas</Transaction>
+    <Transaction>2013/04/06 09:26:34.166.dfm,C:\sidelphi32\SGen\ccomputoscb\FichaProfesionalLiquidacionOS.dfm=C:\sidelphi32\SGen\ccomputoscb\FichaProfesionalLiquidacionOSGlobal.dfm</Transaction>
+    <Transaction>2013/04/06 09:26:47.651.pas,C:\sidelphi32\SGen\ccomputoscb\NominaDeProfesionales.pas=C:\sidelphi32\SGen\ccomputoscb\NominaDeProfesionalesGlobal.pas</Transaction>
+    <Transaction>2013/04/06 09:26:47.651.dfm,C:\sidelphi32\SGen\ccomputoscb\NominaDeProfesionales.dfm=C:\sidelphi32\SGen\ccomputoscb\NominaDeProfesionalesGlobal.dfm</Transaction>
+    <Transaction>2013/04/06 09:32:42.716.pas,C:\sidelphi32\SGen\ccomputoscb\FichaProfesionalLiquidacionOSGlobal.pas=</Transaction>
+    <Transaction>2013/04/06 09:32:42.716.dfm,C:\sidelphi32\SGen\ccomputoscb\FichaProfesionalLiquidacionOSGlobal.dfm=</Transaction>
+    <Transaction>2013/04/06 09:33:04.597.pas,C:\sidelphi32\SGen\ccomputoscb\NominaDeProfesionalesGlobal.pas=</Transaction>
+    <Transaction>2013/04/06 09:33:04.597.dfm,C:\sidelphi32\SGen\ccomputoscb\NominaDeProfesionalesGlobal.dfm=</Transaction>
+    <Transaction>2013/04/08 08:06:27.298.pas,C:\sidelphi32\SGen\ccomputoscb\Unit2.pas=C:\sidelphi32\SGen\ccomputoscb\distribucionOrdenesFacturadas.pas</Transaction>
+    <Transaction>2013/04/08 08:06:27.298.dfm,C:\sidelphi32\SGen\ccomputoscb\Unit2.dfm=C:\sidelphi32\SGen\ccomputoscb\distribucionOrdenesFacturadas.dfm</Transaction>
+    <Transaction>2013/06/07 16:10:09.423.pas,C:\sidelphi32\SGen\ccomputoscb\Unit2.pas=C:\sidelphi32\SGen\ccomputoscb\fmFacturacionOnLine.pas</Transaction>
+    <Transaction>2013/06/07 16:10:09.452.dfm,C:\sidelphi32\SGen\ccomputoscb\Unit2.dfm=C:\sidelphi32\SGen\ccomputoscb\fmFacturacionOnLine.dfm</Transaction>
+    <Transaction>2013/06/10 09:11:32.413.pas,C:\sidelphi32\SGen\ccomputoscb\Unit2.pas=C:\sidelphi32\SGen\ccomputoscb\clases\CAuditoriaFacturacion.pas</Transaction>
+    <Transaction>2013/06/10 19:20:54.246.pas,C:\sidelphi32\SGen\ccomputoscb\Unit2.pas=C:\sidelphi32\SGen\ccomputoscb\login_user.pas</Transaction>
+    <Transaction>2013/06/10 19:20:54.246.dfm,C:\sidelphi32\SGen\ccomputoscb\Unit2.dfm=C:\sidelphi32\SGen\ccomputoscb\login_user.dfm</Transaction>
+    <Transaction>2013/06/11 15:19:48.198.pas,C:\sidelphi32\SGen\ccomputoscb\DefinicionFacturas.pas=</Transaction>
+    <Transaction>2013/06/11 15:19:48.214.dfm,C:\sidelphi32\SGen\ccomputoscb\DefinicionFacturas.dfm=</Transaction>
+    <Transaction>2013/09/17 09:21:34.269.pas,C:\sidelphi32\SGen\ccomputoscb\Unit2.pas=C:\sidelphi32\SGen\ccomputoscb\exportarOrdenesSopMagnetico.pas</Transaction>
+    <Transaction>2013/09/17 09:21:34.269.dfm,C:\sidelphi32\SGen\ccomputoscb\Unit2.dfm=C:\sidelphi32\SGen\ccomputoscb\exportarOrdenesSopMagnetico.dfm</Transaction>
+    <Transaction>2014/05/27 08:53:55.684.pas,C:\sidelphi32\SGen\SFact\Comprobantes.pas=</Transaction>
+    <Transaction>2014/05/27 08:53:55.690.dfm,C:\sidelphi32\SGen\SFact\Comprobantes.dfm=</Transaction>
+    <Transaction>2018/05/16 16:14:48.897.pas,C:\sidelphi32\SGen\ccomputoscb\Unit2.pas=C:\sidelphi32\SGen\ccomputoscb\soportedigital.pas</Transaction>
+    <Transaction>2018/05/16 16:14:48.897.dfm,C:\sidelphi32\SGen\ccomputoscb\Unit2.dfm=C:\sidelphi32\SGen\ccomputoscb\soportedigital.dfm</Transaction>
+    <Transaction>2020/05/27 10:03:22.279.pas,C:\sidelphi32\SGen\ccomputoscb\clases\tablaNBU.pas=</Transaction>
+    <Transaction>2020/05/27 10:03:22.279.dfm,C:\sidelphi32\SGen\ccomputoscb\clases\tablaNBU.dfm=</Transaction>
+    <Transaction>2023/04/19 15:33:58.996.pas,C:\sidelphi32\SGen\ccomputoscb\PresupuestoRapido.pas=C:\sidelphi32\SGen\ccomputoscb\PresupuestoRapidoTit.pas</Transaction>
+    <Transaction>2023/04/19 15:33:59.038.dfm,C:\sidelphi32\SGen\ccomputoscb\PresupuestoRapido.dfm=C:\sidelphi32\SGen\ccomputoscb\PresupuestoRapidoTit.dfm</Transaction>
+  </Transactions>
+</BorlandProject>

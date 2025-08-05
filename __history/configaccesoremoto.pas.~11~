@@ -1,0 +1,65 @@
+unit configaccesoremoto;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, DBCtrls, Grids, DBGrids, DB, IBDatabase, IBCustomDataSet, IBTable,
+  ExtCtrls, StdCtrls;
+
+type
+  TfmConfigFirebird = class(TForm)
+    Panel1: TPanel;
+    IBDatabase1: TIBDatabase;
+    IBTable1: TIBTable;
+    IBTransaction1: TIBTransaction;
+    DataSource1: TDataSource;
+    Panel2: TPanel;
+    DBNavigator1: TDBNavigator;
+    Panel3: TPanel;
+    DBGrid1: TDBGrid;
+    CheckBox1: TCheckBox;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormShow(Sender: TObject);
+    procedure CheckBox1Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  fmConfigFirebird: TfmConfigFirebird;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfmConfigFirebird.CheckBox1Click(Sender: TObject);
+begin
+  if (CheckBox1.Checked) then DBGrid1.ReadOnly := false else  DBGrid1.ReadOnly := true;
+  if (CheckBox1.Checked) then DBNavigator1.Enabled := true else  DBNavigator1.Enabled := false;
+end;
+
+procedure TfmConfigFirebird.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  IBTable1.Close;
+  IBDatabase1.Close;
+  fmConfigFirebird.Release; fmConfigFirebird := nil;
+end;
+
+procedure TfmConfigFirebird.FormShow(Sender: TObject);
+var
+  p: string;
+begin
+  p := ExtractFilePath(Application.ExeName);
+  Top := 105;
+  Left:=(Screen.Width - Width) div 2;
+  IBDatabase1.DatabaseName := 'localhost:' + p + 'FIREBIRD.GDB';
+  IBDatabase1.Open;
+  IBTable1.Open;
+  IBTransaction1.Active := true;
+end;
+
+end.

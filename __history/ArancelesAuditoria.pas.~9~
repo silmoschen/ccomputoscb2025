@@ -1,0 +1,636 @@
+unit ArancelesAuditoria;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Editv, Grids, Buttons, Mask, ExtCtrls, ComCtrls, DBTables;
+
+type
+  TfmArancelesDiferenciales = class(TForm)
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    Label104: TLabel;
+    Label106: TLabel;
+    nos: TLabel;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    Label7: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
+    codos: TMaskEdit;
+    BuscarObraSocialRet: TBitBtn;
+    ub: TEditValid;
+    ug: TEditValid;
+    rieub: TEditValid;
+    rieug: TEditValid;
+    periodo: TMaskEdit;
+    aplicar: TMaskEdit;
+    porcentaje: TEditValid;
+    Panel3: TPanel;
+    AR: TStringGrid;
+    Panel4: TPanel;
+    Panel5: TPanel;
+    Label10: TLabel;
+    des: TLabel;
+    Label11: TLabel;
+    Label37: TLabel;
+    Label51: TLabel;
+    Label52: TLabel;
+    Label53: TLabel;
+    codanalisis: TMaskEdit;
+    BuscarProf: TBitBtn;
+    importe: TEditValid;
+    periodoaf: TMaskEdit;
+    periodohasta: TMaskEdit;
+    Panel6: TPanel;
+    A: TStringGrid;
+    Label12: TLabel;
+    Label13: TLabel;
+    montonbu: TEditValid;
+    procedure BuscarObraSocialRetClick(Sender: TObject);
+    procedure codosKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure periodoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure ubKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure ugKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure rieubKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure rieugKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure aplicarKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure Panel3Resize(Sender: TObject);
+    procedure ARDblClick(Sender: TObject);
+    procedure ARKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure porcentajeKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure BuscarProfClick(Sender: TObject);
+    procedure codanalisisKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure periodoafKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure periodohastaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure importeKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure TabSheet2Hide(Sender: TObject);
+    procedure TabSheet2Show(Sender: TObject);
+    procedure ADblClick(Sender: TObject);
+    procedure AKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure montonbuKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+  private
+    { Private declarations }
+    redim, modifica: Boolean;
+    it: Integer;
+    procedure CargarDatosObraSocial;
+    procedure CargarAranceles;
+    procedure RegistrarItems;
+    procedure CargarDeterminacionesMontoFijo;
+    procedure CargarDatosAnalisis;
+    procedure CargarGrilla;
+    procedure ActualizarAnalisisMontoFijo;
+    function  BuscarAnalisis(xcodanalisis: string): boolean;
+    function  ObtenerLinea(xcodanalisis, xperiodo: String): Integer;
+  public
+    { Public declarations }
+  end;
+
+var
+  fmArancelesDiferenciales: TfmArancelesDiferenciales;
+
+implementation
+
+uses
+  CAuditoriaCCB, CObrasSocialesCCB, CUtiles, NominaObrasSociales, CUtilidadesStringGrid,
+  CConfigForms, NominaNomeclador, Nomina_NBU, CNomeclaCCB, CNBU;
+
+{$R *.dfm}
+
+procedure TfmArancelesDiferenciales.CargarDatosObraSocial;
+Begin
+  obsocial.getDatos(codos.Text);
+  nos.Caption := obsocial.Nombre;
+  CargarAranceles;
+  periodo.SetFocus;
+end;
+
+procedure TfmArancelesDiferenciales.RegistrarItems;
+Begin
+  if (obsocial.Buscar(codos.Text)) and (utiles.verificarPeriodo(periodo.Text)) and (utiles.Sionoct(aplicar.Text, 'SN', '')) and (Length(Trim(ub.Text)) > 0) and (Length(Trim(ug.Text)) > 0) and (Length(Trim(rieub.Text)) > 0) and (Length(Trim(rieug.Text)) > 0) then Begin
+    if (obsocial.Factnbu = 'N') then    
+      auditoriacb.RegistrarArancelDiferencial(codos.Text, periodo.Text, aplicar.Text, StrToFloat(ub.Text), StrToFloat(ug.Text), StrToFloat(rieub.Text), StrToFloat(rieug.Text), StrToFloat(porcentaje.Text))
+    else
+      auditoriacb.RegistrarArancelDiferencialNBU(codos.Text, periodo.Text, StrToFloat(montonbu.Text));
+    CargarAranceles;
+    periodo.Text := ''; aplicar.Text := ''; ub.Text := ''; ug.Text := ''; rieub.Text := ''; rieug.Text := ''; montonbu.text := '';
+    codos.SetFocus;
+    aplicar.Enabled := false;
+    porcentaje.Enabled := false;
+    ub.Enabled := false;
+    ug.enabled := false;
+    rieub.Enabled := false;
+    rieug.Enabled := false;
+    montonbu.Enabled := false;
+  end else
+    utiles.msgError('Controle, hay Datos Incorrectos ...!');
+end;
+
+procedure TfmArancelesDiferenciales.CargarAranceles;
+var
+  i: Integer;
+  l: TQuery;
+begin
+  grid.IniciarGrilla(AR);
+  i := 0;
+  l := auditoriacb.setArancelDiferencial(codos.Text);
+  l.Open;
+  while not l.eof do begin
+    inc(i);
+    AR.Cells[0, i] := l.fieldbyname('periodo').asstring;
+    AR.Cells[1, i] := utiles.FormatearNumero(l.fieldbyname('ub').asstring);
+    AR.Cells[2, i] := utiles.FormatearNumero(l.fieldbyname('ug').asstring);
+    AR.Cells[3, i] := utiles.FormatearNumero(l.fieldbyname('rieub').asstring);
+    AR.Cells[4, i] := utiles.FormatearNumero(l.fieldbyname('rieug').asstring);
+    AR.Cells[5, i] := l.fieldbyname('aplica').asstring;
+    AR.Cells[6, i] := utiles.FormatearNumero(l.fieldbyname('porcentaje').asstring);
+    AR.Cells[7, i] := utiles.FormatearNumero(l.fieldbyname('nbu').asstring);
+    AR.Row := i;
+    l.next;
+  end;
+  l.close; l.free;
+end;
+
+procedure TfmArancelesDiferenciales.CargarDeterminacionesMontoFijo;
+// Objetivo...: Cargamos los análisis con montos fijos
+var
+  r: TQuery;
+  i, j: integer;
+begin
+  For i := 1 to A.RowCount do
+    For j := 1 to A.ColCount do A.cells[j-1, i] := '';
+
+  if obsocial.factnbu <> 'S' then Begin
+    r := auditoriacb.setAnalisisMontoFijo(codos.Text);
+    r.Open; r.First; i := 0;
+    while not r.EOF do Begin
+      Inc(i);
+      nomeclatura.getDatos(r.FieldByName('codanalisis').AsString);
+      A.cells[0, i] := utiles.sLlenarIzquierda(IntToStr(i), 3, '0');
+      A.cells[1, i] := r.FieldByName('codanalisis').AsString;
+      A.cells[2, i] := nomeclatura.descrip;
+      A.cells[3, i] := utiles.FormatearNumero(r.FieldByName('importe').AsString);
+      A.Cells[4, i] := r.FieldByName('periodo').AsString;
+      A.Cells[5, i] := r.FieldByName('perhasta').AsString;
+      r.Next;
+    end;
+    r.Close; r.Free;
+    it := i;
+    if i = 0 then A.Row := 1 else A.row := it;
+  end;
+
+  if obsocial.factnbu = 'S' then Begin
+    r := obsocial.setAnalisisMontoFijoNBU(codos.Text);
+    r.Open; r.First; i := 0;
+    while not r.EOF do Begin
+      Inc(i);
+      nbu.getDatos(r.FieldByName('codanalisis').AsString);
+      A.cells[0, i] := utiles.sLlenarIzquierda(IntToStr(i), 3, '0'); //r.FieldByName('items').AsString;
+      A.cells[1, i] := r.FieldByName('codanalisis').AsString;
+      A.cells[2, i] := nbu.Descrip;
+      A.cells[3, i] := utiles.FormatearNumero(r.FieldByName('importe').AsString);
+      A.Cells[4, i] := r.FieldByName('periodo').AsString;
+      A.Cells[5, i] := r.FieldByName('perhasta').AsString;
+      r.Next;
+    end;
+    r.Close; r.Free;
+    it := i;
+    if i = 0 then A.Row := 1 else A.row := it;
+  end;
+end;
+
+procedure TfmArancelesDiferenciales.CargarDatosAnalisis;
+begin
+  if obsocial.factnbu <> 'S' then Begin
+    nomeclatura.getDatos(codanalisis.Text);
+    des.Caption := nomeclatura.descrip;
+  end;
+  if obsocial.factnbu = 'S' then Begin
+    nbu.getDatos(codanalisis.Text);
+    des.Caption := nbu.descrip;
+  end;
+end;
+
+procedure TfmArancelesDiferenciales.CargarGrilla;
+var
+  i, l, j: integer;
+begin
+  modifica := BuscarAnalisis(codanalisis.Text);
+
+  For j := 1 to A.RowCount do Begin
+    it := j;
+    if Length(Trim(A.Cells[0, j])) = 0 then Break;
+  end;
+
+  if not modifica then i := it else i := A.row;
+
+  l := obtenerlinea(codanalisis.Text, periodoaf.Text);  // Buscamos la Ranura para Mantener el orden con los códigos
+  if l > 0 then Begin
+    if not modifica then Begin
+      if l > 1 then l := l + 1;
+      A.Row := l;
+      grid.InsertarLinea(A, 3);
+      i := l;
+    end;
+
+    if modifica then Begin
+      A.Row := l;
+      i     := l;
+    end;
+  end;
+
+  A.cells[0, i] := utiles.sLlenarIzquierda(IntToStr(i), 3, '0');
+  A.cells[1, i] := codanalisis.Text;
+  A.cells[2, i] := des.Caption;
+  A.cells[3, i] := importe.Text;
+  if Length(Trim(periodoaf.Text)) = 7 then A.cells[4, i] := periodoaf.Text else A.Cells[4, i] := '';
+  if Length(Trim(periodohasta.Text)) = 7 then A.cells[5, i] := periodohasta.Text else A.Cells[5, i] := '';
+  modifica := False;
+  A.row    := i;
+end;
+
+function  TfmArancelesDiferenciales.BuscarAnalisis(xcodanalisis: string): boolean;
+var
+  i: integer;
+begin
+  Result := False;
+  For i := 1 to A.RowCount do
+    if A.cells[0, i] = xcodanalisis then Begin
+      Result := True;
+      Break;
+    end;
+end;
+
+function  TfmArancelesDiferenciales.ObtenerLinea(xcodanalisis, xperiodo: String): Integer;
+// Objetivo...: Determinar Ranura
+var
+  i, j, k: Integer;
+Begin
+  j := 0; k := 0;
+  For i := 1 to A.RowCount do Begin
+    if Length(Trim(A.Cells[0, i])) = 0 then Break;
+    if Trim(A.Cells[1, i]) = Trim(xcodanalisis) then Begin
+      if Length(Trim(xperiodo)) = 7 then k := i;
+
+      if Copy(A.Cells[4, i], 4, 4) + Copy(A.Cells[4, i], 1, 2) = Copy(xperiodo, 4, 4) + Copy(xperiodo, 1, 2) then Begin
+        j := i;
+        modifica := True;
+        Break;
+      end;
+
+      if Copy(A.Cells[4, i], 4, 4) + Copy(A.Cells[4, i], 1, 2)  > Copy(xperiodo, 4, 4) + Copy(xperiodo, 1, 2) then Begin
+        if i > 0 then j := i-1;
+        Break;
+      end;
+    end;
+  end;
+
+  if j > 0 then  Result := j else Result := k;
+end;
+
+procedure TfmArancelesDiferenciales.ActualizarAnalisisMontoFijo;
+// Objetivo...: Actualizar análisis con monto fijo
+var
+  i, j: integer;
+begin
+  For i := 1 to A.RowCount do Begin
+    if Length(Trim(A.cells[0, i])) = 0 then Break;
+    j := i;
+  end;
+
+  For i := 1 to A.RowCount do Begin
+    if Length(Trim(A.cells[0, i])) = 0 then Break;
+    if obsocial.Factnbu <> 'S' then auditoriacb.GrabarAnalisisMontoFijo(codos.Text, A.cells[0, i], A.cells[1, i], A.cells[4, i], A.cells[5, i], StrToFloat(A.cells[3, i]), j);
+  end;
+end;
+
+
+//------------------------------------------------------------------------------
+
+procedure TfmArancelesDiferenciales.BuscarObraSocialRetClick(
+  Sender: TObject);
+begin
+  Application.CreateForm(TfmListObrasSociales, fmListObrasSociales);
+  fmListObrasSociales.introSalir := True;
+  fmListObrasSociales.expresion.CharCase := ecUpperCase;
+  fmListObrasSociales.ShowModal;
+  Refresh;
+  if fmListObrasSociales.seleccionOK then Begin
+    codos.Text := obsocial.tabla.FieldByName('codos').AsString;
+    CargarDatosObraSocial;
+  end;
+  fmListObrasSociales.Release; fmListObrasSociales := nil;
+end;
+
+procedure TfmArancelesDiferenciales.codosKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if obsocial.Buscar(codos.Text) then CargarDatosObraSocial else BuscarObraSocialRetClick(Self);
+end;
+
+procedure TfmArancelesDiferenciales.periodoKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then codos.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.verificarPeriodo(periodo.Text) then begin
+       if (obsocial.Factnbu = 'S') then begin
+         montonbu.Enabled := true;
+         montonbu.SetFocus;
+       end else begin
+         aplicar.Enabled := true;
+         porcentaje.Enabled := true;
+         ub.Enabled := true;
+         ug.enabled := true;
+         rieub.Enabled := true;
+         rieug.Enabled := true;
+         aplicar.SetFocus;
+       end;
+    end;
+
+end;
+
+procedure TfmArancelesDiferenciales.ubKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then porcentaje.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(ub.Text)) > 0 then Begin
+      ub.Text := utiles.FormatearNumero(ub.Text);
+      ug.setFocus;
+    end;
+end;
+
+procedure TfmArancelesDiferenciales.ugKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then ub.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(ug.Text)) > 0 then Begin
+      ug.Text := utiles.FormatearNumero(ug.Text);
+      rieub.setFocus;
+    end;
+end;
+
+procedure TfmArancelesDiferenciales.rieubKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then ug.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(rieub.Text)) > 0 then Begin
+      rieub.Text := utiles.FormatearNumero(rieub.Text);
+      rieug.setFocus;
+    end;
+end;
+
+procedure TfmArancelesDiferenciales.rieugKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then rieub.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(rieug.Text)) > 0 then Begin
+      rieug.Text := utiles.FormatearNumero(rieug.Text);
+      RegistrarItems;
+      codos.setFocus;
+    end;
+end;
+
+procedure TfmArancelesDiferenciales.aplicarKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then periodo.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.Sionoct(aplicar.Text, 'SN', 'Las Opciones son S ó N ...!') then porcentaje.SetFocus;
+end;
+
+procedure TfmArancelesDiferenciales.FormShow(Sender: TObject);
+begin
+  auditoriacb.conectar;
+  AR.Cells[0, 0] := 'Período'; AR.Cells[1, 0] := 'U.B.'; AR.Cells[2, 0] := 'U.G.'; AR.Cells[3, 0] := 'RIE U.B.'; AR.Cells[4, 0] := 'RIE U.G.'; AR.Cells[5, 0] := 'Ap.';
+  AR.Cells[6, 0] := 'Por.'; AR.Cells[7, 0] := 'NBU';
+  A.cells[0, 0] := 'It.'; A.cells[1, 0] := 'Cód.'; A.cells[2, 0] := 'Descripción'; A.cells[3, 0] := 'Importe'; A.cells[4, 0] := 'Per. Alta'; A.cells[5, 0] := 'Per. Baja';
+  if not configform.Setear(fmArancelesDiferenciales) then Left:=(Screen.Width - Width) div 2;
+  codos.SetFocus;
+end;
+
+procedure TfmArancelesDiferenciales.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  PageControl1.ActivePage := TabSheet1;
+  auditoriacb.desconectar;
+  configform.Guardar(fmArancelesDiferenciales, redim);
+  Release; fmArancelesDiferenciales := Nil;
+end;
+
+procedure TfmArancelesDiferenciales.Panel3Resize(Sender: TObject);
+begin
+  redim := True;
+end;
+
+procedure TfmArancelesDiferenciales.ARDblClick(Sender: TObject);
+begin
+  if Length(Trim(AR.Cells[0, AR.Row])) > 0 then Begin
+    periodo.Text    := AR.Cells[0, AR.Row];
+    ub.Text         := AR.Cells[1, AR.Row];
+    ug.Text         := AR.Cells[2, AR.Row];
+    rieub.Text      := AR.Cells[3, AR.Row];
+    rieug.Text      := AR.Cells[4, AR.Row];
+    aplicar.Text    := AR.Cells[5, AR.Row];
+    porcentaje.Text := AR.Cells[6, AR.Row];
+    montonbu.Text   := AR.Cells[7, AR.Row];
+    periodo.SetFocus;
+  end else
+    utiles.msgError('El Registro Seleccionado es Incorrecto ...!');
+end;
+
+procedure TfmArancelesDiferenciales.ARKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then ARDblClick(Self);
+  if Key = VK_DELETE then
+    if Length(Trim(AR.Cells[0, AR.Row])) > 0 then Begin
+      if utiles.msgSiNo('Seguro para Borrar Items ?') then Begin
+        auditoriacb.BorrarArancelDiferencial(codos.Text, AR.Cells[0, AR.Row]);
+        CargarAranceles;
+        periodo.setFocus;
+      end
+    end else
+      utiles.msgError('El Registro Seleccionado es Incorrecto ...!');
+end;
+
+procedure TfmArancelesDiferenciales.porcentajeKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then aplicar.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    porcentaje.Text := utiles.FormatearNumero(porcentaje.Text);
+    ub.setFocus;
+  end;  
+end;
+
+procedure TfmArancelesDiferenciales.BuscarProfClick(Sender: TObject);
+begin
+  if obsocial.Factnbu <> 'S' then Begin
+    Application.CreateForm(TfmListNomeclador, fmListNomeclador);
+    fmListNomeclador.introSalir := True;
+    fmListNomeclador.xcodnom    := A.Cells[1, A.Row];
+    fmListNomeclador.NoCerrarFinal := True;
+    fmListNomeclador.ShowModal;
+    if fmListNomeclador.seleccionOK then codanalisis.Text := nomeclatura.tabla.FieldByName('codigo').AsString;
+    fmListNomeclador.Release; fmListNomeclador := nil;
+    CargarDatosAnalisis;
+    if Length(Trim(codanalisis.Text)) > 0 then ActiveControl := periodoaf else ActiveControl := codanalisis;
+  end;
+  if obsocial.Factnbu = 'S' then Begin
+    Application.CreateForm(TfmListNBU, fmListNBU);
+    fmListNBU.introSalir := True;
+    fmListNBU.ShowModal;
+    if fmListNBU.seleccionOK then codanalisis.Text := nbu.tabla.FieldByName('codigo').AsString;
+    fmListNBU.Release; fmListNBU := nil;
+    CargarDatosAnalisis;
+    if Length(Trim(codanalisis.Text)) > 0 then ActiveControl := periodoaf else ActiveControl := codanalisis;
+  end;
+end;
+
+procedure TfmArancelesDiferenciales.codanalisisKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if obsocial.factnbu <> 'S' then Begin
+      if not nomeclatura.Buscar(codanalisis.Text) then BuscarProfClick(Sender) else Begin
+        CargarDatosAnalisis;
+        ActiveControl := periodoaf;
+      end;
+    end;
+    if obsocial.factnbu = 'S' then Begin
+      if not nbu.Buscar(codanalisis.Text) then BuscarProfClick(Sender) else Begin
+        CargarDatosAnalisis;
+        ActiveControl := periodoaf;
+      end;
+    end;
+  end;
+end;
+
+procedure TfmArancelesDiferenciales.periodoafKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then codanalisis.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(periodoaf.Text)) = 1 then importe.SetFocus else
+      if utiles.verificarPeriodo(periodoaf.Text) then periodohasta.SetFocus;
+end;
+
+procedure TfmArancelesDiferenciales.periodohastaKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then periodoaf.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(periodohasta.Text)) = 1 then importe.SetFocus else
+      if utiles.verificarPeriodo(periodohasta.Text) then importe.SetFocus;
+end;
+
+procedure TfmArancelesDiferenciales.importeKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := codanalisis;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(importe.Text)) > 0 then Begin
+      importe.Text := utiles.FormatearNumero(importe.Text);
+      CargarGrilla;
+      codanalisis.Text := ''; periodoaf.Text := ''; periodohasta.Text := ''; importe.Text := utiles.FormatearNumero('0');
+      ActiveControl := codanalisis;
+    end;
+end;
+
+procedure TfmArancelesDiferenciales.montonbuKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then periodo.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(montonbu.Text)) > 0 then Begin
+      montonbu.Text := utiles.FormatearNumero(montonbu.Text);
+      RegistrarItems;
+    end;
+
+end;
+
+procedure TfmArancelesDiferenciales.TabSheet2Hide(Sender: TObject);
+begin
+  Refresh;
+  ActualizarAnalisisMontoFijo;
+end;
+
+procedure TfmArancelesDiferenciales.TabSheet2Show(Sender: TObject);
+begin
+  if obsocial.Buscar(codos.Text) then Begin
+    Refresh;
+    CargarDeterminacionesMontoFijo;
+    Panel5.Enabled := True;
+    Panel6.Enabled := True;
+  end else Begin
+    Panel5.Enabled := False;
+    Panel6.Enabled := False;
+  end;
+end;
+
+procedure TfmArancelesDiferenciales.ADblClick(Sender: TObject);
+begin
+  if Length(Trim(A.cells[0, A.row])) > 0 then Begin
+    modifica := True;
+    codanalisis.Text  := A.cells[1, A.row];
+    des.Caption       := A.cells[2, A.row];
+    importe.Text      := A.cells[3, A.row];
+    periodoaf.Text    := A.cells[4, A.row];
+    periodohasta.Text := A.cells[5, A.row];
+    ActiveControl     := codanalisis;
+  end else
+    utiles.msgError('El Items Seleccionado es Incorrecto ...!');
+end;
+
+procedure TfmArancelesDiferenciales.AKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_INSERT then Begin
+    grid.InsertarLineasSinRenumerar(A);
+    modifica := True;
+    Inc(it);
+  end;
+  if Key = VK_DELETE then
+    if utiles.BajaRegistro('Seguro que desea Eliminar Análisis ' + A.cells[1, A.Row] + ' ?') then Begin
+      if obsocial.Factnbu <> 'S' then auditoriacb.BorrarAnalisisMontoFijo(codos.Text, A.cells[0, A.row]);
+      grid.BorrarRenglon_SinRenumerar(A);
+      Dec(it);
+    end;
+  if Key = VK_RETURN then Begin
+    ADblClick(Sender);
+    ActiveControl := codanalisis;
+  end;
+end;
+
+end.

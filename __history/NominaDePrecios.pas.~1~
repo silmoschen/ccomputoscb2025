@@ -1,0 +1,316 @@
+unit NominaDePrecios;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Db, Grids, DBGrids, Buttons, DBCtrls, ExtCtrls, ComCtrls, StdCtrls, Mask;
+
+type
+  TfmListInsumos = class(TForm)
+    StatusBar1: TStatusBar;
+    Panel1: TPanel;
+    DBNavigator: TDBNavigator;
+    SpeedButton1: TSpeedButton;
+    SpeedButton2: TSpeedButton;
+    SpeedButton3: TSpeedButton;
+    DTS: TDataSource;
+    criterio: TComboBox;
+    Label1: TLabel;
+    expresion: TMaskEdit;
+    Label2: TLabel;
+    Splitter1: TSplitter;
+    Panel3: TPanel;
+    Label3: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    desde: TMaskEdit;
+    hasta: TMaskEdit;
+    dispositivo: TComboBox;
+    Panel4: TPanel;
+    emitir: TBitBtn;
+    cerrar: TBitBtn;
+    Panel5: TPanel;
+    codigo: TRadioButton;
+    alfabetico: TRadioButton;
+    Panel6: TPanel;
+    entorno: TRadioButton;
+    exclusion: TRadioButton;
+    SpeedButton4: TSpeedButton;
+    Panel7: TPanel;
+    RadioButton1: TRadioButton;
+    RadioButton2: TRadioButton;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
+    Panel2: TPanel;
+    DBGrid: TDBGrid;
+    Panel8: TPanel;
+    DBGrid1: TDBGrid;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure expresionChange(Sender: TObject);
+    procedure criterioClick(Sender: TObject);
+    procedure expresionKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure SpeedButton1Click(Sender: TObject);
+    procedure SpeedButton2Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure DBGridKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure criterioChange(Sender: TObject);
+    procedure SpeedButton4Click(Sender: TObject);
+    procedure codigoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure codigoClick(Sender: TObject);
+    procedure alfabeticoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure alfabeticoClick(Sender: TObject);
+    procedure desdeKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure hastaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure dispositivoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure emitirClick(Sender: TObject);
+    procedure cerrarClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure desdeClick(Sender: TObject);
+    procedure hastaClick(Sender: TObject);
+    procedure SpeedButton3Click(Sender: TObject);
+    procedure DBGrid1DblClick(Sender: TObject);
+    procedure DBGrid1KeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+  private
+    { Private declarations }
+    ordenact: string; control: byte;
+  public
+    { Public declarations }
+    introSalir, seleccionOK: boolean;
+  end;
+
+var
+  fmListInsumos: TfmListInsumos;
+
+implementation
+
+uses CInsumos_Centrobioq, CUtiles, tabladeprecios, AjusteStock;
+
+{$R *.DFM}
+
+procedure TfmListInsumos.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  if not introSalir then Begin
+    insumo.desconectar;
+    Release; fmListInsumos := nil;
+  end;
+end;
+
+procedure TfmListInsumos.expresionChange(Sender: TObject);
+begin
+  if criterio.Text = 'Descripción' then insumo.BuscarPorDescrip(expresion.Text);
+  if criterio.Text = 'Código'      then insumo.BuscarPorId(expresion.Text);
+end;
+
+procedure TfmListInsumos.criterioClick(Sender: TObject);
+begin
+  ActiveControl := expresion;
+end;
+
+procedure TfmListInsumos.expresionKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then ActiveControl := DBGrid;
+end;
+
+procedure TfmListInsumos.SpeedButton1Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmInsumos, fmInsumos);
+  fmInsumos.AltaClick(nil);
+  fmInsumos.ActiveControl := fmInsumos.descrip;
+  fmInsumos.NoCerrarFinal := True;
+  fmInsumos.ShowModal;
+end;
+
+procedure TfmListInsumos.SpeedButton2Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmInsumos, fmInsumos);
+  fmInsumos.NoCerrarFinal    := True;
+  fmInsumos.id.Text := insumo.tabla.FieldByName('id').AsString;
+  fmInsumos.ShowModal;
+end;
+
+procedure TfmListInsumos.FormCreate(Sender: TObject);
+begin
+  Left:=(Screen.Width - Width) div 2; Top:=(Screen.Height - Height) div 2;
+end;
+
+procedure TfmListInsumos.DBGridKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_INSERT then SpeedButton1Click(Sender);
+//  if Key = VK_DELETE then SpeedButton3Click(Sender);
+  if Key = VK_RETURN then Begin
+   if introSalir then Begin
+     seleccionOk := True;
+     Close;
+   end else
+     if Not Panel3.Visible then SpeedButton2Click(Sender) else Begin
+        if control = 0 then Begin    // El control es del id
+          if codigo.Checked then desde.Text := insumo.tabla.FieldByName('id').AsString else desde.Text := insumo.tabla.FieldByName('descrip').AsString;
+          ActiveControl := hasta;
+        end;
+        if control = 1 then Begin    // El control es de la descripción
+          if codigo.Checked then hasta.Text := insumo.tabla.FieldByName('id').AsString else hasta.Text := insumo.tabla.FieldByName('descrip').AsString;
+          ActiveControl := dispositivo;
+        end;
+     end;
+   end;
+  if Key = VK_ESCAPE then Close;
+end;
+
+procedure TfmListInsumos.criterioChange(Sender: TObject);
+begin
+  expresion.Text := '';
+  expresionChange(Sender);
+end;
+
+procedure TfmListInsumos.SpeedButton4Click(Sender: TObject);
+begin
+  ordenact := criterio.Text;
+  if Not Panel3.Visible then Begin
+    Panel3.Visible  := True;
+    codigo.Checked  := True; entorno.Checked := True;
+    desde.Text := ''; hasta.Text := ''; expresion.Text := '';
+    criterio.Text   := 'Código';
+    expresionChange(Sender);
+    ActiveControl   := desde;
+  end;
+end;
+
+procedure TfmListInsumos.codigoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then ActiveControl := desde;
+end;
+
+procedure TfmListInsumos.codigoClick(Sender: TObject);
+begin
+  criterio.Text := 'Código';
+  expresionChange(Sender);
+  desde.Text := ''; hasta.Text := ''; dispositivo.Text := 'Presentación Preliminar';
+end;
+
+procedure TfmListInsumos.alfabeticoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then ActiveControl := desde;
+end;
+
+procedure TfmListInsumos.alfabeticoClick(Sender: TObject);
+begin
+  Criterio.Text := 'Nombre';
+  expresionChange(Sender);
+  desde.Text := ''; hasta.Text := ''; dispositivo.Text := 'Presentación Preliminar';
+end;
+
+procedure TfmListInsumos.desdeKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then
+    if codigo.Checked then ActiveControl := codigo else ActiveControl := alfabetico;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if Length(Trim(expresion.Text)) = 0 then ActiveControl := expresion else ActiveControl := hasta;
+    control := 0;
+  end;
+end;
+
+procedure TfmListInsumos.hastaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := desde;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if Length(Trim(expresion.Text)) = 0 then ActiveControl := expresion else ActiveControl := dispositivo;
+    control := 1;
+  end;
+end;
+
+procedure TfmListInsumos.dispositivoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then ActiveControl := emitir;
+end;
+
+procedure TfmListInsumos.emitirClick(Sender: TObject);
+var
+  salida, ordensalida, entornosal: char;
+begin
+  if (Length(Trim(desde.Text)) = 0) or (Length(Trim(hasta.Text)) = 0) then utiles.msgError('No se han definido suficientes parámetros ...!') else Begin
+    StatusBar1.Panels[0].Text := 'Generando informe ...!'; StatusBar1.Refresh;
+    DTS.DataSet := nil;
+    salida := 'P'; ordensalida := 'C'; entornosal := 'E';
+    if dispositivo.Text = 'Impresora' then salida := 'I';
+    if alfabetico.Checked then ordensalida := 'A';
+    if exclusion.Checked then entornosal := 'X';
+    if RadioButton1.Checked then insumo.Listar(ordensalida, desde.Text, hasta.Text, entornosal, salida);
+    if RadioButton2.Checked then insumo.ListarStockBajoMinimo(ordensalida, desde.Text, hasta.Text, entornosal, salida);
+    DTS.DataSet   := insumo.tabla;
+    StatusBar1.Panels[0].Text := '';
+  end;
+  ActiveControl := cerrar;
+end;
+
+procedure TfmListInsumos.cerrarClick(Sender: TObject);
+begin
+  Panel3.Visible := False;
+  criterio.Text  := ordenact;
+  expresionChange(Sender);
+  ActiveControl  := expresion;
+end;
+
+procedure TfmListInsumos.FormShow(Sender: TObject);
+begin
+  if FormStyle = fsMDIChild then Begin
+    Height := 380; Width := 571; Top := 25; Left:=(Screen.Width - Width) div 2;
+  end;
+  DTS.DataSet := insumo.tabla;
+  if not introSalir then insumo.conectar;
+  criterioChange(Self);
+end;
+
+procedure TfmListInsumos.desdeClick(Sender: TObject);
+begin
+  control := 0;
+end;
+
+procedure TfmListInsumos.hastaClick(Sender: TObject);
+begin
+  control := 1;
+end;
+
+procedure TfmListInsumos.SpeedButton3Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmInsumos, fmInsumos);
+  fmInsumos.id.Text := insumo.tabla.FieldByName('id').AsString;
+  fmInsumos.BajaClick(Sender);
+  ActiveControl := DBGrid;
+end;
+
+procedure TfmListInsumos.DBGrid1DblClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmAjusteStock, fmAjusteStock);
+  fmAjusteStock.codart.Caption     := insumo.tabla.FieldByName('id').AsString;
+  fmAjusteStock.descrip.Caption    := insumo.tabla.FieldByName('descrip').AsString;
+  fmAjusteStock.existencia.Caption := insumo.tabla.FieldByName('stock').AsString;
+  fmAjusteStock.ShowModal;
+  fmAjusteStock.Release; fmAjusteStock := Nil;
+end;
+
+procedure TfmListInsumos.DBGrid1KeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then DBGrid1DblClick(Self);
+end;
+
+end.

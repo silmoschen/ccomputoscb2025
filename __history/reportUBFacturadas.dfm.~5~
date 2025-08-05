@@ -1,0 +1,100 @@
+object fmUBFacturadas: TfmUBFacturadas
+  Left = 0
+  Top = 0
+  Caption = 'UB Facturadas'
+  ClientHeight = 212
+  ClientWidth = 320
+  Color = clBtnFace
+  Font.Charset = ANSI_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poMainFormCenter
+  OnClose = FormClose
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 193
+    Width = 320
+    Height = 19
+    Panels = <
+      item
+        Width = 250
+      end
+      item
+        Width = 50
+      end>
+  end
+  object Panel2: TPanel
+    Left = 0
+    Top = 0
+    Width = 320
+    Height = 193
+    Align = alClient
+    BevelInner = bvLowered
+    BorderWidth = 4
+    Caption = 'Panel2'
+    TabOrder = 1
+    object ScrollBox: TScrollBox
+      Left = 6
+      Top = 6
+      Width = 308
+      Height = 181
+      HorzScrollBar.Increment = 1
+      HorzScrollBar.Margin = 1
+      HorzScrollBar.Range = 10
+      VertScrollBar.Margin = 6
+      VertScrollBar.Range = 10
+      Align = alClient
+      AutoScroll = False
+      BorderStyle = bsNone
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 0
+      object Label11: TLabel
+        Left = 97
+        Top = 21
+        Width = 41
+        Height = 13
+        Alignment = taRightJustify
+        Caption = 'Per'#237'odo:'
+      end
+      object periodo: TMaskEdit
+        Left = 142
+        Top = 18
+        Width = 59
+        Height = 21
+        EditMask = '99/9999;1; '
+        MaxLength = 7
+        TabOrder = 0
+        Text = '  /    '
+      end
+      object dispSalida: TBitBtn
+        Left = 64
+        Top = 73
+        Width = 185
+        Height = 25
+        Caption = '&Dispositivo de Salida'
+        TabOrder = 1
+        OnClick = dispSalidaClick
+      end
+      object emitir: TBitBtn
+        Left = 64
+        Top = 116
+        Width = 185
+        Height = 25
+        Caption = '&Generar Informe'
+        TabOrder = 2
+        OnClick = emitirClick
+      end
+    end
+  end
+end

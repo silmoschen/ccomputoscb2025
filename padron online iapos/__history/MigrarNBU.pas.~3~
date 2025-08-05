@@ -1,0 +1,51 @@
+unit MigrarNBU;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, DB, DBTables;
+
+type
+  TForm1 = class(TForm)
+    Table1: TTable;
+    Table2: TTable;
+    Button1: TButton;
+    procedure Button1Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  table1.open;
+  table2.open;
+  while not table1.eof do begin
+    if table2.FindKey([table1.fieldbyname('codigo').asstring]) then begin
+      table2.Edit;
+      table2.fieldbyname('unidades').asfloat := table1.fieldbyname('unidades').asfloat;
+      table2.post;
+    end else begin
+      table2.Append;
+      table2.fieldbyname('codigo').asstring := table1.fieldbyname('codigo').asstring;
+      table2.fieldbyname('descrip').asstring := table1.fieldbyname('descrip').asstring;
+      table2.fieldbyname('unidades').asfloat := table1.fieldbyname('unidades').asfloat;
+      table2.fieldbyname('especial').asstring := table1.fieldbyname('especial').asstring;
+      table2.post;
+    end;
+    table1.Next;
+  end;
+  table1.close;
+  table2.close;
+end;
+
+end.

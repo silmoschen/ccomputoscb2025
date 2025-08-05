@@ -1,0 +1,62 @@
+unit refacturar;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, Grids, ExtCtrls, CFacturacionCCB, IBQuery, StdCtrls;
+
+type
+  TfmRF = class(TForm)
+    Panel2: TPanel;
+    ScrollBox: TScrollBox;
+    Panel3: TPanel;
+    F: TStringGrid;
+    Panel1: TPanel;
+    btnRefacturar: TButton;
+    procedure FormShow(Sender: TObject);
+    procedure btnRefacturarClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    periodo: string;
+    refactura: boolean;
+  end;
+
+var
+  fmRF: TfmRF;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfmRF.btnRefacturarClick(Sender: TObject);
+begin
+  refactura := true;
+  Close;
+end;
+
+procedure TfmRF.FormShow(Sender: TObject);
+var
+  r: TIBQuery;
+  i: integer;
+begin
+  r := facturacion.getLaboratoriosARefacturar(periodo);
+
+  r.open; i := 0;
+  while not r.eof do begin
+    inc(i);
+    F.Cells[0, i] := r.fieldbyname('idprof').asstring;
+    r.next;
+  end;
+
+  r.close; r.free;
+
+  if (i = 0) then btnRefacturar.Enabled := false;
+  
+
+end;
+
+
+end.

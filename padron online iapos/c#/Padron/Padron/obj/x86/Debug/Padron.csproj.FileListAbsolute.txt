@@ -1,0 +1,8 @@
+C:\sidelphi32\SGen\ccomputoscb\padron online iapos\c#\Padron\Padron\obj\x86\Debug\Padron.Form1.resources
+C:\sidelphi32\SGen\ccomputoscb\padron online iapos\c#\Padron\Padron\obj\x86\Debug\Padron.Properties.Resources.resources
+C:\sidelphi32\SGen\ccomputoscb\padron online iapos\c#\Padron\Padron\obj\x86\Debug\Padron.csproj.GenerateResource.Cache
+C:\sidelphi32\SGen\ccomputoscb\padron online iapos\c#\Padron\Padron\bin\Debug\Padron.exe
+C:\sidelphi32\SGen\ccomputoscb\padron online iapos\c#\Padron\Padron\bin\Debug\Padron.pdb
+C:\sidelphi32\SGen\ccomputoscb\padron online iapos\c#\Padron\Padron\obj\x86\Debug\Padron.exe
+C:\sidelphi32\SGen\ccomputoscb\padron online iapos\c#\Padron\Padron\obj\x86\Debug\Padron.pdb
+C:\sidelphi32\SGen\ccomputoscb\padron online iapos\c#\Padron\Padron\obj\x86\Debug\Padron.csprojResolveAssemblyReference.cache

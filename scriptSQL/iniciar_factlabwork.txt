@@ -1,0 +1,12 @@
+delete from cabfact;
+delete from cabfact_hist;
+delete from cab_auditoria;
+delete from detfact;
+delete from detfact_hist;
+delete from det_auditoria;
+delete from idordenes;
+delete from IDORDENES_HIST;
+delete from ORDENES_AUDIT;
+delete from PACIENTE;
+delete from PAC_AUDITORIA;
+delete from TOTALESPROF;

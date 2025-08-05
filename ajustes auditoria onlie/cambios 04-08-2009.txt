@@ -1,0 +1,2 @@
+campo idprof de 5 caracteres
+campos online varchar(5) en cab_auditoria y det_auditoria

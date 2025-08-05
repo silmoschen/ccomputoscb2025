@@ -1,0 +1,24 @@
+unit reportUBFacturadas;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs;
+
+type
+  TfmUBFacturadas = class(TForm)
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  fmUBFacturadas: TfmUBFacturadas;
+
+implementation
+
+{$R *.dfm}
+
+end.

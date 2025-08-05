@@ -1,0 +1,211 @@
+unit ListPracticasRealizadas;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, Grids, StdCtrls, Mask, ExtCtrls, CUtiles, IBQuery, CFacturacionCCB, CNbu,
+  Buttons, ComCtrls;
+
+type
+  TfmListPracticasRealizadas = class(TForm)
+    Panel2: TPanel;
+    ScrollBox: TScrollBox;
+    Panel1: TPanel;
+    Panel3: TPanel;
+    Label1: TLabel;
+    desde: TMaskEdit;
+    Label2: TLabel;
+    hasta: TMaskEdit;
+    btnBuscar: TButton;
+    Panel4: TPanel;
+    F: TStringGrid;
+    Si: TSpeedButton;
+    Ninguno: TSpeedButton;
+    Todos: TSpeedButton;
+    StatusBar1: TStatusBar;
+    btnDispositivo: TButton;
+    emitir: TButton;
+    btnCerrar: TButton;
+    procedure desdeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure hastaKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure btnBuscarClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure SiClick(Sender: TObject);
+    procedure NingunoClick(Sender: TObject);
+    procedure TodosClick(Sender: TObject);
+    procedure btnDispositivoClick(Sender: TObject);
+    procedure emitirClick(Sender: TObject);
+    procedure btnCerrarClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  fmListPracticasRealizadas: TfmListPracticasRealizadas;
+
+implementation
+
+uses Disposit;
+
+{$R *.dfm}
+
+procedure TfmListPracticasRealizadas.btnBuscarClick(Sender: TObject);
+var
+  r: TIBquery;
+  i: integer;
+begin
+  if ((not utiles.verificarPeriodo(desde.Text)) or (not (utiles.verificarPeriodo(hasta.Text)))) then begin
+    utiles.msgError('Periodos Incorrectos ... !');
+    exit;
+  end;
+  StatusBar1.Panels[0].Text := 'Procesando ...'; StatusBar1.Refresh;
+  r := facturacion.getPracticasFacturadas(desde.Text, hasta.Text);
+  r.Open; i := 0;
+  while not r.eof do begin
+    inc(i);
+    F.Cells[0, i] := r.FieldByName('codanalisis').asstring;
+    nbu.getDatos(r.FieldByName('codanalisis').asstring);
+    F.Cells[1, i] := nbu.Descrip;
+    r.Next;
+  end;
+
+  r.close; r.free;
+  StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+end;
+
+procedure TfmListPracticasRealizadas.btnCerrarClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfmListPracticasRealizadas.btnDispositivoClick(Sender: TObject);
+begin
+  if not Assigned(Dispositivo) then Application.CreateForm(TDispositivo, Dispositivo);
+  Dispositivo.ShowModal;
+  ActiveControl := emitir;
+end;
+
+procedure TfmListPracticasRealizadas.desdeKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+     if not (utiles.verificarPeriodo(desde.Text)) then begin
+       utiles.msgError('Período Incorrecto ...!');
+       exit;
+     end;
+     hasta.SetFocus;
+  End;
+end;
+
+procedure TfmListPracticasRealizadas.emitirClick(Sender: TObject);
+var
+  i, j, cantidadSel: Integer;
+  sel: bool;
+  lista: TStringList;
+  salida: char;
+begin
+
+  For i := 1 to F.RowCount do Begin
+    if Length(Trim(F.cells[0, i])) = 0 then Break;
+    if F.cells[2, i] = 'S' then Begin
+      sel := True;
+      Break;
+    end;
+  end;
+
+  lista := TStringList.Create;
+  j := 0;
+  For i := 1 to F.RowCount do Begin
+    if Length(Trim(F.cells[0, i])) = 0 then Break;
+    if F.cells[2, i] = 'S' then Begin
+      Inc(j);
+      lista.Add(F.cells[0, i]);
+    end;
+  end;
+  cantidadSel := j;
+  if cantidadSel = 0 then begin
+    utiles.msgError('No hay Items Seleccionado ...!');
+    exit;
+  end;
+
+  if Dispositivo.Impresor.Checked then salida := 'I' else salida := 'P';
+
+  StatusBar1.Panels[0].Text := 'Generando Informe'; StatusBar1.Refresh;
+
+  facturacion.ListarPracticasFacturadas(desde.Text, hasta.Text, lista, salida);
+
+  StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+
+end;
+
+procedure TfmListPracticasRealizadas.FKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_SPACE) then begin
+    SiClick(Self);
+  end;
+end;
+
+procedure TfmListPracticasRealizadas.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  facturacion.desconectar;
+  Dispositivo.Release;
+  dispositivo := nil;
+  Release; fmListPracticasRealizadas := nil;
+end;
+
+procedure TfmListPracticasRealizadas.FormShow(Sender: TObject);
+begin
+  Application.CreateForm(TDispositivo, Dispositivo);
+  facturacion.conectar;
+  desde.SetFocus;
+end;
+
+procedure TfmListPracticasRealizadas.hastaKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+     if not (utiles.verificarPeriodo(hasta.Text)) then begin
+       utiles.msgError('Período Incorrecto ...!');
+       exit;
+     end;
+     btnBuscar.SetFocus;
+End;
+end;
+
+procedure TfmListPracticasRealizadas.NingunoClick(Sender: TObject);
+var
+  i: integer;
+begin
+  For i := 1 to F.RowCount do F.cells[2, i] := ' ';
+  F.Refresh;
+end;
+
+procedure TfmListPracticasRealizadas.SiClick(Sender: TObject);
+begin
+  if Length(Trim(F.cells[0, F.row])) > 0 then Begin
+    if F.cells[2, F.row] <> 'S' then F.cells[2, F.row] := 'S' else F.cells[2, F.row] := ' ';
+    if (F.row < F.rowcount) and (Length(Trim(F.cells[0, F.row + 1])) > 0) then F.row := F.row + 1;
+    F.Refresh;
+  end;
+
+end;
+
+procedure TfmListPracticasRealizadas.TodosClick(Sender: TObject);
+var
+  i: integer;
+begin
+  For i := 1 to F.RowCount do begin
+    if (F.cells[0, i] = '') then break;
+    F.cells[2, i] := 'S';
+  end;
+  F.Refresh;
+end;
+
+end.

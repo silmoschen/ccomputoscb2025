@@ -1,0 +1,366 @@
+unit PresupuestoRapido;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, Grids, StdCtrls, Editv, Buttons, Mask, ExtCtrls, Menus;
+
+type
+  TfmPresupuestoRapido = class(TForm)
+    Panel2: TPanel;
+    ScrollBox: TScrollBox;
+    Panel9: TPanel;
+    GroupBox3: TGroupBox;
+    Label10: TLabel;
+    Label39: TLabel;
+    codanalisis: TMaskEdit;
+    buscarAnalisis: TBitBtn;
+    Panel6: TPanel;
+    Label2: TLabel;
+    Label3: TLabel;
+    codos: TMaskEdit;
+    BuscarOS: TBitBtn;
+    nos: TLabel;
+    Panel3: TPanel;
+    Panel1: TPanel;
+    Label15: TLabel;
+    des: TLabel;
+    total: TLabel;
+    Label1: TLabel;
+    tot9984: TLabel;
+    PopupMenu: TPopupMenu;
+    InsertarItems1: TMenuItem;
+    ModificarItems1: TMenuItem;
+    N1: TMenuItem;
+    BorrarItems1: TMenuItem;
+    Panel10: TPanel;
+    F: TStringGrid;
+    Label11: TLabel;
+    precio: TEditValid;
+    Panel4: TPanel;
+    Label4: TLabel;
+    preciofinal: TLabel;
+    Label5: TLabel;
+    retiva: TLabel;
+    Label6: TLabel;
+    totalf: TLabel;
+    Panel5: TPanel;
+    btnImprimir: TButton;
+    Label67: TLabel;
+    UB: TLabel;
+    Label68: TLabel;
+    UG: TLabel;
+    RIEUG: TLabel;
+    Label70: TLabel;
+    Label71: TLabel;
+    RIEUB: TLabel;
+    Label7: TLabel;
+    NNBU: TLabel;
+    btnCerrar: TButton;
+    Label9: TLabel;
+    Unnbu: TLabel;
+    procedure codosKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure BuscarOSClick(Sender: TObject);
+    procedure cerrarClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure buscarAnalisisClick(Sender: TObject);
+    procedure codanalisisKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure precioKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure FKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FDblClick(Sender: TObject);
+    procedure InsertarItems1Click(Sender: TObject);
+    procedure BorrarItems1Click(Sender: TObject);
+    procedure Panel10Resize(Sender: TObject);
+    procedure btnImprimirClick(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure btnCerrarClick(Sender: TObject);
+  private
+    { Private declarations }
+    Modifica, redim: Boolean;
+    items: Integer;
+    procedure DatosObraSocial;
+    procedure DatosAnalisis;
+    procedure TotalAnalisis;
+  public
+    { Public declarations }
+  end;
+
+var
+  fmPresupuestoRapido: TfmPresupuestoRapido;
+
+implementation
+
+uses CObrasSocialesCCB, CNomeclaCCB, CUtiles, NominaObrasSociales, NominaNomeclador, CConfigForms, CUtilidadesStringGrid,
+     CFacturacionCCB, CPresupuestoRapidoFabbrissin, CNBU, Nomina_NBU;
+
+{$R *.dfm}
+
+procedure TfmPresupuestoRapido.DatosObraSocial;
+begin
+  obsocial.getDatos(codos.Text);
+  nos.Caption := obsocial.nombre;
+  if obsocial.FacturaNBU <> 'S' then obsocial.SincronizarArancel(codos.Text, utiles.setPeriodoActual) else
+    obsocial.SincronizarArancelNBU(codos.Text, utiles.setPeriodoActual);
+  ub.Caption    := utiles.FormatearNumero(FloatToStr(obsocial.UB));
+  ug.Caption    := utiles.FormatearNumero(FloatToStr(obsocial.UG));
+  rieub.Caption := utiles.FormatearNumero(FloatToStr(obsocial.RIEUB));
+  rieug.Caption := utiles.FormatearNumero(FloatToStr(obsocial.RIEUG));
+  nnbu.Caption  := obsocial.FacturaNBU;
+  GroupBox3.Enabled := True;
+  codanalisis.Text := ''; precio.Text := ''; des.Caption := '';
+  if obsocial.FacturaNBU <> 'S' then Begin
+    codanalisis.EditMask := '9999;1; ';
+    Label67.Visible := True; Label68.Visible := True; Label71.Visible := True; Label70.Visible := True;
+    ub.Visible := True; ug.Visible := True; rieub.Visible := True; rieug.Visible := True; Label7.Visible := false;
+    nnbu.Caption  := obsocial.FacturaNBU;
+  end else Begin
+    codanalisis.EditMask := '999999;1; ';
+    Label67.Visible := False; Label68.Visible := False; Label71.Visible := False; Label70.Visible := False;
+    ub.Visible := False; ug.Visible := False; rieub.Visible := False; rieug.Visible := False;
+    Label71.Visible := True; Label71.Caption := 'U.NBU.:'; rieub.Visible := True; Label7.Visible := true;
+    rieub.Caption := utiles.FormatearNumero(FloatToStr(obsocial.valorNBU));
+  end;
+  grid.IniciarGrilla(F);
+  F.Row := 1; items := 0;
+  TotalAnalisis;
+end;
+
+procedure TfmPresupuestoRapido.DatosAnalisis;
+var
+  p: String;
+begin
+  if obsocial.FacturaNBU = 'N' then Begin
+    obsocial.SincronizarArancel(codos.Text, Copy(utiles.sExprFecha2000(utiles.setFechaActual), 5, 2) + '/' + Copy(utiles.sExprFecha2000(utiles.setFechaActual), 1, 4));
+    nomeclatura.getDatos(codanalisis.Text);
+    des.Caption := nomeclatura.descrip;
+    Unnbu.Caption := utiles.FormatearNumero(floattostr(nbu.unidad));
+    precio.Text := utiles.FormatearNumero(FloatToStr(facturacion.setImporteAnalisis(codos.Text, codanalisis.Text, Copy(utiles.setFechaActual, 4, 2) + '/' + Copy(utiles.sExprFecha2000(utiles.setFechaActual), 1, 4))));
+    p := precio.Text;
+  end;
+  if obsocial.FacturaNBU = 'S' then Begin
+    obsocial.SincronizarArancelNBU(codos.Text, Copy(utiles.sExprFecha2000(utiles.setFechaActual), 5, 2) + '/' + Copy(utiles.sExprFecha2000(utiles.setFechaActual), 1, 4));
+    nbu.getDatos(codanalisis.Text);
+    des.Caption := nbu.descrip;
+    precio.Text := utiles.FormatearNumero(FloatToStr(facturacion.setImporteAnalisis(codos.Text, codanalisis.Text, Copy(utiles.setFechaActual, 4, 2) + '/' + Copy(utiles.sExprFecha2000(utiles.setFechaActual), 1, 4))));
+    p := precio.Text;
+  end;
+  ActiveControl := precio;
+end;
+
+procedure TfmPresupuestoRapido.codosKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if not obsocial.Buscar(codos.Text) then BuscarOSClick(Sender);
+    DatosObraSocial;
+    ActiveControl := codanalisis;
+  end;
+end;
+
+procedure TfmPresupuestoRapido.TotalAnalisis;
+var
+  i: Integer; t, t9984, tretiva: Real;
+begin
+  t := 0; t9984 := 0; tretiva := 0;
+  For i := 1 to F.RowCount do Begin
+    if Length(Trim(F.Cells[0, i])) = 0 then Break;
+    t       := t       + StrToFloat(F.Cells[7, i]);
+    t9984   := t9984   + StrToFloat(F.Cells[6, i]);
+    tretiva := tretiva + StrToFloat(F.Cells[4, i]);
+  end;
+  total.Caption       := utiles.FormatearNumero(FloatToStr(t));
+  tot9984.Caption     := utiles.FormatearNumero(FloatToStr(t9984));
+  preciofinal.Caption := utiles.FormatearNumero(FloatToStr(t + t9984));
+  retiva.Caption      := utiles.FormatearNumero(FloatToStr(tretiva));
+  totalf.Caption      := utiles.FormatearNumero(FloatToStr(t + t9984 + tretiva));
+end;
+
+procedure TfmPresupuestoRapido.BuscarOSClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmListObrasSociales, fmListObrasSociales);
+  fmListObrasSociales.introSalir := True;
+  fmListObrasSociales.ShowModal;
+  if fmListObrasSociales.seleccionOK then Begin
+    codos.Text := obsocial.tabla.FieldByName('codos').AsString;
+    DatosObraSocial; Refresh;
+    GroupBox3.Enabled := True;
+    ActiveControl := codanalisis;
+  end else
+    codos.setFocus;
+  fmListObrasSociales.Release; fmListObrasSociales := nil;
+end;
+
+procedure TfmPresupuestoRapido.cerrarClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfmPresupuestoRapido.FormShow(Sender: TObject);
+begin
+  obsocial.conectar;
+  nbu.conectar;
+  F.Cells[0, 0] := 'It.'; F.Cells[1, 0] := 'Cód.'; F.Cells[2, 0] := 'Determinación'; F.Cells[3, 0] := 'Monto'; F.Cells[4, 0] := 'I.V.A.'; F.Cells[5, 0] := 'Total';
+  if not configform.Setear(fmPresupuestoRapido) then Begin
+    Width := 478; Height := 347; Left:=(Screen.Width - Width) div 2; top := 40;
+  end;
+  grid.RecuperarAnchoColumnas(fmPresupuestoRapido, F);
+  redim := False;
+  TotalAnalisis;
+end;
+
+procedure TfmPresupuestoRapido.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  grid.GuardarAnchoColumnas(fmPresupuestoRapido, F);
+  obsocial.desconectar;
+  nbu.desconectar;
+  configform.Guardar(fmPresupuestoRapido, redim);
+  fmPresupuestoRapido.Release; fmPresupuestoRapido := nil;
+end;
+
+procedure TfmPresupuestoRapido.buscarAnalisisClick(Sender: TObject);
+begin
+  if obsocial.FacturaNBU = 'N' then Begin
+    Application.CreateForm(TfmListNomeclador, fmListNomeclador);
+    fmListNomeclador.introSalir := True;
+    fmListNomeclador.ShowModal;
+    if fmListNomeclador.seleccionOK then Begin
+      codanalisis.Text := nomeclatura.tabla.FieldByName('codigo').AsString;
+      Refresh;
+      DatosAnalisis;
+    end;
+    fmListNomeclador.Release; fmListNomeclador := nil;
+  end;
+  if obsocial.FacturaNBU = 'S' then Begin
+    Application.CreateForm(TfmListNBU, fmListNBU);
+    fmListNBU.introSalir := True;
+    fmListNBU.ShowModal;
+    if fmListNBU.seleccionOK then Begin
+      codanalisis.Text := nbu.tabla.FieldByName('codigo').AsString;
+      Refresh;
+      DatosAnalisis;
+    end;
+    fmListNBU.Release; fmListNBU := nil;
+  end;
+end;
+
+procedure TfmPresupuestoRapido.codanalisisKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if Key = VK_UP then ActiveControl := codos;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if obsocial.Factnbu <> 'S' then
+      if not nomeclatura.Buscar(codanalisis.Text) then buscarAnalisisClick(Sender) else DatosAnalisis;
+    if obsocial.Factnbu = 'S' then
+      if not nbu.Buscar(codanalisis.Text) then buscarAnalisisClick(Sender) else DatosAnalisis;
+  end;
+end;
+
+procedure TfmPresupuestoRapido.precioKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+var
+  j: Integer;
+  m9984: Real;
+begin
+  if Key = VK_UP then ActiveControl := codanalisis;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+
+    precio.Text := utiles.FormatearNumero(precio.Text);
+
+    if not Modifica then Inc(Items);
+    if not Modifica then j := Items else j := F.Row;
+
+    obsocial.getDatos(codos.Text);
+    F.Cells[0, j] := utiles.sLlenarIzquierda(IntToStr(j), 2, '0');
+    F.Cells[1, j] := codanalisis.Text;
+    F.Cells[2, j] := des.Caption;
+    if obsocial.porcentaje > 0 then m9984 := facturacion.setTot9984 * (obsocial.porcentaje * 0.01) else m9984 := facturacion.setTot9984;
+    F.Cells[3, j] := utiles.FormatearNumero(FloatToStr(StrToFloat(precio.Text) + m9984));
+    F.Cells[4, j] := utiles.FormatearNumero(FloatToStr(StrToFloat(F.Cells[3, j]) * (obsocial.retencioniva * 0.01)));
+    F.Cells[5, j] := utiles.FormatearNumero(FloatToStr(StrToFloat(F.Cells[3, j]) + StrToFloat(F.Cells[4, j])));
+    F.Cells[6, j] := utiles.FormatearNumero(FloatToStr(m9984));
+    F.Cells[7, j] := utiles.FormatearNumero(precio.Text);
+
+    F.Row := j; F.Refresh;
+    modifica := False;
+
+    TotalAnalisis;
+
+    codanalisis.Text := ''; precio.Text := '';
+    ActiveControl := codanalisis;
+  end;
+end;
+
+procedure TfmPresupuestoRapido.FKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_INSERT then InsertarItems1Click(Sender);
+  if Key = VK_DELETE then BorrarItems1Click(Sender);
+  if Key = VK_RETURN then FDblClick(Sender);
+  ActiveControl := codanalisis;
+end;
+
+procedure TfmPresupuestoRapido.FDblClick(Sender: TObject);
+begin
+  codanalisis.Text := F.Cells[1, F.Row];
+  precio.Text      := F.Cells[3, F.Row];
+  modifica         := True;
+  ActiveControl    := codanalisis;
+end;
+
+procedure TfmPresupuestoRapido.InsertarItems1Click(Sender: TObject);
+begin
+  grid.InsertarLinea(F);
+  grid.RegenerarItems(F, 2);
+  modifica := True;
+  ActiveControl := codanalisis;
+end;
+
+procedure TfmPresupuestoRapido.BorrarItems1Click(Sender: TObject);
+begin
+  if utiles.BajaRegistro('Seguro para Eliminar Determinación ' + F.Cells[2, F.Row]) then Begin
+    grid.BorrarRenglon(F);
+    grid.RegenerarItems(F, 2);
+    Dec(items);
+  end;
+end;
+
+procedure TfmPresupuestoRapido.Panel10Resize(Sender: TObject);
+begin
+  redim := True;
+end;
+
+procedure TfmPresupuestoRapido.btnImprimirClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  if Length(Trim(F.Cells[0, 1])) = 0 then utiles.msgError('No Hay Determinaciones Especificadas ...!') else Begin
+    For i := 1 to items do
+      presupuesto.RegistrarItemsPresupuestoRapido(F.Cells[0, i], F.Cells[1, i], F.Cells[2, i], F.Cells[3, i], total.Caption, tot9984.Caption, preciofinal.Caption, retiva.Caption, items);
+    presupuesto.ImprimirPresupuestoRapido('P');
+
+    if utiles.msgSiNo('Generar una Copia Impresa del Mismo ?') then presupuesto.ImprimirPresupuestoRapido('I');
+    codanalisis.setFocus;
+  end;
+end;
+
+procedure TfmPresupuestoRapido.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_F5 then btnImprimirClick(Self);
+end;
+
+procedure TfmPresupuestoRapido.btnCerrarClick(Sender: TObject);
+begin
+  Close;
+end;
+
+end.

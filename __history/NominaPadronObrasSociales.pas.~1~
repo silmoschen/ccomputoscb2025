@@ -1,0 +1,269 @@
+unit NominaPadronObrasSociales;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Db, Grids, DBGrids, Buttons, DBCtrls, ExtCtrls, ComCtrls, StdCtrls, Mask;
+
+type
+  TfmListPadronObrasSociales = class(TForm)
+    StatusBar1: TStatusBar;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    DBNavigator: TDBNavigator;
+    DBGrid: TDBGrid;
+    DTS: TDataSource;
+    criterio: TComboBox;
+    Label1: TLabel;
+    expresion: TMaskEdit;
+    Label2: TLabel;
+    Splitter1: TSplitter;
+    Panel3: TPanel;
+    Label3: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    desde: TMaskEdit;
+    hasta: TMaskEdit;
+    dispositivo: TComboBox;
+    Panel4: TPanel;
+    emitir: TBitBtn;
+    cerrar: TBitBtn;
+    Panel5: TPanel;
+    codigo: TRadioButton;
+    alfabetico: TRadioButton;
+    Panel6: TPanel;
+    entorno: TRadioButton;
+    exclusion: TRadioButton;
+    SpeedButton4: TSpeedButton;
+    SpeedButton2: TSpeedButton;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure expresionChange(Sender: TObject);
+    procedure criterioClick(Sender: TObject);
+    procedure expresionKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure SpeedButton2Click(Sender: TObject);
+    procedure DBGridKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure criterioChange(Sender: TObject);
+    procedure SpeedButton4Click(Sender: TObject);
+    procedure codigoClick(Sender: TObject);
+    procedure codigoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure alfabeticoClick(Sender: TObject);
+    procedure alfabeticoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure desdeKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure hastaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure dispositivoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure emitirClick(Sender: TObject);
+    procedure cerrarClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure desdeClick(Sender: TObject);
+    procedure hastaClick(Sender: TObject);
+  private
+    { Private declarations }
+    ordenact: string; control: byte;
+  public
+    { Public declarations }
+    introSalir, seleccionOK, IngresoMontosFact: boolean;
+  end;
+
+var
+  fmListPadronObrasSociales: TfmListPadronObrasSociales;
+
+implementation
+
+uses CPadronOSCCB, CObrasSocialesCCB, CUtiles, Afiliados, NominaAfiliado;
+
+{$R *.DFM}
+
+procedure TfmListPadronObrasSociales.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  if not introSalir then Begin
+    obsocial.desconectar;
+    Release; fmListPadronObrasSociales := nil;
+  end;
+end;
+
+procedure TfmListPadronObrasSociales.expresionChange(Sender: TObject);
+begin
+  if criterio.Text = 'Nombre' then obsocial.BuscarPorNombre(expresion.Text);
+  if criterio.Text = 'Código' then obsocial.BuscarPorCodigo(expresion.Text);
+end;
+
+procedure TfmListPadronObrasSociales.criterioClick(Sender: TObject);
+begin
+  ActiveControl := expresion;
+end;
+
+procedure TfmListPadronObrasSociales.expresionKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then ActiveControl := DBGrid;
+end;
+
+procedure TfmListPadronObrasSociales.SpeedButton2Click(Sender: TObject);
+begin
+  StatusBar1.Panels[0].Text := 'Procesando ...!'; StatusBar1.Refresh;
+  if obsocial.Buscar(obsocial.tabla.FieldByName('codos').AsString) then Begin
+    if padron.conectar(obsocial.tabla.FieldByName('codos').AsString) then Begin
+      Application.CreateForm(TfmListAfiliados, fmListAfiliados);
+      obsocial.getDatos(obsocial.tabla.FieldByName('codos').AsString);
+      fmListAfiliados.Caption := fmListAfiliados.Caption + '   ' + obsocial.codos + '-' + obsocial.Nombre;
+      fmListAfiliados.codos := obsocial.codos;
+      fmListAfiliados.os    := obsocial.Nombre;
+      StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+      fmListAfiliados.ShowModal;
+      padron.desconectar;
+    end;
+  end;
+  StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+end;
+
+procedure TfmListPadronObrasSociales.DBGridKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+   if introSalir then Begin
+     seleccionOk := True;
+     Close;
+   end else
+     if Not Panel3.Visible then SpeedButton2Click(Sender) else Begin
+        if control = 0 then Begin    // El control es del id
+          if codigo.Checked then desde.Text := obsocial.tabla.FieldByName('codos').AsString else desde.Text := obsocial.tabla.FieldByName('nombre').AsString;
+          ActiveControl := hasta;
+        end;
+        if control = 1 then Begin    // El control es de la descripción
+          if codigo.Checked then hasta.Text := obsocial.tabla.FieldByName('codos').AsString else hasta.Text := obsocial.tabla.FieldByName('nombre').AsString;
+          ActiveControl := dispositivo;
+        end;
+     end;
+  if Key = VK_ESCAPE then Close;
+end;
+
+procedure TfmListPadronObrasSociales.criterioChange(Sender: TObject);
+begin
+  expresionChange(Sender);
+end;
+
+procedure TfmListPadronObrasSociales.SpeedButton4Click(Sender: TObject);
+begin
+  ordenact := criterio.Text;
+  if Not Panel3.Visible then Begin
+    Panel3.Visible  := True;
+    codigo.Checked  := True; entorno.Checked := True;
+    desde.Text := ''; hasta.Text := ''; expresion.Text := '';
+    criterio.Text   := 'Código';
+    expresionChange(Sender);
+    ActiveControl   := desde;
+  end else
+    Panel3.Visible := False;
+end;
+
+procedure TfmListPadronObrasSociales.codigoClick(Sender: TObject);
+begin
+  criterio.Text := 'Código';
+  expresionChange(Sender);
+  desde.Text := ''; hasta.Text := ''; dispositivo.Text := 'Presentación Preliminar';
+end;
+
+procedure TfmListPadronObrasSociales.codigoKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then ActiveControl := desde;
+end;
+
+procedure TfmListPadronObrasSociales.alfabeticoClick(Sender: TObject);
+begin
+  Criterio.Text := 'Nombre';
+  expresionChange(Sender);
+  desde.Text := ''; hasta.Text := ''; dispositivo.Text := 'Presentación Preliminar';
+end;
+
+procedure TfmListPadronObrasSociales.alfabeticoKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then ActiveControl := desde;
+end;
+
+procedure TfmListPadronObrasSociales.desdeKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then
+    if codigo.Checked then ActiveControl := codigo else ActiveControl := alfabetico;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if Length(Trim(expresion.Text)) = 0 then ActiveControl := expresion else ActiveControl := hasta;
+    control := 0;
+  end;
+end;
+
+procedure TfmListPadronObrasSociales.hastaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := desde;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if Length(Trim(expresion.Text)) = 0 then ActiveControl := expresion else ActiveControl := dispositivo;
+    control := 1;
+  end;
+end;
+
+procedure TfmListPadronObrasSociales.dispositivoKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then ActiveControl := emitir;
+end;
+
+procedure TfmListPadronObrasSociales.emitirClick(Sender: TObject);
+var
+  salida, ordensalida, entornosal: char;
+begin
+  if (Length(Trim(desde.Text)) = 0) or (Length(Trim(hasta.Text)) = 0) then utiles.msgError('No se han definido suficientes parámetros ...!') else Begin
+    DTS.DataSet := nil;
+    salida := 'P'; ordensalida := 'C'; entornosal := 'E';
+    if dispositivo.Text = 'Impresora' then salida := 'I';
+    if alfabetico.Checked then ordensalida := 'A';
+    if exclusion.Checked then entornosal := 'X';
+    {if Nomina.Checked then obsocial.Listar(ordensalida, desde.Text, hasta.Text, entornosal, salida);
+    if Determinaciones.Checked then obsocial.ListarAnalisisMontoFijo(ordensalida, desde.Text, hasta.Text, entornosal, salida);
+    if NomecladorOS.Checked then obsocial.ListarNomecladorValorizado(ordensalida, desde.Text, hasta.Text, entornosal, salida);}
+    DTS.DataSet   := obsocial.tabla;
+  end;
+  ActiveControl := cerrar;
+end;
+
+procedure TfmListPadronObrasSociales.cerrarClick(Sender: TObject);
+begin
+  Panel3.Visible := False;
+  criterio.Text  := ordenact;
+  expresionChange(Sender);
+  ActiveControl  := expresion;
+end;
+
+procedure TfmListPadronObrasSociales.FormShow(Sender: TObject);
+begin
+  if FormStyle = fsMDIChild then Begin
+    Height := 382; Width := 571; Top := 25; Left:=(Screen.Width - Width) div 2;
+  end;
+  if not introsalir then obsocial.conectar;
+  DTS.DataSet := obsocial.tabla;
+  expresionChange(Sender);
+end;
+
+procedure TfmListPadronObrasSociales.desdeClick(Sender: TObject);
+begin
+  control := 0;
+end;
+
+procedure TfmListPadronObrasSociales.hastaClick(Sender: TObject);
+begin
+  control := 1;
+end;
+
+end.

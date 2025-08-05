@@ -1,0 +1,314 @@
+unit CAuditoriaFacturacion;
+
+interface
+
+uses CObrasSocialesCCB, CProfesionalCCB, CBDT, SysUtils, DBTables, CUtiles, CListar,
+     CIDBFM, CFirebird, IBTable, IBQuery, CNBU;
+
+type
+
+TTAuditoriaFacturacion = class
+  cabauditoriaIB, detauditoriaIB, pacienteIB: TIBTable;
+  cabauditoria, detauditoria, paciente: TTable;
+  nombre, nrodoc, grabadoiva, interbase: string;
+ public
+  { Declaraciones Públicas }
+  constructor Create;
+  destructor  Destroy; override;
+
+  function    find(xnroauditoria: string): boolean;
+  procedure   registrar(xnroauditoria, xperiodo, xidprof, xitems, xcodigo, xestado: string);
+  procedure   borrar(xnroauditoria: string);
+  procedure   importar(xidprof, xperiodo: string);
+  procedure   actualizarEstado(xnroauditoria, xperiodo, xidprof: string);
+
+  function    getListOrdenesIB(xdesde, xhasta: string): TIBQuery;
+  function    getListItemsIB(xnroauditoria: string): TIBQuery;
+  procedure   getPaciente(xnrodoc, xidprof: string);
+  function    getListObrasSocialesIB(xperiodo: string): TIBQuery;
+  function    getListProfesionalesIB(xperiodo: string): TIBQuery;
+
+  procedure   conectar;
+  procedure   desconectar;
+ private
+  { Declaraciones Privadas }
+  conexiones: shortint;
+end;
+
+function auditoriafact: TTAuditoriaFacturacion;
+
+implementation
+
+var
+  xauditoriafact: TTAuditoriaFacturacion = nil;
+
+constructor TTAuditoriaFacturacion.Create;
+begin
+  inherited Create;
+end;
+
+destructor TTAuditoriaFacturacion.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure   TTAuditoriaFacturacion.getPaciente(xnrodoc, xidprof: string);
+begin
+  if (firebird.Buscar(pacienteIB, 'NRODOC;IDPROF', xnrodoc, xidprof)) then begin
+     nombre := pacienteIB.FieldByName('nombre').AsString;
+     nrodoc := pacienteIB.FieldByName('nrodoc').AsString;
+     grabadoiva := pacienteIB.FieldByName('grabadoiva').AsString;
+  end else begin
+     nombre := '';
+     nrodoc := '';
+     grabadoiva := '';
+  end;
+end;
+
+function    TTAuditoriaFacturacion.find(xnroauditoria: string): boolean;
+begin
+  result := firebird.Buscar(cabauditoriaIB, 'nroauditoria', xnroauditoria);
+end;
+
+procedure   TTAuditoriaFacturacion.registrar(xnroauditoria, xperiodo, xidprof, xitems, xcodigo, xestado: string);
+begin
+  if (xitems = '001') then begin
+    if (find(xnroauditoria)) then cabauditoriaIB.Edit else cabauditoriaIB.Append;
+    cabauditoriaIB.FieldByName('nroauditoria').AsString := xnroauditoria;
+    cabauditoriaIB.FieldByName('periodo').AsString := xperiodo;
+    cabauditoriaIB.FieldByName('idprof').AsString := xidprof;
+    try
+      cabauditoriaIB.Post
+    except
+      cabauditoriaIB.Cancel
+    end;
+    firebird.RegistrarTransaccion(cabauditoriaIB);
+
+    firebird.TransacSQL('DELETE FROM det_auditoria WHERE nroauditoria = ' + '''' + xnroauditoria + '''');
+    firebird.RegistrarTransaccion(detauditoriaIB);
+  end;
+
+  detauditoriaIB.Append;
+  detauditoriaIB.FieldByName('nroauditoria').AsString := xnroauditoria;
+  detauditoriaIB.FieldByName('items').AsString := xitems;
+  detauditoriaIB.FieldByName('codigo').AsString := xcodigo;
+  detauditoriaIB.FieldByName('estado').AsString := xestado;
+  try
+    detauditoriaIB.Post
+   except
+    detauditoriaIB.Cancel
+  end;
+  firebird.RegistrarTransaccion(detauditoriaIB);
+end;
+
+procedure    TTAuditoriaFacturacion.borrar(xnroauditoria: string);
+begin
+  firebird.TransacSQL('DELETE FROM cab_auditoria WHERE nroauditoria = ' + '''' + xnroauditoria + '''');
+  firebird.RegistrarTransaccion(cabauditoriaIB);
+  firebird.TransacSQL('DELETE FROM det_auditoria WHERE nroauditoria = ' + '''' + xnroauditoria + '''');
+  firebird.RegistrarTransaccion(detauditoriaIB);
+end;
+
+procedure   TTAuditoriaFacturacion.actualizarEstado(xnroauditoria, xperiodo, xidprof: string);
+begin
+  if (find(xnroauditoria)) then begin
+    cabauditoriaIB.Edit;
+    cabauditoriaIB.FieldByName('codfact').AsString := xidprof;
+    cabauditoriaIB.FieldByName('periodofact').AsString := xperiodo;
+    try
+      cabauditoriaIB.Post
+    except
+      cabauditoriaIB.Cancel
+    end;
+    firebird.RegistrarTransaccion(cabauditoriaIB);
+  end;  
+end;
+
+procedure    TTAuditoriaFacturacion.importar(xidprof, xperiodo: string);
+var
+  archivos: boolean;
+  directorio, iitems, icodigo, iestado, linea2, linea3, inombre, iobservacion, iobsauditor, linea1, iidonline, iefector, ifecha, icodos, inrodoc, iidprof, ifepedido, iiddiag, idiferida, ianulada, iprofcab: string;
+  cab, det, pac: TextFile;
+  p, a: integer;
+begin
+  archivos   := false;
+  directorio := dbs.DirSistema + '\temp\';
+  if (FileExists(directorio + 'cab_auditoria_' + xidprof + '.txt')) then
+    if (FileExists(directorio + 'det_auditoria_' + xidprof + '.txt')) then archivos := true;
+
+  if (archivos) then begin
+
+    AssignFile(cab, directorio + 'cab_auditoria_' + xidprof + '.txt');
+    AssignFile(det, directorio + 'det_auditoria_' + xidprof + '.txt');
+    AssignFile(pac, directorio + 'pac_auditoria_' + xidprof + '.txt');
+
+    reset(cab);
+
+    while not EOF(cab) do begin
+      readln(cab, linea1);
+      if (length(trim(linea1)) > 0) and (length(trim(copy(linea1, 1, 29))) > 10) then begin
+        iidonline    := trim(copy(linea1, 1, 29));
+        iefector     := copy(linea1, 32, 6);
+        ifecha       := copy(linea1, 39, 8);
+        icodos       := copy(linea1, 48, 6);
+        inrodoc      := UpperCase(trim(copy(linea1, 59, 15)));
+        iidprof      := copy(linea1, 76, 5);
+        ifepedido    := copy(linea1, 102, 8);
+        iiddiag      := copy(linea1, 113, 5);
+        idiferida    := copy(linea1, 123, 1);
+        ianulada     := copy(linea1, 125, 1);
+        iprofcab     := copy(linea1, 526, 6);
+        if (length(trim(ianulada)) = 0) then ianulada := 'N';
+
+        p            := Pos('*** End of Efector ***', linea1);
+        a            := Pos('*** End of Auditor ***', linea1);
+        iobservacion := trimleft(copy(linea1, 127, p - 127));
+        iobsauditor  := trimleft(copy(linea1, 301, 130));
+
+        if (find(iidonline)) then cabauditoriaIB.Edit else cabauditoriaIB.Append;
+        cabauditoriaIB.FieldByName('nroauditoria').AsString := iidonline;
+        cabauditoriaIB.FieldByName('periodo').AsString := xperiodo;
+        cabauditoriaIB.FieldByName('idprof').AsString  := iefector;
+        cabauditoriaIB.FieldByName('nrodoc').AsString  := inrodoc;
+        cabauditoriaIB.FieldByName('codos').AsString   := icodos;
+        cabauditoriaIB.FieldByName('fecha').AsString   := ifecha;
+        cabauditoriaIB.FieldByName('estado').AsString  := ianulada;
+        try
+          cabauditoriaIB.Post
+        except
+          cabauditoriaIB.Cancel
+        end;
+        firebird.RegistrarTransaccion(cabauditoriaIB);
+
+        firebird.TransacSQL('DELETE FROM det_auditoria WHERE nroauditoria = ' + '''' + iidonline + '''');
+        firebird.RegistrarTransaccion(detauditoriaIB);
+
+        // Extraemos los items de la Orden
+        reset(det);
+        while not EOF(det) do begin
+          readln(det, linea2);
+          if (copy(linea2, 1, 29) = iidonline) then begin
+            iitems    := copy(linea2, 32, 3);
+            icodigo   := copy(linea2, 37, 6);
+            iestado   := copy(linea2, 45, 1);
+            detauditoriaIB.Append;
+            detauditoriaIB.FieldByName('nroauditoria').AsString := iidonline;
+            detauditoriaIB.FieldByName('items').AsString := iitems;
+            detauditoriaIB.FieldByName('codigo').AsString := icodigo;
+            detauditoriaIB.FieldByName('estado').AsString := iestado;
+            try
+              detauditoriaIB.Post
+            except
+              detauditoriaIB.Cancel
+            end;
+          end;
+        end;
+        firebird.RegistrarTransaccion(detauditoriaIB);
+        closeFile(det);
+
+        // Extraemos el nombre del Paciente
+        if (FileExists(directorio + 'pac_auditoria_' + xidprof + '.txt')) then begin
+          reset(pac);
+          while not EOF(pac) do begin
+            readln(pac, linea3);
+            if (trim(copy(linea3, 9, 15)) = trim(inrodoc)) then begin
+              inombre := copy(linea3, 25, 35);
+
+              if (firebird.Buscar(pacienteIB, 'NRODOC;IDPROF', inrodoc, xidprof)) then pacienteIB.Edit else pacienteIB.Append;
+              pacienteIB.FieldByName('nrodoc').AsString := inrodoc;
+              pacienteIB.FieldByName('idprof').AsString := xidprof;
+              pacienteIB.FieldByName('nombre').AsString := inombre;
+              pacienteIB.FieldByName('codos').AsString := icodos;
+              pacienteIB.FieldByName('grabadoiva').AsString := 'N';
+              try
+                pacienteIB.Post
+              except
+                pacienteIB.Cancel
+              end;
+              break;
+            end;
+          end;
+          firebird.RegistrarTransaccion(pacienteIB);
+          closeFile(pac);
+        end;
+
+      end;
+    end;
+
+  end;
+end;
+
+function  TTAuditoriaFacturacion.getListOrdenesIB(xdesde, xhasta: string): TIBQuery;
+begin
+  result := firebird.getTransacSQL('select * from cab_auditoria where fecha >= ' + '''' + utiles.sExprFecha2000(xdesde) + '''' + ' and fecha <= ' + '''' + utiles.sExprFecha2000(xhasta) + '''' + ' order by codos, fecha');
+end;
+
+function  TTAuditoriaFacturacion.getListItemsIB(xnroauditoria: string): TIBQuery;
+begin
+  result := firebird.getTransacSQL('select * from det_auditoria where nroauditoria = ' + '''' + xnroauditoria + '''' + ' and estado = ' + '''' + 'A' + '''' + ' order by items');
+end;
+
+function  TTAuditoriaFacturacion.getListObrasSocialesIB(xperiodo: string): TIBQuery;
+begin
+  result := firebird.getTransacSQL('select distinct(codos) from cab_auditoria where periodo = ' + '''' + xperiodo + '''');
+end;
+
+function  TTAuditoriaFacturacion.getListProfesionalesIB(xperiodo: string): TIBQuery;
+begin
+  result := firebird.getTransacSQL('select distinct(idprof) from cab_auditoria where periodo = ' + '''' + xperiodo + '''');
+end;
+
+procedure TTAuditoriaFacturacion.conectar;
+// Objetivo...: cerrar tablas de persistencia
+begin
+  firebird.getModulo('facturacion');
+  firebird.Conectar(firebird.Host +  'FACTLABWORK.GDB', firebird.Usuario , firebird.Password);
+  cabauditoriaIB := firebird.InstanciarTabla('cab_auditoria');
+  detauditoriaIB := firebird.InstanciarTabla('det_auditoria');
+  pacienteIB     := firebird.InstanciarTabla('pac_auditoria');
+  
+  if conexiones = 0 then Begin
+    if not (cabauditoriaIB.Active) then cabauditoriaIB.Open;
+    if not (detauditoriaIB.Active) then detauditoriaIB.Open;
+    if not (pacienteIB.Active) then pacienteIB.Open;
+  end;
+  Inc(conexiones);
+
+  obsocial.conectar;
+  profesional.conectar;
+  nbu.conectar;
+end;
+
+procedure TTAuditoriaFacturacion.desconectar;
+// Objetivo...: cerrar tablas de persistencia
+begin
+  Dec(conexiones);
+  if conexiones = 0 then Begin
+    firebird.closeDB(cabauditoriaIB);
+    firebird.closeDB(detauditoriaIB);
+    firebird.closeDB(pacienteIB);
+  end;
+  firebird.Desconectar;
+
+  obsocial.desconectar;
+  profesional.desconectar;
+  nbu.desconectar;
+end;
+
+{===============================================================================}
+
+function auditoriafact: TTAuditoriaFacturacion;
+begin
+  if xauditoriafact = nil then
+    xauditoriafact := TTAuditoriaFacturacion.Create;
+  Result := xauditoriafact;
+end;
+
+{===============================================================================}
+
+initialization
+
+finalization
+  xauditoriafact.Free;
+
+end.

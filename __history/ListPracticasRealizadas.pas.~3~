@@ -1,0 +1,61 @@
+unit ListPracticasRealizadas;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, Grids, StdCtrls, Mask, ExtCtrls, CUtiles;
+
+type
+  TfmListPracticasRealizadas = class(TForm)
+    Panel2: TPanel;
+    ScrollBox: TScrollBox;
+    Panel1: TPanel;
+    Panel3: TPanel;
+    Label1: TLabel;
+    desde: TMaskEdit;
+    Label2: TLabel;
+    hasta: TMaskEdit;
+    btnBuscar: TButton;
+    Panel4: TPanel;
+    F: TStringGrid;
+    procedure desdeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure hastaKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  fmListPracticasRealizadas: TfmListPracticasRealizadas;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfmListPracticasRealizadas.desdeKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+     if (utiles.verificarPeriodo(desde.Text)) then begin
+       utiles.msgError('Período Incorrecto ...!');
+       exit;
+     end;
+     hasta.SetFocus;
+  End;
+end;
+
+procedure TfmListPracticasRealizadas.hastaKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+     if (utiles.verificarPeriodo(hasta.Text)) then begin
+       utiles.msgError('Período Incorrecto ...!');
+       exit;
+     end;
+     btnBuscar.SetFocus;
+End;
+end;
+
+end.

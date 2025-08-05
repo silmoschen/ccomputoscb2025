@@ -1,0 +1,44 @@
+unit actualiza;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, DB, DBTables, CUtiles;
+
+type
+  TForm3 = class(TForm)
+    codos: TEdit;
+    Button1: TButton;
+    Table1: TTable;
+    procedure Button1Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form3: TForm3;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm3.Button1Click(Sender: TObject);
+var
+  archivo: textfile;
+begin
+  assignfile(archivo, 'padron_pami.sql');
+  rewrite(archivo);
+  table1.Open;
+  while not table1.eof do begin
+    writeln(archivo, 'insert into bioqafil (codos, nrodoc, nombre) values (' + '''' + codos.Text + '''' + ', ' + '''' + utiles.sLlenarIzquierda(table1.FieldByName('n_docu').asstring, 8, '0') + '''' + ', '+ '''' + table1.FieldByName('padron_d_a').asstring + '''');
+    table1.next;
+  end;
+  table1.close;
+  closeFile(archivo);
+  Close;
+end;
+
+end.

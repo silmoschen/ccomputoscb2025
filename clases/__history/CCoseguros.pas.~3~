@@ -1,0 +1,170 @@
+unit CCoseguros;
+
+interface
+
+uses SysUtils, CUtiles, DBTables, Contnrs, CIDBFM;
+
+type
+
+TTCoseguros = class
+  Codos, Periodo, Periodo1: string;
+  Coseguro: real;
+  tabla: TTable;
+ public
+  { Declaraciones Públicas }
+  constructor Create;
+
+  procedure   Registrar(xcodos, xperiodo: string; xcoseguro: real);
+  procedure   Borrar(xcodos, xperiodo: string);
+  function    Buscar(xcodos, xperiodo: string): boolean;
+  procedure   getDatos(xcodos, xperiodo: string);
+  function    getObjects(xcodos: string): TObjectList;
+
+  function    getCoseguro(xcodos, xperiodo: string): real;
+
+  procedure   conectar;
+  procedure   desconectar;
+
+  destructor  Destroy; override;
+ private
+  { Declaraciones Privadas }
+  u, ud: real;
+  per: string;
+  conexiones: shortint;
+end;
+
+function coseguro: TTCoseguros;
+
+implementation
+
+var
+  xcoseguro: TTCoseguros = nil;
+
+constructor TTCoseguros.Create;
+begin
+  inherited Create;
+  tabla := datosdb.openDB('COSEGUROS', '');
+end;
+
+destructor TTCoseguros.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TTCoseguros.Registrar(xcodos, xperiodo: string; xcoseguro: real);
+// Objetivo...: Grabar Atributos del Objeto
+begin
+  if Buscar(xcodos, xperiodo) then tabla.Edit else tabla.Append;
+  tabla.FieldByName('codos').AsString    := xcodos;
+  tabla.FieldByName('periodo').AsString  := xperiodo;
+  tabla.FieldByName('periodo1').AsString := Copy(xperiodo, 4, 4) + Copy(xperiodo, 1, 2);
+  tabla.FieldByName('coseguro').AsFloat  := xcoseguro;
+  try
+    tabla.Post;
+  except
+    tabla.Cancel;
+  end;
+  datosdb.closeDB(tabla); tabla.Open;
+end;
+
+procedure TTCoseguros.Borrar(xcodos, xperiodo: string);
+// Objetivo...: Eliminar un Objeto
+begin
+  if Buscar(xcodos, xperiodo) then
+    begin
+      tabla.Delete;
+      datosdb.closeDB(tabla); tabla.Open;
+    end;
+end;
+
+function TTCoseguros.Buscar(xcodos, xperiodo: string): boolean;
+// Objetivo...: Buscar el Objeto solicitado
+begin
+  result := datosdb.Buscar(tabla, 'codos', 'periodo', xcodos, xperiodo);
+end;
+
+procedure TTCoseguros.getDatos(xcodos, xperiodo: string);
+// Objetivo...: Retornar/Iniciar Atributos
+begin
+  if Buscar(xcodos, xperiodo) then begin
+    codos     := tabla.FieldByName('codos').AsString;
+    periodo   := tabla.FieldByName('periodo').AsString;
+    coseguro  := tabla.FieldByName('coseguro').AsFloat;
+  end else   begin
+    codos := ''; periodo := ''; coseguro := 0;
+  end;
+end;
+
+function TTCoseguros.getObjects(xcodos: string): TObjectList;
+// Objetivo...: Retornar una lista de objetos
+var
+  l: TObjectList;
+  objeto: TTCoseguros;
+begin
+  l := TObjectList.Create;
+  if not (tabla.Active) then tabla.Open;
+  datosdb.Filtrar(tabla, 'codos = ' + '''' + xcodos + '''');
+  tabla.First;
+  while not tabla.Eof do begin
+    objeto           := TTCoseguros.Create;
+    objeto.codos     := tabla.FieldByName('codoS').AsString;
+    objeto.periodo   := tabla.FieldByName('periodo').AsString;
+    objeto.periodo1  := copy(tabla.FieldByName('periodo').AsString, 5, 2) + '/' + copy(tabla.FieldByName('periodo').AsString, 1, 4);
+    objeto.coseguro  := tabla.FieldByName('coseguro').AsFloat;
+    l.Add(objeto);
+    tabla.Next;
+  end;
+  datosdb.QuitarFiltro(tabla);
+  result := l;
+end;
+
+function TTCoseguros.getCoseguro(xcodos, xperiodo: string): real;
+// Objetivo...: Retornar una lista de objetos
+begin
+  if not (tabla.Active) then tabla.Open;
+  datosdb.Filtrar(tabla, 'codos = ' + '''' + xcodos + '''');
+  tabla.First; u := 0;
+  while not tabla.Eof do begin
+    if (tabla.FieldByName('periodo1').AsInteger <= strtoint(copy(xperiodo, 4, 4)+copy(xperiodo, 1, 2))) then begin
+      u   := tabla.FieldByName('coseguro').AsFloat;
+    end;
+    tabla.Next;
+  end;
+  datosdb.QuitarFiltro(tabla);
+  result := u;
+end;
+
+procedure TTCoseguros.conectar;
+// Objetivo...: Abrir tablas de persistencia
+begin
+  if conexiones = 0 then Begin
+    if not tabla.Active then tabla.Open;
+  end;
+  Inc(conexiones);
+end;
+
+procedure TTCoseguros.desconectar;
+// Objetivo...: cerrar tablas de persistencia
+begin
+  if conexiones > 0 then Dec(conexiones);
+  if conexiones = 0 then datosdb.closeDB(tabla);
+end;
+
+{===============================================================================}
+
+function coseguro: TTCoseguros;
+begin
+  if xcoseguro = nil then
+    xcoseguro := TTCoseguros.Create;
+  Result := xcoseguro;
+end;
+
+{===============================================================================}
+
+initialization
+
+finalization
+  xcoseguro.Free;
+
+
+end.

@@ -1,0 +1,244 @@
+unit ajusteMontosFijosLote;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Grids, ExtCtrls, ComCtrls, Buttons, CConfigForms, CUtilidadesStringGrid,
+  Editv, Mask, CUtiles;
+
+type
+  TfmAjusteLote = class(TForm)
+    StatusBar1: TStatusBar;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    Panel3: TPanel;
+    Panel4: TPanel;
+    B: TStringGrid;
+    btnAltas: TButton;
+    btnBajas: TButton;
+    Panel5: TPanel;
+    Si: TSpeedButton;
+    Ninguno: TSpeedButton;
+    Todos: TSpeedButton;
+    Label1: TLabel;
+    periodoalta: TMaskEdit;
+    Label2: TLabel;
+    porcentaje: TEditValid;
+    Panel6: TPanel;
+    Button1: TButton;
+    Button2: TButton;
+    Panel7: TPanel;
+    Label3: TLabel;
+    periodobaja: TMaskEdit;
+    Panel8: TPanel;
+    Button3: TButton;
+    Button4: TButton;
+    procedure Panel1Resize(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormCanResize(Sender: TObject; var NewWidth, NewHeight: Integer;
+      var Resize: Boolean);
+    procedure SiClick(Sender: TObject);
+    procedure TodosClick(Sender: TObject);
+    procedure NingunoClick(Sender: TObject);
+    procedure btnAltasClick(Sender: TObject);
+    procedure periodoaltaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure porcentajeKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure Button1Click(Sender: TObject);
+    procedure BKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure btnBajasClick(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
+    procedure periodobajaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+  private
+    { Private declarations }
+    redim: boolean;
+  public
+    { Public declarations }
+    operacion: integer;
+  end;
+
+var
+  fmAjusteLote: TfmAjusteLote;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfmAjusteLote.BKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_SPACE) then SiClick(Self);  
+end;
+
+procedure TfmAjusteLote.btnAltasClick(Sender: TObject);
+begin
+  Panel7.Visible := false;
+  Panel3.Visible := true;
+  periodoalta.SetFocus;
+end;
+
+procedure TfmAjusteLote.btnBajasClick(Sender: TObject);
+begin
+  Panel3.Visible := false;
+  Panel7.Visible := true;
+  periodobaja.setFocus;
+end;
+
+procedure TfmAjusteLote.Button1Click(Sender: TObject);
+var
+  i: integer;
+begin
+  if (utiles.verificarPeriodo(periodoalta.Text)) and (StrToFloat(porcentaje.Text) > 0) then begin
+    for i := 1 to B.RowCount do begin
+      if (length(trim(B.Cells[0, i])) = 0) then break;
+      if (B.Cells[2, i] = 'S') then begin
+        B.Cells[8, i] := utiles.FormatearNumero( FloatToStr ( (StrToFloat(B.Cells[4, i]) + ( (StrToFloat(B.Cells[4, i]) * (StrToFloat(porcentaje.Text) * 0.01 ))))) );
+        B.Cells[9, i] := periodoalta.Text;
+      end;
+    end;
+  end;
+
+  if (utiles.msgSiNo('Seguro para Aplicar Cambios a Montos Fijos ?')) then begin
+     operacion := 1;
+     Close;
+  end;
+end;
+
+procedure TfmAjusteLote.Button2Click(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfmAjusteLote.Button3Click(Sender: TObject);
+var
+  i: integer;
+begin
+  if (utiles.verificarPeriodo(periodobaja.Text)) then begin
+    for i := 1 to B.RowCount do begin
+      if (length(trim(B.Cells[0, i])) = 0) then break;
+      if (B.Cells[2, i] = 'S') then begin
+        B.Cells[5, i] := periodobaja.Text;
+      end;
+    end;
+  end;
+
+  if (utiles.msgSiNo('Seguro para Dar de Baja Montos Fijos Seleccionados ?')) then begin
+     operacion := 2;
+     //Close;
+  end;
+end;
+
+procedure TfmAjusteLote.Button4Click(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfmAjusteLote.FormCanResize(Sender: TObject; var NewWidth,
+  NewHeight: Integer; var Resize: Boolean);
+begin
+  StatusBar1.Panels[0].Width := (Width - (Width div 5));
+end;
+
+procedure TfmAjusteLote.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  configform.Guardar(fmAjusteLote, redim);
+  grid.GuardarAnchoColumnas(fmAjusteLote, B);
+end;
+
+procedure TfmAjusteLote.FormShow(Sender: TObject);
+begin
+  configform.Setear(fmAjusteLote);
+  grid.RecuperarAnchoColumnas(fmAjusteLote, B);
+  B.cells[0, 0] := 'It.'; B.cells[1, 0] := 'Cód.'; B.cells[2, 0] := 'S'; B.cells[3, 0] := 'Descripción'; B.cells[4, 0] := 'Importe'; B.cells[5, 0] := 'Per. Alta'; B.cells[6, 0] := 'Per. Baja';
+  B.cells[7, 0] := 'ID'; B.cells[8, 0] := 'Porcentaje'; B.cells[9, 0] := 'Período';
+end;
+
+procedure TfmAjusteLote.NingunoClick(Sender: TObject);
+var
+  i: integer;
+begin
+  For i := 1 to B.RowCount do begin
+    if (length(trim(B.Cells[0, i])) = 0) then break;
+    B.cells[2, i] := '';
+  end;
+  B.Refresh;
+
+  btnAltas.Enabled := false;
+  btnBajas.Enabled := false;
+end;
+
+procedure TfmAjusteLote.Panel1Resize(Sender: TObject);
+begin
+  redim := true;
+end;
+
+procedure TfmAjusteLote.periodoaltaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) or  (Key = VK_DOWN) then
+    if (utiles.verificarPeriodo(periodoalta.Text)) then porcentaje.SetFocus;
+end;
+
+procedure TfmAjusteLote.periodobajaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) or  (Key = VK_DOWN) then
+    if (utiles.verificarPeriodo(periodobaja.Text)) then Button3.SetFocus;
+end;
+
+procedure TfmAjusteLote.porcentajeKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_UP) then periodoalta.SetFocus;
+  if (Key = VK_RETURN) or  (Key = VK_DOWN) then begin
+    porcentaje.Text := utiles.FormatearNumero(porcentaje.Text);
+    if (StrToFloat(porcentaje.Text) > 0) then Button1.SetFocus;
+  end;
+end;
+
+procedure TfmAjusteLote.SiClick(Sender: TObject);
+var
+  i: integer;
+begin
+  if Length(Trim(B.cells[0, B.row])) > 0 then Begin
+    if B.cells[2, B.row] <> 'S' then B.cells[2, B.row] := 'S' else B.cells[2, B.row] := ' ';
+    if (B.row < B.rowcount) and (Length(Trim(B.cells[0, B.row + 1])) > 0) then B.row := B.row + 1;
+    B.Refresh;
+  end;
+
+  btnAltas.Enabled := false;
+  btnBajas.Enabled := false;
+
+  For i := 1 to B.RowCount do begin
+    if (length(trim(B.Cells[0, i])) = 0) then break;
+    if (B.cells[2, i] = 'S') then begin
+      btnAltas.Enabled := true;
+      btnBajas.Enabled := true;
+      break;
+    end;
+  end;
+
+  B.setFocus;
+end;
+
+procedure TfmAjusteLote.TodosClick(Sender: TObject);
+var
+  i: integer;
+begin
+  For i := 1 to B.RowCount do begin
+    if (length(trim(B.Cells[0, i])) = 0) then break;
+    B.cells[2, i] := 'S';
+  end;
+  B.Refresh;
+
+  btnAltas.Enabled := true;
+  btnBajas.Enabled := true;
+end;
+
+end.

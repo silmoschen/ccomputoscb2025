@@ -1,0 +1,29 @@
+unit AgregarQuitarDetOnLine;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Buttons, Mask;
+
+type
+  TfmDeterminacionOnLine = class(TForm)
+    Label3: TLabel;
+    des: TLabel;
+    Label41: TLabel;
+    codanalisis: TMaskEdit;
+    BuscarAnalisis: TBitBtn;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  fmDeterminacionOnLine: TfmDeterminacionOnLine;
+
+implementation
+
+{$R *.dfm}
+
+end.

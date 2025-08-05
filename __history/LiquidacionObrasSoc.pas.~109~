@@ -1,0 +1,1806 @@
+unit LiquidacionObrasSoc;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  ComCtrls, StdCtrls, ExtCtrls, DBCtrls, ToolWin, Mask, Editv, Grids,
+  Buttons, DBTables, Menus, Printers;
+
+type
+  TfmLiquidacionOS = class(TForm)
+    StatusBar1: TStatusBar;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
+    Panel2: TPanel;
+    ScrollBox: TScrollBox;
+    Panel1: TPanel;
+    Panel7: TPanel;
+    ScrollBox1: TScrollBox;
+    Panel10: TPanel;
+    Panel11: TPanel;
+    TabSheet4: TTabSheet;
+    Panel19: TPanel;
+    ScrollBox3: TScrollBox;
+    GroupBox4: TGroupBox;
+    Panel6: TPanel;
+    Panel8: TPanel;
+    Panel9: TPanel;
+    Label14: TLabel;
+    Label27: TLabel;
+    per: TMaskEdit;
+    Panel13: TPanel;
+    dispSalida: TBitBtn;
+    TabSheet3: TTabSheet;
+    Panel14: TPanel;
+    ScrollBox2: TScrollBox;
+    Shape2: TShape;
+    Panel15: TPanel;
+    aplicar: TBitBtn;
+    Panel16: TPanel;
+    Panel17: TPanel;
+    Panel18: TPanel;
+    GroupBox5: TGroupBox;
+    altopag: TEditValid;
+    Label11: TLabel;
+    PopupMenu: TPopupMenu;
+    DistribucinObraSocial1: TMenuItem;
+    PerodoCompleto1: TMenuItem;
+    Panel4: TPanel;
+    Label6: TLabel;
+    porcentaje: TEditValid;
+    Panel3: TPanel;
+    emitir: TBitBtn;
+    btnCerrar: TBitBtn;
+    Panel20: TPanel;
+    Label2: TLabel;
+    Label12: TLabel;
+    periodo: TMaskEdit;
+    Panel21: TPanel;
+    Panel25: TPanel;
+    DebitosCreditosPersonales: TBitBtn;
+    Panel24: TPanel;
+    Label1: TLabel;
+    Label3: TLabel;
+    nos: TLabel;
+    Label8: TLabel;
+    Label10: TLabel;
+    codos: TMaskEdit;
+    BuscarObraSocial: TBitBtn;
+    perLiq: TMaskEdit;
+    Panel26: TPanel;
+    ToolBar1: TToolBar;
+    DBNavigator: TDBNavigator;
+    Alta: TToolButton;
+    Baja: TToolButton;
+    Modificar: TToolButton;
+    Buscar: TToolButton;
+    Deshacer: TToolButton;
+    Salir: TToolButton;
+    Panel27: TPanel;
+    btnImprLab: TSpeedButton;
+    Label9: TLabel;
+    montofact: TLabel;
+    Label22: TLabel;
+    Label7: TLabel;
+    Label15: TLabel;
+    Label19: TLabel;
+    importeing: TEditValid;
+    ajustesIndi: TBitBtn;
+    S: TStringGrid;
+    PopupMenu1: TPopupMenu;
+    ModificarPago1: TMenuItem;
+    BorrarPago1: TMenuItem;
+    RadioButton1: TRadioButton;
+    totFact: TRadioButton;
+    totProf: TRadioButton;
+    impresiontxt: TCheckBox;
+    Titulo: TMemo;
+    Subtitulo: TMemo;
+    Label26: TLabel;
+    lineassep: TEditValid;
+    Label17: TLabel;
+    anchocol: TEditValid;
+    listPagos: TRadioButton;
+    Label28: TLabel;
+    imprimir: TComboBox;
+    Label29: TLabel;
+    Label30: TLabel;
+    Label32: TLabel;
+    Label31: TLabel;
+    Label47: TLabel;
+    idlab: TMaskEdit;
+    BuscarProfes: TBitBtn;
+    np: TLabel;
+    nrodist: TEditValid;
+    nrodistinf: TEditValid;
+    listResumen: TRadioButton;
+    listResumenRet: TRadioButton;
+    TabSheet5: TTabSheet;
+    Panel5: TPanel;
+    Panel12: TPanel;
+    Label35: TLabel;
+    Label37: TLabel;
+    Label39: TLabel;
+    idprofdep: TMaskEdit;
+    BuscarProfesional: TBitBtn;
+    npr: TLabel;
+    perdist: TLabel;
+    ndist: TLabel;
+    Label36: TLabel;
+    codbanco: TMaskEdit;
+    BuscarBanco: TBitBtn;
+    nbco: TLabel;
+    Label38: TLabel;
+    fechadep: TMaskEdit;
+    Label40: TLabel;
+    observac: TMaskEdit;
+    Panel23: TPanel;
+    P: TStringGrid;
+    Panel22: TPanel;
+    Label4: TLabel;
+    Label23: TLabel;
+    dist: TLabel;
+    Panel28: TPanel;
+    Label16: TLabel;
+    Label18: TLabel;
+    fecha: TMaskEdit;
+    labivains: TCheckBox;
+    Panel29: TPanel;
+    btnAplicar: TButton;
+    GroupBox1: TGroupBox;
+    Label33: TLabel;
+    Label34: TLabel;
+    dist1: TCheckBox;
+    dist2: TCheckBox;
+    unifGanancias: TCheckBox;
+    CheckBox2: TCheckBox;
+    Panel30: TPanel;
+    recMontos: TCheckBox;
+    ga1: TCheckBox;
+    ga2: TCheckBox;
+    Label44: TLabel;
+    Label45: TLabel;
+    btnEleccionOS: TButton;
+    Label24: TLabel;
+    cantcopias: TEditValid;
+    listTotGan: TRadioButton;
+    TabSheet6: TTabSheet;
+    Panel31: TPanel;
+    Panel32: TPanel;
+    Label46: TLabel;
+    Label48: TLabel;
+    periodogan: TMaskEdit;
+    Label49: TLabel;
+    Label50: TLabel;
+    distgan: TEditValid;
+    Panel33: TPanel;
+    btnRecGanancias: TButton;
+    Label51: TLabel;
+    Label52: TLabel;
+    pergan: TMaskEdit;
+    disgan: TEditValid;
+    osiva: TCheckBox;
+    RadioButton2: TRadioButton;
+    resProf: TRadioButton;
+    becasgan: TCheckBox;
+    listUH: TRadioButton;
+    liqIndi: TCheckBox;
+    ruptura: TCheckBox;
+    Label43: TLabel;
+    liqganancias: TMaskEdit;
+    GroupBox3: TGroupBox;
+    totFactProf: TBitBtn;
+    btnTotFOS: TBitBtn;
+    Label5: TLabel;
+    liq1: TCheckBox;
+    liq2: TCheckBox;
+    Label13: TLabel;
+    perAjuste: TMaskEdit;
+    Label41: TLabel;
+    ndistr: TLabel;
+    CheckBox3: TCheckBox;
+    concepto: TMaskEdit;
+    verFormula: TCheckBox;
+    CheckBox1: TCheckBox;
+    N1: TMenuItem;
+    ConsultarMontosProfesionales1: TMenuItem;
+    N2: TMenuItem;
+    AjustarMontosenObrasSociales1: TMenuItem;
+    GroupBox2: TGroupBox;
+    CheckBox4: TCheckBox;
+    desde: TMaskEdit;
+    Label20: TLabel;
+    Label21: TLabel;
+    hasta: TMaskEdit;
+    Button1: TButton;
+    Label25: TLabel;
+    Button2: TButton;
+    listCoseguros: TRadioButton;
+    RadioButton3: TRadioButton;
+    totProfIVA: TBitBtn;
+    btnExportarDistribuciones: TBitBtn;
+    osliq: TLabel;
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure periodoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure codosKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure BuscarObraSocialClick(Sender: TObject);
+    procedure SalirClick(Sender: TObject);
+    procedure porcentajeKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure fechaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure importeingKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure ajustesIndiClick(Sender: TObject);
+    procedure DebitosCreditosPersonalesClick(Sender: TObject);
+    procedure totFactObraSocClick(Sender: TObject);
+    procedure totFactProfClick(Sender: TObject);
+    procedure ajustesIndiKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure emitirClick(Sender: TObject);
+    procedure TabSheet2Show(Sender: TObject);
+    procedure BuscarProfesClick(Sender: TObject);
+    procedure aplicarClick(Sender: TObject);
+    procedure TabSheet3Show(Sender: TObject);
+    procedure TituloChange(Sender: TObject);
+    procedure periodoChange(Sender: TObject);
+    procedure idlabKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure dispSalidaClick(Sender: TObject);
+    procedure perLiqKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure RadioButton1Click(Sender: TObject);
+    procedure perAjusteKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure perKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure totFactClick(Sender: TObject);
+    procedure totProfClick(Sender: TObject);
+    procedure TabSheet1Show(Sender: TObject);
+    procedure TabSheet1Hide(Sender: TObject);
+    procedure DistribucinObraSocial1Click(Sender: TObject);
+    procedure PerodoCompleto1Click(Sender: TObject);
+    procedure btnCerrarClick(Sender: TObject);
+    procedure RadioButton1KeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure ModificarPago1Click(Sender: TObject);
+    procedure BorrarPago1Click(Sender: TObject);
+    procedure SKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure Panel2Resize(Sender: TObject);
+    procedure CheckBox2Click(Sender: TObject);
+    procedure btnAplicarClick(Sender: TObject);
+    procedure FormResize(Sender: TObject);
+    procedure btnEleccionOSClick(Sender: TObject);
+    procedure imprimirChange(Sender: TObject);
+    procedure nrodistKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure nrodistinfKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure listResumenRetClick(Sender: TObject);
+    procedure listResumenClick(Sender: TObject);
+    procedure idprofdepKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure BuscarProfesionalClick(Sender: TObject);
+    procedure codbancoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure fechadepKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure observacKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure BuscarBancoClick(Sender: TObject);
+    procedure TabSheet5Show(Sender: TObject);
+    procedure PKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure TabSheet5Hide(Sender: TObject);
+    procedure TabSheet4Show(Sender: TObject);
+    procedure listTotGanKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure btnRecGananciasClick(Sender: TObject);
+    procedure periodoganKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure distganKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure listResumenRetKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure listResumenKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure perganKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure disganKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure ajustesIndiKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure codosKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure CheckBox1Click(Sender: TObject);
+    procedure ConsultarMontosProfesionales1Click(Sender: TObject);
+    procedure btnRecalcularOSClick(Sender: TObject);
+    procedure CheckBox4Click(Sender: TObject);
+    procedure desdeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure hastaKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+    procedure totProfIVAClick(Sender: TObject);
+    procedure btnExportarDistribucionesClick(Sender: TObject);
+  private
+    { Private declarations }
+    salida: Char;
+    archivo: TextFile;
+    opciones: array[1..4] of ShortInt;
+    redim: Boolean;
+    lista, l, listadist: TStringList;
+    impresora: ShortInt;
+    procedure IniciarPeriodo;
+    procedure ObrasSocialesDistribucion;
+    procedure DireccionarOS;
+    procedure IniciarAjustes;
+    procedure DatosObraSocial;
+    procedure CargarDatos;
+    procedure DatosProfesional;
+    procedure DatosOS;
+    procedure CargarConfigInformes(xinforme: String);
+    procedure CargarNroDistribucion;
+    function  ControlarNroDist(xnrodist: String): Boolean;
+    procedure CargarListaDist;
+    procedure RecalcularMontos;
+    procedure CargarDatosProfesional;
+    procedure CargarDatosBanco;
+    procedure RegistrarDeposito;
+    procedure CargarDepositos;
+    procedure CargarLiqGanancias;
+    procedure RecalcularTotalOS;
+   public
+    { Public declarations }
+  end;
+
+var
+  fmLiquidacionOS: TfmLiquidacionOS;
+
+implementation
+
+uses CLiquidacionObrasSocCCB, CObrasSocialesCCB, CUtiles, CFacturacionCCB, CUtilidadesStringGrid,
+  NominaObrasSociales, NominaDeProfesionalesLiquidacionOS, CProfesionalCCB, CAjustesIndivCentroBioq,
+  NominaAjustesIndiv, NominaRet, CRetencionesCentroBioq, IngresoOperaciones, EleccionProfesionales, CTitulos, Disposit, CBDT, CUsuario,
+  EleccionObrasSociales, CConfigForms, MontosProfesionales, CBancos, ConfigurarImpresora, EleccionRetenciones,
+  NominaDeProfesionales, NominaDeBancos, Unit1, ConsultarObsoc, CAuditoriaCCB,
+  formAjustarTotalesProfIVA, uploadftp, CCVentas_CCB, CCoseguros;
+
+{$R *.DFM}
+
+procedure TfmLiquidacionOS.IniciarPeriodo;
+// Objetivo...: Iniciar Período Liquidación
+begin
+  distribucionos.PrepararDirectorio(periodo.Text + nrodist.Text);
+  if distribucionos.verificarPeriodo(periodo.Text + nrodist.Text) then Begin
+    DebitosCreditosPersonales.Enabled := True;
+    Panel21.Enabled   := DebitosCreditosPersonales.Enabled;
+    Panel25.Enabled   := DebitosCreditosPersonales.Enabled;
+    Panel4.Enabled    := DebitosCreditosPersonales.Enabled;
+    GroupBox3.Enabled := DebitosCreditosPersonales.Enabled;
+    if Panel21.Enabled then ActiveControl := codos;
+  end;
+  CargarLiqGanancias;
+  codos.Text :=  ''; nos.Caption :=  ''; perLiq.Text := ''; porcentaje.Text := ''; importeing.Text := ''; fecha.Text := '';
+  ObrasSocialesDistribucion;
+end;
+
+procedure TfmLiquidacionOS.ObrasSocialesDistribucion;
+// Objetivo...: Cargar los pagos de las Obras Sociales en Curso
+var
+  l: TStringList;
+  i, j: Integer;
+  cos: string;
+Begin
+  StatusBar1.Panels[0].Text := 'Recuperando Datos Obras Sociales ...!'; StatusBar1.Refresh;
+  l := distribucionos.setLiquidaciones(periodo.Text, nrodist.Text);
+  grid.IniciarGrilla(S);
+  if l.Count > 0 then Begin
+    for i := 1 to l.Count do Begin
+      S.Cells[0, i] := utiles.sFormatoFecha(Copy(l.Strings[i-1], 14, 8));
+      S.Cells[1, i] := Copy(l.Strings[i-1], 7, 7);
+      obsocial.getDatos(Copy(l.Strings[i-1], 1, 6));
+      S.Cells[2, i] := Copy(obsocial.Nombre, 1, 30);
+      j := Pos(';1', l.Strings[i-1]);
+      S.Cells[3, i] := Trim(Copy(l.Strings[i-1], j+2, 8));
+      S.Cells[4, i] := utiles.FormatearNumero(Trim(Copy(l.Strings[i-1], 22, j - (22))));
+      S.Cells[5, i] := Copy(l.Strings[i-1], 1, 6);
+
+      if (coseguro.getCoseguro(obsocial.codos, S.Cells[1, i]) <> 0) then S.Cells[6, i] := 'S' else S.Cells[6, i] := 'N';
+    end;
+    if i > 1 then S.Row := i-1 else S.Row := i;
+  end;
+  osliq.Caption := inttostr(i) + ' O.S. Liq.';
+  StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+end;
+
+procedure TfmLiquidacionOS.DireccionarOS;
+// Objetivo...: Iniciar Formulario
+var
+  i: Integer;
+begin
+  for i := 1 to S.RowCount do Begin
+    if Length(Trim(S.Cells[0, i])) = 0 then Break;
+    if Copy(S.Cells[2, i], 1, 30) = Copy(nos.Caption, 1, 30) then Break;
+  end;
+  if i > 0 then S.Row := i;
+  S.Refresh;
+end;
+
+procedure TfmLiquidacionOS.IniciarAjustes;
+// Objetivo...: Iniciar Formulario
+begin
+  ajustesindi.Enabled := False;
+  codos.Text := ''; nos.Caption := ''; perLiq.Text := ''; montofact.Caption := '0'; montofact.Caption := utiles.FormatearNumero(montofact.Caption);
+  dist.Caption := montofact.Caption; porcentaje.Text := ''; importeing.Text := montofact.Caption ; fecha.Text := '';
+  ActiveControl       := codos;
+end;
+
+procedure TfmLiquidacionOS.DatosObraSocial;
+begin
+  DatosOS;
+  montofact.Caption := utiles.FormatearNumero(FloatToStr(facturacion.setTotalFactObraSocial(perLiq.Text, codos.Text)));
+  DireccionarOS;
+  ActiveControl := perLiq;
+end;
+
+procedure TfmLiquidacionOS.DatosOS;
+begin
+  obsocial.getDatos(codos.Text);
+  nos.Caption := Copy(obsocial.Nombre, 1, 40);
+end;
+
+procedure TfmLiquidacionOS.CargarDatos;
+begin
+  distribucionos.getDatos(periodo.Text, codos.Text, perliq.Text, nrodist.Text);
+  if Length(Trim(perLiq.Text)) < 7 then perLiq.Text     := distribucionos.PeriodoLiq;
+  porcentaje.Text := utiles.FormatearNumero(FloatToStr(distribucionos.Porcentaje));
+  importeing.Text := utiles.FormatearNumero(FloatToStr(distribucionos.Importe));
+  dist.Caption    := utiles.FormatearNumero(FloatToStr(StrToFloat(montofact.Caption) * (StrToFloat(porcentaje.Text)) * 0.01));
+  fecha.Text      := distribucionos.Fecha;
+  if StrToFloat(importeing.Text) = 0 then importeing.Text := dist.Caption;
+  if Length(Trim(perLiq.Text)) < 7 then
+    if distribucionos.ExisteLiquidacion then perLiq.Text := distribucionos.PeriodoLiq;
+  Baja.Enabled    := distribucionos.ExisteLiquidacion;
+end;
+
+procedure TfmLiquidacionOS.DatosProfesional;
+Begin
+  profesional.getDatos(idlab.Text);
+  np.Caption := profesional.nombre;
+end;
+
+procedure TfmLiquidacionOS.CargarConfigInformes(xinforme: String);
+Begin
+  distribucionos.getConfiguracionInforme(xinforme);
+  cantcopias.Text := IntToStr(distribucionos.copias);
+  if distribucionos.salto = 0 then ruptura.Checked := False else ruptura.Checked := True;
+end;
+
+procedure TfmLiquidacionOS.CargarNroDistribucion;
+// Objetivo...: Cargar el Nro. de Distribución
+Begin
+  nrodist.Text    := distribucionos.setNroDistribucion(periodo.Text);
+  if Length(Trim(nrodist.Text)) = 0 then nrodist.Text := '01';
+  nrodistinf.Text := nrodist.Text;
+end;
+
+function TfmLiquidacionOS.ControlarNroDist(xnrodist: String): Boolean;
+// Objetivo...: Controlar el Nro. de Distribución
+Begin
+  Result := False;
+  if (xnrodist < '01') or (xnrodist > '02') then utiles.msgError('El Número Maximo de Distribuciones por Período son Dos ...!') else Result := True;
+end;
+
+procedure TfmLiquidacionOS.CargarListaDist;
+// Objetivo...: Cargar el retenciones a liq. en Distribución
+var
+  d1, d2: String;
+Begin
+  listadist := TStringList.Create;
+  if FileExists(dbs.DirSistema + '\retdist.dat') then Begin
+    AssignFile(archivo, dbs.DirSistema + '\retdist.dat');
+    Reset(archivo);
+    ReadLn(archivo, d1);
+    ReadLn(archivo, d2);
+    CloseFile(archivo);
+    if d1 = '1' then dist1.Checked := True else dist1.Checked := False;
+    if d2 = '1' then dist2.Checked := True else dist2.Checked := False;
+  end;
+  if dist1.Checked then listadist.Add('01');
+  if dist2.Checked then listadist.Add('02');
+end;
+
+procedure TfmLiquidacionOS.RecalcularMontos;
+// Objetivo...: Recalcular Montos
+var
+  r: TQuery;
+Begin
+  l := TStringList.Create;
+  r := profesional.setProfesionalesAlf;
+  r.Open;
+  while not r.Eof do Begin
+    if PageControl1.ActivePage <> TabSheet6 then l.Add(r.FieldByName('idprof').AsString);
+    if PageControl1.ActivePage = TabSheet6 then Begin
+      profesional.getDatos(r.FieldByName('idprof').AsString);
+      profesional.SincronizarListaRetIVA(per.Text, r.FieldByName('idprof').AsString);
+      if profesional.Retieneiva = 'S' then l.Add(r.FieldByName('idprof').AsString);
+    end;
+    r.Next;
+  end;
+  r.Close; r.Free;
+
+  StatusBar1.Panels[0].Text := 'Recalculando Montos ...!'; StatusBar1.Refresh;
+  if PageControl1.ActivePage <> TabSheet6 then distribucionos.RecalcularDistribucionProfesional(per.Text + nrodistinf.Text, perLiq.Text + nrodistinf.Text, l, listadist, CheckBox2.Checked, unifganancias.Checked, recMontos.Checked, liqganancias.Text, nrodist.Text);
+  if PageControl1.ActivePage = TabSheet6 then distribucionos.RecalcularDistribucionProfesional(periodogan.Text + distgan.Text, perLiq.Text + distgan.Text, l, listadist, CheckBox2.Checked, unifganancias.Checked, recMontos.Checked, 'N', nrodist.Text);
+  StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+end;
+
+procedure TfmLiquidacionOS.CargarDatosProfesional;
+// Objetivo...: Cargar Datos Profesionales
+Begin
+  profesional.getDatos(idprofdep.Text);
+  npr.Caption := profesional.nombre;
+  codbanco.SetFocus;
+end;
+
+procedure TfmLiquidacionOS.CargarDatosBanco;
+// Objetivo...: Cargar Datos Profesionales
+Begin
+  entbcos.getDatos(codbanco.Text);
+  nbco.Caption := entbcos.descrip;
+  fechadep.SetFocus;
+end;
+
+procedure TfmLiquidacionOS.RegistrarDeposito;
+// Objetivo...: Registrar Deposito
+Begin
+  if (profesional.Buscar(idprofdep.Text)) and (entbcos.Buscar(codbanco.Text)) and (utiles.ctrlFecha(fechadep.Text, '')) then Begin
+    distribucionos.RegistrarDeposito(perdist.Caption + ndist.Caption, idprofdep.Text, codbanco.Text, fechadep.Text, observac.Text, ndist.Caption);
+    CargarDepositos;
+    idprofdep.Text := ''; npr.Caption := ''; codbanco.Text := ''; nbco.Caption := ''; fechadep.Text := ''; idprofdep.SetFocus;
+  end else
+    utiles.msgError('Verifique, hay Datos Incorrectos ...!');
+end;
+
+procedure TfmLiquidacionOS.CargarDepositos;
+// Objetivo...: Cargar Depositos
+var
+  l: TStringList;
+  i, j: Integer;
+Begin
+  StatusBar1.Panels[0].Text := 'Cargando Depósitos ...!'; StatusBar1.Refresh;
+  grid.IniciarGrilla(P);
+  j := 1;
+  l := distribucionos.setDepositos(perdist.Caption + ndist.Caption, ndist.Caption);
+  for i := 1 to l.Count do Begin
+    P.Cells[0, i] := Copy(l.Strings[i-1], 1, 6);
+    profesional.getDatos(P.Cells[0, i]);
+    P.Cells[1, i] := profesional.nombre;
+    P.Cells[2, i] := Copy(l.Strings[i-1], 7, 3);
+    entbcos.getDatos(P.Cells[2, i]);
+    P.Cells[3, i] := entbcos.descrip;
+    P.Cells[4, i] := Copy(l.Strings[i-1], 10, 8);
+    P.Cells[5, i] := Copy(l.Strings[i-1], 28, 150);
+    P.Cells[6, i] := Copy(l.Strings[i-1], 18, 7);
+    if P.Cells[0, i] = idprofdep.Text then j := i;
+  end;
+  P.Row := j;
+  l.Destroy;
+  StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+end;
+
+procedure TfmLiquidacionOS.CargarLiqGanancias;
+var
+  g1, g2, g3, g4: String;
+Begin
+  if FileExists(dbs.DirSistema + '\distgan.dat') then Begin
+    AssignFile(archivo, dbs.DirSistema + '\distgan.dat');
+    Reset(archivo);
+    ReadLn(archivo, g1);
+    ReadLn(archivo, g2);
+    ReadLn(archivo, g3);
+    ReadLn(archivo, g4);
+    ga1.Checked := False; ga2.Checked := False; osiva.Checked := False; liqIndi.Checked := False;
+    if g1 = '1' then ga1.Checked := True else ga1.Checked := False;
+    if g2 = '1' then ga2.Checked := True else ga2.Checked := False;
+    if g3 = '1' then osiva.Checked := True else osiva.Checked := False;
+    if g4 = '1' then liqIndi.Checked := True else liqIndi.Checked := False;
+    CloseFile(archivo);
+    liqganancias.Text := 'N';
+    if not (ga1.Checked) and not (ga2.Checked) then liqganancias.Text := 'S';
+    if ga1.Checked then
+      if ga1.Caption = nrodistinf.Text then liqganancias.Text := 'S' else liqganancias.Text := 'N';
+    if ga2.Checked then
+      if ga2.Caption = nrodistinf.Text then liqganancias.Text := 'S' else liqganancias.Text := 'N';
+
+    if ga1.Checked then liqganancias.Text := 'S';
+    if ga2.Checked then liqganancias.Text := 'S';
+  end;
+end;
+
+procedure TfmLiquidacionOS.RecalcularTotalOS;
+// Objetivo...: Recalcular Total Obra Social
+var
+  t: TStringList;
+  montorec: String;
+Begin
+  t := TStringList.Create;
+  StatusBar1.Panels[0].Text := 'Recalculando ' + nos.Caption + ' ...!'; StatusBar1.Refresh;
+  t.Add(codos.Text);
+  montorec := utiles.FormatearNumero(FloatToStr(facturacion.setRecalcularProfesionalesLiquidacion(perLiq.Text, t, False)));
+  facturacion.IngresarMontoFacturadoObraSocial(perLiq.Text, codos.Text, nos.Caption, StrToFloat(montorec));
+  StatusBar1.Panels[0].Text := '';
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TfmLiquidacionOS.FormShow(Sender: TObject);
+var
+  opt, v1, v2: String;
+begin
+  usuario.usuario := 'Administrador';
+
+  distribucionos.interbase := 'N';
+
+  distribucionos.conectar;
+  facturacion.ConectarTotalesProf;
+  if not configform.Setear(fmLiquidacionOS) then Begin
+    Height := 319; Width := 449; Top := 25;
+    Left:=(Screen.Width - Width) div 2;
+  end;
+  Application.CreateForm(TfmEleProfesional, fmEleProfesional);
+  Application.CreateForm(TfmEleObraSociales, fmEleObraSociales);
+  Application.CreateForm(TDispositivo, Dispositivo);
+  fmEleProfesional.filtrarProfFacturacion := True;
+  fmEleProfesional.CargarDatos;
+  salida := 'P';
+
+  AssignFile(archivo, dbs.DirSistema + '\iniliq.dat');
+  if FileExists(dbs.DirSistema + '\iniliq.dat') then Begin
+    Reset(archivo);
+    ReadLn(archivo, opciones[1]);
+    ReadLn(archivo, opciones[2]);
+    ReadLn(archivo, opciones[3]);
+    ReadLn(archivo, opciones[4]);
+    CloseFile(archivo);
+    if opciones[1] = 1 then impresiontxt.Checked := True else impresiontxt.Checked := False;
+    if opciones[3] > 0 then anchocol.Text := IntToStr(opciones[3]);
+    altopag.Text   := IntToStr(opciones[2]);
+    lineassep.Text := IntToStr(opciones[4]);
+  end;
+
+  if FileExists(dbs.DirSistema + '\obsocialivaliq.ini') then Begin
+    AssignFile(archivo, dbs.DirSistema + '\obsocialivaliq.ini');
+    Reset(archivo);
+    ReadLn(archivo, opt);
+    if opt = '0' then CheckBox2.Checked := False else CheckBox2.Checked := True;
+    closeFile(archivo);
+  end;
+  if FileExists(dbs.DirSistema + '\unifganancias.ini') then Begin
+    AssignFile(archivo, dbs.DirSistema + '\unifganancias.ini');
+    Reset(archivo);
+    ReadLn(archivo, opt);
+    if opt = '0' then unifGanancias.Checked := False else unifGanancias.Checked := True;
+    closeFile(archivo);
+  end;
+  imprimir.Items     := Printer.Printers;
+  imprimir.Text      := imprimir.Items[0];
+  imprimir.ItemIndex := 0;
+  if FileExists(dbs.DirSistema + '\impresora_dist.ini') then Begin
+    AssignFile(archivo, dbs.DirSistema + '\impresora_dist.ini');
+    Reset(archivo);
+    ReadLn(archivo, impresora);
+    closeFile(archivo);
+    imprimir.ItemIndex := impresora;
+  end;
+  if FileExists(dbs.DirSistema + '\becasgan.dat') then Begin
+    AssignFile(archivo, dbs.DirSistema + '\becasgan.dat');
+    Reset(archivo);
+    ReadLn(archivo, opt);
+    if opt = '1' then becasgan.Checked := True else becasgan.Checked := False;
+    CloseFile(archivo);
+  end;
+
+  porcentaje.Text   := utiles.FormatearNumero('100');
+  periodo.Text      := utiles.setPeriodoActual;
+  fecha.Text        := utiles.setFechaActual;
+  //periodo.text := '04/2014'; nrodist.Text := '02';
+  periodo.SelLength := 8;
+  periodo.SetFocus;
+  CargarNroDistribucion;
+  grid.RecuperarAnchoColumnas(fmLiquidacionOS, S);
+  grid.RecuperarAnchoColumnas(fmLiquidacionOS, P);
+  S.Cells[0, 0] := 'Fecha'; S.Cells[1, 0] := 'Período'; S.Cells[2, 0] := 'Obra Social'; S.Cells[3, 0] := 'Por.'; S.Cells[4, 0] := 'Monto'; S.Cells[5, 0] := 'Código'; S.Cells[6, 0] := 'Cos';
+  P.Cells[0, 0] := 'Código'; P.Cells[1, 0] := 'Profesional'; P.Cells[2, 0] := 'Cód.'; P.Cells[3, 0] := 'Entidad Bancaria'; P.Cells[4, 0] := 'Fecha'; P.Cells[5, 0] := 'Observaciones';
+  P.Cells[6, 0] := 'Período';
+  StatusBar1.Panels[2].Text := 'Proc.: ' + usuario.usuario;
+  l := TStringList.Create;
+  CargarListaDist;
+  redim := False;
+  if not (dist1.Checked) and not (dist2.Checked) then dist1.Checked := True;
+  if Length(Trim(nrodist.Text)) = 0 then nrodist.setFocus;
+
+  if FileExists(dbs.DirSistema + '\saldarliq.ini') then Begin
+    AssignFile(archivo, dbs.DirSistema + '\saldarliq.ini');
+    Reset(archivo);
+    ReadLn(archivo, v1);
+    ReadLn(archivo, v2);
+    if v1 = '1' then CheckBox3.Checked := True else CheckBox3.Checked := False;
+    concepto.Text := v2;
+    ReadLn(archivo, v1);
+    ReadLn(archivo, v2);
+    if v1 = '1' then liq1.Checked := True else liq1.Checked := False;
+    if v2 = '1' then liq2.Checked := True else liq2.Checked := False;
+    ReadLn(archivo, v1);
+    if v1 = '1' then verFormula.Checked := True else verFormula.Checked := False;
+
+    closeFile(archivo);
+  end;
+
+  CargarLiqGanancias;
+
+  Refresh;
+  if Length(Trim(nrodist.Text)) > 0 then Begin
+    nrodist.Text := utiles.sLlenarIzquierda(nrodist.Text, 2, '0');
+    if ControlarNroDist(nrodist.Text) then IniciarPeriodo;
+  end;
+end;
+
+procedure TfmLiquidacionOS.hastaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.verificarPeriodo(hasta.Text) then Button1.SetFocus;
+end;
+
+procedure TfmLiquidacionOS.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  distribucionos.desconectar;
+  facturacion.DesConectarTotalesProf;
+  StatusBar1.Panels[0].Text := ' Realizando Backup Datos ...!'; StatusBar1.Refresh;
+  Enabled := False;
+  //distribucionos.RealizarBackupDatos;
+
+  // Backup datos distribución
+  {Application.CreateForm(TfmBackup, fmBackup);
+  //utiles.msgerror(dbs.DirSistema + '\distribucion\dist' + Copy(periodo.Text, 4, 4) + Copy(periodo.Text, 1, 2) + '01' + '\*.*' + '        ' + dbs.DirSistema + '\backup\' + Copy(periodo.Text, 4, 4) + Copy(periodo.Text, 1, 2) + '01' + '.BCK');
+  fmBackup.CrearBackup(dbs.DirSistema + '\distribucion\dist' + Copy(periodo.Text, 4, 4) + Copy(periodo.Text, 1, 2) + '01' + '\*.*', dbs.DirSistema + '\backup\' + Copy(periodo.Text, 4, 4) + Copy(periodo.Text, 1, 2) + '01' + '.BCK');
+  fmBackup.Release; fmBackup := nil;}
+
+  if Assigned(fmEleProfesional) then Begin
+    fmEleProfesional.Release; fmEleProfesional := nil;
+  end;
+  if Assigned(fmEleObraSociales) then Begin
+    fmEleObraSociales.Release; fmEleObraSociales := nil;
+  end;
+  if Assigned(Dispositivo) then Begin
+    Dispositivo.Release; Dispositivo := Nil;
+  end;
+  if Assigned(fmConfigImpresora) then Begin
+    fmConfigImpresora.Release; fmConfigImpresora := Nil;
+  end;
+  grid.GuardarAnchoColumnas(fmLiquidacionOS, S);
+  grid.GuardarAnchoColumnas(fmLiquidacionOS, P);
+  configform.Guardar(fmLiquidacionOS, redim);
+  Release; fmLiquidacionOS := nil;
+  StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+end;
+
+procedure TfmLiquidacionOS.periodoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.verificarPeriodo(periodo.Text) then Begin
+      CargarNroDistribucion;
+      nrodist.setFocus;
+    end else
+      DebitosCreditosPersonales.Enabled := False;
+end;
+
+procedure TfmLiquidacionOS.codosKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if Key = VK_UP then ActiveControl := periodo;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if not obsocial.Buscar(codos.Text) then BuscarObraSocialClick(Sender) else DatosObraSocial;
+end;
+
+procedure TfmLiquidacionOS.BuscarObraSocialClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmListObrasSociales, fmListObrasSociales);
+  fmListObrasSociales.introSalir := True;
+  fmListObrasSociales.expresion.CharCase := ecUpperCase;
+  fmListObrasSociales.ShowModal;
+  if fmListObrasSociales.seleccionOK then Begin
+    codos.Text := obsocial.tabla.FieldByName('codos').AsString;
+    Refresh;
+    DatosObraSocial;
+  end;
+  fmListObrasSociales.Release; fmListObrasSociales := nil;
+end;
+
+procedure TfmLiquidacionOS.SalirClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfmLiquidacionOS.porcentajeKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := codos;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) and (Length(Trim(porcentaje.Text)) > 0) then Begin
+    porcentaje.Text := utiles.FormatearNumero(porcentaje.Text);
+    if StrToFloat(porcentaje.Text) > 0 then
+     if StrToFloat(porcentaje.Text) > 150 then utiles.msgError('El Porcentaje no Puede ser superior al 150 % ...!') else Begin
+      dist.Caption    := utiles.FormatearNumero(FloatToStr(StrToFloat(montofact.Caption) * (StrToFloat(porcentaje.Text)) * 0.01));
+      importeing.Text := dist.Caption;
+      ActiveControl   := importeing;
+    end else ActiveControl := importeing;
+  end;
+end;
+
+procedure TfmLiquidacionOS.fechaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := porcentaje;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if utiles.ctrlFecha(fecha) then Begin
+      distribucionos.GuardarLiquidacion(periodo.Text, codos.Text, perLiq.Text, fecha.Text, nrodist.Text, StrToFloat(importeing.Text), StrToFloat(porcentaje.Text));
+      ObrasSocialesDistribucion;
+      DireccionarOS;
+      ajustesIndi.Enabled := True;
+      ajustesIndi.SetFocus;
+    end;
+  end;
+end;
+
+procedure TfmLiquidacionOS.importeingKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := porcentaje;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+   if Length(Trim(importeing.Text)) > 0 then
+    if StrToFloat(importeing.Text) >= 0 then Begin
+      importeing.Text := utiles.FormatearNumero(importeing.Text);
+      if Length(Trim(fecha.Text)) < 8 then fecha.Text := utiles.setFechaActual;
+      ActiveControl := fecha;
+    end;
+end;
+
+procedure TfmLiquidacionOS.ajustesIndiClick(Sender: TObject);
+begin
+  if obsocial.Buscar(codos.Text) then Begin
+    StatusBar1.Panels[0].Text := 'Procesando Datos Ajustes Individuales ...!'; StatusBar1.Refresh;
+    Application.CreateForm(TfmIngreso, fmIngreso);
+    fmIngreso.periodo.Caption := perLiq.Text;
+    fmIngreso.perliq.Caption  := periodo.Text;
+    fmIngreso.codos.Caption   := codos.Text;
+    fmIngreso.fecha.Caption   := fecha.Text;
+    fmIngreso.nos.Caption     := nos.Caption;
+    fmIngreso.nrodist.Caption := nrodist.Text;
+    fmIngreso.tipomov         := 'Ajustes Individuales';
+    fmIngreso.anchocol        := StrToInt(anchocol.Text);
+    fmIngreso.ShowModal;
+    fmIngreso.Release; fmIngreso := nil;
+    StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+    IniciarAjustes;
+  end else
+    utiles.msgError('La Obra Social No está Seleccionada o es Incorrecta ...!'); 
+  codos.SetFocus;
+end;
+
+procedure TfmLiquidacionOS.DebitosCreditosPersonalesClick(Sender: TObject);
+begin
+  StatusBar1.Panels[0].Text := 'Procesando Datos Retenciones ...!'; StatusBar1.Refresh;
+  IniciarPeriodo;
+  Application.CreateForm(TfmIngreso, fmIngreso);
+  fmIngreso.periodo.Caption := perLiq.Text;
+  fmIngreso.perliq.Caption  := periodo.Text;
+  fmIngreso.codos.Caption   := codos.Text;
+  fmIngreso.fecha.Caption   := fecha.Text;
+  fmIngreso.nos.Caption     := nos.Caption;
+  fmIngreso.nrodist.Caption := nrodist.Text;
+  fmIngreso.anchocol        := StrToInt(anchocol.Text);
+  fmIngreso.tipomov         := 'Débitos y Créditos Personales';
+  fmIngreso.ShowModal;
+  fmIngreso.Release; fmIngreso := nil;
+  StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+  codos.SetFocus;
+end;
+
+procedure TfmLiquidacionOS.desdeKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.verificarPeriodo(desde.Text) then hasta.SetFocus;
+end;
+
+procedure TfmLiquidacionOS.totFactObraSocClick(Sender: TObject);
+begin
+  if utiles.verificarPeriodo(perAjuste.Text) then Begin
+    StatusBar1.Panels[0].Text := 'Obteniendo Monto Total Facturado ...!'; StatusBar1.Refresh;
+    Application.CreateForm(TfmListObrasSociales, fmListObrasSociales);
+    fmListObrasSociales.IngresoMontosFact := True;
+    fmListObrasSociales.periodo        := perAjuste.Text;
+    fmListObrasSociales.ShowModal;
+    StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+  end else utiles.msgError('Período Incorrecto ...!');
+end;
+
+procedure TfmLiquidacionOS.totFactProfClick(Sender: TObject);
+begin
+  if (utiles.verificarPeriodo(perAjuste.Text)) and (ControlarNroDist(nrodist.Text)) then Begin
+    Application.CreateForm(TfmMontosProfesional, fmMontosProfesional);
+    fmMontosProfesional.periodo.Text   := perAjuste.Text;
+    fmMontosProfesional.perLiq.Caption := periodo.Text;
+    fmMontosProfesional.nrodist        := nrodist.Text;
+    fmMontosProfesional.ShowModal;
+    profesional.BuscarPorNombre(fmMontosProfesional.descrip.Caption);
+    fmMontosProfesional.Release; fmMontosProfesional := nil;
+  end;
+end;
+
+procedure TfmLiquidacionOS.ajustesIndiKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then IniciarAjustes;
+end;
+
+procedure TfmLiquidacionOS.emitirClick(Sender: TObject);
+var
+  salto: ShortInt;
+  ss: char; ldat, condlist: Boolean;
+  i: integer;
+begin
+  if not Assigned(fmEleProfesional) then Application.CreateForm(TfmEleProfesional, fmEleProfesional);
+  if not Assigned(Dispositivo) then Application.CreateForm(TDispositivo, Dispositivo);
+
+  l.Clear;
+
+  distribucionos.LiquidarRetencionesSeparadas := false;
+
+  if (listCoseguros.Checked) then begin
+    StatusBar1.Panels[0].Text := 'Generando Informe ...!'; StatusBar1.Refresh;
+    auditoriacb.ListCoseguros(per.Text, salida);
+    per.setFocus;
+    StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+    exit;
+  end;
+
+  if (recMontos.Checked) then begin
+    StatusBar1.Panels[0].Text := 'Recalculando Coseguros ...!'; StatusBar1.Refresh;
+
+    for i := 1 to S.RowCount do begin
+      if (length(trim(S.Cells[0, i])) = 0) then break;
+      if (S.Cells[6, i] = 'S') then begin
+        StatusBar1.Panels[0].Text := 'Recalculando Coseguro: ' + S.Cells[5, i] + '-' + S.Cells[1, i]; StatusBar1.Refresh;
+        auditoriacb.ListarCoseguros(S.Cells[1, i], S.Cells[5, i], per.Text, 'R');
+      end;
+    end;
+
+    StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+  end;
+
+  distribucionos.LineasPag := StrToInt(altopag.Text);
+  distribucionos.salto     := StrToInt(lineassep.Text);
+  if CheckBox3.Checked then distribucionos.ConceptoSaldo := concepto.Text else distribucionos.ConceptoSaldo := '';
+  distribucionos.BecasGan  := becasgan.Checked;
+  if salida = 'I' then
+    if not Assigned(fmConfigImpresora) then Application.CreateForm(TfmConfigImpresora, fmConfigImpresora);
+  if (RadioButton1.Checked) or (RadioButton2.Checked) or (RadioButton3.Checked) then Begin
+
+    CargarLiqGanancias;
+    ldat := False;
+    if (Length(Trim(pergan.Text)) < 7) then Begin
+      pergan.Text := '';
+      ldat := True;
+    end else Begin
+      if (utiles.verificarPeriodo(pergan.Text)) and ((disgan.Text = '01') or (disgan.Text = '02')) then ldat := True;
+    end;
+
+    if distribucionos.verificarPeriodo(per.Text + nrodistinf.Text) and (ldat) then Begin
+      StatusBar1.Panels[0].Text := 'Generando Informe Distribución ...!'; StatusBar1.Refresh;
+      salida := 'P';
+      if Dispositivo.Impresor.Checked then
+        if impresiontxt.Checked then salida := 'T' else salida := 'I';
+      if salida = 'I' then Begin
+        fmConfigImpresora.seleccionar_impresora := IntToStr(impresora);   // Indice Impresora
+        fmConfigImpresora.FormShow(Self);                   // Load Seteos
+      end;
+       utiles.msgError(salida);
+      distribucionos.PeriodoGanancias     := pergan.Text;   // Para recuperar los periodos de ganancias
+      distribucionos.LiquidacionGanancias := disgan.Text;
+      distribucionos.LiqIndi_Ganancias    := liqIndi.Checked;
+      distribucionos.verFormulaGanancias  := verFormula.Checked;
+
+      if RadioButton1.Checked then
+        if osiva.Checked then distribucionos.ExcluirObrasSocialesInscriptas := 1 else distribucionos.ExcluirObrasSocialesInscriptas := 0;
+
+      if RadioButton3.Checked then begin
+        distribucionos.LiquidarRetencionesSeparadas := true;
+        if osiva.Checked then distribucionos.ExcluirObrasSocialesInscriptas := 1 else distribucionos.ExcluirObrasSocialesInscriptas := 0;
+      end;
+
+      if RadioButton2.Checked then distribucionos.ExcluirObrasSocialesInscriptas := 2;
+
+      if not (liq1.Checked) and not (liq2.Checked) then distribucionos.AplicarMinimoGanancias := 1;
+      if liq1.Checked then distribucionos.AplicarMinimoGanancias := 1;
+      if liq2.Checked then distribucionos.AplicarMinimoGanancias := 2;
+
+      // Inicilizamos los montos si todos los profesionales son seleccionados  // 12/08/2014
+      distribucionos.__liqTodos := false;
+      if (fmEleProfesional.selectAll) then begin
+        distribucionos.InicializarMontos(per.Text, nrodistinf.Text, fmEleProfesional.selectAll);
+        distribucionos.__liqTodos := fmEleProfesional.selectAll;
+      end;
+
+      distribucionos.PrepararDirectorio(per.Text + nrodistinf.Text);
+      if ruptura.Checked then salto := 1 else salto := 0;
+      condlist := False;
+      if profesional.Buscar(idLab.Text) then condlist := True;
+      if fmEleProfesional.cantidadSel > 0 then condlist := True;
+
+      if not condlist then utiles.msgError('No se ha Seleccionado Ningun Laboratorio ...!') else Begin
+
+        if Length(Trim(idLab.Text)) > 0 then DatosProfesional;
+        distribucionos.LineasPag := StrToInt(altopag.Text);
+        distribucionos.salto     := StrToInt(lineassep.Text);
+        distribucionos.ConfigurarInforme(RadioButton1.Caption, StrToInt(cantcopias.Text), salto);
+        if fmEleProfesional.lista = Nil then begin
+          l.Clear;
+          l.Add(idlab.Text);
+        end else
+          if (Length(Trim(idlab.Text)) = 0) or (fmEleProfesional.lista.Count > 1) or (l = Nil) then l := fmEleProfesional.lista else l.Add(idlab.Text);
+
+        distribucionos.InfDistribucionProfesional(per.Text + nrodistinf.Text, per.Text + nrodistinf.Text, l, listadist, salida, CheckBox2.Checked, unifganancias.Checked, recMontos.Checked, liqganancias.Text, nrodistinf.Text);
+
+      end;
+
+      StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+    end else
+     utiles.msgError('No se Encontraron Operaciones Registradas en este Período o' + chr(13) + 'Los Parámetros son Incorrectos ...!');
+  end;
+
+  if salida = 'T' then ss := 'I' else ss := salida;
+  if (ss = 'I') and Assigned(fmConfigImpresora) then Begin
+    fmConfigImpresora.seleccionar_impresora := IntToStr(impresora);   // Indice Impresora
+    fmConfigImpresora.FormShow(Self);                   // Load Seteos
+  end;
+  if totFact.Checked then
+    facturacion.InformeTotalObrasSociales(per.Text, lista, salida);
+  if totProf.Checked then
+    facturacion.InformeTotalProfesionales(per.Text, lista, salida, labivains.Checked);
+  if resProf.Checked then
+    facturacion.InformeResumenProfesionales(per.Text, lista, salida, labivains.Checked);
+  if listPagos.Checked then
+    distribucionos.ListarObrasSocialesLiquidadas(lista, per.Text, nrodistinf.Text, salida);
+  if listUH.Checked then
+    facturacion.InformeResumenProfesionalesUnidadesHonorarios(per.Text, lista, salida, labivains.Checked);
+
+  if listResumen.Checked then Begin
+    utiles.msgError('Antes de Generar este Informe, Asegúrese haber Emitido los Informes Correspondientes a las Liquidaciones, Incluyendo las que Retienen I.V.A.', 'Advertencia');
+    if not recMontos.Checked then distribucionos.ListarResumenLisquidacion(per.Text + nrodistinf.Text, nrodistinf.Text, salida, recMontos.Checked) else Begin
+      RecalcularMontos;
+      StatusBar1.Panels[0].Text := 'Generando Informe ...!'; StatusBar1.Refresh;
+      distribucionos.ListarResumenLisquidacion(per.Text + nrodistinf.Text, nrodistinf.Text, 'N', recMontos.Checked);
+      distribucionos.ListarResumenLisquidacion(per.Text + nrodistinf.Text, nrodistinf.Text, salida, False);
+      StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+      recMontos.Checked         := False;
+    end;
+  end;
+
+  if listResumenRet.Checked then Begin
+    utiles.msgError('Antes de Generar este Informe, Asegúrese haber Emitido los Informes Correspondientes a las Liquidaciones, Incluyendo las que Retienen I.V.A.', 'Advertencia');
+    if recMontos.Checked then RecalcularMontos;
+    StatusBar1.Panels[0].Text := 'Generando Informe ...!'; StatusBar1.Refresh;
+    distribucionos.ListarResumenRetenciones(per.Text + nrodistinf.Text, nrodistinf.Text, lista, salida);
+    StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+  end;
+
+  if listTotGan.Checked then Begin
+    StatusBar1.Panels[0].Text := 'Generando Informe ...!'; StatusBar1.Refresh;
+    distribucionos.ListarMontosRetGanancias(per.Text + nrodistinf.Text, salida);
+    StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+  end;
+
+  recMontos.Checked := False;
+
+  if PageControl1.ActivePage = TabSheet2 then
+    if Length(Trim(np.Caption)) > 0 then btnCerrar.SetFocus else per.SetFocus;
+end;
+
+procedure TfmLiquidacionOS.TabSheet2Show(Sender: TObject);
+begin
+  if Length(Trim(per.Text)) < 7 then per.Text := periodo.Text;
+  if Length(Trim(nrodistinf.Text)) = 0 then nrodistinf.Text := nrodist.Text;
+  ActiveControl   := per;
+  salida          := 'P';
+  pergan.Text     := '';
+  RadioButton1Click(Sender);
+end;
+
+procedure TfmLiquidacionOS.BuscarProfesClick(Sender: TObject);
+begin
+  if not Assigned(fmEleProfesional) then Application.CreateForm(TfmEleProfesional, fmEleProfesional);
+
+  if (RadioButton2.Checked) then fmEleProfesional.RadioButton1.Checked := true else fmEleProfesional.todosprof.Checked := true;
+  fmEleProfesional.CargarDatos;
+
+  fmEleProfesional.Panel1.Visible := True;
+  fmEleProfesional.ShowModal;
+  if fmEleProfesional.cantidadSel = 0 then Begin
+    idlab.Text := fmEleProfesional.IdSel;
+    DatosProfesional;
+  end;
+  if fmEleProfesional.cantidadSel >= 1 then Begin
+    np.Caption := IntToStr(fmEleProfesional.cantidadSel) + ' Profesionales Seleccionados';
+    if fmEleProfesional.cantidadSel > 1 then idLab.Text := '' else idlab.Text := fmEleProfesional.IdSel;
+  end;
+  if (fmEleProfesional.cantidadSel >= 1) or (Length(Trim(idLab.Text)) > 0) then begin
+    if (RadioButton1.Checked) then ActiveControl := RadioButton1;
+    if (RadioButton2.Checked) then ActiveControl := RadioButton2;
+  end else
+    ActiveControl := idLab;
+end;
+
+procedure TfmLiquidacionOS.aplicarClick(Sender: TObject);
+begin
+  titulos.conectar;
+  titulos.Grabar('Distribución', '', '', Titulo.Text, SubTitulo.Text, '', '', '', '', '', '0', '0');
+  titulos.desconectar;
+  aplicar.Enabled := False;
+end;
+
+procedure TfmLiquidacionOS.TabSheet3Show(Sender: TObject);
+begin
+  titulos.conectar;
+  titulos.getDatos;
+  Titulo.Text     := titulos.actividad;
+  Subtitulo.Text  := titulos.direccion;
+  aplicar.Enabled := False;
+  titulos.desconectar;
+end;
+
+procedure TfmLiquidacionOS.TituloChange(Sender: TObject);
+begin
+  aplicar.Enabled := True;
+end;
+
+procedure TfmLiquidacionOS.periodoChange(Sender: TObject);
+begin
+  if Length(Trim(periodo.Text)) = 7 then Begin
+    per.Text       := periodo.Text;
+    perAjuste.Text := periodo.Text;
+  end;
+end;
+
+procedure TfmLiquidacionOS.idlabKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := per;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if (length(trim(idlab.Text)) > 0) then idlab.Text := utiles.sLlenarIzquierda(idlab.Text, 6, '0');
+    
+    if not profesional.Buscar(idlab.Text) then BuscarProfesClick(Sender) else Begin
+      DatosProfesional;
+      if Assigned(fmEleProfesional) then
+        if fmEleProfesional.lista <> Nil then fmEleProfesional.lista.Clear;
+      ActiveControl := RadioButton1;
+    end;
+  end;
+end;
+
+procedure TfmLiquidacionOS.dispSalidaClick(Sender: TObject);
+begin
+  if not Assigned(Dispositivo) then Application.CreateForm(TDispositivo, Dispositivo);
+  Dispositivo.ShowModal;
+  salida := 'P';
+  if Dispositivo.Impresor.Checked then
+    if not impresiontxt.Checked then salida := 'I' else salida := 'T';
+  ActiveControl := Emitir;
+end;
+
+procedure TfmLiquidacionOS.perLiqKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  por: Real;
+begin
+  if Key = VK_UP then ActiveControl := codos;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.verificarPeriodo(perLiq.Text) then Begin
+      RecalcularTotalOS;
+
+      montofact.Caption := utiles.FormatearNumero(FloatToStr(facturacion.setTotalFactObraSocial(perLiq.Text, codos.Text)));
+
+      por := distribucionos.verificarPeriodoLiq(perLiq.Text, codos.Text);
+
+      if por > -1 then utiles.msgError('El Período está Liaquidado, Porcentaje: ' + utiles.FormatearNumero(FloatToStr(por))  + ' ...!');
+
+      if distribucionos.Buscar(periodo.Text, codos.Text, perLiq.Text) then Begin
+        CargarDatos;
+        DireccionarOS;
+        if S.Cells[5, S.Row] = codos.Text then Begin
+          ajustesIndi.Enabled := True;
+          ajustesIndi.SetFocus;
+        end else
+          porcentaje.SetFocus;
+      end else Begin
+        if Length(Trim(porcentaje.Text)) = 0 then porcentaje.Text := utiles.FormatearNumero('0');
+        ActiveControl := porcentaje;
+      end;
+    end;
+end;
+
+procedure TfmLiquidacionOS.RadioButton1Click(Sender: TObject);
+begin
+  if RadioButton1.Checked then Begin
+    CargarConfigInformes(RadioButton1.Caption);
+  end;
+  btnEleccionOS.Enabled := False;
+  btnEleccionOS.Caption := '&Elección de la Obra Social';
+end;
+
+procedure TfmLiquidacionOS.perAjusteKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    if utiles.verificarPeriodo(perAjuste.Text) then
+      if GroupBox3.Enabled then ActiveControl := totFactProf;
+end;
+
+procedure TfmLiquidacionOS.perKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.verificarPeriodo(per.Text) then Begin
+      if (RadioButton1.Checked) or (listResumen.Checked) then Begin
+        if Length(Trim(nrodistinf.Text)) < 2 then CargarNroDistribucion;
+        ActiveControl := nrodistinf;
+      end else
+        ActiveControl := idLab;
+    end;
+end;
+
+procedure TfmLiquidacionOS.totFactClick(Sender: TObject);
+begin
+  btnEleccionOS.Caption := '&Elección de la Obra Social';
+  btnEleccionOS.Enabled := True;
+  np.Caption := '';
+end;
+
+procedure TfmLiquidacionOS.totProfClick(Sender: TObject);
+begin
+  btnEleccionOS.Caption := '&Elección de la Obra Social';
+  btnEleccionOS.Enabled := True;
+  np.Caption := '';
+end;
+
+procedure TfmLiquidacionOS.totProfIVAClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmAjustesTotalesIVA, fmAjustesTotalesIVA);
+  fmAjustesTotalesIVA.ShowModal;
+  fmAjustesTotalesIVA.Release; fmAjustesTotalesIVA := nil;
+end;
+
+procedure TfmLiquidacionOS.TabSheet1Show(Sender: TObject);
+begin
+  alta.Enabled := True; baja.Enabled := True; modificar.Enabled := True; deshacer.Enabled := True; buscar.Enabled := False;
+  periodo.SetFocus;
+end;
+
+procedure TfmLiquidacionOS.TabSheet1Hide(Sender: TObject);
+begin
+  alta.Enabled := False; baja.Enabled := False; modificar.Enabled := False; deshacer.Enabled := False; buscar.Enabled := False;
+end;
+
+procedure TfmLiquidacionOS.DistribucinObraSocial1Click(Sender: TObject);
+var
+  idp: String;
+begin
+  Application.CreateForm(TfmListProfesionalesLiq, fmListProfesionalesLiq);
+  fmListProfesionalesLiq.introSalir := True;
+  fmListProfesionalesLiq.ShowModal;
+  if fmListProfesionalesLiq.seleccionOK then Begin
+    idp := profesional.tperso.FieldByName('idprof').AsString;
+    profesional.getDatos(idp);
+    if utiles.BajaRegistro('Seguro para Eliminar Liquidación Período ' + periodo.Text + ',' + chr(13) + 'Profesional: ' + profesional.nombre + '   ?') then Begin
+      distribucionos.BorrarLiquidacionProfesional(periodo.Text, idp, nrodist.Text);
+      ActiveControl := Periodo;
+    end;
+  end;
+  fmListProfesionalesLiq.Release; fmListProfesionalesLiq := nil;
+end;
+
+procedure TfmLiquidacionOS.PerodoCompleto1Click(Sender: TObject);
+begin
+  if utiles.BajaRegistro('Seguro para Eliminar PERÍDO DE DISTRIBUCIÓN ' + periodo.Text + '   ?') then Begin
+    distribucionos.BorrarMovimientosPeriodoCompleto(periodo.Text, perliq.Text, nrodist.Text);
+    ActiveControl := Periodo;
+  end;
+end;
+
+procedure TfmLiquidacionOS.btnCerrarClick(Sender: TObject);
+begin
+  per.setFocus;
+end;
+
+procedure TfmLiquidacionOS.RadioButton1KeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then idlab.SetFocus;
+  if Key = VK_RETURN then Begin
+    if ((ga1.Checked) or (ga2.Checked)) and (liqganancias.Text = 'S') then pergan.setFocus else dispSalida.SetFocus;
+    if ga2.Checked then dispSalida.SetFocus;
+    if liqIndi.Checked then dispSalida.SetFocus;
+  end;
+end;
+
+procedure TfmLiquidacionOS.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_F5 then emitirClick(Self);
+  if Key = VK_F6 then ConsultarMontosProfesionales1Click(Self);
+  if Key = VK_F7 then
+    if Length(Trim(S.Cells[5, S.Row])) > 0 then Begin
+      StatusBar1.Panels[0].Text := 'Generando Informe ...!'; StatusBar1.Refresh;
+      lista := TStringList.Create;
+      lista.Add(S.Cells[5, S.Row]);
+      facturacion.InformeTotalProfesionales(S.Cells[1, S.Row], lista, 'P', False);
+      codos.SetFocus;
+      StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+    end else
+      utiles.msgError('El Registro Seleccionado es Incorrecto ...!');
+end;
+
+procedure TfmLiquidacionOS.ModificarPago1Click(Sender: TObject);
+begin
+  if (Length(Trim(S.Cells[0, S.Row])) > 0) and (Panel4.Enabled) then Begin
+    codos.Text  := S.Cells[5, S.Row];
+    nos.Caption := S.Cells[2, S.Row];
+    perLiq.Text := S.Cells[1, S.Row];
+    montofact.Caption := utiles.FormatearNumero(FloatToStr(facturacion.setTotalFactObraSocial(perLiq.Text, codos.Text)));
+    if distribucionos.Buscar(periodo.Text, codos.Text, perLiq.Text) then Begin
+      CargarDatos;
+      ajustesIndi.Enabled := True;
+      ajustesIndi.SetFocus;
+    end;
+    codos.SetFocus;
+  end;
+end;
+
+procedure TfmLiquidacionOS.BorrarPago1Click(Sender: TObject);
+begin
+  if Length(Trim(S.Cells[0, S.Row])) > 0 then
+    if utiles.msgSiNo('Seguro para Borrar Pago Obra Social ' + S.Cells[2, S.Row] + ', Per. Liq.: ' + S.Cells[1, S.Row] + '?') then Begin
+      distribucionos.Borrar(periodo.Text, S.Cells[5, S.Row], S.Cells[1, S.Row], '');
+      ObrasSocialesDistribucion;
+      IniciarAjustes;
+      codos.SetFocus;
+    end;
+end;
+
+procedure TfmLiquidacionOS.SKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_DELETE then BorrarPago1Click(Self);
+end;
+
+procedure TfmLiquidacionOS.Panel2Resize(Sender: TObject);
+begin
+  redim := True;
+end;
+
+procedure TfmLiquidacionOS.CheckBox2Click(Sender: TObject);
+begin
+  if (CheckBox2.Checked) and (PageControl1.ActivePage = TabSheet4) then Begin
+    AssignFile(archivo, dbs.DirSistema + '\obsocialivaliq.ini');
+    Rewrite(archivo);
+    if CheckBox2.Checked then WriteLn(archivo, '1') else WriteLn(archivo, '0');
+    closeFile(archivo);
+  end;
+end;
+
+procedure TfmLiquidacionOS.CheckBox4Click(Sender: TObject);
+begin
+  GroupBox2.Enabled := CheckBox4.Checked;
+  if (GroupBox2.Enabled) then desde.setFocus;  
+end;
+
+procedure TfmLiquidacionOS.btnAplicarClick(Sender: TObject);
+begin
+  AssignFile(archivo, dbs.DirSistema + '\iniliq.dat');
+  Rewrite(archivo);
+  if impresiontxt.Checked then WriteLn(archivo, 1) else WriteLn(archivo, 2);
+  WriteLn(archivo, StrToInt(altopag.Text));
+  if Length(Trim(anchocol.Text)) > 0 then WriteLn(archivo, StrToInt(anchocol.Text)) else WriteLn(archivo, 50);
+  WriteLn(archivo, StrToInt(lineassep.Text));
+  CloseFile(archivo);
+
+  AssignFile(archivo, dbs.DirSistema + '\retdist.dat');
+  Rewrite(archivo);
+  if dist1.Checked then WriteLn(archivo, 1) else WriteLn(archivo, 0);
+  if dist2.Checked then WriteLn(archivo, 1) else WriteLn(archivo, 0);
+  CloseFile(archivo);
+  CargarListaDist;
+
+  AssignFile(archivo, dbs.DirSistema + '\saldarliq.ini');
+  Rewrite(archivo);
+  if CheckBox3.Checked then WriteLn(archivo, '1') else WriteLn(archivo, '0');
+  WriteLn(archivo, concepto.Text);
+  if liq1.Checked then WriteLn(archivo, 1) else WriteLn(archivo, 0);
+  if liq2.Checked then WriteLn(archivo, 1) else WriteLn(archivo, 0);
+  if verFormula.Checked then WriteLn(archivo, 1) else WriteLn(archivo, 0);
+
+  closeFile(archivo);
+
+  AssignFile(archivo, dbs.DirSistema + '\distgan.dat');
+  Rewrite(archivo);
+  if ga1.Checked then WriteLn(archivo, 1) else WriteLn(archivo, 0);
+  if ga2.Checked then WriteLn(archivo, 1) else WriteLn(archivo, 0);
+  if osiva.Checked then WriteLn(archivo, 1) else WriteLn(archivo, 0);
+  if liqIndi.Checked then WriteLn(archivo, 1) else WriteLn(archivo, 0);
+  CloseFile(archivo);
+
+  AssignFile(archivo, dbs.DirSistema + '\becasgan.dat');
+  Rewrite(archivo);
+  if becasgan.Checked then WriteLn(archivo, 1) else WriteLn(archivo, 0);
+  CloseFile(archivo);
+
+  AssignFile(archivo, dbs.DirSistema + '\unifganancias.ini');
+  Rewrite(archivo);
+  if unifGanancias.Checked then WriteLn(archivo, '1') else WriteLn(archivo, '0');
+  closeFile(archivo);
+
+  PageControl1.ActivePage := TabSheet1;
+end;
+
+procedure TfmLiquidacionOS.FormResize(Sender: TObject);
+begin
+  StatusBar1.Panels[0].Width := Width - 250;
+end;
+
+procedure TfmLiquidacionOS.btnEleccionOSClick(Sender: TObject);
+begin
+  if not listResumenRet.Checked then Begin
+    Application.CreateForm(TfmEleObraSociales, fmEleObraSociales);
+    fmEleObraSociales.CargarDatos(1);
+    fmEleObraSociales.ShowModal;
+    lista := fmEleObraSociales.lista;
+    fmEleObraSociales.Release; fmEleObraSociales := Nil;
+  end else Begin
+    Application.CreateForm(TfmEleRetenciones, fmEleRetenciones);
+    fmEleRetenciones.CargarDatos;
+    fmEleRetenciones.ShowModal;
+    lista := fmEleRetenciones.lista;
+    fmEleRetenciones.Release;  fmEleRetenciones := Nil;
+  end;
+  dispSalida.SetFocus;
+end;
+
+procedure TfmLiquidacionOS.btnExportarDistribucionesClick(Sender: TObject);
+var
+  a: string;
+begin
+  if (RadioButton1.Checked) or (RadioButton2.Checked) then else begin
+    utiles.msgError('Opción No Soportada para Distribución en la Web ...!');
+    exit;
+  end;
+  if (utiles.msgSiNo('Seguro para Exportar Informes Distribución a la Web ?') = false) then exit;
+  refresh;
+  if (RadioButton1.Checked) then distribucionos.tipoinf_web := 'GE';
+  if (RadioButton2.Checked) then distribucionos.tipoinf_web := 'RI';
+  a := altopag.Text;
+  altopag.Text := '100';
+  distribucionos.exporta_web := true;
+  emitirClick(Self);
+  distribucionos.exporta_web := false;
+  altopag.Text := a;
+
+  Application.CreateForm(TfmUploadFTP, fmUploadFTP);
+  fmUploadFTP.modulo.Caption := 'Distribución';
+  fmUploadFTP.ShowModal;
+
+  per.SetFocus;
+end;
+
+procedure TfmLiquidacionOS.imprimirChange(Sender: TObject);
+begin
+  if PageControl1.ActivePage = TabSheet4 then Begin
+    AssignFile(archivo, dbs.DirSistema + '\impresora_dist.ini');
+    Rewrite(archivo);
+    WriteLn(archivo, imprimir.ItemIndex);
+    closeFile(archivo);
+    impresora := imprimir.ItemIndex;
+  end;
+end;
+
+procedure TfmLiquidacionOS.nrodistKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then periodo.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if Length(Trim(nrodist.Text)) > 0 then Begin
+      nrodist.Text := utiles.sLlenarIzquierda(nrodist.Text, 2, '0');
+      if ControlarNroDist(nrodist.Text) then IniciarPeriodo;
+    end;
+  end;
+end;
+
+procedure TfmLiquidacionOS.nrodistinfKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then per.SetFocus;
+  if (Key = VK_DOWN) or (Key = VK_RETURN) then Begin
+    nrodistinf.Text := utiles.sLlenarIzquierda(nrodistinf.Text, 2, '0');
+    if ControlarNroDist(nrodist.Text) then Begin
+      distribucionos.PrepararDirectorio(per.Text + nrodistinf.Text);
+      CargarLiqGanancias;
+      idlab.SetFocus;
+    end;
+  end;
+end;
+
+procedure TfmLiquidacionOS.listResumenRetClick(Sender: TObject);
+begin
+  btnEleccionOS.Caption := '&Elección Items';
+  btnEleccionOS.Enabled := True;
+end;
+
+procedure TfmLiquidacionOS.listResumenClick(Sender: TObject);
+begin
+  btnEleccionOS.Caption := '&Elección de la Obra Social';
+end;
+
+procedure TfmLiquidacionOS.idprofdepKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if profesional.Buscar(idprofdep.Text) then CargarDatosProfesional else BuscarProfesionalClick(Self);
+end;
+
+procedure TfmLiquidacionOS.BuscarProfesionalClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmListProfesionales, fmListProfesionales);
+  fmListProfesionales.introSalir := True;
+  fmListProfesionales.ShowModal;
+  if fmListProfesionales.seleccionOK then Begin
+    idprofdep.Text := profesional.tperso.FieldByName('idprof').AsString;
+    Refresh;
+    CargarDatosProfesional;
+  end;
+  fmListProfesionales.Release; fmListProfesionales := nil;
+end;
+
+procedure TfmLiquidacionOS.Button1Click(Sender: TObject);
+begin
+  if (utiles.verificarPeriodo(desde.Text, '')) and (utiles.verificarPeriodo(hasta.Text, '')) then begin
+    StatusBar1.Panels[0].Text := 'Recalculando Períodos ...!'; StatusBar1.Refresh;
+    distribucionos.ListarTotalesLiquidadosPeriodos(desde.Text, hasta.Text, 'P'); 
+    desde.setFocus;
+    StatusBar1.Panels[0].Text := '';
+  end;
+end;
+
+procedure TfmLiquidacionOS.Button2Click(Sender: TObject);
+begin
+  if (utiles.verificarPeriodo(desde.Text, '')) and (utiles.verificarPeriodo(hasta.Text, '')) then begin
+    StatusBar1.Panels[0].Text := 'Recalculando Períodos ...!'; StatusBar1.Refresh;
+    distribucionos.ListarTotalesLiquidadosPeriodos(desde.Text, hasta.Text, 'I');
+    desde.setFocus;
+    StatusBar1.Panels[0].Text := '';
+  end;
+end;
+
+procedure TfmLiquidacionOS.codbancoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := idprofdep;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if Length(Trim(codbanco.Text)) > 0 then codbanco.Text := utiles.sLlenarIzquierda(codbanco.Text, 3, '0');
+    if entbcos.Buscar(codbanco.Text) then CargarDatosBanco else BuscarBancoClick(Self);
+  end;
+end;
+
+procedure TfmLiquidacionOS.fechadepKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := codbanco;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.ctrlFecha(fechadep) then observac.SetFocus;
+end;
+
+procedure TfmLiquidacionOS.observacKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := fechadep;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then RegistrarDeposito;
+end;
+
+procedure TfmLiquidacionOS.BuscarBancoClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmListBancos, fmListBancos);
+  fmListBancos.introSalir := True;
+  fmListBancos.ShowModal;
+  if fmListBancos.seleccionOK then Begin
+    codbanco.Text := entbcos.tabla.FieldByName('codbanco').AsString;
+    Refresh;
+    CargarDatosBanco;
+  end;
+  fmListBancos.Release; fmListBancos := nil;
+end;
+
+procedure TfmLiquidacionOS.TabSheet5Show(Sender: TObject);
+begin
+  Refresh;
+  perdist.Caption := periodo.Text;
+  ndist.Caption   := nrodist.Text;
+  CargarDepositos;
+end;
+
+procedure TfmLiquidacionOS.PKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_DELETE then
+    if Length(Trim(P.Cells[0, P.Row])) > 0 then Begin
+      if utiles.msgSiNo('Seguro para Borrar Pago Prof.: ' + P.Cells[1, P.Row] + ' Banco: ' + P.Cells[3, P.Row] + ' ?') then Begin
+        distribucionos.BorrarDeposito(P.Cells[6, P.Row], P.Cells[0, P.Row], P.Cells[2, P.Row], ndist.Caption);
+        CargarDepositos;
+      end;
+      idprofdep.SetFocus;
+    end else
+      utiles.msgError('El Items Seleccionado es Incorrecto ...!');
+end;
+
+procedure TfmLiquidacionOS.TabSheet5Hide(Sender: TObject);
+begin
+  grid.IniciarGrilla(P);
+end;
+
+procedure TfmLiquidacionOS.TabSheet4Show(Sender: TObject);
+begin
+  ndistr.Caption := nrodist.Text;
+end;
+
+procedure TfmLiquidacionOS.listTotGanKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then dispSalida.SetFocus;
+end;
+
+procedure TfmLiquidacionOS.btnRecGananciasClick(Sender: TObject);
+begin
+  if (utiles.verificarPeriodo(periodogan.Text)) and ((distgan.Text = '01') or (distgan.Text = '03')) then Begin
+    if utiles.msgSiNo('Seguro para Recalcular Montos Totales ?') then RecalcularMontos;
+  end else
+    utiles.msgError('Faltan Parámetros o los mismos son Incorrectos ...!');
+  PageControl1.ActivePage := TabSheet1;
+end;
+
+procedure TfmLiquidacionOS.periodoganKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then PageControl1.ActivePage := TabSheet1;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if (utiles.verificarPeriodo(periodogan.Text)) then distgan.setFocus;
+end;
+
+procedure TfmLiquidacionOS.distganKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then periodogan.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    distgan.Text := utiles.sLlenarIzquierda(distgan.Text, 2, '0'); 
+    if ((distgan.Text = '01') or (distgan.Text = '02')) then btnRecGanancias.setFocus else
+      utiles.msgError('Las Opciones son 1 ó 2 ...!');
+  end;
+end;
+
+procedure TfmLiquidacionOS.listResumenRetKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then btnEleccionOS.setFocus;
+end;
+
+procedure TfmLiquidacionOS.listResumenKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then dispSalida.setFocus;
+end;
+
+procedure TfmLiquidacionOS.perganKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then idlab.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.verificarPeriodo(pergan.Text) then dispSalida.SetFocus; //disgan.SetFocus;
+end;
+
+procedure TfmLiquidacionOS.disganKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then pergan.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    disgan.Text := utiles.sLlenarIzquierda(disgan.Text, 2, '0');
+    if (disgan.Text = '01') or (disgan.Text = '02') then dispSalida.SetFocus else
+      utiles.msgError('Las Opciones son 1 o 2 ...!');
+  end;
+end;
+
+procedure TfmLiquidacionOS.ajustesIndiKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  StatusBar1.Panels[0].Text := 'ESC Ingresa Nueva Obra Social';
+end;
+
+procedure TfmLiquidacionOS.codosKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  StatusBar1.Panels[0].Text := '';
+end;
+
+procedure TfmLiquidacionOS.CheckBox1Click(Sender: TObject);
+begin
+  if CheckBox1.Checked then Begin
+    GroupBox3.Enabled := True;
+    perAjuste.SetFocus;
+  end else
+    GroupBox3.Enabled := False;
+end;
+
+procedure TfmLiquidacionOS.ConsultarMontosProfesionales1Click(
+  Sender: TObject);
+begin
+  if Length(Trim(S.Cells[5, S.Row])) > 0 then Begin
+    StatusBar1.Panels[0].Text := 'Generando Consulta ...!'; StatusBar1.Refresh;
+    Application.CreateForm(TfmConsultarObSoc, fmConsultarObSoc);
+    fmConsultarObSoc.codos.Caption   := S.Cells[5, S.Row];
+    fmConsultarObSoc.nos.Caption     := S.Cells[2, S.Row];
+    fmConsultarObSoc.perfact.Caption := periodo.Text;
+    fmConsultarObSoc.perliq.Caption  := S.Cells[1, S.Row];
+    fmConsultarObSoc.totos.Caption   := S.Cells[4, S.Row];
+    fmConsultarObSoc.ShowModal;
+
+    fmConsultarObSoc.Release; fmConsultarObSoc := Nil;
+    StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+    codos.SetFocus;
+  end else
+    utiles.msgError('El Registro Seleccionado es Incorrecto ...!');
+end;
+
+procedure TfmLiquidacionOS.btnRecalcularOSClick(Sender: TObject);
+var
+  i, j: Integer;
+  t: TStringList;
+begin
+  if utiles.msgSiNo('Seguro para Ajustar Totales Obras Sociales ?') then Begin
+    j := S.Row;
+    t := TStringList.Create;
+    for i := 1 to S.RowCount do Begin
+      if Length(Trim(S.Cells[0, i])) = 0 then Break;
+      StatusBar1.Panels[0].Text := 'Recalculando ' + S.Cells[2, i] + ' ...!'; StatusBar1.Refresh;
+      t.Clear;
+      t.Add(S.Cells[5, i]);
+      S.Cells[4, i] := utiles.FormatearNumero(FloatToStr(facturacion.setRecalcularProfesionalesLiquidacion(S.Cells[1, i], t, False)));
+      S.Row := i;
+      facturacion.IngresarMontoFacturadoObraSocial(S.Cells[1, i], S.Cells[5, i], S.Cells[1, i], StrToFloat(S.Cells[4, i]));
+      S.Refresh;
+    end;
+    S.Row := 1;
+    StatusBar1.Panels[0].Text := '';
+  end;
+  codos.SetFocus;
+end;
+
+end.
+
+

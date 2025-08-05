@@ -1,0 +1,80 @@
+unit refacturar;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, Grids, ExtCtrls, CFacturacionCCB, IBQuery, StdCtrls, CUtilidadesStringGrid;
+
+type
+  TfmRF = class(TForm)
+    Panel2: TPanel;
+    ScrollBox: TScrollBox;
+    Panel3: TPanel;
+    F: TStringGrid;
+    Panel1: TPanel;
+    btnRefacturar: TButton;
+    btnAll: TCheckBox;
+    procedure FormShow(Sender: TObject);
+    procedure btnRefacturarClick(Sender: TObject);
+    procedure btnAllClick(Sender: TObject);
+  private
+    { Private declarations }
+    procedure load;
+  public
+    { Public declarations }
+    periodo: string;
+    refactura: boolean;
+  end;
+
+var
+  fmRF: TfmRF;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfmRF.load;
+var
+  r: TIBQuery;
+  i: integer;
+begin
+  grid.IniciarGrilla(F);
+
+  if (not btnAll.Checked) then r := facturacion.getLaboratoriosARefacturar(periodo)
+    else r := facturacion.getLaboratoriosARefacturarAll(periodo);
+
+  r.open; i := 0;
+  while not r.eof do begin
+    inc(i);
+    F.Cells[0, i] := r.fieldbyname('idprof').asstring;
+    r.next;
+  end;
+
+  r.close; r.free;
+
+  if (i = 0) then btnRefacturar.Enabled := false;
+end;
+
+//==============================================================================
+
+procedure TfmRF.btnAllClick(Sender: TObject);
+begin
+  load;
+end;
+
+procedure TfmRF.btnRefacturarClick(Sender: TObject);
+begin
+  refactura := true;
+  Close;
+end;
+
+procedure TfmRF.FormShow(Sender: TObject);
+begin
+  F.Cells[0, 0] := 'Profesional';
+
+  load;
+end;
+
+
+end.

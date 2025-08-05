@@ -1,0 +1,2143 @@
+unit obrasocial;
+
+interface
+
+uses
+  SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
+  Forms, Dialogs, StdCtrls, ExtCtrls, Buttons, DB, DBTables, Mask, DBCtrls,
+  ComCtrls, ToolWin, Editv, Grids, DBGrids;
+
+type
+  TfmObsociales = class(TForm)
+    StatusBar1: TStatusBar;
+    DTS: TDataSource;
+    DTSC: TDataSource;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
+    Panel2: TPanel;
+    ScrollBox: TScrollBox;
+    Panel1: TPanel;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label5: TLabel;
+    codos: TMaskEdit;
+    descrip: TMaskEdit;
+    UG: TEditValid;
+    UB: TEditValid;
+    catLab: TMaskEdit;
+    CheckBox1: TCheckBox;
+    Panel3: TPanel;
+    Label6: TLabel;
+    des: TLabel;
+    codanalisis: TMaskEdit;
+    BuscarProf: TBitBtn;
+    Panel4: TPanel;
+    Panel5: TPanel;
+    ScrollBox1: TScrollBox;
+    Label7: TLabel;
+    nombre: TMaskEdit;
+    Label9: TLabel;
+    direccion: TMaskEdit;
+    Label10: TLabel;
+    codpost: TMaskEdit;
+    Label11: TLabel;
+    localidad: TMaskEdit;
+    Label12: TLabel;
+    codpfis: TMaskEdit;
+    Label13: TLabel;
+    nrocuit: TMaskEdit;
+    Label14: TLabel;
+    RIEUB: TEditValid;
+    Label15: TLabel;
+    RIEUG: TEditValid;
+    importe: TEditValid;
+    Label16: TLabel;
+    cobertura: TEditValid;
+    Label17: TLabel;
+    Label18: TLabel;
+    Label19: TLabel;
+    Label20: TLabel;
+    Label4: TLabel;
+    topes: TCheckBox;
+    Label21: TLabel;
+    topemin: TEditValid;
+    Label22: TLabel;
+    topemax: TEditValid;
+    Label23: TLabel;
+    capitada: TMaskEdit;
+    Label24: TLabel;
+    Panel6: TPanel;
+    ToolBar1: TToolBar;
+    DBNavigator: TDBNavigator;
+    Alta: TToolButton;
+    Baja: TToolButton;
+    Modificar: TToolButton;
+    Buscar: TToolButton;
+    Deshacer: TToolButton;
+    Salir: TToolButton;
+    Label25: TLabel;
+    retencionIVA: TEditValid;
+    Label26: TLabel;
+    TabSheet3: TTabSheet;
+    Panel7: TPanel;
+    ScrollBox2: TScrollBox;
+    Panel8: TPanel;
+    Panel9: TPanel;
+    OS: TStringGrid;
+    AR: TStringGrid;
+    Label27: TLabel;
+    periodo: TMaskEdit;
+    Label28: TLabel;
+    TabSheet4: TTabSheet;
+    Panel10: TPanel;
+    ScrollBox3: TScrollBox;
+    Panel11: TPanel;
+    Panel12: TPanel;
+    Label29: TLabel;
+    Label30: TLabel;
+    Label31: TLabel;
+    Label32: TLabel;
+    retiva: TEditValid;
+    Label33: TLabel;
+    Label34: TLabel;
+    periodoiva: TMaskEdit;
+    R: TStringGrid;
+    osiva: TLabel;
+    codosiva: TLabel;
+    Label35: TLabel;
+    retieneiva: TMaskEdit;
+    Label37: TLabel;
+    periodoaf: TMaskEdit;
+    TabSheet5: TTabSheet;
+    Panel13: TPanel;
+    Panel15: TPanel;
+    Panel16: TPanel;
+    Label36: TLabel;
+    Panel17: TPanel;
+    Panel19: TPanel;
+    Panel18: TPanel;
+    Label38: TLabel;
+    Label39: TLabel;
+    Label40: TLabel;
+    codactual: TLabel;
+    os1: TLabel;
+    osnueva: TComboBox;
+    codnueva: TComboBox;
+    MO: TStringGrid;
+    Panel14: TPanel;
+    btnOK: TButton;
+    Button2: TButton;
+    MD: TStringGrid;
+    Label41: TLabel;
+    factnbu: TMaskEdit;
+    TabSheet6: TTabSheet;
+    Panel20: TPanel;
+    Panel21: TPanel;
+    Panel22: TPanel;
+    K: TStringGrid;
+    Label42: TLabel;
+    Label43: TLabel;
+    periodonbu: TMaskEdit;
+    Label44: TLabel;
+    Label45: TLabel;
+    valornbu: TEditValid;
+    Label46: TLabel;
+    codosnbu: TLabel;
+    nosnbu: TLabel;
+    Label47: TLabel;
+    perNBU: TMaskEdit;
+    Label48: TLabel;
+    Label49: TLabel;
+    Label50: TLabel;
+    Label51: TLabel;
+    Label52: TLabel;
+    Label53: TLabel;
+    periodohasta: TMaskEdit;
+    TabSheet7: TTabSheet;
+    Panel23: TPanel;
+    ScrollBox4: TScrollBox;
+    Panel24: TPanel;
+    Label54: TLabel;
+    Label55: TLabel;
+    nosnbu1: TLabel;
+    codosnbu1: TLabel;
+    Label60: TLabel;
+    codnbu: TMaskEdit;
+    btnBuscarNBU: TBitBtn;
+    desnbu: TLabel;
+    Label56: TLabel;
+    Label57: TLabel;
+    pernbudesde: TMaskEdit;
+    Label62: TLabel;
+    Label63: TLabel;
+    pernbuhasta: TMaskEdit;
+    Label64: TLabel;
+    valorunidadnbu: TEditValid;
+    Panel25: TPanel;
+    U: TStringGrid;
+    GroupBox1: TGroupBox;
+    GroupBox2: TGroupBox;
+    CheckBox2: TCheckBox;
+    Label58: TLabel;
+    fechabaja: TMaskEdit;
+    Label59: TLabel;
+    CheckBox3: TCheckBox;
+    Label61: TLabel;
+    Label65: TLabel;
+    valornbudif: TEditValid;
+    CheckBox4: TCheckBox;
+    Panel26: TPanel;
+    Panel27: TPanel;
+    A: TStringGrid;
+    B: TStringGrid;
+    Label66: TLabel;
+    Label67: TLabel;
+    btnAjustar: TButton;
+    Label8: TLabel;
+    Label68: TLabel;
+    exportfact: TMaskEdit;
+
+    procedure codosKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure descripKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure AltaClick(Sender: TObject);
+    procedure BajaClick(Sender: TObject);
+    procedure ModificarClick(Sender: TObject);
+    procedure DeshacerClick(Sender: TObject);
+    procedure SalirClick(Sender: TObject);
+    procedure DBNavigatorClick(Sender: TObject; Button: TNavigateBtn);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure UBKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure UGKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure CheckBox1Click(Sender: TObject);
+    procedure catLabKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure codanalisisKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure BuscarProfClick(Sender: TObject);
+    procedure importeKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure ADblClick(Sender: TObject);
+    procedure AKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure TabSheet2Show(Sender: TObject);
+    procedure nombreKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure direccionKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure codpostKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure localidadKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure codpfisKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure nrocuitKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure TabSheet2Hide(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure coberturaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure RIEUBKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure RIEUGKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure topesKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure topesClick(Sender: TObject);
+    procedure topeminKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure topemaxKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure capitadaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure retencionIVAKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure TabSheet3Show(Sender: TObject);
+    procedure OSDblClick(Sender: TObject);
+    procedure OSKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure periodoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure ARKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure CheckBox1KeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure periodoivaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure retivaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure TabSheet4Show(Sender: TObject);
+    procedure TabSheet4Hide(Sender: TObject);
+    procedure RDblClick(Sender: TObject);
+    procedure RKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure retieneivaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure periodoafKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure TabSheet1Show(Sender: TObject);
+    procedure TabSheet5Show(Sender: TObject);
+    procedure osnuevaChange(Sender: TObject);
+    procedure MOKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure osnuevaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure Button2Click(Sender: TObject);
+    procedure btnOKClick(Sender: TObject);
+    procedure TabSheet5Hide(Sender: TObject);
+    procedure factnbuKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure periodonbuKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure valornbuKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure TabSheet6Show(Sender: TObject);
+    procedure KDblClick(Sender: TObject);
+    procedure KKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure perNBUKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure periodohastaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure TabSheet7Show(Sender: TObject);
+    procedure btnBuscarNBUClick(Sender: TObject);
+    procedure codnbuKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure pernbudesdeKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure pernbuhastaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure valorunidadnbuKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure UDblClick(Sender: TObject);
+    procedure UKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure TabSheet1Hide(Sender: TObject);
+    procedure CheckBox2Click(Sender: TObject);
+    procedure fechabajaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure CheckBox3Click(Sender: TObject);
+    procedure valornbudifKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure CheckBox4Click(Sender: TObject);
+    procedure AMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure BMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure BKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure BDblClick(Sender: TObject);
+    procedure btnAjustarClick(Sender: TObject);
+    procedure Panel2Resize(Sender: TObject);
+    procedure FormResize(Sender: TObject);
+    procedure exportfactKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure FormActivate(Sender: TObject);
+  private
+    { Private declarations }
+    modifica, modificaret, mm, h, montosmod, redim: boolean; ultimaseleccionNom: string; it, h1, h2, itemsret, iit1: integer;
+    procedure CargarDatos;
+    procedure CargarDeterminacionesMontoFijo;
+    procedure CargarDeterminacionesMontoFijoFiltradas;
+    function  BuscarAnalisis(xcodanalisis: string): boolean;
+    function  BuscarAnalisisNBU(xcodanalisis: string): boolean;
+    procedure CargarDatosAnalisis;
+    procedure CargarGrilla;
+    procedure ActualizarAnalisisMontoFijo;
+    procedure CargarDatosFacturacion;
+    function  GrabarDatos: Boolean;
+    procedure CargarCondicionesFiscales;
+    function  ObtenerLinea(xcodanalisis, xperiodo: String): Integer;
+    function  ObtenerLineaNBU(xcodanalisis, xperiodo: String): Integer;
+    procedure CargarDetMontoFijo;
+    procedure RecuperarAranceles;
+    procedure CargarNBU;
+    procedure CargarDatosAnalisisNBU;
+    procedure CargarGrillaUnidadesNBU;
+    procedure ActualizarUnidadesNBU;
+    procedure CargarUnidadesNBU;
+    procedure FiltrarCodigosRecientes;
+  public
+    { Public declarations }
+    NoCerrarFinal: boolean;
+  end;
+
+var
+  fmObsociales: TfmObsociales;
+
+implementation
+
+uses CObrasSocialesCCB, CNomeclaCCB, CUtiles, ImgForms, NominaNomeclador, CUsuario,
+     CUtilidadesStringGrid, CNBU, Nomina_NBU, ajusteMontosFijosLote, CConfigForms;
+
+{$R *.DFM}
+
+function  TfmObsociales.BuscarAnalisis(xcodanalisis: string): boolean;
+var
+  i: integer;
+begin
+  Result := False;
+  For i := 1 to A.RowCount do
+    if A.cells[0, i] = xcodanalisis then Begin
+      Result := True;
+      Break;
+    end;
+end;
+
+function  TfmObsociales.BuscarAnalisisNBU(xcodanalisis: string): boolean;
+var
+  i: integer;
+begin
+  Result := False;
+  For i := 1 to U.RowCount do
+    if U.cells[0, i] = xcodanalisis then Begin
+      Result := True;
+      Break;
+    end;
+end;
+
+procedure TfmObsociales.CargarDatos;
+begin
+  obsocial.getDatos(codos.Text);
+  obsocial.ObtenerUltimosAranceles(codos.Text);
+  descrip.Text      := obsocial.nombre;
+  ub.Text           := utiles.FormatearNumero(FloatToStr(obsocial.UB));
+  ug.Text           := utiles.FormatearNumero(FloatToStr(obsocial.UG));
+  catlab.Text       := obsocial.categoria;
+  rieub.Text        := utiles.FormatearNumero(FloatToStr(obsocial.RIEUB));
+  rieug.Text        := utiles.FormatearNumero(FloatToStr(obsocial.RIEUG));
+  cobertura.Text    := FloatToStr(obsocial.porcentaje);
+  if obsocial.tope = 'S' then topes.Checked := True else topes.Checked := False;
+  topemin.Text      := utiles.FormatearNumero(FloatToStr(obsocial.topemin));
+  topemax.Text      := utiles.FormatearNumero(FloatToStr(obsocial.topemax));
+  capitada.Text     := obsocial.capitada;
+  retencioniva.Text := utiles.FormatearNumero(FloatToStr(obsocial.retencioniva));
+  periodo.Text      := obsocial.Periodo;
+  retieneiva.Text   := obsocial.Retieneiva;
+  factnbu.Text      := obsocial.Factnbu;
+  pernbu.Text       := obsocial.Pernbu;
+  fechabaja.Text    := obsocial.Baja;
+  exportfact.Text   := obsocial.Factexport;
+  CargarDeterminacionesMontoFijo;
+end;
+
+procedure TfmObsociales.FiltrarCodigosRecientes;
+// Objetivo...: Cargamos los análisis con montos fijos
+var
+  m, l: integer;
+  codigoanter: string;
+
+  procedure Agregar(item: integer);
+  var
+    i, it: integer;
+    cod, peranter: string;
+  begin
+    // Prorrateamos el periodo mas nuevo
+    cod := A.Cells[1, item];
+    peranter := ''; it := 0;
+    for i := 1 to A.RowCount do begin
+      if (length(trim(A.Cells[0, i])) = 0) then break;
+      if (A.Cells[1, i] = cod) then begin
+        if (copy(A.Cells[4, i], 4, 4) + copy(A.Cells[4, i], 1, 2) > peranter) then begin
+          it := i;
+          peranter := copy(A.Cells[4, i], 4, 4) + copy(A.Cells[4, i], 1, 2);
+        end;
+      end;
+    end;    
+
+    // Visualizamos el periodo mas nuevo
+    if (length(trim(A.Cells[5, it])) = 0) then begin
+      inc(m);
+      B.cells[0, m] := utiles.sLlenarIzquierda(inttostr(m), 3, '0');
+      B.cells[1, m] := A.cells[1, it];
+      B.cells[2, m] := A.cells[2, it];
+      B.cells[3, m] := A.cells[3, it];
+      B.cells[4, m] := A.Cells[4, it];
+      B.cells[5, m] := A.Cells[5, it];
+      B.cells[6, m] := A.Cells[0, it];
+    end;
+  end;
+
+begin
+  // Filtramos los items mas recientes en la grilla
+  grid.IniciarGrilla(B);
+  m := 0;
+  grid.Sortgrid(A,1,1);
+  codigoanter := A.cells[1, 1];
+  for l := 1 to A.RowCount do begin
+    if (length(trim(A.Cells[0, l])) = 0) then break;
+    if (A.Cells[1, l] <> codigoanter) then begin
+      Agregar(l-1);
+      codigoanter := A.Cells[1, l];
+    end;
+  end;
+  Agregar(l-1);
+
+  grid.Sortgrid(A,0,1);
+
+  grid.Sortgrid(B,6,1);
+  grid.RegenerarItems(B, 3);
+
+  B.Row := m;
+
+  B.FixedRows := 1;
+
+  //----------------------------------------------------------------------------
+end;
+
+procedure TfmObsociales.CargarDeterminacionesMontoFijo;
+// Objetivo...: Cargamos los análisis con montos fijos
+var
+  r: TQuery;
+  i, j, m, l: integer;
+  codigoanter: string;
+begin
+  For i := 1 to A.RowCount do
+    For j := 1 to A.ColCount do A.cells[j-1, i] := '';
+
+  if factnbu.Text <> 'S' then Begin
+    r := obsocial.setAnalisisMontoFijo(codos.Text);
+    r.Open; r.First; i := 0;
+    while not r.EOF do Begin
+      Inc(i);
+      nomeclatura.getDatos(r.FieldByName('codanalisis').AsString);
+      A.cells[0, i] := utiles.sLlenarIzquierda(IntToStr(i), 3, '0'); //r.FieldByName('items').AsString;
+      A.cells[1, i] := r.FieldByName('codanalisis').AsString;
+      A.cells[2, i] := nomeclatura.descrip;
+      A.cells[3, i] := utiles.FormatearNumero(r.FieldByName('importe').AsString);
+      A.Cells[4, i] := r.FieldByName('periodo').AsString;
+      A.Cells[5, i] := r.FieldByName('perhasta').AsString;
+      r.Next;
+    end;
+    r.Close; r.Free;
+    it := i;
+    if i = 0 then A.Row := 1 else A.row := it;
+  end;
+
+  if factnbu.Text = 'S' then Begin
+    r := obsocial.setAnalisisMontoFijoNBU(codos.Text);
+    r.Open; r.First; i := 0;
+    while not r.EOF do Begin
+      Inc(i);
+      nbu.getDatos(r.FieldByName('codanalisis').AsString);
+      A.cells[0, i] := utiles.sLlenarIzquierda(IntToStr(i), 3, '0'); //r.FieldByName('items').AsString;
+      A.cells[1, i] := r.FieldByName('codanalisis').AsString;
+      A.cells[2, i] := nbu.Descrip;
+      A.cells[3, i] := utiles.FormatearNumero(r.FieldByName('importe').AsString);
+      A.Cells[4, i] := r.FieldByName('periodo').AsString;
+      A.Cells[5, i] := r.FieldByName('perhasta').AsString;
+      r.Next;
+    end;
+    r.Close; r.Free;
+    it := i;
+    if i = 0 then A.Row := 1 else A.row := it;
+  end;
+
+  FiltrarCodigosRecientes;
+
+  CargarDatosFacturacion;
+
+  if i = 0 then Begin
+    CheckBox1.Checked := False;
+    Panel3.Visible := False; Panel4.Visible := False;
+  end else Begin
+    CheckBox1.Checked := True;
+    Panel3.Visible := True; Panel4.Visible := True;
+    if not h then Height := h1 + 90;
+    h := True;
+  end;
+end;
+
+procedure TfmObsociales.CargarDeterminacionesMontoFijoFiltradas;
+// Objetivo...: Cargamos los análisis con montos fijos
+var
+  r: TQuery;
+  i, j: integer;
+begin
+  For i := 1 to B.RowCount do
+    For j := 1 to B.ColCount do B.cells[j-1, i] := '';
+
+  if factnbu.Text <> 'S' then Begin
+    r := obsocial.setAnalisisMontoFijo(codos.Text, codanalisis.Text);
+    r.Open; r.First; i := 0;
+    while not r.EOF do Begin
+      Inc(i);
+      nomeclatura.getDatos(r.FieldByName('codanalisis').AsString);
+      B.cells[0, i] := utiles.sLlenarIzquierda(IntToStr(i), 3, '0'); //r.FieldByName('items').AsString;
+      B.cells[1, i] := r.FieldByName('codanalisis').AsString;
+      B.cells[2, i] := nomeclatura.descrip;
+      B.cells[3, i] := utiles.FormatearNumero(r.FieldByName('importe').AsString);
+      B.Cells[4, i] := r.FieldByName('periodo').AsString;
+      B.Cells[5, i] := r.FieldByName('perhasta').AsString;
+      r.Next;
+    end;
+    r.Close; r.Free;
+    it := i;
+    if i = 0 then B.Row := 1 else B.row := it;
+  end;
+
+  if factnbu.Text = 'S' then Begin
+    r := obsocial.setAnalisisMontoFijoNBU(codos.Text, codanalisis.Text);
+    r.Open; r.First; i := 0;
+    while not r.EOF do Begin
+      Inc(i);
+      nbu.getDatos(r.FieldByName('codanalisis').AsString);
+      B.cells[0, i] := utiles.sLlenarIzquierda(IntToStr(i), 3, '0'); //r.FieldByName('items').AsString;
+      B.cells[1, i] := r.FieldByName('codanalisis').AsString;
+      B.cells[2, i] := nbu.Descrip;
+      B.cells[3, i] := utiles.FormatearNumero(r.FieldByName('importe').AsString);
+      B.Cells[4, i] := r.FieldByName('periodo').AsString;
+      B.Cells[5, i] := r.FieldByName('perhasta').AsString;
+      r.Next;
+    end;
+    r.Close; r.Free;
+    it := i;
+    if i = 0 then B.Row := 1 else B.row := it;
+  end;
+end;
+
+procedure TfmObsociales.CargarDatosFacturacion;
+begin
+  obsocial.getDatos(codos.Text);
+  nombre.Text    := obsocial.nombrec;
+  direccion.Text := obsocial.direccion;
+  codpost.Text   := obsocial.codpost;
+  localidad.Text := obsocial.localidad;
+  codpfis.Text   := obsocial.codpfis;
+  nrocuit.Text   := obsocial.nrocuit;
+end;
+
+procedure TfmObsociales.CargarDatosAnalisis;
+begin
+  if factnbu.Text <> 'S' then Begin
+    nomeclatura.getDatos(codanalisis.Text);
+    des.Caption := nomeclatura.descrip;
+  end;
+  if factnbu.Text = 'S' then Begin
+    nbu.getDatos(codanalisis.Text);
+    des.Caption := nbu.descrip;
+  end;
+  CheckBox1.Enabled := true;
+end;
+
+procedure TfmObsociales.CargarGrilla;
+var
+  i, l, j: integer;
+begin
+  modifica := BuscarAnalisis(codanalisis.Text);
+
+  For j := 1 to A.RowCount do Begin
+    it := j;
+    if Length(Trim(A.Cells[0, j])) = 0 then Break;
+  end;
+
+  if not modifica then i := it else i := A.row;
+
+  l := obtenerlinea(codanalisis.Text, periodoaf.Text);  // Buscamos la Ranura para Mantener el orden con los códigos
+  if l > 0 then Begin
+    if not modifica then Begin
+      //if l > 1 then l := l + 1;
+      if l > 1 then l := l + 1 else
+        if Length(Trim(A.Cells[0, l+1])) > 0 then l := l + 1;
+
+      A.Row := l;
+      grid.InsertarLinea(A, 3);
+      i := l;
+    end;
+
+    if modifica then Begin
+      A.Row := l;
+      i     := l;
+    end;
+  end;
+
+  A.cells[0, i] := utiles.sLlenarIzquierda(IntToStr(i), 3, '0');
+  A.cells[1, i] := codanalisis.Text;
+  A.cells[2, i] := des.Caption;
+  A.cells[3, i] := importe.Text;
+  if Length(Trim(periodoaf.Text)) = 7 then A.cells[4, i] := periodoaf.Text else A.Cells[4, i] := '';
+  if Length(Trim(periodohasta.Text)) = 7 then A.cells[5, i] := periodohasta.Text else A.Cells[5, i] := '';
+  modifica := False;
+  A.row    := i;
+
+  FiltrarCodigosRecientes;
+end;
+
+procedure TfmObsociales.ActualizarAnalisisMontoFijo;
+// Objetivo...: Actualizar análisis con monto fijo
+var
+  i, j: integer;
+begin
+  For i := 1 to A.RowCount do Begin
+    if Length(Trim(A.cells[0, i])) = 0 then Break;
+    j := i;
+  end;
+
+  For i := 1 to A.RowCount do Begin
+    if Length(Trim(A.cells[0, i])) = 0 then Break;
+    if factnbu.Text = 'S' then obsocial.GrabarAnalisisMontoFijoNBU(codos.Text, A.cells[0, i], A.cells[1, i], A.cells[4, i], A.cells[5, i], StrToFloat(A.cells[3, i]), j) else
+      obsocial.GrabarAnalisisMontoFijo(codos.Text, A.cells[0, i], A.cells[1, i], A.cells[4, i], A.cells[5, i], StrToFloat(A.cells[3, i]), j);
+  end;
+end;
+
+function TfmObsociales.GrabarDatos: Boolean;
+// Objetivo...: Grabar datos obra social
+var
+  p: Real;
+  t: Char;
+  l: Boolean;
+begin
+  if utiles.Sionoct(catlab.Text, 'SN', 'Las opciones son S/N ...!') then Begin
+    l := False;
+    if factnbu.Text = 'N' then Begin
+      perNBU.Text := '';
+      l := True;
+    end else
+      if utiles.verificarPeriodo(perNBU.Text, '') then l := True;
+    if (Length(Trim(codos.Text)) > 0) and (Length(Trim(descrip.Text)) > 0) and (Length(Trim(catlab.Text)) > 0) and (utiles.Sionoct(retieneiva.Text, 'SN', '')) and (utiles.Sionoct(factnbu.Text, 'SN', '')) and (l) then Begin
+      if Length(Trim(cobertura.Text)) = 0 then p := 0 else p := StrToFloat(cobertura.Text);
+      if topes.Checked then t := 'S' else t := 'N';
+      obsocial.GrabarOS(codos.Text, descrip.Text, catlab.Text, t, capitada.Text, StrToFloat(ub.Text), StrToFloat(ug.Text), StrToFloat(rieub.Text), StrToFloat(rieug.Text), p, StrToFloat(topemin.Text), StrToFloat(topemax.Text), StrToFloat(retencioniva.Text), retieneiva.Text, factnbu.Text, perNBU.Text, exportfact.Text);
+      obsocial.GuardarArancel(codos.Text, periodo.Text, t, StrToFloat(ub.Text), StrToFloat(ug.Text), StrToFloat(rieub.Text), StrToFloat(rieug.Text));
+      obsocial.FijarPosicionFiscal(codos.Text, periodo.Text, StrToFloat(retencioniva.Text));
+      Result := True;
+    end else Begin
+      utiles.msgError('No se Suministraron Suficientes Datos ...!');
+      Result := False;
+    end;
+    CargarDeterminacionesMontoFijo;
+  end;
+end;
+
+procedure TfmObsociales.CargarCondicionesFiscales;
+var
+  l: TStringList;
+  i: Integer;
+Begin
+  grid.IniciarGrilla(R);
+  l := obsocial.setPosicionFiscal(codosiva.Caption);
+  for i := 1 to l.Count do Begin
+    R.Cells[0, i] := codosiva.Caption;
+    R.Cells[1, i] := osiva.Caption;
+    R.Cells[2, i] := Copy(l.Strings [i-1], 1, 7);
+    R.Cells[3, i] := utiles.FormatearNumero(Trim(Copy(l.Strings [i-1], 8, 10)));
+    itemsret := i;
+    R.Row    := i;
+  end;
+  l.Destroy;
+end;
+
+function  TfmObsociales.ObtenerLinea(xcodanalisis, xperiodo: String): Integer;
+// Objetivo...: Determinar Ranura
+var
+  i, j, k: Integer;
+Begin
+  j := 0; k := 0;
+  For i := 1 to A.RowCount do Begin
+    if Length(Trim(A.Cells[0, i])) = 0 then Break;
+    if Trim(A.Cells[1, i]) = Trim(xcodanalisis) then Begin
+      if Length(Trim(xperiodo)) = 7 then k := i;
+
+      if Copy(A.Cells[4, i], 4, 4) + Copy(A.Cells[4, i], 1, 2) = Copy(xperiodo, 4, 4) + Copy(xperiodo, 1, 2) then Begin
+        j := i;
+        modifica := True;
+        Break;
+      end;
+
+      if Copy(A.Cells[4, i], 4, 4) + Copy(A.Cells[4, i], 1, 2)  > Copy(xperiodo, 4, 4) + Copy(xperiodo, 1, 2) then Begin
+        if i > 0 then j := i-1;
+        Break;
+      end;
+    end;
+  end;
+
+  if j > 0 then  Result := j else Result := k;
+end;
+
+function  TfmObsociales.ObtenerLineaNBU(xcodanalisis, xperiodo: String): Integer;
+// Objetivo...: Determinar Ranura
+var
+  i, j, k: Integer;
+Begin
+  modifica  := False;
+  j := 0; k := 0;
+  For i := 1 to U.RowCount do Begin
+    if Length(Trim(U.Cells[0, i])) = 0 then Break;
+    if Trim(U.Cells[1, i]) = Trim(xcodanalisis) then Begin
+      if Length(Trim(xperiodo)) = 7 then k := i;
+
+      if Copy(U.Cells[4, i], 4, 4) + Copy(U.Cells[4, i], 1, 2) = Copy(xperiodo, 4, 4) + Copy(xperiodo, 1, 2) then Begin
+        j := i;
+        modifica := True;
+        Break;
+      end;
+
+      if Copy(U.Cells[4, i], 4, 4) + Copy(U.Cells[4, i], 1, 2)  > Copy(xperiodo, 4, 4) + Copy(xperiodo, 1, 2) then Begin
+        if i > 0 then j := i-1;
+        Break;
+      end;
+    end;
+  end;
+
+  if j > 0 then  Result := j else Result := k;
+end;
+
+procedure TfmObsociales.CargarDetMontoFijo;
+// Objetivo...: Cargar Determinaciones con Monto Fijo
+var
+  r: TQuery;
+  i, j: Integer;
+Begin
+  For i := 1 to MO.RowCount do
+    For j := 1 to MO.ColCount do MO.cells[j-1, i] := '';
+
+
+  if factnbu.Text <> 'S' then Begin
+    r := obsocial.setAnalisisMontoFijo(codactual.Caption);
+    r.Open; r.First; i := 0;
+    while not r.EOF do Begin
+      Inc(i);
+      nomeclatura.getDatos(r.FieldByName('codanalisis').AsString);
+      MO.cells[0, i] := r.FieldByName('items').AsString;
+      MO.cells[1, i] := r.FieldByName('codanalisis').AsString;
+      MO.cells[2, i] := nomeclatura.descrip;
+      MO.cells[3, i] := utiles.FormatearNumero(r.FieldByName('importe').AsString);
+      MO.Cells[4, i] := r.FieldByName('periodo').AsString;
+      MO.Cells[5, i] := r.FieldByName('perhasta').AsString;
+      r.Next;
+    end;
+    r.Close; r.Free;
+  end;
+
+  if factnbu.Text = 'S' then Begin
+    r := obsocial.setAnalisisMontoFijoNBU(codos.Text);
+    r.Open; r.First; i := 0;
+    while not r.EOF do Begin
+      Inc(i);
+      nbu.getDatos(r.FieldByName('codanalisis').AsString);
+      MO.cells[0, i] := r.FieldByName('items').AsString;
+      MO.cells[1, i] := r.FieldByName('codanalisis').AsString;
+      MO.cells[2, i] := nbu.Descrip;
+      MO.cells[3, i] := utiles.FormatearNumero(r.FieldByName('importe').AsString);
+      MO.Cells[4, i] := r.FieldByName('periodo').AsString;
+      MO.Cells[5, i] := r.FieldByName('perbaja').AsString;
+      r.Next;
+    end;
+    r.Close; r.Free;
+  end;
+
+end;
+
+procedure TfmObsociales.RecuperarAranceles;
+// Objetivo...: Obtener los ultimos aranceles para volcarlos a la Ficha
+var
+  l: TStringList;
+  i: Integer;
+  j: array[1..5] of byte;
+begin
+  grid.IniciarGrilla(AR);
+  i := 0;
+  if obsocial.Buscar(codos.Text) then Begin
+    l := obsocial.setAranceles(codos.Text);
+    For i := 1 to l.Count do Begin
+      j[1] := Pos(';1', l.Strings[i-1]);
+      j[2] := Pos(';2', l.Strings[i-1]);
+      j[3] := Pos(';3', l.Strings[i-1]);
+      j[4] := Pos(';4', l.Strings[i-1]);
+      j[5] := Pos(';5', l.Strings[i-1]);
+      AR.Cells[0, i] := Copy(l.Strings[i-1], 1, 7);
+      AR.Cells[1, i] := utiles.FormatearNumero(Copy(l.Strings[i-1], j[1]+2, (j[2]-j[1]) - 2));
+      AR.Cells[2, i] := utiles.FormatearNumero(Copy(l.Strings[i-1], j[2]+2, (j[3]-j[2]) - 2));
+      AR.Cells[3, i] := utiles.FormatearNumero(Copy(l.Strings[i-1], j[3]+2, (j[4]-j[3]) - 2));
+      AR.Cells[4, i] := utiles.FormatearNumero(Copy(l.Strings[i-1], j[4]+2, (j[5]-j[4]) - 2));
+      AR.Cells[5, i] := Copy(l.Strings[i-1], j[5]+2, 1);
+      AR.Row := i;
+    end;
+    if AR.Row > 0 then Begin
+      // Transferimos los ultimos datos a la Ficha
+      if AR.Cells[5, i] = 'S' then topes.Checked := True else topes.Checked := False;
+      periodo.Text := AR.Cells[0, AR.Row];
+      UB.Text      := AR.Cells[1, AR.Row];
+      UG.Text      := AR.Cells[2, AR.Row];
+      RIEUB.Text   := AR.Cells[3, AR.Row];
+      RIEUG.Text   := AR.Cells[4, AR.Row];
+    end;
+  end else
+    if i > 0 then  utiles.msgError('La Obra Social No es Válida ...!');
+end;
+
+procedure TfmObsociales.CargarNBU;
+// Objetivo...: Listar Aranceles NBU
+var
+  l: TStringList;
+  i, p: Integer;
+Begin
+  grid.IniciarGrilla(K);
+  l := obsocial.setArancelesNBU(codosnbu.Caption);
+  For i := 1 to l.Count do Begin
+    p := Pos(';1', l.Strings[i-1]);
+    K.Cells[0, i] := Copy(l.Strings[i-1], 1, 7);
+    K.Cells[1, i] := utiles.FormatearNumero(Copy(l.Strings[i-1], 14, p-14));
+    K.Cells[2, i] := utiles.FormatearNumero(Copy(l.Strings[i-1], p+2, 15));
+    K.Row         := i;
+  end;
+end;
+
+procedure TfmObsociales.CargarDatosAnalisisNBU;
+// Objetivo...: Cargar Determinaciones NBU
+Begin
+  nbu.getDatos(codnbu.Text);
+  desnbu.Caption := nbu.Descrip;
+end;
+
+procedure TfmObsociales.CargarGrillaUnidadesNBU;
+var
+  i, l, j: integer;
+begin
+  if not modifica then
+    modifica := BuscarAnalisisNBU(codnbu.Text);
+
+  For j := 1 to U.RowCount do Begin
+    it := j;
+    if Length(Trim(U.Cells[0, j])) = 0 then Break;
+  end;
+
+  if not modifica then i := it else i := U.row;
+
+  l := obtenerlineaNBU(codnbu.Text, pernbudesde.Text);  // Buscamos la Ranura para Mantener el orden con los códigos
+  if l > 0 then Begin
+    if not modifica then Begin
+      if l > 1 then l := l + 1 else
+        if Length(Trim(U.Cells[0, l+1])) > 0 then l := l + 1;
+
+      U.Row := l;
+      grid.InsertarLinea(U, 3);
+      i := l;
+    end;
+
+    if modifica then Begin
+      U.Row := l;
+      i     := l;
+    end;
+  end;
+
+  U.cells[0, i] := utiles.sLlenarIzquierda(IntToStr(i), 3, '0');
+  U.cells[1, i] := codnbu.Text;
+  U.cells[2, i] := desnbu.Caption;
+  U.cells[3, i] := valorunidadnbu.Text;
+  if Length(Trim(pernbudesde.Text)) = 7 then U.cells[4, i] := pernbudesde.Text else U.Cells[4, i] := '';
+  if Length(Trim(pernbuhasta.Text)) = 7 then U.cells[5, i] := pernbuhasta.Text else U.Cells[5, i] := '';
+  modifica := False;
+  U.row    := i;
+end;
+
+procedure TfmObsociales.ActualizarUnidadesNBU;
+// Objetivo...: Actualizar Unidades NBU
+var
+  i, j: integer;
+begin
+  For i := 1 to U.RowCount do Begin
+    if Length(Trim(U.cells[0, i])) = 0 then Break;
+    j := i;
+  end;
+
+  For i := 1 to U.RowCount do Begin
+    if Length(Trim(U.cells[0, i])) = 0 then Break;
+    obsocial.RegistrarUnidadNBU(codosnbu1.Caption, U.cells[0, i], U.cells[1, i], U.cells[4, i], U.cells[5, i], StrToFloat(U.cells[3, i]), j);
+  end;
+end;
+
+procedure TfmObsociales.CargarUnidadesNBU;
+// Objetivo...: Cargar Unidades NBU
+var
+  r: TQuery;
+  i: Integer;
+Begin
+  grid.IniciarGrilla(U);
+  r := obsocial.setUnidadNBU(codosnbu1.Caption);
+  U.Row := 1;
+  r.Open; i := 0; it := 0;
+  while not r.Eof do Begin
+    Inc(i);
+    nbu.getDatos(r.FieldByName('codigo').AsString);
+    U.Cells[0, i] := r.FieldByName('items').AsString;
+    U.Cells[1, i] := r.FieldByName('codigo').AsString;
+    U.Cells[2, i] := nbu.Descrip;
+    U.Cells[3, i] := utiles.FormatearNumero(r.FieldByName('unidad').AsString);
+    U.Cells[4, i] := r.FieldByName('perdesde').AsString;
+    U.Cells[5, i] := r.FieldByName('perhasta').AsString;
+    U.Row         := i;
+    it            := i;
+    r.Next;
+  end;
+  r.Close; r.Free;
+  codnbu.SetFocus;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TfmObsociales.codosKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if Key = VK_INSERT then AltaClick(Sender);
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then                               {Edita y Da de Alta Registro ...}
+    begin
+      utiles.LlenarIzquierda(codos, 6, '0');
+      if obsocial.Buscar(codos.Text) then
+        begin
+          CargarDatos;
+          StatusBar1.Panels[0].Text := '';
+          ActiveControl := descrip;
+        end
+      else
+        if utiles.DarDeAlta('Código de Obra Social ' + codos.Text) then
+          begin
+            CargarDatos;
+            StatusBar1.Panels[0].Text := '';
+            ActiveControl := descrip;
+          end;
+    end;
+end;
+
+procedure TfmObsociales.descripKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if Key = VK_UP then ActiveControl := codos;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+   if Length(Trim(descrip.Text)) > 0 then ActiveControl := ub;
+end;
+
+procedure TfmObsociales.AltaClick(Sender: TObject);
+begin
+  codos.Text := obsocial.Nuevo;
+  ActiveControl := codos;
+end;
+
+procedure TfmObsociales.AMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  ACol,ARow: integer;
+begin
+  A.MouseToCell(X, Y, ACol, ARow);
+  // solo debes seleccionar la columna correspondiente.
+  if (ACol>=0) and (ARow=0) then grid.Sortgrid(A,Acol,1);
+end;
+
+procedure TfmObsociales.BajaClick(Sender: TObject);
+begin
+  if PageControl1.ActivePage = TabSheet1 then Begin
+    if obsocial.Buscar(codos.Text) then
+      if utiles.BajaRegistro('Seguro que desea Eliminar Código de Obra Social ' + codos.Text + ' ?') then
+        begin
+          obsocial.Borrar(codos.Text);
+          codos.Text := obsocial.codos;
+          CargarDatos;
+        end;
+    ActiveControl := codos;
+  end;
+  if PageControl1.ActivePage = TabSheet3 then Begin
+    if utiles.msgSiNo('Seguro para Eliminar Arancel ' + OS.Cells[1, OS.Row] + ', del Período ' + AR.Cells[0, AR.Row] + ' ?') then Begin
+      obsocial.BorrarArancel(OS.Cells[0, OS.Row], AR.Cells[0, AR.Row]);
+      OSDblClick(Self);
+    end;
+    OS.SetFocus;
+  end;
+end;
+
+procedure TfmObsociales.BDblClick(Sender: TObject);
+begin
+  if Length(Trim(B.cells[0, B.row])) > 0 then Begin
+    modifica := True;
+    codanalisis.Text  := B.cells[1, B.row];
+    des.Caption       := B.cells[2, B.row];
+    importe.Text      := B.cells[3, B.row];
+    periodoaf.Text    := B.cells[4, B.row];
+    periodohasta.Text := B.cells[5, B.row];
+    CheckBox4.Checked := false;
+    ActiveControl     := codanalisis;
+  end else
+    utiles.msgError('El Items Seleccionado es Incorrecto ...!');
+end;
+
+procedure TfmObsociales.BKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  i: integer;
+begin
+  if Key = VK_DELETE then
+    if utiles.BajaRegistro('Seguro que desea Eliminar Análisis ' + B.cells[1, B.Row] + ' ?') then Begin
+      if factnbu.Text <> 'S' then obsocial.BorrarAnalisisMontoFijo(codos.Text, B.cells[6, B.row]) else
+        obsocial.BorrarAnalisisMontoFijoNBU(codos.Text, B.cells[6, B.row]);
+
+      for i := 1 to A.RowCount do begin
+        if (length(trim(A.Cells[0, i])) = 0) then break;
+        if (A.Cells[0, i] = B.Cells[6, B.Row]) then begin
+          A.Row := i;
+          break;
+        end;
+      end;
+
+      grid.BorrarRenglon_SinRenumerar(A);
+
+      FiltrarCodigosRecientes;
+
+      montosmod := true;
+
+      Dec(it);
+      if it = 0 then CheckBox1.Checked := False;
+      if (B.Row > 1) then B.Row := B.Row - 1;
+    end;
+end;
+
+procedure TfmObsociales.BMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  ACol,ARow: integer;
+begin
+  B.MouseToCell(X, Y, ACol, ARow);
+  // solo debes seleccionar la columna correspondiente.
+  if (ACol>=0) and (ARow=0) then grid.Sortgrid(B,Acol,1);
+end;
+
+procedure TfmObsociales.ModificarClick(Sender: TObject);
+begin
+  ActiveControl := codos;
+end;
+
+procedure TfmObsociales.DeshacerClick(Sender: TObject);
+begin
+  ActiveControl := codos;
+end;
+
+procedure TfmObsociales.SalirClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfmObsociales.DBNavigatorClick(Sender: TObject;
+  Button: TNavigateBtn);
+begin
+  codos.Text := obsocial.tabla.FieldByName('codos').AsString;
+  CargarDatos;
+end;
+
+procedure TfmObsociales.FormActivate(Sender: TObject);
+begin
+  redim := false;
+end;
+
+procedure TfmObsociales.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  grid.Sortgrid(A,0,1);
+  if (montosmod) then
+    if (utiles.msgSiNo('Seguro para Guardar Cambios en Montos Fijos ?')) then ActualizarAnalisisMontoFijo;
+  PageControl1.ActivePage := TabSheet1;
+  obsocial.BuscarPorNombre(descrip.Text);
+
+  if CheckBox1.Checked then configform.Guardar(fmObsociales, redim);
+
+  if not NoCerrarFinal then Begin
+    Release; fmObsociales := nil;
+  end;
+end;
+
+procedure TfmObsociales.UBKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := descrip;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if Length(Trim(ub.Text)) = 0 then ub.Text := utiles.FormatearNumero('0');
+    ub.Text := utiles.FormatearNumero(ub.Text);
+    ActiveControl := ug;
+  end;
+end;
+
+procedure TfmObsociales.UGKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := ub;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+   if Length(Trim(ug.Text)) = 0 then ug.Text := '0';
+   ug.Text := utiles.FormatearNumero(ug.Text);
+   ActiveControl := RIEUB;
+  end;
+end;
+
+procedure TfmObsociales.CheckBox1Click(Sender: TObject);
+begin
+  Height := h1 - 90;
+  if CheckBox1.Checked then Begin
+    Panel3.Enabled := True;
+    Panel3.Height  := 49;
+    if (h2 = 0) then Height := h1 + 35;
+    Panel3.Visible := True; Panel4.Visible := True;
+    if factnbu.Text = 'S' then codanalisis.EditMask := '999999;1; ' else codanalisis.EditMask := '9999;1; ';
+    GroupBox1.Visible := True;
+  end else Begin
+    Panel3.Height  := 0;
+    Panel3.Enabled := False;
+    Panel3.Visible := False; Panel4.Visible := False;
+    GroupBox1.Visible := False;
+  end;
+  if Panel3.Enabled then ActiveControl := codanalisis;
+end;
+
+procedure TfmObsociales.catLabKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  p: real; t: Char;
+begin
+  if Key = VK_UP then ActiveControl := pernbu;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if GrabarDatos then Begin
+      if not CheckBox1.Checked then Close else CheckBox1.setFocus;
+    end;
+  end;
+end;
+
+procedure TfmObsociales.codanalisisKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if factnbu.Text <> 'S' then Begin
+      if not nomeclatura.Buscar(codanalisis.Text) then BuscarProfClick(Sender) else Begin
+        CargarDatosAnalisis;
+        if (periodoaf.Enabled) then ActiveControl := periodoaf;
+      end;
+    end;
+    if factnbu.Text = 'S' then Begin
+      if not nbu.Buscar(codanalisis.Text) then BuscarProfClick(Sender) else Begin
+        CargarDatosAnalisis;
+        if (periodoaf.Enabled) then ActiveControl := periodoaf; 
+      end;
+    end;
+  end;
+end;
+
+procedure TfmObsociales.BuscarProfClick(Sender: TObject);
+begin
+  if factnbu.Text <> 'S' then Begin
+    Application.CreateForm(TfmListNomeclador, fmListNomeclador);
+    fmListNomeclador.introSalir := True;
+    fmListNomeclador.xcodnom    := A.Cells[1, A.Row];
+    fmListNomeclador.NoCerrarFinal := True;
+    if Length(Trim(ultimaSeleccionNom)) > 0 then fmListNomeclador.criterio.Text := ultimaSeleccionNom;
+    fmListNomeclador.ShowModal;
+    if fmListNomeclador.seleccionOK then codanalisis.Text := nomeclatura.tabla.FieldByName('codigo').AsString;
+    ultimaSeleccionNom := fmListNomeclador.criterio.Text;
+    fmListNomeclador.Release; fmListNomeclador := nil;
+    CargarDatosAnalisis;
+    if (periodoaf.Enabled) then begin
+      if Length(Trim(codanalisis.Text)) > 0 then ActiveControl := periodoaf else ActiveControl := codanalisis;
+    end;
+  end;
+  if factnbu.Text = 'S' then Begin
+    Application.CreateForm(TfmListNBU, fmListNBU);
+    fmListNBU.introSalir := True;
+    fmListNBU.ShowModal;
+    if fmListNBU.seleccionOK then codanalisis.Text := nbu.tabla.FieldByName('codigo').AsString;
+    ultimaSeleccionNom := fmListNBU.criterio.Text;
+    fmListNBU.Release; fmListNBU := nil;
+    CargarDatosAnalisis;
+    if (periodoaf.Enabled) then begin
+      if Length(Trim(codanalisis.Text)) > 0 then ActiveControl := periodoaf else ActiveControl := codanalisis;
+    end;
+  end;
+end;
+
+procedure TfmObsociales.importeKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := codanalisis;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(importe.Text)) > 0 then Begin
+      importe.Text := utiles.FormatearNumero(importe.Text);
+      grid.Sortgrid(A,0,1);
+      CargarGrilla;
+      codanalisis.Text := ''; periodoaf.Text := ''; periodohasta.Text := ''; importe.Text := utiles.FormatearNumero('0');
+      montosmod := true;
+      ActiveControl := codanalisis;
+    end;
+end;
+
+procedure TfmObsociales.ADblClick(Sender: TObject);
+begin
+  if Length(Trim(A.cells[0, A.row])) > 0 then Begin
+    modifica := True;
+    codanalisis.Text  := A.cells[1, A.row];
+    des.Caption       := A.cells[2, A.row];
+    importe.Text      := A.cells[3, A.row];
+    periodoaf.Text    := A.cells[4, A.row];
+    periodohasta.Text := A.cells[5, A.row];
+    CheckBox4.Checked := false;
+    ActiveControl     := codanalisis;
+  end else
+    utiles.msgError('El Items Seleccionado es Incorrecto ...!');
+end;
+
+procedure TfmObsociales.AKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_INSERT then Begin
+    grid.InsertarLineasSinRenumerar(A);
+    modifica := True;
+    Inc(it);
+  end;
+  if Key = VK_DELETE then
+    if utiles.BajaRegistro('Seguro que desea Eliminar Análisis ' + A.cells[1, A.Row] + ' ?') then Begin
+      if factnbu.Text <> 'S' then obsocial.BorrarAnalisisMontoFijo(codos.Text, A.cells[0, A.row]) else
+        obsocial.BorrarAnalisisMontoFijoNBU(codos.Text, A.cells[0, A.row]);
+      grid.Sortgrid(A,0,1);
+      grid.BorrarRenglon_SinRenumerar(A);
+      Dec(it);
+      if it = 0 then CheckBox1.Checked := False;
+      if (A.Row > 1) then A.Row := A.Row - 1;
+    end;
+  if Key = VK_RETURN then Begin
+    ADblClick(Sender);
+    ActiveControl := codanalisis;
+  end;
+end;
+
+procedure TfmObsociales.TabSheet2Show(Sender: TObject);
+begin
+  CargarDatosFacturacion;
+end;
+
+procedure TfmObsociales.nombreKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(nombre.Text)) > 0 then ActiveControl := direccion;
+end;
+
+procedure TfmObsociales.direccionKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := nombre;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(direccion.Text)) > 0 then ActiveControl := codpost;
+end;
+
+procedure TfmObsociales.exportfactKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := perNBU;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.Sionoct(exportfact.Text, 'SN', 'Las Opciones son S o N  ...!') then ActiveControl := catLab;
+end;
+
+procedure TfmObsociales.codpostKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := direccion;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(codpost.Text)) > 0 then ActiveControl := localidad;
+end;
+
+procedure TfmObsociales.localidadKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := codpost;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(localidad.Text)) > 0 then ActiveControl := codpfis;
+end;
+
+procedure TfmObsociales.codpfisKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := localidad;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(codpfis.Text)) > 0 then ActiveControl := nrocuit;
+end;
+
+procedure TfmObsociales.nrocuitKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := codpfis;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(nrocuit.Text)) > 0 then Begin
+      obsocial.Grabar(codos.Text, nombre.Text, direccion.Text, codpost.Text, localidad.Text, codpfis.Text, nrocuit.Text);
+      PageControl1.ActivePage := TabSheet1;
+    end;
+end;
+
+procedure TfmObsociales.TabSheet2Hide(Sender: TObject);
+begin
+  obsocial.Grabar(codos.Text, nombre.Text, direccion.Text, codpost.Text, localidad.Text, codpfis.Text, nrocuit.Text);
+end;
+
+procedure TfmObsociales.FormShow(Sender: TObject);
+begin
+  Left:=(Screen.Width - Width) div 2; Top:=(Screen.Height - Height) div 2;
+  if usuario.usuario <> 'Administrador' then TabSheet2.Visible := False;
+  Refresh;
+  h1 := Height;
+  A.cells[0, 0] := 'It.'; A.cells[1, 0] := 'Cód.'; A.cells[2, 0] := 'Descripción'; A.cells[3, 0] := 'Importe'; A.cells[4, 0] := 'Per. Alta'; A.cells[5, 0] := 'Per. Baja';
+  B.cells[0, 0] := 'It.'; B.cells[1, 0] := 'Cód.'; B.cells[2, 0] := 'Descripción'; B.cells[3, 0] := 'Importe'; B.cells[4, 0] := 'Per. Alta'; B.cells[5, 0] := 'Per. Baja';
+  MO.cells[0, 0] := 'It.'; MO.cells[1, 0] := 'Cód.'; MO.cells[2, 0] := 'Descripción'; MO.cells[3, 0] := 'Importe'; MO.cells[4, 0] := 'Per. Alta'; MO.cells[5, 0] := 'Per. Baja';
+  MD.cells[0, 0] := 'It.'; MD.cells[1, 0] := 'Cód.'; MD.cells[2, 0] := 'Descripción'; MD.cells[3, 0] := 'Importe'; MD.cells[4, 0] := 'Per. Alta'; MD.cells[5, 0] := 'Per. Baja';
+  OS.cells[0, 0] := 'Cód.'; OS.cells[1, 0] := 'Descripción';
+  AR.cells[0, 0] := 'Período'; AR.cells[1, 0] := 'U.B.'; AR.cells[2, 0] := 'U.G.'; AR.cells[3, 0] := 'RIE U.B.'; AR.cells[4, 0] := 'RIE U.G.'; AR.cells[5, 0] := 'Tope';
+  R.Cells[0, 0] := 'Cód.'; R.Cells[1, 0] := 'Obra Social'; R.Cells[2, 0] := 'Período'; R.Cells[3, 0] := 'Ret. I.V.A.';
+  K.Cells[0, 0] := 'Período'; K.Cells[1, 0] := 'Arancel'; K.Cells[2, 0] := 'Arancel Dif.';
+  U.cells[0, 0] := 'It.'; U.cells[1, 0] := 'Cód.'; U.cells[2, 0] := 'Descripción'; U.cells[3, 0] := 'Valor Un.'; U.cells[4, 0] := 'Per. Alta'; U.cells[5, 0] := 'Per. Baja';
+  DTS.DataSet := obsocial.tabla;
+  if Length(Trim(codos.Text)) > 0 then Begin
+    CargarDatos;
+    ActiveControl := descrip;
+  end;
+  Height := Height - 80;
+  if not CheckBox1.Checked then Height := Height - 50 else configform.Setear(fmObsociales);
+  RecuperarAranceles;
+
+  descrip.SetFocus;
+  redim := false;
+end;
+
+procedure TfmObsociales.coberturaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := RIEUG;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then ActiveControl := capitada;
+end;
+
+procedure TfmObsociales.RIEUBKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := UG;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if Length(Trim(RIEUB.Text)) = 0 then RIEUB.Text := '0';
+    RIEUB.Text := utiles.FormatearNumero(RIEUB.Text);
+    ActiveControl := RIEUG;
+  end;
+end;
+
+procedure TfmObsociales.RIEUGKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := RIEUB;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if Length(Trim(RIEUG.Text)) = 0 then RIEUG.Text := '0';
+    RIEUG.Text := utiles.FormatearNumero(RIEUG.Text);
+    ActiveControl := topes;
+  end;
+end;
+
+procedure TfmObsociales.topesKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    if topes.Checked then ActiveControl := topemin else ActiveControl := cobertura;
+end;
+
+procedure TfmObsociales.topesClick(Sender: TObject);
+begin
+  if topes.Checked then Begin
+    topemin.Enabled := True; topemax.Enabled := True; ActiveControl := topemin;
+  end else Begin
+    topemin.Enabled := False; topemax.Enabled := False; ActiveControl := topes;
+  end;
+end;
+
+procedure TfmObsociales.topeminKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := topes;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if Length(Trim(topemin.Text)) = 0 then topemin.Text := '0';
+    topemin.Text := utiles.FormatearNumero(topemin.Text);
+    ActiveControl := topemax;
+  end;
+end;
+
+procedure TfmObsociales.topemaxKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := topemin;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if Length(Trim(topemax.Text)) = 0 then topemax.Text := '0';
+    topemax.Text := utiles.FormatearNumero(topemax.Text);
+    ActiveControl := cobertura;
+  end;
+end;
+
+procedure TfmObsociales.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if (Key = VK_F5) and (PageControl1.ActivePage = TabSheet5) then
+    obsocial.ListarAnalisisMontoFijo('C', '0000000', '999999', 'E', 'P'); 
+end;
+
+procedure TfmObsociales.FormResize(Sender: TObject);
+begin
+  StatusBar1.Panels[0].Width := (Width - (Width div 3));
+  redim := true;
+end;
+
+procedure TfmObsociales.capitadaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := cobertura;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.Sionoct(capitada.Text, 'SN', 'Las Opciones son S o N  ...!') then ActiveControl := retencionIVA;
+end;
+
+procedure TfmObsociales.retencionIVAKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := capitada;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    retencioniva.Text := utiles.FormatearNumero(retencioniva.Text);
+    ActiveControl := retieneiva;
+  end;
+end;
+
+procedure TfmObsociales.TabSheet3Show(Sender: TObject);
+var
+  r: TQuery;
+  i: Integer;
+begin
+  grid.IniciarGrilla(OS);
+  r := obsocial.setobsocialsAlf;
+  r.Open; i := 0;
+  while not r.Eof do Begin
+    Inc(i);
+    OS.Cells[0, i] := r.FieldByName('codos').AsString;
+    OS.Cells[1, i] := r.FieldByName('nombre').AsString;
+    r.Next;
+  end;
+  r.Close; r.Free;
+
+  For i := 1 to OS.RowCount do Begin   // Sincronizamos la Obra Social
+    if OS.Cells[0, i] = codos.Text then Begin
+      OS.Row := i;
+      OSDblClick(Self);
+      Break;
+    end;
+  end;
+end;
+
+procedure TfmObsociales.OSDblClick(Sender: TObject);
+var
+  l: TStringList;
+  i: Integer;
+  j: array[1..5] of byte;
+begin
+  grid.IniciarGrilla(AR);
+  if Length(Trim(OS.Cells[0, OS.Row])) > 0 then Begin
+    l := obsocial.setAranceles(OS.Cells[0, OS.Row]);
+    For i := 1 to l.Count do Begin
+      j[1] := Pos(';1', l.Strings[i-1]);
+      j[2] := Pos(';2', l.Strings[i-1]);
+      j[3] := Pos(';3', l.Strings[i-1]);
+      j[4] := Pos(';4', l.Strings[i-1]);
+      j[5] := Pos(';5', l.Strings[i-1]);
+      AR.Cells[0, i] := Copy(l.Strings[i-1], 1, 7);
+      AR.Cells[1, i] := utiles.FormatearNumero(Copy(l.Strings[i-1], j[1]+2, (j[2]-j[1]) - 2));
+      AR.Cells[2, i] := utiles.FormatearNumero(Copy(l.Strings[i-1], j[2]+2, (j[3]-j[2]) - 2));
+      AR.Cells[3, i] := utiles.FormatearNumero(Copy(l.Strings[i-1], j[3]+2, (j[4]-j[3]) - 2));
+      AR.Cells[4, i] := utiles.FormatearNumero(Copy(l.Strings[i-1], j[4]+2, (j[5]-j[4]) - 2));
+      AR.Cells[5, i] := Copy(l.Strings[i-1], j[5]+2, 1);
+      AR.Row := i;
+    end;
+  end else
+    utiles.msgError('La Obra Social No es Válida ...!');
+end;
+
+procedure TfmObsociales.OSKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then OSDblClick(Self);
+end;
+
+procedure TfmObsociales.periodoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then retieneiva.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.verificarPeriodo(periodo.Text) then ActiveControl := factnbu;
+end;
+
+procedure TfmObsociales.ARKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_DELETE then BajaClick(Self);
+end;
+
+procedure TfmObsociales.CheckBox1KeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if Key = VK_RETURN then CheckBox1Click(Self);
+end;
+
+procedure TfmObsociales.periodoivaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.verificarPeriodo(periodoiva.Text) then retiva.SetFocus;
+end;
+
+procedure TfmObsociales.retivaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  linea: Integer;
+begin
+  if Key = VK_UP then periodoiva.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    retiva.Text := utiles.FormatearNumero(retiva.Text);
+    if StrToFloat(retiva.Text) >= 0 then Begin
+      if (obsocial.Buscar(codosiva.Caption)) and (utiles.verificarPeriodo(periodoiva.Text, '')) and (StrToFloat(retiva.Text) >= 0) then Begin
+        if not modificaret then Begin
+          Inc(itemsret);
+          linea := itemsret;
+        end else
+          linea := R.Row;
+
+        R.Cells[0, linea] := codosiva.Caption;
+        R.Cells[1, linea] := osiva.Caption;
+        R.Cells[2, linea] := periodoiva.Text;
+        R.Cells[3, linea] := retiva.Text;
+        R.Row := linea;
+
+        periodoiva.Text := ''; retiva.Text := '';
+        periodoiva.SetFocus;
+        modificaret := False;
+      end else
+        utiles.msgError('Registro Incompleto, Faltan Datos ...!'); 
+    end;
+  end;
+end;
+
+procedure TfmObsociales.TabSheet4Show(Sender: TObject);
+begin
+  codosiva.Caption := codos.Text;
+  osiva.Caption    := nombre.Text;
+  CargarCondicionesFiscales;
+  periodoiva.SetFocus;
+end;
+
+procedure TfmObsociales.TabSheet4Hide(Sender: TObject);
+var
+  i: Integer;
+begin
+  for i := 1 to R.RowCount do Begin
+    if Length(Trim(R.Cells[0, i])) = 0 then Break;
+    obsocial.FijarPosicionFiscal(codosiva.Caption, R.Cells[2, i], StrToFloat(R.Cells[3, i]));
+  end;
+end;
+
+procedure TfmObsociales.RDblClick(Sender: TObject);
+begin
+  if Length(Trim(R.Cells[0, R.Row])) > 0 then Begin
+    periodoiva.Text := R.Cells[2, R.Row];
+    retiva.Text     := R.Cells[3, R.Row];
+    modificaret     := True;
+    periodoiva.SetFocus;
+  end else
+    utiles.msgError('El Registro Seleccionado No Puede ser Modidicado ...!');
+end;
+
+procedure TfmObsociales.RKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_DELETE then
+    if Length(Trim(R.Cells[0, R.Row])) > 0 then
+      if utiles.msgSiNo('Seguro para Borrar Período ' + R.Cells[2, R.Row] + ' ?') then Begin
+        obsocial.BorrarPosicionFiscal(codosiva.Caption, R.Cells[2, R.Row]);
+        grid.BorrarRenglon_SinRenumerar(R);
+        Dec(itemsret);
+        if itemsret >= 1 then R.Row := itemsret;
+      end;
+end;
+
+procedure TfmObsociales.retieneivaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := retencioniva;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.Sionoct(retieneiva.Text, 'SN', 'Las Opciones son S o N  ...!') then ActiveControl := periodo;
+end;
+
+procedure TfmObsociales.periodoafKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then codanalisis.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(periodoaf.Text)) = 1 then importe.SetFocus else
+      if utiles.verificarPeriodo(periodoaf.Text) then periodohasta.SetFocus;
+end;
+
+procedure TfmObsociales.TabSheet1Show(Sender: TObject);
+begin
+  descrip.SetFocus;
+  it := iit1;
+end;
+
+procedure TfmObsociales.TabSheet5Show(Sender: TObject);
+var
+  r: TQuery;
+  f: Boolean;
+begin
+  Refresh;
+  mm                := False;
+  codactual.Caption := codos.Text;
+  os1.Caption       := descrip.Text;
+  if Length(Trim(codactual.Caption)) > 0 then Begin
+    osnueva.Items.Clear; codnueva.Items.Clear;
+    r := obsocial.setobsocialsAlf;
+    r.Open;
+    while not r.Eof do Begin
+      if r.FieldByName('codos').AsString <> codactual.Caption then Begin
+        if not f then Begin
+          osnueva.Text  := r.FieldByName('nombre').AsString;
+          codnueva.Text := r.FieldByName('codos').AsString;
+          f := True;
+        end;
+        osnueva.Items.Add(r.FieldByName('nombre').AsString);
+        codnueva.Items.Add(r.FieldByName('codos').AsString);
+      end;
+      r.Next;
+    end;
+    r.Close; r.Free;
+    CargarDetMontoFijo;
+    Panel15.Enabled := True;
+    mm              := True;
+    osnueva.SetFocus;
+  end else
+    Panel15.Enabled := False;
+
+  StatusBar1.Panels[1].Text := ' VKSpace Sel. F5 Cons.';
+end;
+
+procedure TfmObsociales.osnuevaChange(Sender: TObject);
+begin
+  codnueva.ItemIndex := osnueva.ItemIndex;
+  if mm then Panel18.Enabled := True else Panel18.Enabled := False;
+end;
+
+procedure TfmObsociales.MOKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  i, j: Integer;
+begin
+  if Key = VK_SPACE then
+    if Length(Trim(MO.Cells[0, MO.Row])) > 0 then Begin
+      For i := 1 to MD.RowCount do Begin
+        if ((MD.Cells[1, i] = MO.Cells[1, MO.Row])) and ((MD.Cells[4, i] = MO.Cells[4, MO.Row])) or (Length(Trim(MD.Cells[0, i])) = 0) then Begin
+          j := i;
+          Break;
+        end;
+      end;
+      MD.Cells[0, j] := utiles.sLlenarIzquierda(IntToStr(j), 3, '0');
+      MD.Cells[1, j] := MO.Cells[1, MO.Row];
+      MD.Cells[2, j] := MO.Cells[2, MO.Row];
+      MD.Cells[3, j] := MO.Cells[3, MO.Row];
+      MD.Cells[4, j] := MO.Cells[4, MO.Row];
+      MD.Cells[5, j] := MO.Cells[5, MO.Row];
+      MD.Row         := j;
+      MO.Row         := MO.Row + 1;
+    end;
+    if Length(Trim(MD.Cells[0, 1])) > 0 then btnOK.Enabled := True else btnOK.Enabled := False;
+end;
+
+procedure TfmObsociales.osnuevaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then Begin
+     if obsocial.Buscar(codnueva.Text) then Panel18.Enabled := True else Panel18.Enabled := False;
+     if Panel18.Enabled then Begin
+       MO.Row := 1;
+       MO.SetFocus;
+     end;
+  end;
+end;
+
+procedure TfmObsociales.Panel2Resize(Sender: TObject);
+begin
+  redim := true;
+end;
+
+procedure TfmObsociales.Button2Click(Sender: TObject);
+begin
+  grid.IniciarGrilla(MD);
+  Panel18.Enabled := False;
+  osnueva.SetFocus;
+end;
+
+procedure TfmObsociales.btnOKClick(Sender: TObject);
+// Objetivo...: Actualizar análisis con monto fijo
+var
+  i, j: integer;
+begin
+  if (obsocial.Buscar(codnueva.Text)) and (Length(Trim(MD.Cells[0, 1])) > 0) then Begin
+    obsocial.getDatos(codnueva.Text);
+    if utiles.msgSiNo('Seguro para Copiar Determinaciones de:  ' + codactual.Caption + '  ' + os1.Caption + chr(13) + 'a la Obra Social: ' + codnueva.Text + '  ' + osnueva.Text + '  ' + '  ?') then Begin
+      Refresh;
+      For i := 1 to MD.RowCount do Begin
+        if Length(Trim(MD.cells[0, i])) = 0 then Break;
+        j := i;
+      end;
+
+      For i := 1 to MD.RowCount do Begin
+        if Length(Trim(MD.cells[0, i])) = 0 then Break;
+        if obsocial.Factnbu <> 'S' then obsocial.GrabarAnalisisMontoFijo(codnueva.Text, MD.cells[0, i], MD.cells[1, i], MD.cells[4, i], MD.cells[5, i], StrToFloat(MD.cells[3, i]), j);
+        if obsocial.Factnbu =  'S' then obsocial.GrabarAnalisisMontoFijoNBU(codnueva.Text, MD.cells[0, i], MD.cells[1, i], MD.cells[4, i], MD.cells[5, i], StrToFloat(MD.cells[3, i]), j);
+      end;
+    end;
+  end;
+  Button2Click(Self);
+end;
+
+procedure TfmObsociales.TabSheet5Hide(Sender: TObject);
+begin
+  StatusBar1.Panels[1].Text := '';
+end;
+
+procedure TfmObsociales.factnbuKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then periodo.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.Sionoct(factnbu.Text, 'SN', 'Las Opciones son S ó N ...!') then Begin
+      CargarDeterminacionesMontoFijo;
+      if factnbu.Text = 'S' then pernbu.setFocus else catLab.SetFocus;
+    end;
+end;
+
+procedure TfmObsociales.periodonbuKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.verificarPeriodo(periodonbu.Text) then valornbu.SetFocus;
+end;
+
+procedure TfmObsociales.valornbudifKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then periodonbu.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    valornbudif.Text := utiles.FormatearNumero(valornbudif.Text);
+    if StrToFloat(valornbudif.Text) >= 0 then Begin
+      if (utiles.verificarPeriodo(periodonbu.Text, '')) and (StrToFloat(valornbu.Text) >= 0) and (StrToFloat(valornbudif.Text) >= 0) then Begin
+        obsocial.GuardarArancelNBU(codosNBU.Caption, periodonbu.Text, StrToFloat(valornbu.Text), StrToFloat(valornbudif.Text));
+        CargarNBU;
+        periodonbu.Text := ''; valornbu.Text := ''; valornbudif.Text := '';
+        periodonbu.SetFocus;
+      end;
+    end;
+  end;
+end;
+
+procedure TfmObsociales.valornbuKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+ if Key = VK_UP then periodonbu.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    valornbu.Text := utiles.FormatearNumero(valornbu.Text);
+    if StrToFloat(valornbu.Text) >= 0 then valornbudif.SetFocus;
+  end;
+end;
+
+procedure TfmObsociales.TabSheet6Show(Sender: TObject);
+begin
+  codosnbu.Caption := codos.Text;
+  nosnbu.Caption   := descrip.Text;
+  CargarNBU;
+  periodonbu.SetFocus;
+end;
+
+procedure TfmObsociales.KDblClick(Sender: TObject);
+begin
+  if Length(Trim(K.Cells[0, K.Row])) > 0 then Begin
+    periodonbu.Text  := K.Cells[0, K.Row];
+    valorNBU.Text    := K.Cells[1, K.Row];
+    valorNBUDif.Text := K.Cells[2, K.Row];
+    periodonbu.SetFocus;
+  end else
+    utiles.msgError('El Registro Seleccionado es Incorrecto ...!');
+end;
+
+procedure TfmObsociales.KKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then KDblClick(Sender);
+  if Length(Trim(K.Cells[0, K.Row])) > 0 then Begin
+    if utiles.msgSiNo('Seguro para Borrar Arancel Período ' + K.Cells[0, K.Row] + ' ?') then Begin
+      obsocial.BorrarArancelNBU(codosnbu.Caption, K.Cells[0, K.Row]);
+      CargarNBU;
+      periodonbu.SetFocus;
+    end;
+  end;
+end;
+
+procedure TfmObsociales.perNBUKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then factnbu.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(pernbu.Text)) = 7 then Begin
+      if utiles.verificarPeriodo(pernbu.Text) then ActiveControl := exportfact;
+    end else Begin
+      pernbu.Text := '';
+      ActiveControl := pernbu;
+    end;
+end;
+
+procedure TfmObsociales.periodohastaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then periodoaf.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(periodohasta.Text)) = 1 then importe.SetFocus else
+      if utiles.verificarPeriodo(periodohasta.Text) then importe.SetFocus;
+end;
+
+procedure TfmObsociales.TabSheet7Show(Sender: TObject);
+begin
+  codosnbu1.Caption := codos.Text;
+  nosnbu1.Caption   := descrip.Text;
+
+  if factnbu.Text = 'S' then Begin
+    Panel25.Enabled := True;
+    codnbu.SetFocus;
+  end else Begin
+    Panel25.Enabled := False;
+  end;
+
+  CargarUnidadesNBU;
+end;
+
+procedure TfmObsociales.btnAjustarClick(Sender: TObject);
+var
+  i: integer;
+begin
+  Application.CreateForm(TfmAjusteLote, fmAjusteLote);
+
+  if (CheckBox4.Checked) then begin
+    grid.Sortgrid(A,0,1);
+    for i := 1 to A.RowCount do begin
+      if (length(trim(A.Cells[0, i])) = 0) then break;
+      fmAjusteLote.B.Cells[0, i] := A.Cells[0, i];
+      fmAjusteLote.B.Cells[1, i] := A.Cells[1, i];
+      fmAjusteLote.B.Cells[3, i] := A.Cells[2, i];
+      fmAjusteLote.B.Cells[4, i] := A.Cells[3, i];
+      fmAjusteLote.B.Cells[5, i] := A.Cells[4, i];
+      fmAjusteLote.B.Cells[6, i] := A.Cells[5, i];
+      fmAjusteLote.B.Cells[7, i] := A.Cells[0, i];
+    end;
+  end else begin
+    grid.Sortgrid(B,0,1);
+    for i := 1 to B.RowCount do begin
+      if (length(trim(B.Cells[0, i])) = 0) then break;
+      fmAjusteLote.B.Cells[0, i] := B.Cells[0, i];
+      fmAjusteLote.B.Cells[1, i] := B.Cells[1, i];
+      fmAjusteLote.B.Cells[3, i] := B.Cells[2, i];
+      fmAjusteLote.B.Cells[4, i] := B.Cells[3, i];
+      fmAjusteLote.B.Cells[5, i] := B.Cells[4, i];
+      fmAjusteLote.B.Cells[6, i] := B.Cells[5, i];
+      fmAjusteLote.B.Cells[7, i] := B.Cells[6, i];
+    end;
+  end;
+
+  fmAjusteLote.ShowModal;
+
+  Refresh;
+
+  if (fmAjusteLote.operacion = 1) then begin // Actualiza
+    grid.Sortgrid(A,0,1);
+    for i := 1 to fmAjusteLote.B.RowCount do begin
+      if (length(trim(fmAjusteLote.B.Cells[0, i])) = 0) then break;
+      if (fmAjusteLote.B.Cells[2, i] = 'S') then begin
+        codanalisis.Text := fmAjusteLote.B.Cells[1, i];
+        des.Caption := fmAjusteLote.B.Cells[3, i];
+        periodoaf.Text := fmAjusteLote.B.Cells[9, i];
+        importe.Text := fmAjusteLote.B.Cells[8, i];
+        CargarGrilla;
+        codanalisis.Text := ''; periodoaf.Text := ''; periodohasta.Text := ''; importe.Text := utiles.FormatearNumero('0');
+        montosmod := true;
+      end;
+    end;
+  end;
+
+  if (fmAjusteLote.operacion = 2) then begin // Bajas
+    for i := 1 to fmAjusteLote.B.RowCount do begin
+      if (length(trim(fmAjusteLote.B.Cells[0, i])) = 0) then break;
+      if (fmAjusteLote.B.Cells[2, i] = 'S') then begin
+        if (factnbu.Text = 'N') then
+          obsocial.BajaPeriodoMontoFijo(codos.Text, fmAjusteLote.B.Cells[7, i], fmAjusteLote.B.Cells[6, i]);
+        if (factnbu.Text = 'S') then
+          obsocial.BajaPeriodoMontoFijoNBU(codos.Text, fmAjusteLote.B.Cells[7, i], fmAjusteLote.B.Cells[6, i]);
+      end;
+    end;
+
+    CargarDeterminacionesMontoFijo;
+    
+  end;
+
+  codanalisis.SetFocus;
+
+  fmAjusteLote.Release; fmAjusteLote := nil;
+end;
+
+procedure TfmObsociales.btnBuscarNBUClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmListNBU, fmListNBU);
+  fmListNBU.introSalir := True;
+  fmListNBU.ShowModal;
+  if fmListNBU.seleccionOK then Begin
+    codnbu.Text := nbu.tabla.FieldByName('codigo').AsString;
+    CargarDatosAnalisisNBU;
+    ActiveControl := pernbudesde;
+  end;
+  ultimaSeleccionNom := fmListNBU.criterio.Text;
+  fmListNBU.Release; fmListNBU := nil;
+end;
+
+procedure TfmObsociales.codnbuKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if factnbu.Text = 'S' then Begin
+      if not nbu.Buscar(codnbu.Text) then btnBuscarNBUClick(Sender) else Begin
+        CargarDatosAnalisisNBU;
+        ActiveControl := pernbudesde;
+      end;
+    end;
+  end;
+
+end;
+
+procedure TfmObsociales.pernbudesdeKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then codnbu.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(pernbudesde.Text)) = 1 then valorunidadnbu.SetFocus else
+      if utiles.verificarPeriodo(pernbudesde.Text) then pernbuhasta.SetFocus;
+end;
+
+procedure TfmObsociales.pernbuhastaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then pernbudesde.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(pernbuhasta.Text)) = 1 then valorunidadnbu.SetFocus else
+      if utiles.verificarPeriodo(pernbuhasta.Text) then valorunidadnbu.SetFocus;
+end;
+
+procedure TfmObsociales.valorunidadnbuKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := pernbuhasta;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(valorunidadnbu.Text)) > 0 then Begin
+      valorunidadnbu.Text := utiles.FormatearNumero(valorunidadnbu.Text);
+      CargarGrillaUnidadesNBU;
+      ActualizarUnidadesNBU;
+      codnbu.Text := ''; pernbudesde.Text := ''; pernbuhasta.Text := ''; valorunidadnbu.Text := utiles.FormatearNumero('0');
+      ActiveControl := codnbu;
+    end;
+end;
+
+procedure TfmObsociales.UDblClick(Sender: TObject);
+begin
+  if Length(Trim(U.cells[0, U.row])) > 0 then Begin
+    modifica            := True;
+    codnbu.Text         := U.cells[1, U.row];
+    desnbu.Caption      := U.cells[2, U.row];
+    valorunidadnbu.Text := U.cells[3, U.row];
+    pernbudesde.Text    := U.cells[4, U.row];
+    pernbuhasta.Text    := U.cells[5, U.row];
+    ActiveControl       := codnbu;
+  end else
+    utiles.msgError('El Items Seleccionado es Incorrecto ...!');
+end;
+
+procedure TfmObsociales.UKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_INSERT then Begin
+    grid.InsertarLineasSinRenumerar(U);
+    modifica := True;
+    Inc(it);
+  end;
+  if Key = VK_DELETE then
+    if utiles.BajaRegistro('Seguro que desea Eliminar Análisis ' + U.cells[1, U.Row] + ' ?') then Begin
+      obsocial.BorrarUnidadNBU(codosnbu1.Caption, U.cells[0, U.Row]);
+      grid.BorrarRenglon_SinRenumerar(U);
+      grid.RegenerarItems(U, 3);
+      Dec(it);
+      ActualizarUnidadesNBU;
+    end;
+  if Key = VK_RETURN then Begin
+    UDblClick(Sender);
+    ActiveControl := codnbu;
+  end;
+end;
+
+procedure TfmObsociales.TabSheet1Hide(Sender: TObject);
+begin
+  iit1 := it;
+end;
+
+procedure TfmObsociales.CheckBox2Click(Sender: TObject);
+begin
+  if CheckBox2.Checked then Begin
+    GroupBox2.Enabled := True;
+    fechabaja.SetFocus;
+  end else
+    GroupBox2.Enabled := False;
+end;
+
+procedure TfmObsociales.fechabajaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.ctrlFecha(fechabaja) then
+      if utiles.msgSiNo('Seguro para dar de Baja Obra Social ' + descrip.Text + ' a partir del ' + fechabaja.Text + ' ?') then Begin
+        obsocial.DarDeBaja(codos.Text, fechabaja.Text);
+        CheckBox2.Checked := False;
+      end;
+end;
+
+procedure TfmObsociales.CheckBox3Click(Sender: TObject);
+begin
+  if CheckBox3.Checked then
+    if utiles.msgSiNo('Seguro para Reactivar Obra Social ' + descrip.Text + ' ?') then Begin
+      obsocial.Reactivar(codos.Text);
+      CheckBox2.Checked := False;
+    end;
+end;
+
+procedure TfmObsociales.CheckBox4Click(Sender: TObject);
+var
+  i: integer;
+begin
+   Panel26.Visible := false;
+   Panel27.Visible := false;
+   if (CheckBox4.Checked) then Panel26.Visible := true else Panel27.Visible := true;
+
+   if (Panel26.Visible) then begin
+     for i := 1 to A.RowCount do
+       if (length(trim(A.Cells[0, i])) = 0) then break;
+     if (i > 1) then A.Row := i-1;
+   end;
+   if (Panel27.Visible) then begin
+     for i := 1 to B.RowCount do
+       if (length(trim(B.Cells[0, i])) = 0) then break;
+     if (i > 1) then B.Row := i-1;
+   end;
+
+   codanalisis.setfocus;
+end;
+
+end.

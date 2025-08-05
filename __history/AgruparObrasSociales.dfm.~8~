@@ -1,0 +1,203 @@
+object fmAgruparObrasSociales: TfmAgruparObrasSociales
+  Left = 0
+  Top = 0
+  Caption = 'Agrupacion de Obras Sociales para Facturar'
+  ClientHeight = 370
+  ClientWidth = 460
+  Color = clBtnFace
+  Font.Charset = ANSI_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poMainFormCenter
+  OnClose = FormClose
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 351
+    Width = 460
+    Height = 19
+    Panels = <
+      item
+        Width = 350
+      end
+      item
+        Width = 50
+      end>
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 460
+    Height = 351
+    Align = alClient
+    BevelInner = bvLowered
+    BorderWidth = 4
+    TabOrder = 1
+    object Panel2: TPanel
+      Left = 6
+      Top = 6
+      Width = 448
+      Height = 145
+      Align = alTop
+      BevelOuter = bvNone
+      TabOrder = 0
+      object GroupBox1: TGroupBox
+        Left = 3
+        Top = 1
+        Width = 440
+        Height = 140
+        Caption = 'Datos para Facturar'
+        TabOrder = 0
+        object Label7: TLabel
+          Left = 4
+          Top = 42
+          Width = 86
+          Height = 13
+          Alignment = taRightJustify
+          Caption = 'Nombre completo:'
+        end
+        object Label9: TLabel
+          Left = 42
+          Top = 65
+          Width = 48
+          Height = 13
+          Alignment = taRightJustify
+          Caption = 'Direcci'#243'n:'
+        end
+        object Label11: TLabel
+          Left = 41
+          Top = 88
+          Width = 49
+          Height = 13
+          Alignment = taRightJustify
+          Caption = 'Localidad:'
+        end
+        object Label12: TLabel
+          Left = 11
+          Top = 111
+          Width = 79
+          Height = 13
+          Alignment = taRightJustify
+          Caption = 'Condici'#243'n I.V.A.:'
+        end
+        object Label13: TLabel
+          Left = 178
+          Top = 112
+          Width = 78
+          Height = 13
+          Alignment = taRightJustify
+          Caption = 'Nro. de C.U.I.T.:'
+        end
+        object Label1: TLabel
+          Left = 54
+          Top = 18
+          Width = 36
+          Height = 13
+          Alignment = taRightJustify
+          Caption = 'C'#243'digo:'
+        end
+        object nombre: TMaskEdit
+          Left = 95
+          Top = 39
+          Width = 297
+          Height = 21
+          TabOrder = 0
+          OnKeyDown = nombreKeyDown
+        end
+        object direccion: TMaskEdit
+          Left = 95
+          Top = 62
+          Width = 257
+          Height = 21
+          TabOrder = 1
+          OnKeyDown = direccionKeyDown
+        end
+        object localidad: TMaskEdit
+          Left = 95
+          Top = 85
+          Width = 257
+          Height = 21
+          TabOrder = 2
+          OnKeyDown = localidadKeyDown
+        end
+        object codpfis: TMaskEdit
+          Left = 95
+          Top = 108
+          Width = 42
+          Height = 21
+          CharCase = ecUpperCase
+          TabOrder = 3
+          OnKeyDown = codpfisKeyDown
+        end
+        object nrocuit: TMaskEdit
+          Left = 261
+          Top = 109
+          Width = 91
+          Height = 21
+          EditMask = '##-########-#;1; '
+          MaxLength = 13
+          TabOrder = 4
+          Text = '  -        - '
+          OnKeyDown = nrocuitKeyDown
+        end
+        object id: TMaskEdit
+          Left = 95
+          Top = 15
+          Width = 37
+          Height = 21
+          CharCase = ecUpperCase
+          EditMask = '999;1; '
+          MaxLength = 3
+          TabOrder = 5
+          Text = '   '
+          OnKeyDown = idKeyDown
+        end
+        object DBNavigator1: TDBNavigator
+          Left = 312
+          Top = 15
+          Width = 80
+          Height = 21
+          VisibleButtons = [nbFirst, nbPrior, nbNext, nbLast]
+          Flat = True
+          TabOrder = 6
+        end
+      end
+    end
+    object Panel3: TPanel
+      Left = 6
+      Top = 151
+      Width = 448
+      Height = 194
+      Align = alClient
+      BevelInner = bvLowered
+      Enabled = False
+      TabOrder = 1
+      object S: TStringGrid
+        Left = 2
+        Top = 2
+        Width = 444
+        Height = 190
+        Align = alClient
+        BorderStyle = bsNone
+        ColCount = 3
+        DefaultRowHeight = 15
+        FixedCols = 0
+        RowCount = 100
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowSelect]
+        ScrollBars = ssVertical
+        TabOrder = 0
+        OnKeyDown = SKeyDown
+        ExplicitLeft = 0
+        ColWidths = (
+          63
+          20
+          375)
+      end
+    end
+  end
+end

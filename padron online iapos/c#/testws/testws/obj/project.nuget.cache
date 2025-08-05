@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "QuxSClO8DeriFCfJEruoxHgrLKx96zRfwvGEJU1r+LI/ysc4q5/H4a5F8U0EX9u56dYZwBuujMBp7T1DW5PRIA==",
+  "success": true,
+  "projectFilePath": "C:\\sidelphi32\\SGen\\ccomputoscb\\padron online iapos\\c#\\testws\\testws\\testws.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\silmo\\.nuget\\packages\\restsharp\\105.2.3\\restsharp.105.2.3.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,23 @@
+BODY
+	{
+	FONT-FAMILY: Verdana;
+	FONT-SIZE: 6pt;
+	}
+H2
+	{
+	FONT-SIZE: 12pt;
+	COLOR: 006699
+	}
+TH
+	{
+	FONT-SIZE: 8pt;	
+	FONT-WEIGHT: bold;
+	BACKGROUND-COLOR: ececec;
+	}
+BUTTON
+	{
+	BACKGROUND-COLOR: 006699;
+	FONT-FAMILY: Monospace;
+	FONT-SIZE: 8 pt;
+	COLOR: ffffff
+	}

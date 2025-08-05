@@ -1,0 +1,822 @@
+<obsocial>
+<registro>
+<codos>000000</codos>
+<nombre>PARTICULAR</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121001</codos>
+<nombre>VIALIDAD</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121002</codos>
+<nombre>OSTEL</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121003</codos>
+<nombre>ACEITEROS</nombre>
+<capitada>S</capitada>
+</registro>
+<registro>
+<codos>121004</codos>
+<nombre>OSPAG</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121005</codos>
+<nombre>IAPOS</nombre>
+<capitada>S</capitada>
+</registro>
+<registro>
+<codos>121010</codos>
+<nombre>OSFICA</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121011</codos>
+<nombre>LUZ Y FUERZA</nombre>
+<capitada>S</capitada>
+</registro>
+<registro>
+<codos>121013</codos>
+<nombre>OSECAC</nombre>
+<capitada>S</capitada>
+</registro>
+<registro>
+<codos>121014</codos>
+<nombre>UNION PERSONAL</nombre>
+<capitada>S</capitada>
+</registro>
+<registro>
+<codos>121015</codos>
+<nombre>OSPA VIAL</nombre>
+<capitada>S</capitada>
+</registro>
+<registro>
+<codos>121016</codos>
+<nombre>OSPLAD</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121017</codos>
+<nombre>PETROLEROS</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121019</codos>
+<nombre>SMATA</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121020</codos>
+<nombre>CAMIONEROS</nombre>
+<capitada>S</capitada>
+</registro>
+<registro>
+<codos>121021</codos>
+<nombre>AMEP</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121023</codos>
+<nombre>OSPIT</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121024</codos>
+<nombre>SEGUROS</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121025</codos>
+<nombre>PAPELEROS</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121026</codos>
+<nombre>MEDICUS</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121027</codos>
+<nombre>UOM</nombre>
+<capitada>S</capitada>
+</registro>
+<registro>
+<codos>121028</codos>
+<nombre>UTA</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121029</codos>
+<nombre>25 DE JUNIO</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121030</codos>
+<nombre>SUTIAGA</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121031</codos>
+<nombre>MULTISERVICIO SRL</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121032</codos>
+<nombre>OSPIL</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121033</codos>
+<nombre>DIBA DE LA ARMADA 100%</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121034</codos>
+<nombre>ALIMENTACION</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121035</codos>
+<nombre>CRECER SALUD</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121036</codos>
+<nombre>OSPAC</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121037</codos>
+<nombre>OSPESGA</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121038</codos>
+<nombre>OSPICA</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121039</codos>
+<nombre>ATSA 100%</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121040</codos>
+<nombre>MADEREROS</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121041</codos>
+<nombre>OSFA 80%</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121042</codos>
+<nombre>AMUR</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121043</codos>
+<nombre>AMOEIAG</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121044</codos>
+<nombre>INGENIEROS</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121045</codos>
+<nombre>OSDE CAT A</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121046</codos>
+<nombre>ACA SALUD</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121047</codos>
+<nombre>BANCARIOS</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121049</codos>
+<nombre>CONSEJO PROFESIONAL</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121051</codos>
+<nombre>CAJA FORENSE</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121052</codos>
+<nombre>ASIO 50%</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121053</codos>
+<nombre>OSETIA</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121054</codos>
+<nombre>OSPIDA</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121055</codos>
+<nombre>TELEVISION</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121056</codos>
+<nombre>SAN PEDRO</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121057</codos>
+<nombre>JERARQUICOS</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121059</codos>
+<nombre>FE SALUD TOTAL</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121060</codos>
+<nombre>PANADEROS</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121061</codos>
+<nombre>CORREOS</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121065</codos>
+<nombre>AMPARO ABALOS</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121066</codos>
+<nombre>NUMEN</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121067</codos>
+<nombre>SANCOR</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121068</codos>
+<nombre>LEY 5110</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121069</codos>
+<nombre>PAMI</nombre>
+<capitada>S</capitada>
+</registro>
+<registro>
+<codos>121070</codos>
+<nombre>FARMACIA 75%  AMBULATORIO BUENOS AIRES</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121071</codos>
+<nombre>DASUTEN</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121072</codos>
+<nombre>PASTELEROS</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121073</codos>
+<nombre>DOCTHOS</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121074</codos>
+<nombre>FARMACIA AMBAULARIO BS AS 100%</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121075</codos>
+<nombre>CONSOLIDAD SALUD</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121076</codos>
+<nombre>OSTYR</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121077</codos>
+<nombre>MOLINEROS</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121080</codos>
+<nombre>AGUA Y ENERGIA</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121081</codos>
+<nombre>OSDOP</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121082</codos>
+<nombre>IAPOS ACC. DE TRABAJO</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121083</codos>
+<nombre>QUALITAS</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121084</codos>
+<nombre>9 SALUD</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121085</codos>
+<nombre>FEMECHACO</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121086</codos>
+<nombre>OSPE</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121087</codos>
+<nombre>VISITAR S.A.</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121088</codos>
+<nombre>TECNICOS DE FUTBOL</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121089</codos>
+<nombre>SWISS MEDICAL</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121090</codos>
+<nombre>FE SALUD ASISTENCIA MEDICA</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121091</codos>
+<nombre>MANDAR</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121092</codos>
+<nombre>FE SALUD DORADO FULL</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121093</codos>
+<nombre>FE SALUD PERSONAL</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121094</codos>
+<nombre>FE SALUD INTERNACION</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121095</codos>
+<nombre>FE SALUD PLAN SOCIAL</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121096</codos>
+<nombre>FE SALUD ASE</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121097</codos>
+<nombre>MOSAISTAS</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121105</codos>
+<nombre>IAPOS AFILIADO EN TRANSITO</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121114</codos>
+<nombre>UNION PERSONAL</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121127</codos>
+<nombre>UOM FUERA CONVENIO</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121141</codos>
+<nombre>OSFA 50%</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121159</codos>
+<nombre>FE SALUD PLAN 60</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121167</codos>
+<nombre>UNION FEDERAL CONV SANCOR MEDICINA PRIVADA</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121169</codos>
+<nombre>PAMI 2do. NIVEL</nombre>
+<capitada>S</capitada>
+</registro>
+<registro>
+<codos>121191</codos>
+<nombre>FE SALUD GENTE JOVEN</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121201</codos>
+<nombre>VIALIDAD - INTERNADOS</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121202</codos>
+<nombre>OSTEL INTERNACION</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121203</codos>
+<nombre>ACEITEROS INTERNACION</nombre>
+<capitada>S</capitada>
+</registro>
+<registro>
+<codos>121205</codos>
+<nombre>IAPOS INTERNACION</nombre>
+<capitada>S</capitada>
+</registro>
+<registro>
+<codos>121210</codos>
+<nombre>OSFICA INTERNACION</nombre>
+<capitada>S</capitada>
+</registro>
+<registro>
+<codos>121211</codos>
+<nombre>LUZ Y FUERZA INTERNACION</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121213</codos>
+<nombre>OSECAC INTERNACION</nombre>
+<capitada>S</capitada>
+</registro>
+<registro>
+<codos>121214</codos>
+<nombre>UNION PERSONAL INTERNACION</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121215</codos>
+<nombre>OSPA VIAL INTERNACION</nombre>
+<capitada>S</capitada>
+</registro>
+<registro>
+<codos>121216</codos>
+<nombre>OSPLAD INTERNACION</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121217</codos>
+<nombre>PETROLEROS INTERNACION</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121219</codos>
+<nombre>SMATA INTERNACION</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121220</codos>
+<nombre>CAMIONEROS INTERNACION</nombre>
+<capitada>S</capitada>
+</registro>
+<registro>
+<codos>121221</codos>
+<nombre>AMEP INTERNACION</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121224</codos>
+<nombre>SEGUROS INTERNACION</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121225</codos>
+<nombre>PAPELEROS INTERNACION</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121227</codos>
+<nombre>UOM INTERNACION</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121228</codos>
+<nombre>UTA- INTERNACION</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121229</codos>
+<nombre>25 DE JUNIO INTERNACION</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121230</codos>
+<nombre>SUTIAGA INTERNACION</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121232</codos>
+<nombre>OSPIL INTERNACION</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121233</codos>
+<nombre>DIBA TITULAR -INTERNADO</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121234</codos>
+<nombre>ALIMENTACION INTERNACION</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121237</codos>
+<nombre>OSPESGA INTERNACION</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121238</codos>
+<nombre>OSPICA INTERNACION</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121239</codos>
+<nombre>ATSA 100% INTERNACION</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121240</codos>
+<nombre>MADEREROS INTERNACION</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121241</codos>
+<nombre>OSFA 80% INTERNACION</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121243</codos>
+<nombre>AMOEIAG INTERNACION</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121247</codos>
+<nombre>BANCARIOS INTERNACION</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121252</codos>
+<nombre>ASIO INTERNACION</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121253</codos>
+<nombre>OSETIA INTERNACION</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121255</codos>
+<nombre>TELEVISION INTERNACION</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121259</codos>
+<nombre>FEMEBA</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121265</codos>
+<nombre>AMPARO ABALOS INTERNACION</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121268</codos>
+<nombre>LEY 5110 INTERNACION</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121269</codos>
+<nombre>PAMI INTERNACION</nombre>
+<capitada>S</capitada>
+</registro>
+<registro>
+<codos>121270</codos>
+<nombre>FARMACIA 75 % INTERNACION BS.AS</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121276</codos>
+<nombre>OSTYR INTERNACION</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121277</codos>
+<nombre>MOLINEROS INTERNACION</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121281</codos>
+<nombre>OSDOP INTERNACION</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121291</codos>
+<nombre>FE SALUD PLAN INFANTIL</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121305</codos>
+<nombre>IAPOS HEMOTERAPIA</nombre>
+<capitada>S</capitada>
+</registro>
+<registro>
+<codos>121310</codos>
+<nombre>OSFICA - DIFERENCIAL</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121311</codos>
+<nombre>LUZ Y FUERZA FUERA CONVENIO</nombre>
+<capitada>S</capitada>
+</registro>
+<registro>
+<codos>121333</codos>
+<nombre>DIBA ADHERENTE AMBULATORIO</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121339</codos>
+<nombre>ATSA 75%</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121341</codos>
+<nombre>OSFA 100%</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121342</codos>
+<nombre>AMUR PLAN VERDE</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121345</codos>
+<nombre>OSDE CAT B</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121352</codos>
+<nombre>ASIO 70%</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121355</codos>
+<nombre>TELEVISON  REFACTURACION</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121359</codos>
+<nombre>FE SALUD PLAN A</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121369</codos>
+<nombre>PAMI TERAPIA INTENSIVA</nombre>
+<capitada>S</capitada>
+</registro>
+<registro>
+<codos>121370</codos>
+<nombre>FARMACIA 100 % SANTA FE</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121405</codos>
+<nombre>IAPOS DETECC PRECOZ</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121433</codos>
+<nombre>DIBA ADHERENTE INTERNADO</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121441</codos>
+<nombre>OSFA 100% INTERNACION</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121445</codos>
+<nombre>OSDE CAT C</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121459</codos>
+<nombre>FE SALUD PLAN B</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121469</codos>
+<nombre>PAMI 3er. NIVEL</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121470</codos>
+<nombre>FARMACIA 100% INTERNACION BS.AS</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121505</codos>
+<nombre>IAPOS- TERAPIA INTENSIVA</nombre>
+<capitada>S</capitada>
+</registro>
+<registro>
+<codos>121559</codos>
+<nombre>FE SALUD PLAN C</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121569</codos>
+<nombre>PAMI- VETERANO DE GUERRA</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121659</codos>
+<nombre>FE SALUD PLAN D</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121669</codos>
+<nombre>FEMEDICA</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121759</codos>
+<nombre>COMECOR SALUD</nombre>
+<capitada></capitada>
+</registro>
+<registro>
+<codos>121859</codos>
+<nombre>FE SALUD UNIVERSITARIO</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121860</codos>
+<nombre>GERDANNA</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121861</codos>
+<nombre>MEDIFE</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>121959</codos>
+<nombre>FE SALUD AMBULATORIO</nombre>
+<capitada>N</capitada>
+</registro>
+<registro>
+<codos>122005</codos>
+<nombre>OSPRERA </nombre>
+<capitada>N</capitada>
+</registro>
+</obsocial>

@@ -1,0 +1,126 @@
+unit Coseguros;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, ComCtrls, CCoseguros, Grids, StdCtrls, Editv, Buttons, Mask;
+
+type
+  TfmCoseguros = class(TForm)
+    StatusBar1: TStatusBar;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    Panel3: TPanel;
+    S: TStringGrid;
+    Label1: TLabel;
+    codos: TMaskEdit;
+    BuscarOS: TBitBtn;
+    nos: TLabel;
+    Label2: TLabel;
+    periodo: TMaskEdit;
+    Label15: TLabel;
+    porcentaje: TEditValid;
+    Panel4: TPanel;
+    btnRegistrar: TButton;
+    Button2: TButton;
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure BuscarOSClick(Sender: TObject);
+    procedure codosKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure periodoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure porcentajeKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure btnRegistrarClick(Sender: TObject);
+  private
+    { Private declarations }
+    procedure CargarDatosObraSocial;
+    procedure CargarCoseguros;
+  public
+    { Public declarations }
+  end;
+
+var
+  fmCoseguros: TfmCoseguros;
+
+implementation
+
+uses NominaObrasSociales, CObrasSocialesCCB, CUtiles;
+
+{$R *.dfm}
+
+procedure TfmCoseguros.CargarDatosObraSocial;
+// Objetivo...: Cargar Datos Obra Social
+Begin
+  obsocial.getDatos(codos.Text);
+  nos.Caption    := obsocial.Nombre;
+  periodo.SetFocus;
+end;
+
+procedure TfmCoseguros.CargarCoseguros;
+begin
+
+end;
+
+procedure TfmCoseguros.codosKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_ESCAPE) then Close;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then begin
+    if (obsocial.Buscar(codos.Text)) then CargarDatosObraSocial else BuscarOSClick(Self)
+  end;
+end;
+
+procedure TfmCoseguros.btnRegistrarClick(Sender: TObject);
+begin
+  if (obsocial.Buscar(codos.Text) and (utiles.verificarPeriodo(periodo.Text)) and (StrToFloat(porcentaje.Text) > 0)) then begin
+    coseguro.Registrar(codos.Text, periodo.Text, StrToFloat(porcentaje.Text));
+    CargarCoseguros;
+  end else
+    utiles.msgError('Verifique, Algunos Datos están Incorrectos ...!');
+end;
+
+procedure TfmCoseguros.BuscarOSClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmListObrasSociales, fmListObrasSociales);
+  fmListObrasSociales.introSalir := True;
+  fmListObrasSociales.expresion.CharCase := ecUpperCase;
+  fmListObrasSociales.ShowModal;
+  Refresh;
+  if fmListObrasSociales.seleccionOK then Begin
+    codos.Text := obsocial.tabla.FieldByName('codos').AsString;
+    CargarDatosObraSocial;
+  end;
+  fmListObrasSociales.Release; fmListObrasSociales := nil;
+end;
+
+procedure TfmCoseguros.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  coseguro.desconectar;
+end;
+
+procedure TfmCoseguros.FormShow(Sender: TObject);
+begin
+  coseguro.conectar;
+end;
+
+procedure TfmCoseguros.periodoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_UP) then codos.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if (utiles.verificarPeriodo(periodo.Text)) then porcentaje.SetFocus;
+end;
+
+procedure TfmCoseguros.porcentajeKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_UP) then porcentaje.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then begin
+    porcentaje.Text := utiles.FormatearNumero(porcentaje.Text);
+    if (StrToFloat(porcentaje.Text) > 0) then btnRegistrar.setFocus;
+  end;
+end;
+
+end.

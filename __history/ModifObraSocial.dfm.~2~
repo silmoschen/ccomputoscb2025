@@ -1,0 +1,287 @@
+object fmModificarObraSocial: TfmModificarObraSocial
+  Left = 151
+  Top = 194
+  BorderIcons = [biSystemMenu]
+  Caption = 'Modificar Obra Social'
+  ClientHeight = 235
+  ClientWidth = 494
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poScreenCenter
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel22: TPanel
+    Left = 0
+    Top = 0
+    Width = 494
+    Height = 235
+    Align = alClient
+    BevelInner = bvLowered
+    BorderWidth = 4
+    Caption = 'Panel2'
+    TabOrder = 0
+    ExplicitWidth = 502
+    ExplicitHeight = 246
+    object ScrollBox5: TScrollBox
+      Left = 6
+      Top = 6
+      Width = 490
+      Height = 234
+      HorzScrollBar.Margin = 6
+      HorzScrollBar.Range = 300
+      VertScrollBar.Margin = 6
+      VertScrollBar.Range = 163
+      VertScrollBar.Visible = False
+      Align = alClient
+      AutoScroll = False
+      BorderStyle = bsNone
+      TabOrder = 0
+      object Panel1: TPanel
+        Left = 0
+        Top = 58
+        Width = 490
+        Height = 176
+        Align = alClient
+        BevelOuter = bvNone
+        TabOrder = 0
+        object A: TStringGrid
+          Left = 0
+          Top = 0
+          Width = 490
+          Height = 176
+          Hint = 'Use la Barra Espaciadora para Seleccionar Items'
+          Align = alClient
+          BorderStyle = bsNone
+          ColCount = 9
+          DefaultRowHeight = 15
+          Enabled = False
+          FixedCols = 0
+          RowCount = 2500
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSelect]
+          ParentFont = False
+          ParentShowHint = False
+          PopupMenu = PopupMenu
+          ShowHint = True
+          TabOrder = 0
+          OnKeyDown = AKeyDown
+          ColWidths = (
+            28
+            35
+            250
+            11
+            32
+            114
+            111
+            51
+            166)
+        end
+        object S: TStringGrid
+          Left = 192
+          Top = 32
+          Width = 97
+          Height = 72
+          BorderStyle = bsNone
+          ColCount = 2
+          DefaultRowHeight = 15
+          Enabled = False
+          FixedCols = 0
+          RowCount = 2500
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSelect]
+          ParentFont = False
+          TabOrder = 1
+          Visible = False
+          OnKeyDown = AKeyDown
+          ColWidths = (
+            29
+            32)
+        end
+      end
+      object Panel2: TPanel
+        Left = 0
+        Top = 0
+        Width = 490
+        Height = 58
+        Align = alTop
+        BevelOuter = bvNone
+        TabOrder = 1
+        object Label1: TLabel
+          Left = 12
+          Top = 2
+          Width = 51
+          Height = 13
+          Alignment = taRightJustify
+          Caption = 'OS Actual:'
+        end
+        object cod: TLabel
+          Left = 68
+          Top = 2
+          Width = 33
+          Height = 13
+          Caption = '           '
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clNavy
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+        end
+        object Label4: TLabel
+          Left = 4
+          Top = 40
+          Width = 58
+          Height = 13
+          Alignment = taRightJustify
+          Caption = 'Obra Social:'
+        end
+        object os: TLabel
+          Left = 140
+          Top = 37
+          Width = 30
+          Height = 13
+          Caption = '          '
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clNavy
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+        end
+        object Label2: TLabel
+          Left = 30
+          Top = 28
+          Width = 32
+          Height = 13
+          Alignment = taRightJustify
+          Caption = 'Nueva'
+        end
+        object obsoc: TLabel
+          Left = 115
+          Top = 2
+          Width = 33
+          Height = 13
+          Caption = '           '
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clNavy
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+        end
+        object Label3: TLabel
+          Left = 22
+          Top = 15
+          Width = 41
+          Height = 13
+          Alignment = taRightJustify
+          Caption = 'Per'#237'odo:'
+        end
+        object periodo: TLabel
+          Left = 68
+          Top = 15
+          Width = 33
+          Height = 13
+          Caption = '           '
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clNavy
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+        end
+        object idprof: TLabel
+          Left = 280
+          Top = 16
+          Width = 26
+          Height = 13
+          Caption = 'idprof'
+          Visible = False
+        end
+        object codos: TMaskEdit
+          Left = 66
+          Top = 33
+          Width = 50
+          Height = 21
+          EditMask = '######;1; '
+          MaxLength = 6
+          TabOrder = 0
+          Text = '      '
+          OnKeyDown = codosKeyDown
+        end
+        object BuscarOS: TBitBtn
+          Left = 118
+          Top = 33
+          Width = 20
+          Height = 22
+          Hint = 'Buscar Obra Social'
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 1
+          OnClick = BuscarOSClick
+          Glyph.Data = {
+            F6000000424DF600000000000000760000002800000010000000100000000100
+            0400000000008000000000000000000000001000000010000000000000000000
+            8000008000000080800080000000800080008080000080808000C0C0C0000000
+            FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+            FFFFFFFFFFF000FFFFFFFFFFFF0BB00FFFFFFFFFFF0BB00FFFFFFFFFFFF00FFF
+            FFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0BB00F
+            FFFFFFFF00F0BB00FFFFFFF0B00F0BB00FFFFFF0B00FF0B00FFFFFF0BB000BB0
+            0FFFFFFF0BBBBB00FFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFF}
+        end
+        object Panel3: TPanel
+          Left = 419
+          Top = 0
+          Width = 71
+          Height = 58
+          Align = alRight
+          BevelOuter = bvNone
+          TabOrder = 2
+          object OK: TBitBtn
+            Left = 3
+            Top = 2
+            Width = 65
+            Height = 25
+            Caption = '&OK'
+            Enabled = False
+            TabOrder = 0
+            OnClick = OKClick
+          end
+          object Cancelar: TBitBtn
+            Left = 3
+            Top = 29
+            Width = 65
+            Height = 25
+            Cancel = True
+            Caption = '&Cancelar'
+            TabOrder = 1
+            OnClick = CancelarClick
+            NumGlyphs = 2
+          end
+        end
+      end
+    end
+  end
+  object PopupMenu: TPopupMenu
+    Left = 360
+    Top = 16
+    object SiNoSeleccin1: TMenuItem
+      Caption = 'Si/No Selecci'#243'n'
+      OnClick = SiNoSeleccin1Click
+    end
+  end
+end

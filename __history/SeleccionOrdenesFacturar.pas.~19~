@@ -1,0 +1,191 @@
+unit SeleccionOrdenesFacturar;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, Grids, ExtCtrls, ComCtrls, CUtiles, StdCtrls, Mask, CConfigForms,
+  DBTables, Buttons;
+
+type
+  TfmSeleccionOrdenes = class(TForm)
+    StatusBar1: TStatusBar;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    S: TStringGrid;
+    Label1: TLabel;
+    desde: TMaskEdit;
+    hasta: TMaskEdit;
+    Label2: TLabel;
+    Label3: TLabel;
+    idprof: TLabel;
+    btnFacturar: TButton;
+    nprofesional: TLabel;
+    SpeedButton1: TSpeedButton;
+    SpeedButton2: TSpeedButton;
+    SpeedButton3: TSpeedButton;
+    procedure FormShow(Sender: TObject);
+    procedure desdeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure hastaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure Panel2Resize(Sender: TObject);
+    procedure FormResize(Sender: TObject);
+    procedure SpeedButton1Click(Sender: TObject);
+    procedure SpeedButton2Click(Sender: TObject);
+    procedure SpeedButton3Click(Sender: TObject);
+    procedure SKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure btnFacturarClick(Sender: TObject);
+  private
+    { Private declarations }
+    redim: boolean;
+    procedure CargarOrdenes;
+    procedure Chequear;
+  public
+    { Public declarations }
+  end;
+
+var
+  fmSeleccionOrdenes: TfmSeleccionOrdenes;
+
+implementation
+
+{$R *.dfm}
+
+uses
+  CAuditoriaOnLine, CUtilidadesStringGrid, CPadronOSCCB, CObrasSocialesCCB;
+
+procedure TfmSeleccionOrdenes.btnFacturarClick(Sender: TObject);
+begin
+  if (utiles.msgSiNo('Seguro para Facturar Ordenes Seleccionadas ?')) then Close;
+end;
+
+procedure TfmSeleccionOrdenes.CargarOrdenes;
+var
+  r: TQuery;
+  i: integer;
+  codosanter: string;
+begin
+  StatusBar1.Panels[0].Text := 'Cargando Ordenes ...!'; StatusBar1.Refresh;
+  grid.IniciarGrilla(S); i := 0;
+  r := auditonline.getOrdenes(desde.Text, hasta.Text, idprof.Caption);
+  r.Open;
+  while not r.Eof do begin
+    Inc(i);
+    S.Cells[0, i] := r.FieldByName('idonline').AsString;
+    S.Cells[2, i] := utiles.sFormatoFecha(r.FieldByName('fecha').AsString);
+    S.Cells[3, i] := r.FieldByName('nrodoc').AsString;
+    if (r.FieldByName('codos').AsString <> codosanter) then begin
+      padron.conectar(r.FieldByName('codos').AsString);
+      codosanter := r.FieldByName('codos').AsString;
+    end;
+    padron.getDatos(r.FieldByName('codos').AsString, r.FieldByName('nrodoc').AsString);
+    S.Cells[4, i] := padron.Nombre;
+    S.Cells[5, i] := r.FieldByName('codos').AsString;
+    obsocial.getDatos(r.FieldByName('codos').AsString);
+    S.Cells[6, i] := obsocial.Nombre;
+    S.Cells[7, i] := r.FieldByName('nroauditoria').AsString;
+    r.Next;
+  end;
+  r.Close; r.Free;
+  StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+  S.SetFocus;
+end;
+
+procedure TfmSeleccionOrdenes.Chequear;
+var
+  i: integer;
+begin
+  btnFacturar.Enabled := false;
+  For i := 1 to   S.RowCount do Begin
+    if Length(Trim(S.cells[0, i])) = 0 then Break;
+    if (S.cells[1, i] = 'S') then begin
+      btnFacturar.Enabled := true;
+      break;
+    end;
+  end;
+end;
+
+procedure TfmSeleccionOrdenes.desdeKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_ESCAPE) then Close;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if (utiles.ctrlFecha(desde)) then hasta.setFocus;
+end;
+
+procedure TfmSeleccionOrdenes.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  configform.Guardar(fmSeleccionOrdenes, redim);
+  grid.GuardarAnchoColumnas(fmSeleccionOrdenes, S);
+end;
+
+procedure TfmSeleccionOrdenes.FormResize(Sender: TObject);
+begin
+  StatusBar1.Panels[0].Width := (Width - (Width div 5));
+end;
+
+procedure TfmSeleccionOrdenes.FormShow(Sender: TObject);
+begin
+  configform.Setear(fmSeleccionOrdenes);
+  grid.RecuperarAnchoColumnas(fmSeleccionOrdenes, S);
+  S.Cells[0, 0] := 'Nro. de Orden'; S.Cells[1, 0] := 'Sel'; S.Cells[2, 0] := 'Fecha';
+  S.Cells[3, 0] := 'Nro. Doc.'; S.Cells[4, 0] := 'Paciente'; S.Cells[5, 0] := 'Código';
+  S.Cells[6, 0] := 'Obra Social'; S.Cells[7, 0] := 'Nro. Int.';
+  desde.setFocus;
+end;
+
+procedure TfmSeleccionOrdenes.hastaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_UP) then desde.setFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if (utiles.ctrlFecha(desde)) then CargarOrdenes;
+end;
+
+procedure TfmSeleccionOrdenes.Panel2Resize(Sender: TObject);
+begin
+  redim := true;
+end;
+
+procedure TfmSeleccionOrdenes.SKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_SPACE) then SpeedButton1Click(Self);
+  if (Key = VK_ESCAPE) then btnFacturarClick(Self);  
+end;
+
+procedure TfmSeleccionOrdenes.SpeedButton1Click(Sender: TObject);
+begin
+  if Length(Trim(S.cells[0, S.row])) > 0 then Begin
+    if S.cells[1, S.row] <> 'S' then S.cells[1, S.row] := 'S' else S.cells[1, S.row] := ' ';
+    if (S.row < S.rowcount) and (Length(Trim(S.cells[0, S.row + 1])) > 0) then S.row := S.row + 1;
+    S.Refresh;
+  end;
+  Chequear;
+end;
+
+procedure TfmSeleccionOrdenes.SpeedButton2Click(Sender: TObject);
+var
+  i: integer;
+begin
+  For i := 1 to   S.RowCount do Begin
+    if Length(Trim(S.cells[0, i])) = 0 then Break;
+    S.cells[1, i] := 'S';
+  end;
+  Chequear;
+end;
+
+procedure TfmSeleccionOrdenes.SpeedButton3Click(Sender: TObject);
+var
+  i: integer;
+begin
+  For i := 1 to   S.RowCount do Begin
+    if Length(Trim(S.cells[0, i])) = 0 then Break;
+    S.cells[1, i] := '';
+  end;
+  Chequear;
+end;
+
+end.

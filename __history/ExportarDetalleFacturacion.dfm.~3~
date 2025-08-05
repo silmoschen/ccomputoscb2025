@@ -1,0 +1,95 @@
+object fmExportarDetalleFacturacion: TfmExportarDetalleFacturacion
+  Left = 0
+  Top = 0
+  Caption = 'Exportar Detalle Facturaci'#243'n'
+  ClientHeight = 157
+  ClientWidth = 406
+  Color = clBtnFace
+  Font.Charset = ANSI_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poMainFormCenter
+  OnClose = FormClose
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 138
+    Width = 406
+    Height = 19
+    Panels = <
+      item
+        Width = 300
+      end
+      item
+        Width = 50
+      end>
+    ExplicitTop = 280
+    ExplicitWidth = 433
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 406
+    Height = 138
+    Align = alClient
+    BevelInner = bvLowered
+    BorderWidth = 4
+    TabOrder = 1
+    ExplicitWidth = 376
+    ExplicitHeight = 140
+    object Label1: TLabel
+      Left = 32
+      Top = 16
+      Width = 41
+      Height = 13
+      Alignment = taRightJustify
+      Caption = 'Per'#237'odo:'
+    end
+    object modulo: TLabel
+      Left = 77
+      Top = 16
+      Width = 3
+      Height = 13
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clNavy
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+    end
+    object btnIniciar: TButton
+      Left = 35
+      Top = 88
+      Width = 185
+      Height = 25
+      Caption = 'Iniciar Proceso de Transferencia'
+      TabOrder = 0
+      OnClick = btnIniciarClick
+    end
+    object btnCerrar: TButton
+      Left = 264
+      Top = 88
+      Width = 97
+      Height = 25
+      Caption = 'Cerrar'
+      TabOrder = 1
+      OnClick = btnCerrarClick
+    end
+    object periodo: TMaskEdit
+      Left = 79
+      Top = 13
+      Width = 48
+      Height = 21
+      EditMask = '99/9999;1; '
+      MaxLength = 7
+      TabOrder = 2
+      Text = '  /    '
+      OnKeyDown = periodoKeyDown
+    end
+  end
+end

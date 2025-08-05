@@ -1,0 +1,2066 @@
+object fmLiquidacionOS: TfmLiquidacionOS
+  Left = 168
+  Top = 121
+  BorderIcons = [biSystemMenu, biMinimize]
+  Caption = 'Distribuci'#243'n de Pagos Obras Sociales'
+  ClientHeight = 376
+  ClientWidth = 486
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  KeyPreview = True
+  OldCreateOrder = False
+  OnClose = FormClose
+  OnKeyDown = FormKeyDown
+  OnResize = FormResize
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 357
+    Width = 486
+    Height = 19
+    Panels = <
+      item
+        Width = 280
+      end
+      item
+        Text = ' F6 Cons./F7 Inf. OS'
+        Width = 120
+      end
+      item
+        Width = 50
+      end>
+  end
+  object PageControl1: TPageControl
+    Left = 0
+    Top = 24
+    Width = 486
+    Height = 333
+    HelpType = htKeyword
+    ActivePage = TabSheet1
+    Align = alClient
+    TabOrder = 0
+    object TabSheet1: TTabSheet
+      Caption = '&Pagos'
+      OnHide = TabSheet1Hide
+      OnShow = TabSheet1Show
+      object Panel2: TPanel
+        Left = 0
+        Top = 0
+        Width = 478
+        Height = 305
+        Align = alClient
+        BevelInner = bvLowered
+        BorderWidth = 4
+        Caption = 'Panel2'
+        TabOrder = 0
+        OnResize = Panel2Resize
+        object ScrollBox: TScrollBox
+          Left = 6
+          Top = 6
+          Width = 466
+          Height = 293
+          HorzScrollBar.Increment = 1
+          HorzScrollBar.Margin = 1
+          HorzScrollBar.Range = 10
+          VertScrollBar.Margin = 6
+          VertScrollBar.Range = 10
+          Align = alClient
+          AutoScroll = False
+          BorderStyle = bsNone
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 0
+          object Panel1: TPanel
+            Left = 0
+            Top = 0
+            Width = 466
+            Height = 79
+            Align = alTop
+            BevelOuter = bvNone
+            TabOrder = 0
+            object Panel20: TPanel
+              Left = 0
+              Top = 0
+              Width = 466
+              Height = 30
+              Align = alTop
+              BevelOuter = bvNone
+              TabOrder = 0
+              object Label2: TLabel
+                Left = 3
+                Top = 2
+                Width = 47
+                Height = 13
+                Alignment = taRightJustify
+                Caption = 'Per'#237'odo a'
+              end
+              object Label12: TLabel
+                Left = 7
+                Top = 13
+                Width = 43
+                Height = 13
+                Alignment = taRightJustify
+                Caption = 'Distribuir:'
+              end
+              object Label29: TLabel
+                Left = 122
+                Top = 2
+                Width = 32
+                Height = 13
+                Alignment = taRightJustify
+                Caption = 'Nro.de'
+              end
+              object Label30: TLabel
+                Left = 119
+                Top = 13
+                Width = 35
+                Height = 13
+                Alignment = taRightJustify
+                Caption = 'Distrib.:'
+              end
+              object periodo: TMaskEdit
+                Left = 53
+                Top = 5
+                Width = 53
+                Height = 21
+                EditMask = '99/9999;1; '
+                MaxLength = 7
+                TabOrder = 0
+                Text = '  /    '
+                OnChange = periodoChange
+                OnKeyDown = periodoKeyDown
+              end
+              object Panel25: TPanel
+                Left = 210
+                Top = 0
+                Width = 256
+                Height = 30
+                Align = alRight
+                BevelOuter = bvNone
+                TabOrder = 1
+                object DebitosCreditosPersonales: TBitBtn
+                  Left = 130
+                  Top = 3
+                  Width = 122
+                  Height = 27
+                  Caption = '&Retenciones'
+                  Enabled = False
+                  TabOrder = 0
+                  OnClick = DebitosCreditosPersonalesClick
+                end
+                object ajustesIndi: TBitBtn
+                  Left = 4
+                  Top = 3
+                  Width = 122
+                  Height = 27
+                  Caption = '&Ajustes Individuales'
+                  Enabled = False
+                  TabOrder = 1
+                  OnClick = ajustesIndiClick
+                  OnKeyDown = ajustesIndiKeyDown
+                  OnKeyUp = ajustesIndiKeyUp
+                end
+              end
+              object nrodist: TEditValid
+                Left = 158
+                Top = 5
+                Width = 20
+                Height = 21
+                MaxLength = 2
+                TabOrder = 2
+                OnKeyDown = nrodistKeyDown
+                Valid = tvEnteroPos
+              end
+            end
+            object Panel21: TPanel
+              Left = 0
+              Top = 30
+              Width = 466
+              Height = 51
+              Align = alTop
+              BevelOuter = bvNone
+              Enabled = False
+              TabOrder = 1
+              object Panel24: TPanel
+                Left = 0
+                Top = 0
+                Width = 466
+                Height = 56
+                Align = alTop
+                BevelOuter = bvNone
+                TabOrder = 0
+                object Label1: TLabel
+                  Left = 26
+                  Top = -1
+                  Width = 23
+                  Height = 13
+                  Alignment = taRightJustify
+                  Caption = 'Obra'
+                end
+                object Label3: TLabel
+                  Left = 18
+                  Top = 11
+                  Width = 32
+                  Height = 13
+                  Alignment = taRightJustify
+                  Caption = 'Social:'
+                end
+                object nos: TLabel
+                  Left = 121
+                  Top = 4
+                  Width = 27
+                  Height = 13
+                  Caption = '         '
+                  Font.Charset = DEFAULT_CHARSET
+                  Font.Color = clNavy
+                  Font.Height = -11
+                  Font.Name = 'MS Sans Serif'
+                  Font.Style = []
+                  ParentFont = False
+                end
+                object Label8: TLabel
+                  Left = 12
+                  Top = 24
+                  Width = 38
+                  Height = 13
+                  Alignment = taRightJustify
+                  Caption = 'Per'#237'odo'
+                end
+                object Label10: TLabel
+                  Left = 16
+                  Top = 35
+                  Width = 34
+                  Height = 13
+                  Alignment = taRightJustify
+                  Caption = 'Liquid.:'
+                end
+                object Label9: TLabel
+                  Left = 186
+                  Top = 23
+                  Width = 30
+                  Height = 13
+                  Alignment = taRightJustify
+                  Caption = 'Monto'
+                end
+                object montofact: TLabel
+                  Left = 217
+                  Top = 30
+                  Width = 65
+                  Height = 13
+                  Alignment = taRightJustify
+                  AutoSize = False
+                  Caption = '0.00'
+                  Font.Charset = DEFAULT_CHARSET
+                  Font.Color = clNavy
+                  Font.Height = -11
+                  Font.Name = 'MS Sans Serif'
+                  Font.Style = []
+                  ParentFont = False
+                end
+                object Label22: TLabel
+                  Left = 165
+                  Top = 34
+                  Width = 51
+                  Height = 13
+                  Alignment = taRightJustify
+                  Caption = 'Facturado:'
+                end
+                object codos: TMaskEdit
+                  Left = 52
+                  Top = 0
+                  Width = 43
+                  Height = 21
+                  EditMask = '999999;1; '
+                  MaxLength = 6
+                  TabOrder = 0
+                  Text = '      '
+                  OnKeyDown = codosKeyDown
+                  OnKeyUp = codosKeyUp
+                end
+                object BuscarObraSocial: TBitBtn
+                  Left = 98
+                  Top = 0
+                  Width = 20
+                  Height = 22
+                  Hint = 'Buscar Obra Social'
+                  ParentShowHint = False
+                  ShowHint = True
+                  TabOrder = 1
+                  OnClick = BuscarObraSocialClick
+                  Glyph.Data = {
+                    F6000000424DF600000000000000760000002800000010000000100000000100
+                    0400000000008000000000000000000000001000000010000000000000000000
+                    8000008000000080800080000000800080008080000080808000C0C0C0000000
+                    FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+                    FFFFFFFFFFF000FFFFFFFFFFFF0BB00FFFFFFFFFFF0BB00FFFFFFFFFFFF00FFF
+                    FFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0BB00F
+                    FFFFFFFF00F0BB00FFFFFFF0B00F0BB00FFFFFF0B00FF0B00FFFFFF0BB000BB0
+                    0FFFFFFF0BBBBB00FFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFF}
+                end
+                object perLiq: TMaskEdit
+                  Left = 52
+                  Top = 25
+                  Width = 51
+                  Height = 21
+                  EditMask = '99/9999;1; '
+                  MaxLength = 7
+                  TabOrder = 2
+                  Text = '  /    '
+                  OnKeyDown = perLiqKeyDown
+                end
+                object Panel22: TPanel
+                  Left = 335
+                  Top = 0
+                  Width = 131
+                  Height = 56
+                  Align = alRight
+                  BevelOuter = bvNone
+                  TabOrder = 3
+                  object Label4: TLabel
+                    Left = 18
+                    Top = 24
+                    Width = 30
+                    Height = 13
+                    Alignment = taRightJustify
+                    Caption = 'Monto'
+                  end
+                  object Label23: TLabel
+                    Left = 4
+                    Top = 35
+                    Width = 44
+                    Height = 13
+                    Alignment = taRightJustify
+                    Caption = 'Ajustado:'
+                  end
+                  object dist: TLabel
+                    Left = 63
+                    Top = 31
+                    Width = 62
+                    Height = 12
+                    Alignment = taRightJustify
+                    AutoSize = False
+                    Caption = '0.00'
+                    Font.Charset = DEFAULT_CHARSET
+                    Font.Color = clNavy
+                    Font.Height = -11
+                    Font.Name = 'MS Sans Serif'
+                    Font.Style = []
+                    ParentFont = False
+                  end
+                  object osliq: TLabel
+                    Left = 63
+                    Top = 4
+                    Width = 62
+                    Height = 14
+                    Alignment = taRightJustify
+                    AutoSize = False
+                    Font.Charset = DEFAULT_CHARSET
+                    Font.Color = clNavy
+                    Font.Height = -11
+                    Font.Name = 'MS Sans Serif'
+                    Font.Style = []
+                    ParentFont = False
+                  end
+                end
+              end
+            end
+          end
+          object Panel4: TPanel
+            Left = 0
+            Top = 79
+            Width = 466
+            Height = 29
+            Align = alTop
+            BevelOuter = bvNone
+            Enabled = False
+            TabOrder = 1
+            object Label6: TLabel
+              Left = 8
+              Top = 1
+              Width = 40
+              Height = 13
+              Alignment = taRightJustify
+              Caption = 'Por. que'
+            end
+            object Label7: TLabel
+              Left = 21
+              Top = 14
+              Width = 28
+              Height = 13
+              Alignment = taRightJustify
+              Caption = 'Paga:'
+            end
+            object Label15: TLabel
+              Left = 164
+              Top = 1
+              Width = 39
+              Height = 13
+              Alignment = taRightJustify
+              Caption = 'Monto a'
+            end
+            object Label19: TLabel
+              Left = 173
+              Top = 14
+              Width = 31
+              Height = 13
+              Alignment = taRightJustify
+              Caption = 'Pagar:'
+            end
+            object porcentaje: TEditValid
+              Left = 52
+              Top = 5
+              Width = 40
+              Height = 21
+              TabOrder = 0
+              OnKeyDown = porcentajeKeyDown
+              Valid = tvDecimal
+            end
+            object importeing: TEditValid
+              Left = 208
+              Top = 5
+              Width = 74
+              Height = 21
+              TabOrder = 1
+              OnKeyDown = importeingKeyDown
+              Valid = tvDecimal
+            end
+            object Panel28: TPanel
+              Left = 343
+              Top = 0
+              Width = 123
+              Height = 29
+              Align = alRight
+              BevelOuter = bvNone
+              TabOrder = 2
+              object Label16: TLabel
+                Left = 7
+                Top = 1
+                Width = 45
+                Height = 13
+                Alignment = taRightJustify
+                Caption = 'Fecha de'
+              end
+              object Label18: TLabel
+                Left = 0
+                Top = 14
+                Width = 52
+                Height = 13
+                Alignment = taRightJustify
+                Caption = 'Operaci'#243'n:'
+              end
+              object fecha: TMaskEdit
+                Left = 59
+                Top = 6
+                Width = 59
+                Height = 21
+                EditMask = '##/##/##;1; '
+                MaxLength = 8
+                TabOrder = 0
+                Text = '  /  /  '
+                OnKeyDown = fechaKeyDown
+              end
+            end
+          end
+          object Panel3: TPanel
+            Left = 0
+            Top = 108
+            Width = 466
+            Height = 185
+            Align = alClient
+            BevelInner = bvLowered
+            TabOrder = 2
+            object S: TStringGrid
+              Left = 2
+              Top = 2
+              Width = 462
+              Height = 181
+              Align = alClient
+              BorderStyle = bsNone
+              ColCount = 7
+              DefaultRowHeight = 15
+              FixedCols = 0
+              RowCount = 500
+              Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowSelect]
+              PopupMenu = PopupMenu1
+              TabOrder = 0
+              OnDblClick = ModificarPago1Click
+              OnKeyDown = SKeyDown
+              ColWidths = (
+                54
+                51
+                188
+                38
+                68
+                64
+                64)
+            end
+          end
+        end
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = '&Informes'
+      ImageIndex = 1
+      OnShow = TabSheet2Show
+      object Panel7: TPanel
+        Left = 0
+        Top = 0
+        Width = 478
+        Height = 305
+        Align = alClient
+        BevelInner = bvLowered
+        BorderWidth = 4
+        Caption = 'Panel2'
+        TabOrder = 0
+        object ScrollBox1: TScrollBox
+          Left = 6
+          Top = 6
+          Width = 466
+          Height = 293
+          HorzScrollBar.Increment = 1
+          HorzScrollBar.Margin = 1
+          HorzScrollBar.Range = 10
+          VertScrollBar.Margin = 6
+          VertScrollBar.Range = 10
+          Align = alClient
+          AutoScroll = False
+          BorderStyle = bsNone
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 0
+          object Panel10: TPanel
+            Left = 0
+            Top = 0
+            Width = 466
+            Height = 293
+            Align = alClient
+            BevelOuter = bvNone
+            TabOrder = 0
+            object Panel11: TPanel
+              Left = 0
+              Top = 0
+              Width = 466
+              Height = 293
+              Align = alClient
+              BevelOuter = bvNone
+              BorderWidth = 2
+              TabOrder = 0
+              object GroupBox4: TGroupBox
+                Left = 8
+                Top = 28
+                Width = 263
+                Height = 229
+                Caption = ' Informes Distribuci'#243'n Profesionales '
+                TabOrder = 0
+                object RadioButton1: TRadioButton
+                  Left = 7
+                  Top = 14
+                  Width = 236
+                  Height = 17
+                  Caption = '&Distribuci'#243'n por Profesional (Liq. Normal)'
+                  Checked = True
+                  TabOrder = 0
+                  TabStop = True
+                  OnClick = RadioButton1Click
+                  OnKeyDown = RadioButton1KeyDown
+                end
+                object totFact: TRadioButton
+                  Left = 7
+                  Top = 100
+                  Width = 175
+                  Height = 17
+                  Caption = 'Total Facturado por &Obra Social'
+                  TabOrder = 5
+                  OnClick = totFactClick
+                  OnKeyDown = listResumenRetKeyDown
+                end
+                object totProf: TRadioButton
+                  Left = 7
+                  Top = 118
+                  Width = 173
+                  Height = 17
+                  Caption = 'Total &Facturado por Profesional'
+                  TabOrder = 6
+                  OnClick = totProfClick
+                  OnKeyDown = listResumenRetKeyDown
+                end
+                object listPagos: TRadioButton
+                  Left = 7
+                  Top = 152
+                  Width = 203
+                  Height = 17
+                  Caption = 'Obr&as Sociales que Efectuaron Pagos'
+                  TabOrder = 8
+                  OnClick = totProfClick
+                end
+                object listResumen: TRadioButton
+                  Left = 7
+                  Top = 65
+                  Width = 194
+                  Height = 17
+                  Caption = '&Resumen de la Distribuci'#243'n'
+                  TabOrder = 3
+                  OnClick = listResumenClick
+                  OnKeyDown = listResumenKeyDown
+                end
+                object listResumenRet: TRadioButton
+                  Left = 7
+                  Top = 82
+                  Width = 194
+                  Height = 17
+                  Caption = 'R&esumen de Retenciones'
+                  TabOrder = 4
+                  OnClick = listResumenRetClick
+                  OnKeyDown = listResumenRetKeyDown
+                end
+                object listTotGan: TRadioButton
+                  Left = 7
+                  Top = 170
+                  Width = 200
+                  Height = 17
+                  Caption = 'Subto&tales Deducci'#243'n de Ganancias'
+                  TabOrder = 9
+                  OnKeyDown = listTotGanKeyDown
+                end
+                object RadioButton2: TRadioButton
+                  Left = 7
+                  Top = 48
+                  Width = 213
+                  Height = 17
+                  Caption = 'Distribuci'#243'n &Prof/Ob. Sociales Insc. I.V.A.'
+                  TabOrder = 2
+                  OnClick = RadioButton1Click
+                  OnKeyDown = RadioButton1KeyDown
+                end
+                object resProf: TRadioButton
+                  Left = 7
+                  Top = 134
+                  Width = 202
+                  Height = 17
+                  Caption = 'Res&umen Facturado por Profesional'
+                  TabOrder = 7
+                  OnClick = totProfClick
+                  OnKeyDown = listResumenRetKeyDown
+                end
+                object listUH: TRadioButton
+                  Left = 7
+                  Top = 187
+                  Width = 200
+                  Height = 17
+                  Caption = 'Subtotales &Unidades Honorarios'
+                  TabOrder = 10
+                  OnKeyDown = listTotGanKeyDown
+                end
+                object listCoseguros: TRadioButton
+                  Left = 7
+                  Top = 205
+                  Width = 200
+                  Height = 17
+                  Caption = '&Coseguros'
+                  TabOrder = 11
+                end
+                object RadioButton3: TRadioButton
+                  Left = 7
+                  Top = 31
+                  Width = 236
+                  Height = 17
+                  Caption = '&Distribuci'#243'n por Profesional sep. Retenciones'
+                  TabOrder = 1
+                  OnClick = RadioButton1Click
+                  OnKeyDown = RadioButton1KeyDown
+                end
+              end
+              object Panel6: TPanel
+                Left = 2
+                Top = 263
+                Width = 462
+                Height = 28
+                Align = alBottom
+                BevelOuter = bvNone
+                TabOrder = 1
+                object Panel8: TPanel
+                  Left = 319
+                  Top = 0
+                  Width = 143
+                  Height = 28
+                  Align = alRight
+                  BevelOuter = bvNone
+                  TabOrder = 0
+                  object btnCerrar: TBitBtn
+                    Left = 4
+                    Top = 3
+                    Width = 137
+                    Height = 25
+                    Caption = '&Cerrar'
+                    TabOrder = 0
+                    OnClick = btnCerrarClick
+                  end
+                end
+                object labivains: TCheckBox
+                  Left = 6
+                  Top = 11
+                  Width = 243
+                  Height = 17
+                  Caption = '&Afectar Solo a Laboratorios Inscriptos en I.V.A.'
+                  TabOrder = 1
+                end
+              end
+              object Panel9: TPanel
+                Left = 2
+                Top = 2
+                Width = 462
+                Height = 25
+                Align = alTop
+                BevelOuter = bvNone
+                TabOrder = 2
+                object Label14: TLabel
+                  Left = 6
+                  Top = -1
+                  Width = 41
+                  Height = 13
+                  Alignment = taRightJustify
+                  Caption = 'Per'#237'odo '
+                end
+                object Label27: TLabel
+                  Left = 6
+                  Top = 11
+                  Width = 39
+                  Height = 13
+                  Alignment = taRightJustify
+                  Caption = 'Emisi'#243'n:'
+                end
+                object Label32: TLabel
+                  Left = 102
+                  Top = 11
+                  Width = 24
+                  Height = 13
+                  Alignment = taRightJustify
+                  Caption = 'Dist.:'
+                end
+                object Label31: TLabel
+                  Left = 106
+                  Top = -1
+                  Width = 20
+                  Height = 13
+                  Alignment = taRightJustify
+                  Caption = 'Nro.'
+                end
+                object Label47: TLabel
+                  Left = 154
+                  Top = 5
+                  Width = 42
+                  Height = 13
+                  Alignment = taRightJustify
+                  Caption = 'Laborat.:'
+                end
+                object np: TLabel
+                  Left = 273
+                  Top = 5
+                  Width = 30
+                  Height = 13
+                  Caption = '          '
+                  Font.Charset = DEFAULT_CHARSET
+                  Font.Color = clNavy
+                  Font.Height = -11
+                  Font.Name = 'MS Sans Serif'
+                  Font.Style = []
+                  ParentFont = False
+                  Visible = False
+                end
+                object per: TMaskEdit
+                  Left = 48
+                  Top = 2
+                  Width = 51
+                  Height = 21
+                  EditMask = '##/####;1; '
+                  MaxLength = 7
+                  TabOrder = 0
+                  Text = '  /    '
+                  OnKeyDown = perKeyDown
+                end
+                object idlab: TMaskEdit
+                  Left = 198
+                  Top = 1
+                  Width = 47
+                  Height = 21
+                  EditMask = '######;1; '
+                  MaxLength = 6
+                  TabOrder = 1
+                  Text = '      '
+                  OnKeyDown = idlabKeyDown
+                end
+                object BuscarProfes: TBitBtn
+                  Left = 248
+                  Top = 1
+                  Width = 20
+                  Height = 22
+                  Hint = 'Buscar Profesional'
+                  ParentShowHint = False
+                  ShowHint = True
+                  TabOrder = 2
+                  OnClick = BuscarProfesClick
+                  Glyph.Data = {
+                    F6000000424DF600000000000000760000002800000010000000100000000100
+                    0400000000008000000000000000000000001000000010000000000000000000
+                    8000008000000080800080000000800080008080000080808000C0C0C0000000
+                    FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+                    FFFFFFFFFFF000FFFFFFFFFFFF0BB00FFFFFFFFFFF0BB00FFFFFFFFFFFF00FFF
+                    FFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0BB00F
+                    FFFFFFFF00F0BB00FFFFFFF0B00F0BB00FFFFFF0B00FF0B00FFFFFF0BB000BB0
+                    0FFFFFFF0BBBBB00FFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFF}
+                end
+                object nrodistinf: TEditValid
+                  Left = 130
+                  Top = 2
+                  Width = 20
+                  Height = 21
+                  MaxLength = 2
+                  TabOrder = 3
+                  OnKeyDown = nrodistinfKeyDown
+                  Valid = tvEnteroPos
+                end
+                object Panel30: TPanel
+                  Left = 329
+                  Top = 0
+                  Width = 133
+                  Height = 25
+                  Align = alRight
+                  BevelOuter = bvNone
+                  TabOrder = 4
+                  object recMontos: TCheckBox
+                    Left = 3
+                    Top = 0
+                    Width = 112
+                    Height = 17
+                    Caption = '&Recalcular Montos'
+                    Enabled = False
+                    TabOrder = 0
+                  end
+                end
+              end
+              object Panel13: TPanel
+                Left = 323
+                Top = 27
+                Width = 141
+                Height = 236
+                Align = alRight
+                BevelOuter = bvNone
+                TabOrder = 3
+                object Label24: TLabel
+                  Left = 37
+                  Top = 139
+                  Width = 73
+                  Height = 13
+                  Alignment = taRightJustify
+                  Caption = 'Nro. de Copias:'
+                end
+                object Label51: TLabel
+                  Left = 33
+                  Top = 33
+                  Width = 50
+                  Height = 13
+                  Alignment = taRightJustify
+                  Caption = 'Mon.Gan.:'
+                end
+                object Label52: TLabel
+                  Left = 37
+                  Top = 21
+                  Width = 48
+                  Height = 13
+                  Alignment = taRightJustify
+                  Caption = 'Per./Dist. '
+                end
+                object Label43: TLabel
+                  Left = 8
+                  Top = 3
+                  Width = 112
+                  Height = 13
+                  Caption = 'Liq. Ganancias (S/N) ?:'
+                end
+                object dispSalida: TBitBtn
+                  Left = 2
+                  Top = 81
+                  Width = 138
+                  Height = 25
+                  Caption = '&Dispositivo de Salida'
+                  TabOrder = 0
+                  OnClick = dispSalidaClick
+                end
+                object emitir: TBitBtn
+                  Left = 2
+                  Top = 108
+                  Width = 137
+                  Height = 25
+                  Caption = '&Generar Informe'
+                  TabOrder = 1
+                  OnClick = emitirClick
+                end
+                object btnEleccionOS: TButton
+                  Left = 2
+                  Top = 54
+                  Width = 138
+                  Height = 25
+                  Caption = '&Elecci'#243'n de la Obra Social'
+                  TabOrder = 2
+                  OnClick = btnEleccionOSClick
+                end
+                object cantcopias: TEditValid
+                  Left = 113
+                  Top = 136
+                  Width = 25
+                  Height = 21
+                  MaxLength = 2
+                  TabOrder = 3
+                  Text = '1'
+                end
+                object pergan: TMaskEdit
+                  Left = 87
+                  Top = 24
+                  Width = 51
+                  Height = 21
+                  EditMask = '##/####;1; '
+                  MaxLength = 7
+                  TabOrder = 4
+                  Text = '  /    '
+                  OnKeyDown = perganKeyDown
+                end
+                object disgan: TEditValid
+                  Left = 118
+                  Top = 24
+                  Width = 20
+                  Height = 21
+                  MaxLength = 2
+                  TabOrder = 5
+                  Text = '01'
+                  Visible = False
+                  OnKeyDown = disganKeyDown
+                  Valid = tvEnteroPos
+                end
+                object ruptura: TCheckBox
+                  Left = 2
+                  Top = 162
+                  Width = 137
+                  Height = 17
+                  Caption = '&Salto P'#225'g. p/Profesional'
+                  TabOrder = 6
+                end
+                object liqganancias: TMaskEdit
+                  Left = 122
+                  Top = 0
+                  Width = 16
+                  Height = 21
+                  CharCase = ecUpperCase
+                  MaxLength = 1
+                  TabOrder = 7
+                end
+                object btnExportarDistribuciones: TBitBtn
+                  Left = 3
+                  Top = 190
+                  Width = 137
+                  Height = 25
+                  Caption = 'E&xportar a la Web'
+                  TabOrder = 8
+                  OnClick = btnExportarDistribucionesClick
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+    object TabSheet5: TTabSheet
+      Caption = 'Dep'#243'&sitos'
+      ImageIndex = 4
+      OnHide = TabSheet5Hide
+      OnShow = TabSheet5Show
+      object Panel5: TPanel
+        Left = 0
+        Top = 0
+        Width = 478
+        Height = 305
+        Align = alClient
+        BevelInner = bvLowered
+        BorderWidth = 4
+        TabOrder = 0
+        object Panel12: TPanel
+          Left = 6
+          Top = 6
+          Width = 466
+          Height = 89
+          Align = alTop
+          BevelOuter = bvNone
+          TabOrder = 0
+          object Label35: TLabel
+            Left = 12
+            Top = 2
+            Width = 93
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Per'#237'odo a Distribuir:'
+          end
+          object Label37: TLabel
+            Left = 214
+            Top = 2
+            Width = 96
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Nro. de Distribuci'#243'n:'
+          end
+          object Label39: TLabel
+            Left = 7
+            Top = 22
+            Width = 55
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Profesional:'
+          end
+          object npr: TLabel
+            Left = 140
+            Top = 24
+            Width = 27
+            Height = 13
+            Caption = '         '
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clNavy
+            Font.Height = -11
+            Font.Name = 'MS Sans Serif'
+            Font.Style = []
+            ParentFont = False
+          end
+          object perdist: TLabel
+            Left = 109
+            Top = 2
+            Width = 45
+            Height = 13
+            Caption = '               '
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clNavy
+            Font.Height = -11
+            Font.Name = 'MS Sans Serif'
+            Font.Style = []
+            ParentFont = False
+          end
+          object ndist: TLabel
+            Left = 314
+            Top = 2
+            Width = 60
+            Height = 13
+            Caption = '                    '
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clNavy
+            Font.Height = -11
+            Font.Name = 'MS Sans Serif'
+            Font.Style = []
+            ParentFont = False
+          end
+          object Label36: TLabel
+            Left = 18
+            Top = 45
+            Width = 67
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Ent. Bancaria:'
+          end
+          object nbco: TLabel
+            Left = 140
+            Top = 47
+            Width = 27
+            Height = 13
+            Caption = '         '
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clNavy
+            Font.Height = -11
+            Font.Name = 'MS Sans Serif'
+            Font.Style = []
+            ParentFont = False
+          end
+          object Label38: TLabel
+            Left = 7
+            Top = 68
+            Width = 78
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Fecha Dep'#243'sito:'
+          end
+          object Label40: TLabel
+            Left = 147
+            Top = 68
+            Width = 63
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Observaci'#243'n:'
+          end
+          object idprofdep: TMaskEdit
+            Left = 66
+            Top = 19
+            Width = 48
+            Height = 21
+            EditMask = '999999;1; '
+            MaxLength = 6
+            TabOrder = 0
+            Text = '      '
+            OnKeyDown = idprofdepKeyDown
+          end
+          object BuscarProfesional: TBitBtn
+            Left = 117
+            Top = 19
+            Width = 20
+            Height = 22
+            Hint = 'Buscar Obra Social'
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 1
+            OnClick = BuscarProfesionalClick
+            Glyph.Data = {
+              F6000000424DF600000000000000760000002800000010000000100000000100
+              0400000000008000000000000000000000001000000010000000000000000000
+              8000008000000080800080000000800080008080000080808000C0C0C0000000
+              FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+              FFFFFFFFFFF000FFFFFFFFFFFF0BB00FFFFFFFFFFF0BB00FFFFFFFFFFFF00FFF
+              FFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0BB00F
+              FFFFFFFF00F0BB00FFFFFFF0B00F0BB00FFFFFF0B00FF0B00FFFFFF0BB000BB0
+              0FFFFFFF0BBBBB00FFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFF}
+          end
+          object codbanco: TMaskEdit
+            Left = 88
+            Top = 42
+            Width = 26
+            Height = 21
+            EditMask = '999999;1; '
+            MaxLength = 6
+            TabOrder = 2
+            Text = '      '
+            OnKeyDown = codbancoKeyDown
+          end
+          object BuscarBanco: TBitBtn
+            Left = 117
+            Top = 42
+            Width = 20
+            Height = 22
+            Hint = 'Buscar Obra Social'
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 3
+            OnClick = BuscarBancoClick
+            Glyph.Data = {
+              F6000000424DF600000000000000760000002800000010000000100000000100
+              0400000000008000000000000000000000001000000010000000000000000000
+              8000008000000080800080000000800080008080000080808000C0C0C0000000
+              FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+              FFFFFFFFFFF000FFFFFFFFFFFF0BB00FFFFFFFFFFF0BB00FFFFFFFFFFFF00FFF
+              FFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0BB00F
+              FFFFFFFF00F0BB00FFFFFFF0B00F0BB00FFFFFF0B00FF0B00FFFFFF0BB000BB0
+              0FFFFFFF0BBBBB00FFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFF}
+          end
+          object fechadep: TMaskEdit
+            Left = 88
+            Top = 65
+            Width = 55
+            Height = 21
+            EditMask = '99/99/99;1; '
+            MaxLength = 8
+            TabOrder = 4
+            Text = '  /  /  '
+            OnKeyDown = fechadepKeyDown
+          end
+          object observac: TMaskEdit
+            Left = 214
+            Top = 65
+            Width = 243
+            Height = 21
+            TabOrder = 5
+            OnKeyDown = observacKeyDown
+          end
+        end
+        object Panel23: TPanel
+          Left = 6
+          Top = 95
+          Width = 466
+          Height = 204
+          Align = alClient
+          BevelInner = bvLowered
+          TabOrder = 1
+          object P: TStringGrid
+            Left = 2
+            Top = 2
+            Width = 462
+            Height = 200
+            Align = alClient
+            BorderStyle = bsNone
+            ColCount = 7
+            DefaultRowHeight = 15
+            FixedCols = 0
+            RowCount = 500
+            Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowSelect]
+            PopupMenu = PopupMenu1
+            TabOrder = 0
+            OnKeyDown = PKeyDown
+            ColWidths = (
+              59
+              223
+              24
+              148
+              56
+              236
+              64)
+          end
+        end
+      end
+    end
+    object TabSheet4: TTabSheet
+      Caption = 'Pa&r'#225'metros'
+      ImageIndex = 3
+      OnShow = TabSheet4Show
+      object Panel19: TPanel
+        Left = 0
+        Top = 0
+        Width = 478
+        Height = 305
+        Align = alClient
+        BevelInner = bvLowered
+        BorderWidth = 4
+        Caption = 'Panel2'
+        TabOrder = 0
+        object ScrollBox3: TScrollBox
+          Left = 6
+          Top = 6
+          Width = 466
+          Height = 293
+          HorzScrollBar.Increment = 1
+          HorzScrollBar.Margin = 1
+          HorzScrollBar.Range = 10
+          VertScrollBar.Margin = 6
+          VertScrollBar.Range = 10
+          Align = alClient
+          AutoScroll = False
+          BorderStyle = bsNone
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 0
+          object GroupBox5: TGroupBox
+            Left = 5
+            Top = 1
+            Width = 402
+            Height = 83
+            Caption = ' Parametros de Impresi'#243'n '
+            TabOrder = 0
+            object Label11: TLabel
+              Left = 10
+              Top = 37
+              Width = 145
+              Height = 13
+              Alignment = taRightJustify
+              Caption = 'Alto de la p'#225'gina de Impresi'#243'n:'
+            end
+            object Label26: TLabel
+              Left = 19
+              Top = 60
+              Width = 136
+              Height = 13
+              Alignment = taRightJustify
+              Caption = 'Lineas para Salto de P'#225'gina:'
+            end
+            object Label17: TLabel
+              Left = 250
+              Top = 14
+              Width = 107
+              Height = 13
+              Alignment = taRightJustify
+              Caption = 'Ancho Col. Ing. Datos:'
+            end
+            object Label28: TLabel
+              Left = 191
+              Top = 37
+              Width = 145
+              Height = 13
+              Alignment = taRightJustify
+              Caption = '&Imprimir Informes en Impresora:'
+            end
+            object altopag: TEditValid
+              Left = 158
+              Top = 35
+              Width = 25
+              Height = 21
+              TabOrder = 0
+              Text = '70'
+              Valid = tvEnteroPos
+            end
+            object impresiontxt: TCheckBox
+              Left = 8
+              Top = 15
+              Width = 180
+              Height = 17
+              Caption = 'Impresi'#243'n R'#225'pida en Modo Texto'
+              TabOrder = 1
+            end
+            object lineassep: TEditValid
+              Left = 158
+              Top = 58
+              Width = 25
+              Height = 21
+              TabOrder = 2
+              Text = '0'
+              Valid = tvEnteroPos
+            end
+            object anchocol: TEditValid
+              Left = 360
+              Top = 12
+              Width = 30
+              Height = 21
+              MaxLength = 3
+              TabOrder = 3
+              Text = '100'
+              Valid = tvEnteroPos
+            end
+            object imprimir: TComboBox
+              Left = 199
+              Top = 57
+              Width = 193
+              Height = 21
+              ItemHeight = 13
+              TabOrder = 4
+              OnChange = imprimirChange
+            end
+          end
+          object Panel29: TPanel
+            Left = 413
+            Top = 0
+            Width = 53
+            Height = 293
+            Align = alRight
+            BevelOuter = bvNone
+            TabOrder = 1
+            object btnAplicar: TButton
+              Left = 2
+              Top = 8
+              Width = 48
+              Height = 24
+              Caption = '&Aplicar'
+              TabOrder = 0
+              OnClick = btnAplicarClick
+            end
+          end
+          object GroupBox1: TGroupBox
+            Left = 5
+            Top = 84
+            Width = 402
+            Height = 151
+            Caption = ' Par'#225'metros de Retenciones '
+            TabOrder = 2
+            object Label33: TLabel
+              Left = 7
+              Top = 14
+              Width = 120
+              Height = 13
+              Alignment = taRightJustify
+              Caption = 'Aplicar Retenciones a las'
+            end
+            object Label34: TLabel
+              Left = 131
+              Top = 14
+              Width = 92
+              Height = 13
+              Alignment = taRightJustify
+              Caption = 'Distribuciones Nro.:'
+            end
+            object Label44: TLabel
+              Left = 325
+              Top = 7
+              Width = 65
+              Height = 13
+              Caption = 'Liq. Imp. a las'
+            end
+            object Label45: TLabel
+              Left = 298
+              Top = 21
+              Width = 93
+              Height = 13
+              Caption = 'Ganancias en Dist.:'
+            end
+            object Label5: TLabel
+              Left = 7
+              Top = 110
+              Width = 308
+              Height = 13
+              Caption = 'Omitir M'#237'nino Suj. a Retenci'#243'n en Ganancias en Liquidaci'#243'n Nro.'
+            end
+            object dist1: TCheckBox
+              Left = 225
+              Top = 13
+              Width = 35
+              Height = 17
+              Caption = '01'
+              TabOrder = 0
+            end
+            object dist2: TCheckBox
+              Left = 260
+              Top = 13
+              Width = 35
+              Height = 17
+              Caption = '02'
+              TabOrder = 1
+            end
+            object unifGanancias: TCheckBox
+              Left = 195
+              Top = 37
+              Width = 118
+              Height = 16
+              Caption = '&Unificar Ganancias'
+              TabOrder = 2
+            end
+            object CheckBox2: TCheckBox
+              Left = 6
+              Top = 37
+              Width = 178
+              Height = 17
+              Caption = '&Incluir Obras Soc. que Ret. I.V.A.'
+              Checked = True
+              State = cbChecked
+              TabOrder = 3
+              OnClick = CheckBox2Click
+            end
+            object ga1: TCheckBox
+              Left = 324
+              Top = 37
+              Width = 35
+              Height = 17
+              Caption = '01'
+              Checked = True
+              State = cbChecked
+              TabOrder = 4
+            end
+            object ga2: TCheckBox
+              Left = 359
+              Top = 37
+              Width = 35
+              Height = 17
+              Caption = '02'
+              TabOrder = 5
+            end
+            object osiva: TCheckBox
+              Left = 6
+              Top = 72
+              Width = 391
+              Height = 17
+              Caption = 
+                'L&iquidar por Separado las Obras Sociales Gravadas en Profesiona' +
+                'les Inscriptos'
+              TabOrder = 6
+              OnClick = CheckBox2Click
+            end
+            object becasgan: TCheckBox
+              Left = 6
+              Top = 89
+              Width = 391
+              Height = 18
+              Caption = 
+                '&Deducir Imp. a las Ganancias e Inst. Becario a partir de Unidad' +
+                'es Honorarios'
+              TabOrder = 7
+              OnClick = CheckBox2Click
+            end
+            object liqIndi: TCheckBox
+              Left = 6
+              Top = 55
+              Width = 391
+              Height = 17
+              Caption = 
+                'Li&quidar Impuesto a las Gancias en forma Independiente en cada ' +
+                'Liquidaci'#243'n'
+              TabOrder = 8
+              OnClick = CheckBox2Click
+            end
+            object liq1: TCheckBox
+              Left = 323
+              Top = 109
+              Width = 35
+              Height = 17
+              Caption = '01'
+              TabOrder = 9
+            end
+            object liq2: TCheckBox
+              Left = 358
+              Top = 109
+              Width = 35
+              Height = 17
+              Caption = '02'
+              TabOrder = 10
+            end
+            object verFormula: TCheckBox
+              Left = 6
+              Top = 126
+              Width = 391
+              Height = 18
+              Caption = '&Visualizar F'#243'rmula Deducci'#243'n Ganancias en cada Liquidaci'#243'n'
+              TabOrder = 11
+              OnClick = CheckBox2Click
+            end
+          end
+          object CheckBox3: TCheckBox
+            Left = 11
+            Top = 240
+            Width = 104
+            Height = 17
+            Caption = '&Saldar Mon. Final'
+            TabOrder = 3
+          end
+          object concepto: TMaskEdit
+            Left = 118
+            Top = 239
+            Width = 289
+            Height = 21
+            TabOrder = 4
+            Text = 'Ajuste Final'
+          end
+        end
+      end
+    end
+    object TabSheet6: TTabSheet
+      Caption = '&Ajustes y Ganancias'
+      ImageIndex = 5
+      object Panel31: TPanel
+        Left = 0
+        Top = 0
+        Width = 478
+        Height = 305
+        Align = alClient
+        BevelInner = bvLowered
+        BorderWidth = 4
+        TabOrder = 0
+        object Panel32: TPanel
+          Left = 6
+          Top = 6
+          Width = 466
+          Height = 38
+          Align = alTop
+          BevelOuter = bvNone
+          TabOrder = 0
+          object Label46: TLabel
+            Left = 29
+            Top = 1
+            Width = 89
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Recalcular Totales'
+          end
+          object Label48: TLabel
+            Left = 3
+            Top = 15
+            Width = 116
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'para Fact. Ganancias al:'
+          end
+          object Label49: TLabel
+            Left = 191
+            Top = 0
+            Width = 52
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'N'#250'mero de'
+          end
+          object Label50: TLabel
+            Left = 185
+            Top = 14
+            Width = 58
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Distribuci'#243'n:'
+          end
+          object periodogan: TMaskEdit
+            Left = 124
+            Top = 3
+            Width = 56
+            Height = 21
+            EditMask = '99/9999;1; '
+            MaxLength = 7
+            TabOrder = 0
+            Text = '  /    '
+            OnKeyDown = periodoganKeyDown
+          end
+          object distgan: TEditValid
+            Left = 248
+            Top = 3
+            Width = 20
+            Height = 21
+            MaxLength = 2
+            TabOrder = 1
+            OnKeyDown = distganKeyDown
+            Valid = tvEnteroPos
+          end
+          object Panel33: TPanel
+            Left = 386
+            Top = 0
+            Width = 80
+            Height = 38
+            Align = alRight
+            BevelOuter = bvNone
+            TabOrder = 2
+            object btnRecGanancias: TButton
+              Left = 2
+              Top = 3
+              Width = 75
+              Height = 25
+              Caption = '&Recalcular'
+              TabOrder = 0
+              OnClick = btnRecGananciasClick
+            end
+          end
+        end
+        object GroupBox3: TGroupBox
+          Left = 15
+          Top = 40
+          Width = 237
+          Height = 135
+          Enabled = False
+          TabOrder = 1
+          object Label13: TLabel
+            Left = 11
+            Top = 23
+            Width = 85
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Per'#237'odo a Ajustar:'
+          end
+          object Label41: TLabel
+            Left = 176
+            Top = 23
+            Width = 47
+            Height = 13
+            Caption = 'Nro. Dist.:'
+            Visible = False
+          end
+          object ndistr: TLabel
+            Left = 215
+            Top = 23
+            Width = 15
+            Height = 13
+            Caption = '     '
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clNavy
+            Font.Height = -11
+            Font.Name = 'MS Sans Serif'
+            Font.Style = []
+            ParentFont = False
+            Visible = False
+          end
+          object totFactProf: TBitBtn
+            Left = 9
+            Top = 50
+            Width = 219
+            Height = 24
+            Caption = 'Ajustar Montos Facturados &Profesionales'
+            TabOrder = 0
+            OnClick = totFactProfClick
+          end
+          object btnTotFOS: TBitBtn
+            Left = 9
+            Top = 76
+            Width = 219
+            Height = 24
+            Caption = 'Ajustar Montos Facturados &Obras Sociales'
+            TabOrder = 1
+            OnClick = totFactObraSocClick
+          end
+          object perAjuste: TMaskEdit
+            Left = 99
+            Top = 21
+            Width = 59
+            Height = 21
+            EditMask = '99/9999;1; '
+            MaxLength = 7
+            TabOrder = 2
+            Text = '  /    '
+            OnKeyDown = perAjusteKeyDown
+          end
+          object totProfIVA: TBitBtn
+            Left = 8
+            Top = 102
+            Width = 220
+            Height = 24
+            Caption = 'Ajustar Condici'#243'n I.V.A. en Tot. Profesional'
+            TabOrder = 3
+            OnClick = totProfIVAClick
+          end
+        end
+        object CheckBox1: TCheckBox
+          Left = 24
+          Top = 40
+          Width = 206
+          Height = 17
+          Caption = ' Ingreso/Ajuste de Montos Facturados '
+          TabOrder = 2
+          OnClick = CheckBox1Click
+        end
+        object GroupBox2: TGroupBox
+          Left = 15
+          Top = 187
+          Width = 237
+          Height = 77
+          Enabled = False
+          TabOrder = 3
+          object Label20: TLabel
+            Left = 11
+            Top = 23
+            Width = 34
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Desde:'
+          end
+          object Label21: TLabel
+            Left = 100
+            Top = 29
+            Width = 41
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Per'#237'odo:'
+          end
+          object Label25: TLabel
+            Left = 111
+            Top = 16
+            Width = 28
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Hasta'
+          end
+          object desde: TMaskEdit
+            Left = 48
+            Top = 20
+            Width = 49
+            Height = 21
+            EditMask = '99/9999;1; '
+            MaxLength = 7
+            TabOrder = 0
+            Text = '  /    '
+            OnKeyDown = desdeKeyDown
+          end
+          object hasta: TMaskEdit
+            Left = 145
+            Top = 20
+            Width = 49
+            Height = 21
+            EditMask = '99/9999;1; '
+            MaxLength = 7
+            TabOrder = 1
+            Text = '  /    '
+            OnKeyDown = hastaKeyDown
+          end
+          object Button1: TButton
+            Left = 9
+            Top = 47
+            Width = 88
+            Height = 25
+            Caption = '&Consultar'
+            TabOrder = 2
+            OnClick = Button1Click
+          end
+          object Button2: TButton
+            Left = 105
+            Top = 47
+            Width = 89
+            Height = 25
+            Caption = '&Imprimir Reporte'
+            TabOrder = 3
+            OnClick = Button2Click
+          end
+        end
+        object CheckBox4: TCheckBox
+          Left = 24
+          Top = 185
+          Width = 221
+          Height = 17
+          Caption = '&Control de Pagos Efectuados en Per'#237'odos'
+          TabOrder = 4
+          OnClick = CheckBox4Click
+        end
+      end
+    end
+    object TabSheet3: TTabSheet
+      Caption = '&Encab. Informes'
+      ImageIndex = 3
+      OnShow = TabSheet3Show
+      object Panel14: TPanel
+        Left = 0
+        Top = 0
+        Width = 478
+        Height = 305
+        Align = alClient
+        BevelInner = bvLowered
+        BorderWidth = 4
+        Caption = 'Panel2'
+        TabOrder = 0
+        object ScrollBox2: TScrollBox
+          Left = 6
+          Top = 6
+          Width = 466
+          Height = 293
+          HorzScrollBar.Increment = 1
+          HorzScrollBar.Margin = 1
+          HorzScrollBar.Range = 10
+          VertScrollBar.Margin = 6
+          VertScrollBar.Range = 10
+          Align = alClient
+          AutoScroll = False
+          BorderStyle = bsNone
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 0
+          object Shape2: TShape
+            Left = 458
+            Top = 8
+            Width = 10
+            Height = 12
+            Hint = 
+              'Rojo, tiene tel'#233'fonos alternativos - Verde, no tiene tel'#233'fonos a' +
+              'lternativos'
+            Brush.Color = clRed
+            ParentShowHint = False
+            Pen.Color = clRed
+            Shape = stCircle
+            ShowHint = True
+            Visible = False
+          end
+          object Panel15: TPanel
+            Left = 0
+            Top = 260
+            Width = 466
+            Height = 33
+            Align = alBottom
+            BevelOuter = bvNone
+            TabOrder = 0
+            object aplicar: TBitBtn
+              Left = 9
+              Top = 4
+              Width = 96
+              Height = 25
+              Caption = '&Aplicar Cambios'
+              Enabled = False
+              TabOrder = 0
+              OnClick = aplicarClick
+              NumGlyphs = 2
+            end
+          end
+          object Panel16: TPanel
+            Left = 0
+            Top = 0
+            Width = 466
+            Height = 65
+            Align = alTop
+            BevelInner = bvLowered
+            TabOrder = 1
+            object Titulo: TMemo
+              Left = 2
+              Top = 2
+              Width = 462
+              Height = 61
+              Align = alClient
+              BevelInner = bvNone
+              BorderStyle = bsNone
+              ScrollBars = ssBoth
+              TabOrder = 0
+              OnChange = TituloChange
+            end
+          end
+          object Panel17: TPanel
+            Left = 0
+            Top = 65
+            Width = 466
+            Height = 195
+            Align = alClient
+            BevelInner = bvLowered
+            TabOrder = 2
+            object Subtitulo: TMemo
+              Left = 2
+              Top = 2
+              Width = 462
+              Height = 191
+              Align = alClient
+              BorderStyle = bsNone
+              ScrollBars = ssBoth
+              TabOrder = 0
+              OnChange = TituloChange
+            end
+          end
+          object Panel18: TPanel
+            Left = 0
+            Top = 65
+            Width = 466
+            Height = 0
+            Align = alTop
+            BevelOuter = bvNone
+            TabOrder = 3
+          end
+        end
+      end
+    end
+  end
+  object Panel26: TPanel
+    Left = 0
+    Top = 0
+    Width = 486
+    Height = 24
+    Align = alTop
+    BevelOuter = bvNone
+    TabOrder = 2
+    object ToolBar1: TToolBar
+      Left = 0
+      Top = 0
+      Width = 249
+      Height = 24
+      Align = alLeft
+      Caption = 'ToolBar1'
+      Images = contenedorImg.ImagenesForms
+      TabOrder = 0
+      object DBNavigator: TDBNavigator
+        Left = 0
+        Top = 0
+        Width = 96
+        Height = 22
+        VisibleButtons = [nbFirst, nbPrior, nbNext, nbLast]
+        Flat = True
+        Hints.Strings = (
+          'Primer Registro'
+          'Registro Anterior'
+          'Registro Siguiente'
+          'Ultimo Registro')
+        TabOrder = 0
+      end
+      object Alta: TToolButton
+        Left = 96
+        Top = 0
+        Hint = 'Agregar Registro'
+        Caption = 'Alta'
+        ImageIndex = 4
+        ParentShowHint = False
+        ShowHint = True
+      end
+      object Baja: TToolButton
+        Left = 119
+        Top = 0
+        Hint = 'Eliminar Operaciones'
+        AutoSize = True
+        DropdownMenu = PopupMenu
+        Enabled = False
+        ImageIndex = 5
+        ParentShowHint = False
+        ShowHint = True
+      end
+      object Modificar: TToolButton
+        Left = 142
+        Top = 0
+        Hint = 'Modificar Datos'
+        Caption = 'Modificar'
+        ImageIndex = 6
+        ParentShowHint = False
+        ShowHint = True
+      end
+      object Buscar: TToolButton
+        Left = 165
+        Top = 0
+        Hint = 'Buscar'
+        Caption = 'Buscar'
+        ImageIndex = 7
+        ParentShowHint = False
+        ShowHint = True
+      end
+      object Deshacer: TToolButton
+        Left = 188
+        Top = 0
+        Hint = 'Deshacer'
+        Caption = 'Deshacer'
+        ImageIndex = 8
+        ParentShowHint = False
+        ShowHint = True
+      end
+      object Salir: TToolButton
+        Left = 211
+        Top = 0
+        Hint = 'Salir'
+        Caption = 'Salir'
+        ImageIndex = 9
+        ParentShowHint = False
+        ShowHint = True
+        OnClick = SalirClick
+      end
+    end
+    object Panel27: TPanel
+      Left = 319
+      Top = 0
+      Width = 167
+      Height = 24
+      Align = alRight
+      BevelOuter = bvNone
+      TabOrder = 1
+      object btnImprLab: TSpeedButton
+        Left = 14
+        Top = 0
+        Width = 152
+        Height = 23
+        Caption = 'F5 Retomar Impr. Laboratorio'
+        Flat = True
+        OnClick = emitirClick
+      end
+    end
+  end
+  object PopupMenu: TPopupMenu
+    Left = 440
+    Top = 296
+    object DistribucinObraSocial1: TMenuItem
+      Caption = 'Distribuci'#243'n Profesional'
+      OnClick = DistribucinObraSocial1Click
+    end
+    object PerodoCompleto1: TMenuItem
+      Caption = 'Per'#237'odo Completo ...'
+      Enabled = False
+      OnClick = PerodoCompleto1Click
+    end
+  end
+  object PopupMenu1: TPopupMenu
+    Left = 408
+    Top = 296
+    object ModificarPago1: TMenuItem
+      Caption = 'Modificar Pago'
+      OnClick = ModificarPago1Click
+    end
+    object BorrarPago1: TMenuItem
+      Caption = 'Borrar Pago'
+      OnClick = BorrarPago1Click
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object ConsultarMontosProfesionales1: TMenuItem
+      Caption = '&Consultar Montos Profesionales'
+      OnClick = ConsultarMontosProfesionales1Click
+    end
+    object N2: TMenuItem
+      Caption = '-'
+    end
+    object AjustarMontosenObrasSociales1: TMenuItem
+      Caption = '&Ajustar Montos en Obras Sociales'
+      OnClick = btnRecalcularOSClick
+    end
+  end
+end

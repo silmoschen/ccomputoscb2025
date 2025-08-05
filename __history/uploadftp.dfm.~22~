@@ -1,0 +1,109 @@
+object fmUploadFTP: TfmUploadFTP
+  Left = 0
+  Top = 0
+  Caption = 'Upload de Archivos'
+  ClientHeight = 159
+  ClientWidth = 376
+  Color = clBtnFace
+  Font.Charset = ANSI_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poMainFormCenter
+  OnCanResize = FormCanResize
+  OnClose = FormClose
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 140
+    Width = 376
+    Height = 19
+    Panels = <
+      item
+        Width = 50
+      end
+      item
+        Width = 50
+      end>
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 376
+    Height = 140
+    Align = alClient
+    BevelInner = bvLowered
+    BorderWidth = 4
+    TabOrder = 1
+    object Label1: TLabel
+      Left = 35
+      Top = 16
+      Width = 38
+      Height = 13
+      Alignment = taRightJustify
+      Caption = 'M'#243'dulo:'
+    end
+    object modulo: TLabel
+      Left = 77
+      Top = 16
+      Width = 3
+      Height = 13
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clNavy
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+    end
+    object Label2: TLabel
+      Left = 16
+      Top = 97
+      Width = 325
+      Height = 13
+      Caption = 'Este Proceso Puede Demorar, dependiendo del tama'#241'o del Archivo. '
+    end
+    object Label3: TLabel
+      Left = 16
+      Top = 112
+      Width = 130
+      Height = 13
+      Caption = 'Por favor, No lo Interrumpa.'
+    end
+    object btnIniciar: TButton
+      Left = 32
+      Top = 48
+      Width = 185
+      Height = 25
+      Caption = 'Iniciar Proceso de Transferencia'
+      TabOrder = 0
+      OnClick = btnIniciarClick
+    end
+    object btnCerrar: TButton
+      Left = 248
+      Top = 48
+      Width = 97
+      Height = 25
+      Caption = 'Cerrar'
+      TabOrder = 1
+      OnClick = btnCerrarClick
+    end
+  end
+  object IdLogDebug1: TIdLogDebug
+    LogTime = False
+    Left = 248
+    Top = 72
+  end
+  object IdFTP1: TIdFTP
+    AutoLogin = True
+    Passive = True
+    Password = 'idftp@client.com'
+    ProxySettings.ProxyType = fpcmNone
+    ProxySettings.Port = 0
+    Left = 280
+    Top = 72
+  end
+end

@@ -1,0 +1,155 @@
+object fmSoporteDigital: TfmSoporteDigital
+  Left = 0
+  Top = 0
+  Caption = 'Exportaci'#243'n Datos Soporte Digital'
+  ClientHeight = 341
+  ClientWidth = 573
+  Color = clBtnFace
+  Font.Charset = ANSI_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poMainFormCenter
+  PixelsPerInch = 96
+  TextHeight = 13
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 322
+    Width = 573
+    Height = 19
+    Panels = <
+      item
+        Width = 285
+      end
+      item
+        Text = 'F5 Buscar'
+        Width = 50
+      end>
+    ExplicitLeft = -46
+    ExplicitTop = 368
+    ExplicitWidth = 670
+  end
+  object Panel4: TPanel
+    Left = 0
+    Top = 0
+    Width = 573
+    Height = 322
+    Align = alClient
+    BevelInner = bvLowered
+    BorderWidth = 4
+    TabOrder = 1
+    ExplicitLeft = -38
+    ExplicitTop = -38
+    ExplicitWidth = 662
+    ExplicitHeight = 425
+    object Label1: TLabel
+      Left = 57
+      Top = 290
+      Width = 18
+      Height = 13
+      Alignment = taRightJustify
+      Caption = 'V'#237'a:'
+    end
+    object Label4: TLabel
+      Left = 36
+      Top = 21
+      Width = 40
+      Height = 13
+      Alignment = taRightJustify
+      Caption = 'Per'#237'odo:'
+    end
+    object Label5: TLabel
+      Left = 137
+      Top = 21
+      Width = 59
+      Height = 13
+      Caption = '(a Exportar)'
+    end
+    object estado: TLabel
+      Left = 82
+      Top = 34
+      Width = 3
+      Height = 13
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clNavy
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+    end
+    object Label6: TLabel
+      Left = 18
+      Top = 52
+      Width = 58
+      Height = 13
+      Alignment = taRightJustify
+      Caption = 'Obra Social:'
+    end
+    object Edit1: TEdit
+      Left = 81
+      Top = 287
+      Width = 328
+      Height = 21
+      TabOrder = 0
+    end
+    object periodo: TMaskEdit
+      Left = 82
+      Top = 18
+      Width = 51
+      Height = 21
+      EditMask = '99/9999;1; '
+      MaxLength = 7
+      TabOrder = 1
+      Text = '  /    '
+    end
+    object listObraSocial: TComboBox
+      Left = 82
+      Top = 49
+      Width = 239
+      Height = 21
+      ItemHeight = 13
+      TabOrder = 2
+    end
+    object listCodigo: TComboBox
+      Left = 253
+      Top = 49
+      Width = 42
+      Height = 21
+      ItemHeight = 13
+      TabOrder = 3
+      Visible = False
+    end
+    object Panel3: TPanel
+      Left = 429
+      Top = 6
+      Width = 138
+      Height = 310
+      Align = alRight
+      BevelOuter = bvNone
+      TabOrder = 4
+      ExplicitLeft = 512
+      ExplicitTop = 0
+      ExplicitHeight = 129
+      object btnCerrar: TButton
+        Left = 9
+        Top = 36
+        Width = 120
+        Height = 25
+        Caption = 'Cerrar'
+        TabOrder = 0
+        OnClick = btnCerrarClick
+      end
+      object btnFacturar: TButton
+        Left = 9
+        Top = 6
+        Width = 120
+        Height = 25
+        Caption = 'Generar Archivo'
+        Enabled = False
+        TabOrder = 1
+      end
+    end
+  end
+end

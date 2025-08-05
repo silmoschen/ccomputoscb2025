@@ -1,0 +1,216 @@
+unit CUnidadesNBU;
+
+interface
+
+uses SysUtils, CListar, CUtiles, DBTables, Contnrs, CIDBFM, Forms, CBDT, DB;
+
+type
+
+TTUnidadesNBU = class
+  Codigo, Periodo: string;
+  Unidades, Unidaddif: real;
+  tabla: TTable;
+ public
+  { Declaraciones Públicas }
+  constructor Create;
+
+  procedure   Registrar(xcodigo, xperiodo: string; xunidades, xunidaddif: real);
+  procedure   Borrar(xcodigo, xperiodo: string); overload;
+  procedure   Borrar(xcodigo: string); overload;
+  function    Buscar(xcodigo, xperiodo: string): boolean;
+  procedure   getDatos(xcodigo, xperiodo: string);
+  function    getObjects(xcodigo: string): TObjectList;
+
+  function    getUnidad(xcodigo, xperiodo: string): real;
+  function    getUnidades: real;
+  function    getUnidadDif: real;
+  function    getPeriodo: string;
+
+  procedure   conectar;
+  procedure   desconectar;
+
+  destructor  Destroy; override;
+ private
+  { Declaraciones Privadas }
+  u, ud: real;
+  per: string;
+  conexiones: shortint;
+end;
+
+function unidadesNBU: TTUnidadesNBU;
+
+implementation
+
+var
+  xUnidadesNBU: TTUnidadesNBU = nil;
+
+constructor TTUnidadesNBU.Create;
+var
+  dbconexion: string;
+begin
+  inherited Create;
+    inherited Create;
+  if (LowerCase(ExtractFileName(Application.ExeName)) = 'shmsoftfccb.exe') or                  // Motor de Persitencia para las versiones de Laboratorios Cliente-Servidor
+     (LowerCase(ExtractFileName(Application.ExeName)) = 'shmsoftfccbc.exe') or
+     (LowerCase(ExtractFileName(Application.ExeName)) = 'shmsoftfccbcretivac.exe') or
+     (LowerCase(ExtractFileName(Application.ExeName)) = 'shmsoftfccbcretiva.exe') then Begin   // Motor de Persitencia para las versiones de Laboratorios
+    if dbs.BaseClientServ = 'N' then DBConexion := dbs.DirSistema + '\archdat' else DBConexion := dbs.TDB1.DatabaseName;
+  end else Begin
+    if dbs.BaseClientServ = 'N' then DBConexion := dbs.DirSistema + '\archdat' else DBConexion := dbs.baseDat;
+  end;
+
+  tabla := datosdb.openDB('NBU_UNIDADES', '', '', dbconexion);
+
+  //tabla := datosdb.openDB('NBU_UNIDADES', '');
+end;
+
+destructor TTUnidadesNBU.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TTUnidadesNBU.Registrar(xcodigo, xperiodo: string; xunidades, xunidaddif: real);
+// Objetivo...: Grabar Atributos del Objeto
+begin
+  if Buscar(xcodigo, xperiodo) then tabla.Edit else tabla.Append;
+  tabla.FieldByName('codigo').AsString   := xcodigo;
+  tabla.FieldByName('periodo').AsString  := Copy(xperiodo, 4, 4) + Copy(xperiodo, 1, 2);
+  tabla.FieldByName('unidades').AsFloat  := xunidades;
+  tabla.FieldByName('unidaddif').AsFloat := xunidaddif;
+  try
+    tabla.Post;
+  except
+    tabla.Cancel;
+  end;
+  datosdb.closeDB(tabla); tabla.Open;
+end;
+
+procedure TTUnidadesNBU.Borrar(xcodigo, xperiodo: string);
+// Objetivo...: Eliminar un Objeto
+begin
+  if Buscar(xcodigo, xperiodo) then
+    begin
+      tabla.Delete;
+      datosdb.closeDB(tabla); tabla.Open;
+    end;
+end;
+
+procedure TTUnidadesNBU.Borrar(xcodigo: string);
+// Objetivo...: Eliminar un Objeto
+begin
+  datosdb.tranSQL('delete from ' + tabla.TableName + ' where codigo = ' + '''' + xcodigo + '''');
+  datosdb.closeDB(tabla); tabla.Open;
+end;
+
+
+function TTUnidadesNBU.Buscar(xcodigo, xperiodo: string): boolean;
+// Objetivo...: Buscar el Objeto solicitado
+begin
+  result := datosdb.Buscar(tabla, 'codigo', 'periodo', xcodigo, Copy(xperiodo, 4, 4) + Copy(xperiodo, 1, 2));
+end;
+
+procedure TTUnidadesNBU.getDatos(xcodigo, xperiodo: string);
+// Objetivo...: Retornar/Iniciar Atributos
+begin
+  if Buscar(xcodigo, xperiodo) then begin
+    codigo    := tabla.FieldByName('codigo').AsString;
+    periodo   := copy(tabla.FieldByName('periodo').AsString, 5, 2) + '/' + copy(tabla.FieldByName('periodo').AsString, 1, 4);
+    unidades  := tabla.FieldByName('unidades').AsFloat;
+    unidaddif := tabla.FieldByName('unidadif').AsFloat;
+  end else   begin
+    codigo := ''; periodo := ''; unidades := 0; unidaddif := 0;
+  end;
+end;
+
+function TTUnidadesNBU.getObjects(xcodigo: string): TObjectList;
+// Objetivo...: Retornar una lista de objetos
+var
+  l: TObjectList;
+  objeto: TTUnidadesNBU;
+begin
+  l := TObjectList.Create;
+  if not (tabla.Active) then tabla.Open;  
+  datosdb.Filtrar(tabla, 'codigo = ' + '''' + xcodigo + '''');
+  tabla.First;
+  while not tabla.Eof do begin
+    objeto           := TTUnidadesNBU.Create;
+    objeto.codigo    := tabla.FieldByName('codigo').AsString;
+    objeto.periodo   := copy(tabla.FieldByName('periodo').AsString, 5, 2) + '/' + copy(tabla.FieldByName('periodo').AsString, 1, 4);
+    objeto.unidades  := tabla.FieldByName('unidades').AsFloat;
+    objeto.unidaddif := tabla.FieldByName('unidaddif').AsFloat;
+    l.Add(objeto);
+    tabla.Next;
+  end;
+  datosdb.QuitarFiltro(tabla);
+  result := l;
+end;
+
+function TTUnidadesNBU.getUnidad(xcodigo, xperiodo: string): real;
+// Objetivo...: Retornar una lista de objetos
+begin
+  if not (tabla.Active) then tabla.Open;
+  datosdb.Filtrar(tabla, 'codigo = ' + '''' + xcodigo + '''');
+  tabla.First; u := 0; ud := 0;
+  while not tabla.Eof do begin
+    if (tabla.FieldByName('periodo').AsInteger <= strtoint(copy(xperiodo, 4, 4)+copy(xperiodo, 1, 2))) then begin
+      u   := tabla.FieldByName('unidades').AsFloat;
+      ud  := tabla.FieldByName('unidaddif').AsFloat;
+      per := copy(tabla.FieldByName('periodo').AsString, 5, 2) + '/' + copy(tabla.FieldByName('periodo').AsString, 1, 4);
+    end;
+    tabla.Next;
+  end;
+  datosdb.QuitarFiltro(tabla);
+  utiles.msgError(floattostr(u));
+  result := u;
+end;
+
+function  TTUnidadesNBU.getUnidades: real;
+begin
+  result := u;
+end;
+
+function  TTUnidadesNBU.getUnidadDif: real;
+begin
+  result := ud;
+end;
+
+function  TTUnidadesNBU.getPeriodo: string;
+begin
+  result := per;
+end;
+
+
+procedure TTUnidadesNBU.conectar;
+// Objetivo...: Abrir tablas de persistencia
+begin
+  if conexiones = 0 then Begin
+    if not tabla.Active then tabla.Open;
+  end;
+  Inc(conexiones);
+end;
+
+procedure TTUnidadesNBU.desconectar;
+// Objetivo...: cerrar tablas de persistencia
+begin
+  if conexiones > 0 then Dec(conexiones);
+  if conexiones = 0 then datosdb.closeDB(tabla);
+end;
+
+{===============================================================================}
+
+function UnidadesNBU: TTUnidadesNBU;
+begin
+  if xUnidadesNBU = nil then
+    xUnidadesNBU := TTUnidadesNBU.Create;
+  Result := xUnidadesNBU;
+end;
+
+{===============================================================================}
+
+initialization
+
+finalization
+  xUnidadesNBU.Free;
+
+
+end.

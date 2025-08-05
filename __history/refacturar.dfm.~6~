@@ -1,0 +1,112 @@
+object fmRF: TfmRF
+  Left = 0
+  Top = 0
+  Caption = 'RF'
+  ClientHeight = 374
+  ClientWidth = 120
+  Color = clBtnFace
+  Font.Charset = ANSI_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poMainFormCenter
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel2: TPanel
+    Left = 0
+    Top = 0
+    Width = 120
+    Height = 374
+    Align = alClient
+    BevelInner = bvLowered
+    BorderWidth = 4
+    Caption = 'Panel2'
+    TabOrder = 0
+    ExplicitHeight = 325
+    object ScrollBox: TScrollBox
+      Left = 6
+      Top = 6
+      Width = 108
+      Height = 362
+      HorzScrollBar.Increment = 1
+      HorzScrollBar.Margin = 1
+      HorzScrollBar.Range = 10
+      VertScrollBar.Margin = 6
+      VertScrollBar.Range = 10
+      Align = alClient
+      AutoScroll = False
+      BorderStyle = bsNone
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 0
+      ExplicitHeight = 313
+      object Panel3: TPanel
+        Left = 0
+        Top = 0
+        Width = 108
+        Height = 294
+        Align = alClient
+        BevelInner = bvLowered
+        TabOrder = 0
+        ExplicitHeight = 330
+        object F: TStringGrid
+          Left = 2
+          Top = 2
+          Width = 104
+          Height = 290
+          Align = alClient
+          BorderStyle = bsNone
+          ColCount = 1
+          DefaultRowHeight = 15
+          FixedCols = 0
+          RowCount = 10000
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect]
+          ParentFont = False
+          TabOrder = 0
+          ExplicitHeight = 277
+          ColWidths = (
+            77)
+        end
+      end
+      object Panel1: TPanel
+        Left = 0
+        Top = 294
+        Width = 108
+        Height = 68
+        Align = alBottom
+        BevelOuter = bvNone
+        TabOrder = 1
+        object btnRefacturar: TButton
+          Left = 14
+          Top = 37
+          Width = 75
+          Height = 25
+          Caption = 'Refacturar'
+          TabOrder = 0
+          OnClick = btnRefacturarClick
+        end
+        object btnAll: TCheckBox
+          Left = 15
+          Top = 10
+          Width = 76
+          Height = 17
+          Caption = 'Todos'
+          TabOrder = 1
+          OnClick = btnAllClick
+        end
+      end
+    end
+  end
+end

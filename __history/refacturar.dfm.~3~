@@ -1,0 +1,91 @@
+object fmRF: TfmRF
+  Left = 0
+  Top = 0
+  Caption = 'RF'
+  ClientHeight = 335
+  ClientWidth = 120
+  Color = clBtnFace
+  Font.Charset = ANSI_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poMainFormCenter
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel2: TPanel
+    Left = 0
+    Top = 0
+    Width = 120
+    Height = 335
+    Align = alClient
+    BevelInner = bvLowered
+    BorderWidth = 4
+    Caption = 'Panel2'
+    TabOrder = 0
+    ExplicitLeft = -219
+    ExplicitWidth = 357
+    ExplicitHeight = 321
+    object ScrollBox: TScrollBox
+      Left = 6
+      Top = 6
+      Width = 108
+      Height = 323
+      HorzScrollBar.Increment = 1
+      HorzScrollBar.Margin = 1
+      HorzScrollBar.Range = 10
+      VertScrollBar.Margin = 6
+      VertScrollBar.Range = 10
+      Align = alClient
+      AutoScroll = False
+      BorderStyle = bsNone
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 0
+      ExplicitWidth = 345
+      ExplicitHeight = 309
+      object Panel3: TPanel
+        Left = 0
+        Top = 0
+        Width = 108
+        Height = 323
+        Align = alClient
+        BevelInner = bvLowered
+        TabOrder = 0
+        ExplicitTop = 50
+        ExplicitWidth = 345
+        ExplicitHeight = 259
+        object F: TStringGrid
+          Left = 2
+          Top = 2
+          Width = 104
+          Height = 319
+          Align = alClient
+          BorderStyle = bsNone
+          ColCount = 1
+          DefaultRowHeight = 15
+          FixedCols = 0
+          RowCount = 10000
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect]
+          ParentFont = False
+          TabOrder = 0
+          ExplicitWidth = 341
+          ExplicitHeight = 255
+          ColWidths = (
+            77)
+        end
+      end
+    end
+  end
+end

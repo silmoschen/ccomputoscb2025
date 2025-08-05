@@ -1,0 +1,536 @@
+unit BajarActualizacionesOnLine;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, ExtCtrls, ComCtrls, FileCtrl, Mask, IdIntercept,
+  IdLogBase, IdLogDebug, IdAntiFreezeBase, IdAntiFreeze, IdBaseComponent,
+  IdComponent, IdTCPConnection, IdTCPClient, IdFTP, Grids,
+
+  {$IFDEF VER185}
+  Buttons, IdExplicitTLSClientServerBase, IdFTPCommon;
+  {$ENDIF}
+  {$IFDEF VER140}
+  Buttons;
+  {$ENDIF}
+
+type
+  TfmBajarActualizaciones = class(TForm)
+    StatusBar1: TStatusBar;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
+    Panel1: TPanel;
+    Panel3: TPanel;
+    Panel4: TPanel;
+    estado: TMemo;
+    Panel5: TPanel;
+    Panel6: TPanel;
+    btnAplicar: TButton;
+    IdFTP1: TIdFTP;
+    IdLogDebug1: TIdLogDebug;
+    Panel2: TPanel;
+    Label26: TLabel;
+    Panel7: TPanel;
+    cerrar: TButton;
+    DriveComboBox: TDriveComboBox;
+    RadioButton1: TRadioButton;
+    RadioButton2: TRadioButton;
+    GroupBox2: TGroupBox;
+    GroupBox1: TGroupBox;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label6: TLabel;
+    ftphost: TMaskEdit;
+    usuario: TMaskEdit;
+    contrasenia: TMaskEdit;
+    dirftp: TMaskEdit;
+    act2: TCheckBox;
+    act3: TCheckBox;
+    act1: TCheckBox;
+    act4: TCheckBox;
+    act5: TCheckBox;
+    Label4: TLabel;
+    cond: TCheckBox;
+    act6: TCheckBox;
+    act7: TCheckBox;
+    act8: TCheckBox;
+    Panel8: TPanel;
+    Panel9: TPanel;
+    Panel10: TPanel;
+    transferir: TButton;
+    S: TStringGrid;
+    Si: TSpeedButton;
+    Ninguno: TSpeedButton;
+    Todos: TSpeedButton;
+    btnTransferir: TButton;
+    act9: TCheckBox;
+    act10: TCheckBox;
+    IdAntiFreeze1: TIdAntiFreeze;
+    btnActualizarDesdeArchivo: TButton;
+    OpenDialog: TOpenDialog;
+    procedure cerrarClick(Sender: TObject);
+    procedure btnAplicarClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure transferirClick(Sender: TObject);
+    procedure RadioButton1Click(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure Panel1Resize(Sender: TObject);
+    procedure SiClick(Sender: TObject);
+    procedure TodosClick(Sender: TObject);
+    procedure NingunoClick(Sender: TObject);
+    procedure SKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure actualizarClick(Sender: TObject);
+    procedure btnActualizarDesdeArchivoClick(Sender: TObject);
+  private
+    { Private declarations }
+    archivo: TextFile;
+    AbortTransfer, datosok, redim: Boolean;
+    con: Cardinal;
+    TransferrignData: Boolean;
+    BytesToTransfer: LongWord;
+    STime: TDateTime;
+    procedure CargarListaObrasSociales;
+    procedure ConectarFTP;
+    procedure DesconectarFTP;
+    procedure ChageDir(DirName: String);
+    procedure conectarInternet;
+    procedure DesconectarInternet;
+    procedure Actualizar(xlista: TStringList);
+  public
+    { Public declarations }
+  end;
+
+var
+  fmBajarActualizaciones: TfmBajarActualizaciones;
+
+implementation
+
+uses CObrasSocialesCCB, CNomeclaCCB, CUtiles, CBDT, CUtilidadesArchivos,
+  FormAuto, RasDial3, RasDial2, RasDial1, RasDial4, CConfigForms, CNBU,
+  CUtilidadesStringGrid, DBTables, CUnidadesNBU;
+
+{$R *.dfm}
+
+procedure TfmBajarActualizaciones.conectarFTP;
+begin
+  if IdFTP1.Connected then try
+    if TransferrignData then IdFTP1.Abort;
+    IdFTP1.Quit;
+    finally
+  end else with IdFTP1 do try
+    {$IFDEF VER140}
+    User := usuario.Text;
+    {$ENDIF}
+    {$IFDEF VER185}
+    UserName := usuario.Text;
+    {$ENDIF}
+    Password := contrasenia.Text;
+    Host     := ftphost.Text;
+    Connect;
+    Self.ChageDir(dirftp.Text);
+  finally
+  end;
+end;
+
+procedure TfmBajarActualizaciones.DesconectarFTP;
+begin
+  if IdFTP1.Connected then try
+    IdFTP1.Disconnect;
+    finally
+  end
+end;
+
+procedure TfmBajarActualizaciones.ChageDir(DirName: String);
+begin
+  try
+    IdFTP1.ChangeDir(DirName);
+    {$IFDEF VER140}
+    IdFTP1.TransferType := ftASCII;
+    {$ENDIF}
+    {$IFDEF VER185}
+    IdFTP1.TransferType := ftASCII;
+    {$ENDIF}
+
+    estado.Lines.Add('');
+    estado.Lines.Add('Cambiando a Directorio ' + DirName);
+  finally
+  end;
+end;
+
+procedure TfmBajarActualizaciones.conectarInternet;
+Begin
+  Application.CreateForm(TAutoForm, AutoForm);
+  Application.CreateForm(TConfigureAutoForm, ConfigureAutoForm);
+  Application.CreateForm(TAboutForm, AboutForm);
+  Application.CreateForm(TRasDialerForm, RasDialerForm);
+  Application.CreateForm(TTimeAutoForm, TimeAutoForm);
+  datosok := False;
+  if Length(Trim(RasDialerForm.setIPAdress)) = 0 then   // Si No esta conectado
+    if utiles.msgSiNo('Los Información a Transferir se Generó Correctamente,', 'Desea Conectarse a Internet y Realizar la Transferencia ?') then Begin
+      RasDialerForm.ShowModal;
+      con := RasDialerForm.hRasConn;
+      datosok := True;
+    end;
+end;
+
+procedure TfmBajarActualizaciones.DesconectarInternet;
+Begin
+  if (datosok) and (Length(Trim(RasDialerForm.setIPAdress)) > 0) then   // Si solo nos conectamos a Internet para transferir
+    if utiles.msgSiNo('Los Datos se Transfirieron Correctamente', 'Quiere Desconectarse de Internet Ahora ?') then Begin
+      StatusBar1.Panels[0].Text := 'Desconectando ...!'; Refresh;
+      Application.CreateForm(TRasDialerForm, RasDialerForm);
+      RasDialerForm.hRasConn := con;
+      RasDialerForm.CancelButtonClick(nil);
+      StatusBar1.Panels[0].Text := ''; Refresh;
+    end;
+
+  if Assigned(RasDialerForm) then Begin
+    RasDialerForm.Release; RasDialerForm := nil;
+  end;
+  if Assigned(ConfigureAutoForm) then Begin
+    ConfigureAutoForm.Release; ConfigureAutoForm := nil;
+  end;
+  if Assigned(AboutForm) then Begin
+    AboutForm.Release; AboutForm := nil;
+  end;
+  if Assigned(TimeAutoForm) then Begin
+    TimeAutoForm.Release; TimeAutoForm := nil;
+  end;
+end;
+
+procedure TfmBajarActualizaciones.Actualizar(xlista: TStringList);
+// Objetivo...: Actualizar a Partir de los datos transferidos
+begin
+  StatusBar1.Panels[0].Text := 'Procesando Datos ...!'; StatusBar1.Refresh;
+  estado.Lines.Clear;
+  estado.Lines.Add('Procesando Actualizaciones'); estado.Lines.Add('');
+  //obsocial.DescompactarArchivosActualizaciones;
+  obsocial.conectar;
+  if act1.Checked then Begin
+    estado.Lines.Add('Actualizando Determinaciones con Monto Fijo');
+    obsocial.ImportarAnalisisMontoFijoXML(xlista);
+  end;
+  if act2.Checked then Begin
+    estado.Lines.Add('Actualizando Padrón de Obras Sociales');
+    obsocial.ImportarObrasSocialesXML(xlista);
+  end;
+  if act3.Checked then Begin
+    estado.Lines.Add('Actualizando Aranceles Obras Sociales');
+    obsocial.ImportarArancelesXML(xlista);
+  end;
+  if act4.Checked then Begin
+    estado.Lines.Add('Actualizando Aranceles Nomenclador');
+    nomeclatura.ImportarNomecladorXML;
+  end;
+  if act5.Checked then Begin
+    estado.Lines.Add('Actualizando Posición Fiscal Obras Sociales');
+    obsocial.ImportarPosicionFiscalXML(xlista);
+  end;
+  if act6.Checked then Begin
+    estado.Lines.Add('Actualizando Aranceles NBU');
+    obsocial.ImportarArancelesNBUXML(xlista);
+  end;
+  if act7.Checked then Begin
+    estado.Lines.Add('Actualizando Montos Fijos NBU');
+    obsocial.ImportarAnalisisMontoFijoNBU(xlista);
+  end;
+  if act8.Checked then Begin
+    estado.Lines.Add('Actualizando Unidades NBU');
+    obsocial.ImportarUnidadesNBU(xlista);
+  end;
+  if act9.Checked then Begin
+    estado.Lines.Add('Actualizando Nomenclador Nacional Normalizado');
+    nomeclatura.ImportarNomecladorXML;
+  end;
+  if act10.Checked then Begin
+    estado.Lines.Add('Actualizando NBU');
+    nbu.conectar;
+    nbu.Importar;
+    nbu.desconectar;
+    unidadesNBU.conectar;
+    unidadesNBU.importar;
+    unidadesNBU.desconectar;
+  end;
+
+  obsocial.desconectar;
+  estado.Lines.Add('');
+  estado.Lines.Add('Fin de las Actualizaciones');
+  StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+  transferir.Enabled := True;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TfmBajarActualizaciones.cerrarClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfmBajarActualizaciones.btnActualizarDesdeArchivoClick(
+  Sender: TObject);
+begin
+  if OpenDialog.Execute then begin
+    utilesarchivos.CopiarArchivos(OpenDialog.FileName, dbs.DirSistema + '\actualizaciones_online\download\actol.bck');
+    if utiles.msgSiNo('Realizar Proceso de Transferencia de Datos ?') then begin
+      obsocial.DescompactarArchivosActualizaciones;
+      CargarListaObrasSociales;
+      transferir.Enabled := True;
+      S.SetFocus;
+    end;
+  end;
+end;
+
+procedure TfmBajarActualizaciones.btnAplicarClick(Sender: TObject);
+begin
+  AssignFile(archivo, dbs.DirSistema + '\ftp.ini');
+  Rewrite(archivo);
+  WriteLn(archivo, ftphost.Text);
+  WriteLn(archivo, dirftp.Text);
+  WriteLn(archivo, usuario.Text);
+  WriteLn(archivo, contrasenia.Text);
+  closeFile(archivo);
+  AssignFile(archivo, dbs.DirSistema + '\actftp.ini');
+  Rewrite(archivo);
+  if act1.Checked then WriteLn(archivo, '1') else WriteLn(archivo, '0');
+  if act2.Checked then WriteLn(archivo, '1') else WriteLn(archivo, '0');
+  if act3.Checked then WriteLn(archivo, '1') else WriteLn(archivo, '0');
+  if act4.Checked then WriteLn(archivo, '1') else WriteLn(archivo, '0');
+  if act5.Checked then WriteLn(archivo, '1') else WriteLn(archivo, '0');
+  if cond.Checked then WriteLn(archivo, '1') else WriteLn(archivo, '0');
+  if act6.Checked then WriteLn(archivo, '1') else WriteLn(archivo, '0');
+  if act7.Checked then WriteLn(archivo, '1') else WriteLn(archivo, '0');
+  if act8.Checked then WriteLn(archivo, '1') else WriteLn(archivo, '0');
+  closeFile(archivo);
+end;
+
+procedure TfmBajarActualizaciones.FormShow(Sender: TObject);
+var
+  vhost, vftp, vusuario, vpassword, a1, a2, a3, a4, a5, c1, a6, a7, a8, a9, a10: String;
+begin
+  configform.Setear(fmBajarActualizaciones);
+  Left:=(Screen.Width - Width) div 2; //Top:=(Screen.Height - Height) div 2;
+  if FileExists(dbs.DirSistema + '\ftp.ini') then Begin
+    AssignFile(archivo, dbs.DirSistema + '\ftp.ini');
+    Reset(archivo);
+    ReadLn(archivo, vhost);
+    ReadLn(archivo, vftp);
+    ReadLn(archivo, vusuario);
+    ReadLn(archivo, vpassword);
+    closeFile(archivo);
+    ftphost.Text     := vhost;
+    dirftp.Text      := vftp;
+    usuario.Text     := vusuario;
+    contrasenia.Text := vpassword;
+  end;
+  if FileExists(dbs.DirSistema + '\actftp.ini') then Begin
+    AssignFile(archivo, dbs.DirSistema + '\actftp.ini');
+    Reset(archivo);
+    ReadLn(archivo, a1);
+    ReadLn(archivo, a2);
+    ReadLn(archivo, a3);
+    ReadLn(archivo, a4);
+    ReadLn(archivo, a5);
+    ReadLn(archivo, c1);
+    ReadLn(archivo, a6);
+    ReadLn(archivo, a7);
+    ReadLn(archivo, a8);
+    ReadLn(archivo, a9);
+    ReadLn(archivo, a10);
+    closeFile(archivo);
+    if a1 = '1' then act1.Checked := True else act1.Checked := False;
+    if a2 = '1' then act2.Checked := True else act2.Checked := False;
+    if a3 = '1' then act3.Checked := True else act3.Checked := False;
+    if a4 = '1' then act4.Checked := True else act4.Checked := False;
+    if a5 = '1' then act5.Checked := True else act5.Checked := False;
+    if c1 = '1' then cond.Checked := True else cond.Checked := False;
+    if Length(Trim(a6)) > 0 then Begin
+      if a6 = '1' then act6.Checked := True else act6.Checked := False;
+    end;
+    if Length(Trim(a7)) > 0 then Begin
+      if a7 = '1' then act7.Checked := True else act7.Checked := False;
+    end;
+    if Length(Trim(a8)) > 0 then Begin
+      if a8 = '1' then act8.Checked := True else act8.Checked := False;
+    end;
+    if Length(Trim(a9)) > 0 then Begin
+      if a9 = '1' then act9.Checked := True else act9.Checked := False;
+    end;
+    if Length(Trim(a10)) > 0 then Begin
+      if a10 = '1' then act10.Checked := True else act10.Checked := False;
+    end;
+
+  end;
+  S.Cells[0, 0] := 'Código'; S.Cells[1, 0] := 'S'; S.Cells[2, 0] := 'Obra Social';
+  redim := False;
+end;
+
+procedure TfmBajarActualizaciones.CargarListaObrasSociales;
+var
+  r: TQuery;
+  i: Integer;
+Begin
+  grid.IniciarGrilla(S);
+  r := obsocial.setObrasSocialesImportadas;
+  r.Open; i := 0;
+  while not r.Eof do Begin
+    Inc(i);
+    S.Cells[0, i] := r.FieldByName('codos').AsString;
+    S.Cells[2, i] := r.FieldByName('nombre').AsString;
+    r.Next;
+  end;
+  r.Close; r.Free;
+end;
+
+procedure TfmBajarActualizaciones.transferirClick(Sender: TObject);
+var
+  continuar, transf, conectado: Boolean;
+  d: char;
+  l: TStringList;
+  i, j: Integer;
+  Name: String;
+
+begin
+  StatusBar1.Panels[0].Text := 'Transfiriendo Datos'; StatusBar1.Refresh;
+  estado.Lines.Add('Estableciendo Conexión ...'); estado.Lines.Add('');
+  utilesarchivos.BorrarArchivos(dbs.DirSistema + '\actualizaciones_online\download', '*.*');
+  transf := False;
+  if RadioButton1.Checked then Begin  // Transferir a Medio
+    if ((Lowercase(Copy(DriveComboBox.Text, 1, 1)) = 'a') or (Lowercase(Copy(DriveComboBox.Text, 1, 1)) = 'b') or (Lowercase(Copy(DriveComboBox.Text, 1, 1)) = 'c')) then Begin
+      if Lowercase(Copy(DriveComboBox.Text, 1, 1)) = 'a' then d := 'a';
+      if Lowercase(Copy(DriveComboBox.Text, 1, 1)) = 'b' then d := 'b';
+      if Lowercase(Copy(DriveComboBox.Text, 1, 1)) = 'c' then d := 'c';
+      if utilesarchivos.verificarSiHayDiskette(d) then Continuar := True else utiles.msgError('La Unidad ' + UpperCase(d) + ': no está Preparada ...!');
+      if d = 'c' then Continuar := True;
+      Refresh;
+    end;
+    if Continuar then Begin
+      estado.Lines.Add('Iniciando Proceso de Transferencia ...');
+      utilesarchivos.CopiarArchivos(d + ':', '*.bck', dbs.DirSistema + '\actualizaciones_online\download');
+      StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+      estado.Lines.Add('Datos Transferidos OK !');
+      transf := True;
+    end;
+  end;
+
+  if RadioButton2.Checked then Begin   // Transferir Vía FTP
+    if not cond.Checked then Begin
+      conectarInternet;
+      if Length(Trim(RasDialerForm.setIPAdress)) > 0 then conectado := True;
+    end else
+      conectado := True;
+    if conectado then Begin
+      conectarFTP;
+      if IdFTP1.Connected then begin
+        l := TStringList.Create;
+        IdFTP1.List(l);
+        for i := 1 to l.Count do Begin
+          if ExtractFileExt(ExtractFileName(l.Strings[i-1])) = '.bck' then Begin
+            Name := 'actol.bck'; //Copy(ExtractFileName(l.Strings[i-1]), Length(TrimRight(ExtractFileName(l.Strings[i-1]))) - 17, 18);
+            j    := Pos(' ', Name);
+            Name := Trim(Copy(Name, j, 18));
+            if Pos('.bck', Name) > 0 then Begin
+              estado.Lines.Add('Descargando ' + l.Strings[i-1] + ' de: ' + dirftp.Text);
+              IdFTP1.TransferType := ftBinary;
+              BytesToTransfer := IdFTP1.Size(ExtractFileName(l.Strings[i-1]));
+              IdFTP1.Get(Name, dbs.DirSistema + '\actualizaciones_online\download\' + Name, true);
+              transf := True;
+            end;
+          end;
+        end;
+        estado.Lines.Add('');
+        estado.Lines.Add('Transferencia Finalizada');
+      end;
+      desconectarFTP;
+    end else
+      utiles.msgError('Error - No Hay Conexion Establecida ...!');
+    if not cond.Checked then DesconectarInternet;
+  end;
+
+  if transf then Begin
+    //Actualizar;
+    obsocial.DescompactarArchivosActualizaciones;
+    CargarListaObrasSociales;
+    transferir.Enabled := True;
+    S.SetFocus;
+  end;
+  estado.Lines.Add('Proceso Terminado ...!'); estado.Lines.Add('');
+end;
+
+procedure TfmBajarActualizaciones.RadioButton1Click(Sender: TObject);
+begin
+  if RadioButton1.Checked then DriveComboBox.Enabled := True else DriveComboBox.Enabled := False;
+end;
+
+procedure TfmBajarActualizaciones.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  configform.Guardar(fmBajarActualizaciones, redim);
+end;
+
+procedure TfmBajarActualizaciones.Panel1Resize(Sender: TObject);
+begin
+  redim := True;
+end;
+
+procedure TfmBajarActualizaciones.SiClick(Sender: TObject);
+begin
+  if Length(Trim(S.cells[0, S.row])) > 0 then Begin
+    if S.cells[1, S.row] <> 'S' then S.cells[1, S.row] := 'S' else S.cells[1, S.row] := ' ';
+    if (S.row < S.rowcount) and (Length(Trim(S.cells[0, S.row + 1])) > 0) then S.row := S.row + 1;
+    S.Refresh;
+  end;
+end;
+
+procedure TfmBajarActualizaciones.TodosClick(Sender: TObject);
+var
+  i: integer;
+begin
+  For i := 1 to S.RowCount do Begin
+    if Length(Trim(S.Cells[0, i])) = 0 then Break;
+    S.cells[1, i] := 'S';
+  end;
+  S.Refresh;
+end;
+
+procedure TfmBajarActualizaciones.NingunoClick(Sender: TObject);
+var
+  i: integer;
+begin
+  For i := 1 to S.RowCount do Begin
+    if Length(Trim(S.Cells[0, i])) = 0 then Break;
+    S.cells[1, i] := '';
+  end;
+  S.Refresh;
+end;
+
+procedure TfmBajarActualizaciones.SKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_SPACE then SiClick(Self);
+  if Key = VK_RETURN then
+    if transferir.Enabled then transferir.setFocus;
+end;
+
+procedure TfmBajarActualizaciones.actualizarClick(Sender: TObject);
+var
+  lista: TStringList;
+  i: Integer;
+begin
+  lista := TStringList.Create;
+  for i := 1 to S.RowCount do Begin
+    if Length(Trim(S.Cells[0, i])) = 0 then Break;
+    if S.Cells[1, i] = 'S' then lista.Add(S.Cells[0, i]);
+  end;
+
+  if lista.Count = 0 then utiles.msgError('No hay Obras Sociales Seleccionadas para Actualizar ...!') else Begin
+    Actualizar(lista);
+    Cerrar.SetFocus;
+  end;
+
+  lista.Destroy; lista := Nil;
+end;
+
+end.

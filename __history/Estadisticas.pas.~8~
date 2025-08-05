@@ -1,0 +1,852 @@
+unit Estadisticas;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, ComCtrls, StdCtrls, Buttons, Mask, Editv, BorBtns,
+  LMDCustomButton, LMDButton, Menus;
+
+type
+  TfmEstadisticas = class(TForm)
+    StatusBar1: TStatusBar;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    Panel19: TPanel;
+    ScrollBox3: TScrollBox;
+    GroupBox1: TGroupBox;
+    GroupBox2: TGroupBox;
+    TabSheet2: TTabSheet;
+    Panel1: TPanel;
+    ScrollBox1: TScrollBox;
+    TabSheet3: TTabSheet;
+    Panel2: TPanel;
+    ScrollBox2: TScrollBox;
+    Label3: TLabel;
+    GroupBox3: TGroupBox;
+    impresiontxt: TCheckBox;
+    lineas: TEditValid;
+    sep: TEditValid;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    SaveDialog: TSaveDialog;
+    RadioButton1: TRadioButton;
+    RadioButton2: TRadioButton;
+    practicasFact: TRadioButton;
+    RadioButton3: TRadioButton;
+    RadioButton4: TRadioButton;
+    RadioButton5: TRadioButton;
+    RadioButton6: TRadioButton;
+    RadioButton7: TRadioButton;
+    Panel3: TPanel;
+    dispSalida: TBitBtn;
+    emitir: TBitBtn;
+    Salir: TBitBtn;
+    Panel4: TPanel;
+    Label1: TLabel;
+    des: TLabel;
+    id: TLabel;
+    periodo: TMaskEdit;
+    GroupBox4: TGroupBox;
+    totf: TLabel;
+    totp: TLabel;
+    Label20: TLabel;
+    Label21: TLabel;
+    totFOS: TBitBtn;
+    CheckBox1: TCheckBox;
+    Label13: TLabel;
+    perAjuste: TMaskEdit;
+    PopupMenu: TPopupMenu;
+    ExportaraExcel20001: TMenuItem;
+    ExportarcomoArchivodeTexto1: TMenuItem;
+    Label30: TLabel;
+    Entidad: TMaskEdit;
+    separarCodigos: TCheckBox;
+    infobrasocial: TCheckBox;
+    TabSheet4: TTabSheet;
+    Panel5: TPanel;
+    ScrollBox4: TScrollBox;
+    Panel6: TPanel;
+    Label60: TLabel;
+    fadesde: TMaskEdit;
+    Label61: TLabel;
+    fahasta: TMaskEdit;
+    btnDispositivo1: TBitBtn;
+    btnEmitir1: TBitBtn;
+    Panel7: TPanel;
+    btnSalir1: TBitBtn;
+    Panel8: TPanel;
+    GroupBox6: TGroupBox;
+    infTabularOS: TRadioButton;
+    infTabularInd: TRadioButton;
+    infEstMedico: TRadioButton;
+    infEstDiagnostico: TRadioButton;
+    infEstMedicoDiagnostico: TRadioButton;
+    infEstMedicoCabecera: TRadioButton;
+    InfDetAutorizadas: TRadioButton;
+    InfDetRechazadas: TRadioButton;
+    CheckBox5: TCheckBox;
+    Panel9: TPanel;
+    btnEleccionObsocial: TButton;
+    btnEleMedicos: TButton;
+    PopupMenu1: TPopupMenu;
+    MenuItem1: TMenuItem;
+    MenuItem2: TMenuItem;
+    os: TLabel;
+    perunificados: TCheckBox;
+    TabSheet5: TTabSheet;
+    Panel10: TPanel;
+    Panel11: TPanel;
+    Label2: TLabel;
+    Label8: TLabel;
+    perdesde: TMaskEdit;
+    Label7: TLabel;
+    perhasta: TMaskEdit;
+    Panel12: TPanel;
+    DispositivoSalidaIP: TBitBtn;
+    GenerarIP: TBitBtn;
+    SalirIP: TBitBtn;
+    ExportarIP: TBitBtn;
+    btnEleOSIP: TBitBtn;
+    codosip: TLabel;
+    nosip: TLabel;
+    GroupBox5: TGroupBox;
+    Infip1: TRadioButton;
+    EstadisticasProf: TRadioButton;
+    Panel13: TPanel;
+    profobsoc: TBitBtn;
+    infautrechpac: TRadioButton;
+    infip2: TRadioButton;
+    btnEleccionPracticas: TBitBtn;
+    RadioButton8: TRadioButton;
+    CheckBox2: TCheckBox;
+    btnExportar: TBitBtn;
+    BitBtn1: TBitBtn;
+    procedure dispSalidaClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure emitirClick(Sender: TObject);
+    procedure periodoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure RadioButton1KeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure SalirClick(Sender: TObject);
+    procedure RadioButton4Click(Sender: TObject);
+    procedure profobsocClick(Sender: TObject);
+    procedure RadioButton1Click(Sender: TObject);
+    procedure RadioButton4KeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure practicasFactClick(Sender: TObject);
+    procedure practicasFactKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure perAjusteKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure totFOSClick(Sender: TObject);
+    procedure periodoChange(Sender: TObject);
+    procedure ExportarcomoArchivodeTexto1Click(Sender: TObject);
+    procedure ExportaraExcel20001Click(Sender: TObject);
+    procedure TabSheet3Hide(Sender: TObject);
+    procedure btnEleccionObsocialClick(Sender: TObject);
+    procedure InfDetAutorizadasKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure fadesdeKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure fahastaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure btnDispositivo1Click(Sender: TObject);
+    procedure btnEmitir1Click(Sender: TObject);
+    procedure infEstMedicoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure btnEleMedicosClick(Sender: TObject);
+    procedure infEstMedicoCabeceraKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure MenuItem1Click(Sender: TObject);
+    procedure perdesdeKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure perhastaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure btnEleOSIPClick(Sender: TObject);
+    procedure DispositivoSalidaIPClick(Sender: TObject);
+    procedure Infip1KeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure GenerarIPClick(Sender: TObject);
+    procedure ExportarIPClick(Sender: TObject);
+    procedure EstadisticasProfClick(Sender: TObject);
+    procedure infautrechpacKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure infip2KeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure btnEleccionPracticasClick(Sender: TObject);
+    procedure Panel5CanResize(Sender: TObject; var NewWidth, NewHeight: Integer;
+      var Resize: Boolean);
+  private
+    { Private declarations }
+    salida: Char;
+    redim: Boolean;
+    archivo: TextFile;
+    lista, listaos: TStringList;
+    nrodoc: String;
+  public
+    { Public declarations }
+  end;
+
+var
+  fmEstadisticas: TfmEstadisticas;
+
+implementation
+
+uses CEstadisticasFacturacionCCB, CFacturacionCCB, Disposit, CBDT, CUtiles, CObrasSocialesCCB,
+     NominaObrasSociales, CConfigForms, EleccionObrasSociales, CAuditoriaCCB, CPadronOSCCB,
+     EleccionMedicos, EleccionMedicosCabecera, CProfesionalCCB, EleccionProfesionales,
+     NominaAfiliado, CNomeclaCCB, EleccionPracticas;
+
+{$R *.dfm}
+
+procedure TfmEstadisticas.dispSalidaClick(Sender: TObject);
+begin
+  if not Assigned(Dispositivo) then Application.CreateForm(TDispositivo, Dispositivo);
+  Dispositivo.ShowModal;
+  salida := 'P';
+  if Dispositivo.Impresor.Checked then
+    if not impresiontxt.Checked then salida := 'I' else salida := 'T';
+  if salida = 'T' then estadisticaccb.LineasPag := StrToInt(lineas.Text);
+  ActiveControl := emitir;
+end;
+
+procedure TfmEstadisticas.FormShow(Sender: TObject);
+var
+  m, e, s: String;
+begin
+  Application.CreateForm(TfmEleObraSociales, fmEleObraSociales);
+  Application.CreateForm(TfmEleMedicos, fmEleMedicos);
+  Application.CreateForm(TfmEleMedicosCabecera, fmEleMedicosCabecera);
+  if not configform.Setear(fmEstadisticas) then Begin
+    Height := 355; Width := 421; Top := 25; Left := 178;
+  end;
+  periodo.Text  := utiles.setPeriodoActual;
+  salida        := 'P';
+  ActiveControl := periodo;
+  if FileExists(dbs.DirSistema + '\modulo_estadistica.ini') then Begin
+    AssignFile(archivo, dbs.DirSistema + '\modulo_estadistica.ini');
+    Reset(archivo);
+    ReadLn(archivo, m);
+    ReadLn(archivo, e);
+    ReadLn(archivo, s);
+    if m = 'S' then impresiontxt.Checked := True;
+    lineas.Text := e;
+    sep.Text    := s;
+    closeFile(archivo);
+  end;
+  if FileExists(dbs.DirSistema + '\est_entidad.ini') then Begin
+    AssignFile(archivo, dbs.DirSistema + '\est_entidad.ini');
+    Reset(archivo);
+    ReadLn(archivo, e);
+    ReadLn(archivo, m);
+    closeFile(archivo);
+    Entidad.Text := e;
+    if m = '1' then separarCodigos.Checked := True else separarCodigos.Checked := False;
+  end;
+  lista := TStringList.Create;
+  redim := False;
+end;
+
+procedure TfmEstadisticas.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  if redim then utiles.msgError('s');
+
+  configform.Guardar(fmEstadisticas, redim);
+  if Assigned(fmEleObraSociales) then Begin
+    fmEleObraSociales.Release; fmEleObraSociales := Nil;
+  end;
+  if Assigned(fmEleMedicos) then Begin
+    fmEleMedicos.Release; fmEleMedicos := Nil;
+  end;
+  if Assigned(fmEleMedicosCabecera) then Begin
+    fmEleMedicosCabecera.Release; fmEleMedicosCabecera := Nil;
+  end;
+
+  AssignFile(archivo, dbs.DirSistema + '\modulo_estadistica.ini');
+  Rewrite(archivo);
+  if impresiontxt.Checked then WriteLn(archivo, 'S') else WriteLn(archivo, 'N');
+  WriteLn(archivo, lineas.Text);
+  WriteLn(archivo, sep.Text);
+  closeFile(archivo);
+  Release; fmEstadisticas := nil;
+end;
+
+procedure TfmEstadisticas.emitirClick(Sender: TObject);
+var
+  archivo, p: String;
+  l: Boolean;
+begin
+  if impresiontxt.Checked then Begin
+    estadisticaCCB.LineasPag     := StrToInt(lineas.Text);
+    estadisticaCCB.lineas_blanco := StrToInt(sep.Text);
+  end;
+
+  estadisticaCCB.Entidad := Entidad.Text;
+  l := False;
+  p := periodo.Text;
+  if emitir.Caption = '&Exportar Datos' then Begin
+    salida := 'T'; archivo := '';
+    SaveDialog.Execute;
+    if SaveDialog.FilterIndex = 1 then archivo := SaveDialog.FileName + '.txt' else archivo := SaveDialog.FileName;
+    estadisticaCCB.ExportarDatos(archivo);
+    Refresh;
+  end;
+
+  if (RadioButton1.Checked) or (RadioButton2.Checked) or (RadioButton3.Checked) or (RadioButton4.Checked) or
+     (RadioButton5.Checked) or (RadioButton6.Checked) or (RadioButton7.Checked) or (practicasFact.Checked) or
+     (EstadisticasProf.Checked) or (RadioButton8.Checked) then Begin
+    if not perunificados.Checked then facturacion.ProcesarDatosCentrales(periodo.Text) else Begin
+      facturacion.ProcesarDatosCentrales(periodo.Text);
+      periodo.Text := facturacion.setPeriodoUnificacion;
+      facturacion.ProcesarUnificados;
+    end;
+  end;
+
+  if RadioButton1.Checked then Begin
+    StatusBar1.Panels[0].Text := RadioButton1.Caption; StatusBar1.Refresh;
+    estadisticaCCB.InicidenciaDeCadaObraSocial_Global(periodo.Text, salida);
+  end;
+  if RadioButton2.Checked then Begin
+    StatusBar1.Panels[0].Text := RadioButton2.Caption; StatusBar1.Refresh;
+    estadisticaCCB.InicidenciaPorDeterminacion_Global(periodo.Text, '', salida);
+  end;
+  if RadioButton3.Checked then Begin
+    StatusBar1.Panels[0].Text := RadioButton3.Caption; StatusBar1.Refresh;
+    estadisticaCCB.InicidenciaDeCadaProfesional_Global(periodo.Text, id.Caption, salida);
+  end;
+
+  if RadioButton4.Checked then
+    if Length(Trim(id.Caption)) > 0 then Begin
+      StatusBar1.Panels[0].Text := RadioButton4.Caption; StatusBar1.Refresh;
+      estadisticaCCB.InicidenciaCodigosFactPesos(periodo.Text, id.Caption, salida);
+    end;
+
+  if RadioButton5.Checked then
+    if Length(Trim(id.Caption)) > 0 then Begin
+      StatusBar1.Panels[0].Text := RadioButton5.Caption; StatusBar1.Refresh;
+      estadisticaCCB.InicidenciaPorDeterminacion_Global(periodo.Text, id.Caption, salida);
+    end;
+
+  if RadioButton6.Checked then
+    if Length(Trim(id.Caption)) > 0 then Begin
+      StatusBar1.Panels[0].Text := RadioButton6.Caption; StatusBar1.Refresh;
+      estadisticaCCB.InicidenciaCodigosFacturadosPorProfesional(periodo.Text, id.Caption, salida);
+    end;
+
+  if RadioButton7.Checked then
+    if Length(Trim(id.Caption)) = 0 then Begin
+      utiles.msgError('No hay Obra Social Seleccionada ...!');
+      l := True;
+    end else Begin
+      StatusBar1.Panels[0].Text := RadioButton7.Caption; StatusBar1.Refresh;
+      estadisticaCCB.InicidenciaPorDeterminacion_Detallada(periodo.Text, id.Caption, '', salida, infobrasocial.Checked, separarCodigos.Checked, false, CheckBox2.Checked);
+    end;
+
+  if RadioButton8.Checked then
+    if Length(Trim(id.Caption)) = 0 then Begin
+      utiles.msgError('No hay Obra Social Seleccionada ...!');
+      l := True;
+    end else Begin
+      StatusBar1.Panels[0].Text := RadioButton8.Caption; StatusBar1.Refresh;
+      estadisticaCCB.InicidenciaPorDeterminacion_Detallada(periodo.Text, id.Caption, facturacion.setPeriodoUnificacion, salida, infobrasocial.Checked, separarCodigos.Checked, true, CheckBox2.Checked);
+      //estadisticaCCB.InfRecuentoPorPractica(periodo.Text, Nil, salida);
+    end;
+
+  if practicasFact.Checked then
+    if  fmEleObraSociales.cantidadSel > 0 then Begin
+      StatusBar1.Panels[0].Text := practicasFact.Caption; StatusBar1.Refresh;
+      estadisticaCCB.PracticasFacturadas_Global(periodo.Text, fmEleObraSociales.lista, salida);
+    end else Begin
+      utiles.msgError('No ha Seleccionado Obra(s) Social(es) ...!');
+      l := True;
+    end;
+
+  if (RadioButton4.Checked) or (RadioButton5.Checked) or (RadioButton6.Checked) then Begin
+    if Length(Trim(id.Caption)) = 0 then Begin
+      utiles.msgError('No ha Seleccionado Obra(s) Social(es) ...!');
+      l := True;
+    end;
+  end;
+
+  if not l then Begin
+    if (RadioButton1.Checked) or (RadioButton2.Checked) or (RadioButton3.Checked) or (RadioButton7.Checked) or (RadioButton8.Checked) then estadisticaCCB.Listar(salida);
+    if (RadioButton4.Checked) or (RadioButton5.Checked) or (RadioButton6.Checked) then
+      if Length(Trim(id.Caption)) > 0 then estadisticaCCB.Listar(salida);
+
+    if emitir.Caption <> '&Exportar Datos' then
+      if (practicasFact.Checked) and not (l) then estadisticaCCB.Listar(salida);
+    if emitir.Caption = '&Exportar Datos' then estadisticaCCB.FinalizarExportacion;
+  end;
+
+  if EstadisticasProf.Checked then Begin
+     StatusBar1.Panels[0].Text := EstadisticasProf.Caption; StatusBar1.Refresh;
+     estadisticaCCB.InicidenciaDeCadaProfesionalDet_Global(periodo.Text, lista, listaos, salida);
+  end;
+
+  emitir.Caption := '&Generar Informe';
+  StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+  periodo.Text := p;
+  ActiveControl := salir;
+end;
+
+procedure TfmEstadisticas.periodoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    if utiles.verificarPeriodo(periodo.Text) then ActiveControl := RadioButton1;
+end;
+
+procedure TfmEstadisticas.RadioButton1KeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then ActiveControl := dispSalida;
+end;
+
+procedure TfmEstadisticas.SalirClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfmEstadisticas.RadioButton4Click(Sender: TObject);
+begin
+  profobsoc.Caption := '&Obra Social'; RadioButton1.Checked := False; RadioButton2.Checked := False; RadioButton3.Checked := False; profobsoc.Enabled := True; practicasFact.Checked := False;
+end;
+
+procedure TfmEstadisticas.profobsocClick(Sender: TObject);
+begin
+  id.Caption := ''; des.Caption := '';
+  if practicasFact.Checked then Begin
+    obsocial.conectar;
+    fmEleObraSociales.CargarDatos(1);
+    fmEleObraSociales.ShowModal;
+    obsocial.desconectar;
+  end else
+  if profobsoc.Caption = '&Obra Social' then Begin
+    obsocial.conectar;
+    Application.CreateForm(TfmListObrasSociales, fmListObrasSociales);
+    fmListObrasSociales.introSalir := True;
+    fmListObrasSociales.ShowModal;
+    if fmListObrasSociales.seleccionOK then Begin
+       id.Caption  := obsocial.tabla.FieldByName('codos').AsString;
+       des.Caption := Copy(obsocial.tabla.FieldByName('nombre').AsString, 1, 35);
+       ActiveControl := dispSalida;
+    end;
+    fmListObrasSociales.Release; fmListObrasSociales := nil;
+    obsocial.desconectar;
+  end;
+  if profobsoc.Caption = '&Profesionales' then Begin
+    profesional.conectar;
+    Application.CreateForm(TfmEleProfesional, fmEleProfesional);
+    fmEleProfesional.CargarDatos;
+    fmEleProfesional.ShowModal;
+    lista         := fmEleProfesional.lista;
+    Refresh;
+    Application.CreateForm(TfmListObrasSociales, fmListObrasSociales);
+    obsocial.conectar;
+    fmEleObraSociales.CargarDatos(1);
+    fmEleObraSociales.ShowModal;
+    listaos := fmEleObraSociales.lista;
+    obsocial.desconectar;
+    fmListObrasSociales.Release; fmListObrasSociales := nil;
+    ActiveControl := dispSalida;
+    fmEleProfesional.Release; fmEleProfesional := nil;
+    profesional.desconectar;
+  end;
+  dispSalida.SetFocus;
+end;
+
+procedure TfmEstadisticas.RadioButton1Click(Sender: TObject);
+begin
+  RadioButton4.Checked := False; RadioButton5.Checked := False; RadioButton6.Checked := False; profobsoc.Enabled := False; RadioButton7.Checked := False;
+end;
+
+procedure TfmEstadisticas.RadioButton4KeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then ActiveControl := profobsoc;
+end;
+
+procedure TfmEstadisticas.practicasFactClick(Sender: TObject);
+begin
+  RadioButton1Click(Self);
+  profobsoc.Caption := '&Obra Social';
+  profobsoc.Enabled := True;
+end;
+
+procedure TfmEstadisticas.practicasFactKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then profobsoc.SetFocus;
+end;
+
+procedure TfmEstadisticas.perAjusteKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    if utiles.verificarPeriodo(perAjuste.Text, 'Período Incorrecto ...!') then totFOS.SetFocus;
+end;
+
+procedure TfmEstadisticas.totFOSClick(Sender: TObject);
+begin
+  StatusBar1.Panels[0].Text := 'Procesando Total Facturado Obras Sociales'; StatusBar1.Refresh;
+  totFOS.Enabled   := False;
+  facturacion.ProcesarDatosCentrales(perAjuste.Text);
+  totf.Caption := utiles.FormatearNumero(FloatToStr(facturacion.setTotalFacturado(perajuste.Text))); totf.Refresh;
+  StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+
+  StatusBar1.Panels[0].Text := 'Procesando Total Facturado Profesionales'; StatusBar1.Refresh;
+  totp.Caption := utiles.FormatearNumero(FloatToStr(facturacion.setTotalFacturadoProfesionales(perajuste.Text))); totp.Refresh;
+  facturacion.CalcularMontosFacturacion(perajuste.Text);
+  facturacion.desconectar;
+  totFOS.Enabled   := True;
+  StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+end;
+
+procedure TfmEstadisticas.periodoChange(Sender: TObject);
+begin
+  perAjuste.Text := periodo.Text;
+end;
+
+procedure TfmEstadisticas.ExportarcomoArchivodeTexto1Click(
+  Sender: TObject);
+begin
+  if emitir.Caption <> '&Exportar Datos' then emitir.Caption := '&Exportar Datos' else
+    emitir.Caption := '&Generar Informe';
+end;
+
+procedure TfmEstadisticas.ExportaraExcel20001Click(Sender: TObject);
+begin
+  if RadioButton7.Checked then Begin
+    if Length(Trim(id.Caption)) = 0 then Begin
+      utiles.msgError('No hay Obra Social Seleccionada ...!');
+    end else Begin
+      StatusBar1.Panels[0].Text := RadioButton7.Caption; StatusBar1.Refresh;
+      facturacion.ProcesarDatosCentrales(periodo.Text);
+      estadisticaCCB.InicidenciaPorDeterminacion_Detallada(periodo.Text, id.Caption, '', 'X', infobrasocial.Checked, separarCodigos.Checked, false, CheckBox2.Checked);
+      estadisticaCCB.Listar('X');
+    end;
+  end;
+
+  if RadioButton8.Checked then Begin
+    if Length(Trim(id.Caption)) = 0 then Begin
+      utiles.msgError('No hay Obra Social Seleccionada ...!');
+    end else Begin
+      StatusBar1.Panels[0].Text := RadioButton8.Caption; StatusBar1.Refresh;
+      if (perunificados.Checked) then Begin
+        facturacion.ProcesarDatosCentrales(periodo.Text);
+        periodo.Text := facturacion.setPeriodoUnificacion;
+        facturacion.ProcesarUnificados;
+        estadisticaCCB.InicidenciaPorDeterminacion_Detallada(periodo.Text, id.Caption, facturacion.setPeriodoUnificacion, 'X', infobrasocial.Checked, separarCodigos.Checked, true, CheckBox2.Checked);
+      End else Begin
+        facturacion.ProcesarDatosCentrales(periodo.Text);
+        estadisticaCCB.InicidenciaPorDeterminacion_Detallada(periodo.Text, id.Caption, '', 'X', infobrasocial.Checked, separarCodigos.Checked, true, CheckBox2.Checked);
+      End;
+      estadisticaCCB.Listar('X');
+    end;
+   end;
+
+   if not (RadioButton7.Checked) and not (RadioButton8.Checked) then
+     utiles.msgError('Operación No Soportada para este Informe ...!');
+
+   salir.SetFocus;
+end;
+
+procedure TfmEstadisticas.TabSheet3Hide(Sender: TObject);
+begin
+  AssignFile(archivo, dbs.DirSistema + '\est_entidad.ini');
+  Rewrite(archivo);
+  WriteLn(archivo, entidad.Text);
+  if separarCodigos.Checked then WriteLn(archivo, '1') else WriteLn(archivo, '0');
+  closeFile(archivo);
+end;
+
+procedure TfmEstadisticas.Panel5CanResize(Sender: TObject; var NewWidth,
+  NewHeight: Integer; var Resize: Boolean);
+begin
+    redim := True;
+end;
+
+procedure TfmEstadisticas.btnEleccionObsocialClick(Sender: TObject);
+begin
+  if not (infEstMedicoCabecera.Checked) and not (infEstDiagnostico.Checked) and not (infEstMedicoDiagnostico.Checked) and not (infautrechpac.Checked) then Begin
+    if not Assigned(fmEleObraSociales) then Application.CreateForm(TfmEleObraSociales, fmEleObraSociales);
+    fmEleObraSociales.CargarDatos(2);
+    fmEleObraSociales.ShowModal;
+    fadesde.SetFocus;
+  end;
+  if (infEstMedicoCabecera.Checked) or (infEstDiagnostico.Checked) or (infEstMedicoDiagnostico.Checked) then Begin
+    if not Assigned(fmEleObraSociales) then Application.CreateForm(TfmEleObraSociales, fmEleObraSociales);
+    fmEleObraSociales.CargarDatos(2);
+    fmEleObraSociales.EleIndividual := True;
+    fmEleObraSociales.ShowModal;
+    os.Caption := fmEleObraSociales.F.Cells[0, fmEleObraSociales.F.Row];
+    Refresh;
+    {if (infEstMedicoCabecera.Checked) then Begin
+      if Length(Trim(fmEleObraSociales.F.Cells[0, fmEleObraSociales.F.Row])) > 0 then Begin
+        if not Assigned(fmEleMedicosCabecera) then Application.CreateForm(TfmEleMedicosCabecera, fmEleMedicosCabecera);
+        fmEleMedicosCabecera.codos := fmEleObraSociales.F.Cells[1, fmEleObraSociales.F.Row];
+        fmEleMedicosCabecera.ShowModal;
+        Refresh;
+        fadesde.SetFocus;
+      end
+      else utiles.msgError('No hay Obra Social Seleccionada ...!');
+    end else}
+      fadesde.SetFocus;
+  end;
+
+  if (infautrechpac.Checked) then Begin
+    if not Assigned(fmEleObraSociales) then Application.CreateForm(TfmEleObraSociales, fmEleObraSociales);
+    fmEleObraSociales.CargarDatos(2);
+    fmEleObraSociales.EleIndividual := True;
+    fmEleObraSociales.ShowModal;
+    os.Caption := fmEleObraSociales.F.Cells[0, fmEleObraSociales.F.Row];
+    Refresh;
+    if (infautrechpac.Checked) then Begin
+      if Length(Trim(fmEleObraSociales.F.Cells[0, fmEleObraSociales.F.Row])) > 0 then Begin
+        padron.conectar(fmEleObraSociales.F.Cells[1, fmEleObraSociales.F.Row]);
+        Application.CreateForm(TfmListAfiliados, fmListAfiliados);
+        fmListAfiliados.introSalir := True;
+        fmListAfiliados.ShowModal;
+        if fmListAfiliados.seleccionOK then
+          nrodoc := padron.tabla.FieldByName('nrodoc').AsString;
+        fmListAfiliados.Release; fmListAfiliados := Nil;
+        Refresh;
+        fadesde.SetFocus;
+      end
+      else utiles.msgError('No hay Obra Social Seleccionada ...!');
+    end else
+      fadesde.SetFocus;
+  end;
+end;
+
+procedure TfmEstadisticas.InfDetAutorizadasKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then btnEleccionObsocial.SetFocus;
+end;
+
+procedure TfmEstadisticas.fadesdeKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if utiles.ctrlFecha(fadesde) then Begin
+      if not infautrechpac.Checked then Begin
+        fahasta.Text := utiles.ultimodiames(Copy(fadesde.Text, 4, 2), Copy(utiles.sExprFecha2000(fadesde.Text), 1, 4)) + Copy(fadesde.Text, 3, 6);
+        btnDispositivo1.SetFocus;
+      end else
+        fahasta.SetFocus;
+    end;
+  end;
+end;
+
+procedure TfmEstadisticas.fahastaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.ctrlFecha(fahasta) then btnDispositivo1.SetFocus;
+end;
+
+procedure TfmEstadisticas.btnDispositivo1Click(Sender: TObject);
+begin
+  if not Assigned(Dispositivo) then Application.CreateForm(TDispositivo, Dispositivo);
+  Dispositivo.ShowModal;
+  salida := 'P';
+  if Dispositivo.Impresor.Checked then
+    if not impresiontxt.Checked then salida := 'I' else salida := 'T';
+  if salida = 'T' then estadisticaccb.LineasPag := StrToInt(lineas.Text);
+  ActiveControl := btnEmitir1;
+end;
+
+procedure TfmEstadisticas.btnEmitir1Click(Sender: TObject);
+begin
+  if salida <> 'X' then Begin
+    salida := 'P';
+    if Dispositivo.Impresor.Checked then salida := 'I';
+  end;
+
+  StatusBar1.Panels[0].Text := 'Generando Informe ...!'; StatusBar1.Refresh;
+  auditoriacb.conectar;
+  auditoriacb.Entidad       := Entidad.Text;
+  if infDetAutorizadas.Checked then
+    if (utiles.ctrlFecha(fadesde.Text, '')) and (utiles.ctrlFecha(fahasta.Text, '')) then auditoriacb.ListarOrdenesAutorizadas(fmEleObraSociales.lista, fadesde.Text, fahasta.Text, salida, CheckBox5.Checked);
+  if infDetRechazadas.Checked then
+    if (utiles.ctrlFecha(fadesde.Text, '')) and (utiles.ctrlFecha(fahasta.Text, '')) then auditoriacb.ListarOrdenesRechazadas(fmEleObraSociales.lista, fadesde.Text, fahasta.Text, salida, CheckBox5.Checked);
+  if infTabularOS.Checked then
+    auditoriacb.ListarTotalesDiariosOS(fadesde.Text, fahasta.Text, salida, '1');
+  if infTabularInd.Checked then
+    auditoriacb.ListarTotalesDiariosOS(fadesde.Text, fahasta.Text, salida, '2');
+  if infEstMedico.Checked then Begin
+    if (utiles.ctrlFecha(fadesde.Text, '')) and (utiles.ctrlFecha(fahasta.Text, '')) then auditoriacb.ListarEstadisticaMedicos(fmEleMedicos.lista, fadesde.Text, fahasta.Text, salida);
+  end;
+  if (infEstMedicoCabecera.Checked) and (obsocial.Buscar(fmEleMedicosCabecera.codos)) then Begin
+    if (utiles.ctrlFecha(fadesde.Text, '')) and (utiles.ctrlFecha(fahasta.Text, '')) then auditoriacb.ListarEstadisticaMedicosCabecera(fmEleMedicosCabecera.lista, fmEleMedicosCabecera.codos, fadesde.Text, fahasta.Text, salida);
+  end;
+  if (infEstDiagnostico.Checked) and (obsocial.Buscar(fmEleObraSociales.F.Cells[1, fmEleObraSociales.F.Row])) then Begin
+    if (utiles.ctrlFecha(fadesde.Text, '')) and (utiles.ctrlFecha(fahasta.Text, '')) then auditoriacb.ListarEstadisticaDiagnostico(fmEleObraSociales.F.Cells[1, fmEleObraSociales.F.Row], fadesde.Text, fahasta.Text, salida);
+  end;
+  if (infEstMedicoDiagnostico.Checked) and (obsocial.Buscar(fmEleObraSociales.F.Cells[1, fmEleObraSociales.F.Row])) then Begin
+    if (utiles.ctrlFecha(fadesde.Text, '')) and (utiles.ctrlFecha(fahasta.Text, '')) then auditoriacb.ListarEstadisticaMedicoDiagnostico(fmEleObraSociales.F.Cells[1, fmEleObraSociales.F.Row], fadesde.Text, fahasta.Text, salida);
+  end;
+
+  if (infautrechpac.Checked) and (obsocial.Buscar(fmEleObraSociales.F.Cells[1, fmEleObraSociales.F.Row])) then Begin
+    if (utiles.ctrlFecha(fadesde.Text, '')) and (utiles.ctrlFecha(fahasta.Text, '')) then auditoriacb.ListarEstadisticaPaciente(fmEleObraSociales.F.Cells[1, fmEleObraSociales.F.Row], nrodoc, fadesde.Text, fahasta.Text, salida);
+  end;
+
+  auditoriacb.desconectar;
+  StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+  salida := 'P';
+
+  btnSalir1.setFocus;
+end;
+
+procedure TfmEstadisticas.infEstMedicoKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if infEstMedico.Checked then btnEleMedicos.SetFocus;
+end;
+
+procedure TfmEstadisticas.btnEleMedicosClick(Sender: TObject);
+begin
+  if infEstMedico.Checked then Begin
+    fmEleMedicos.CargarDatos;
+    fmEleMedicos.ShowModal;
+  end;
+  fadesde.SetFocus;
+end;
+
+procedure TfmEstadisticas.infEstMedicoCabeceraKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  btnEleccionObSocial.setFocus;
+end;
+
+procedure TfmEstadisticas.MenuItem1Click(Sender: TObject);
+begin
+ if (infTabularOS.Checked) or (infTabularInd.Checked) then utiles.msgError('Característica No Soportada ...!') else Begin
+   salida := 'X';
+   btnEmitir1Click(Self);
+ end;
+end;
+
+procedure TfmEstadisticas.perdesdeKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    if utiles.verificarPeriodo(perdesde.Text) then Begin
+      perhasta.Text := utiles.SumarPeriodo(perdesde.Text, '12'); 
+      ActiveControl := perhasta;
+    end;
+end;
+
+procedure TfmEstadisticas.perhastaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then perdesde.SetFocus;
+  if Key = VK_RETURN then
+    if utiles.verificarPeriodo(perhasta.Text) then infip1.SetFocus;
+end;
+
+procedure TfmEstadisticas.btnEleOSIPClick(Sender: TObject);
+begin
+  obsocial.conectar;
+  Application.CreateForm(TfmListObrasSociales, fmListObrasSociales);
+  fmListObrasSociales.introSalir := True;
+  fmListObrasSociales.ShowModal;
+  if fmListObrasSociales.seleccionOK then Begin
+     codosip.Caption := obsocial.tabla.FieldByName('codos').AsString;
+     nosip.Caption   := Copy(obsocial.tabla.FieldByName('nombre').AsString, 1, 35);
+     ActiveControl    := dispositivoSalidaIP;
+  end;
+  fmListObrasSociales.Release; fmListObrasSociales := nil;
+  obsocial.desconectar;
+end;
+
+procedure TfmEstadisticas.DispositivoSalidaIPClick(Sender: TObject);
+begin
+  if not Assigned(Dispositivo) then Application.CreateForm(TDispositivo, Dispositivo);
+  Dispositivo.ShowModal;
+  salida := 'P';
+  if Dispositivo.Impresor.Checked then
+    if not impresiontxt.Checked then salida := 'I' else salida := 'T';
+  if salida = 'T' then estadisticaccb.LineasPag := StrToInt(lineas.Text);
+  ActiveControl := GenerarIP;
+end;
+
+procedure TfmEstadisticas.Infip1KeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then ActiveControl := btnEleOSIP;
+end;
+
+procedure TfmEstadisticas.GenerarIPClick(Sender: TObject);
+begin
+  if infip1.Checked then Begin
+    if utiles.PeriodoIntervaloMeses(perdesde.Text, perhasta.Text) > '12' then utiles.msgError('El Intérvalo No puede superar los 12 meses ...!') else Begin
+      if salida <> 'X' then Begin
+        salida := 'P';
+        if Dispositivo.Impresor.Checked then salida := 'I';
+      end;
+      StatusBar1.Panels[0].Text := 'Generando Informe ...!'; StatusBar1.Refresh;
+      estadisticaCCB.Entidad := Entidad.Text;
+      estadisticaCCB.InfComparacinProfesionales(codosip.Caption, perdesde.Text, perhasta.Text, salida);
+      StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+    end;
+  end;
+  if infip2.Checked then Begin
+    if lista.Count = 0 then utiles.msgError('No hay Determinaciones Seleccionadas ...!') else Begin
+      StatusBar1.Panels[0].Text := 'Generando Informe ...!'; StatusBar1.Refresh;
+      estadisticaCCB.Entidad := Entidad.Text;
+      estadisticaCCB.InfRecuentoPorPractica(perdesde.Text, lista, salida);
+      StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+    end;
+  end;
+  SalirIP.SetFocus;
+end;
+
+procedure TfmEstadisticas.ExportarIPClick(Sender: TObject);
+begin
+  StatusBar1.Panels[0].Text := 'Exportando Datos ...!'; StatusBar1.Refresh;
+  estadisticaCCB.Entidad := Entidad.Text;
+  estadisticaCCB.InfComparacinProfesionales(codosip.Caption, perdesde.Text, perhasta.Text, 'X');
+  StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+end;
+
+procedure TfmEstadisticas.EstadisticasProfClick(Sender: TObject);
+begin
+  profobsoc.Caption := '&Profesionales';
+  profobsoc.Enabled := True;
+end;
+
+procedure TfmEstadisticas.infautrechpacKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then btnEleccionObsocial.SetFocus;
+end;
+
+procedure TfmEstadisticas.infip2KeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then btnEleccionPracticas.SetFocus;
+end;
+
+procedure TfmEstadisticas.btnEleccionPracticasClick(Sender: TObject);
+begin
+  if lista = Nil then lista := TStringList.Create;
+  lista.Clear;
+  nomeclatura.conectar;
+  Application.CreateForm(TfmElePracticas, fmElePracticas);
+  fmElePracticas.intro := True;
+  fmElePracticas.CargarDatos;
+  fmElePracticas.ShowModal;
+  ActiveControl    := dispositivoSalidaIP;
+  lista := fmElePracticas.lista;
+  fmElePracticas.Release; fmElePracticas := nil;
+  nomeclatura.desconectar;
+end;
+
+end.

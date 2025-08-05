@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{7e84f8e6-45c9-4d5d-b86c-6daf3a3dcbdb}</ProjectGuid>
+    <MainSource>NominaPdronOS.dpr</MainSource>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+    <DCC_DependencyCheckOutputName>NominaPdronOS.exe</DCC_DependencyCheckOutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_DebugInformation>False</DCC_DebugInformation>
+    <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
+    <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+    <DCC_Define>RELEASE</DCC_Define>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_Define>DEBUG</DCC_Define>
+    <DCC_UnitSearchPath>\sidelphi32\clases;\sidelphi32\interfases;\sidelphi32\cExtras;\sidelphi32\sounds;\sidelphi32\cExtras\chequeadores;C:\sidelphi32\cExtras\mxCaptionBarButton\Component;\LMD70SE\LIB\D6;C:\LMD70SE\vclskin2\d6;C:\sidelphi32\cExtras\vclskin421\source</DCC_UnitSearchPath>
+    <DCC_ResourcePath>\sidelphi32\clases;\sidelphi32\interfases;\sidelphi32\cExtras;\sidelphi32\sounds;\sidelphi32\cExtras\chequeadores;C:\sidelphi32\cExtras\mxCaptionBarButton\Component;\LMD70SE\LIB\D6;C:\LMD70SE\vclskin2\d6;C:\sidelphi32\cExtras\vclskin421\source</DCC_ResourcePath>
+    <DCC_ObjPath>\sidelphi32\clases;\sidelphi32\interfases;\sidelphi32\cExtras;\sidelphi32\sounds;\sidelphi32\cExtras\chequeadores;C:\sidelphi32\cExtras\mxCaptionBarButton\Component;\LMD70SE\LIB\D6;C:\LMD70SE\vclskin2\d6;C:\sidelphi32\cExtras\vclskin421\source</DCC_ObjPath>
+    <DCC_IncludePath>\sidelphi32\clases;\sidelphi32\interfases;\sidelphi32\cExtras;\sidelphi32\sounds;\sidelphi32\cExtras\chequeadores;C:\sidelphi32\cExtras\mxCaptionBarButton\Component;\LMD70SE\LIB\D6;C:\LMD70SE\vclskin2\d6;C:\sidelphi32\cExtras\vclskin421\source</DCC_IncludePath>
+  </PropertyGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Delphi.Personality</Borland.Personality>
+    <Borland.ProjectType>VCLApplication</Borland.ProjectType>
+    <BorlandProject>
+<BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">0</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">3082</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription"></VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName"></VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">NominaPdronOS.dpr</Source></Source><Excluded_Packages>
+      
+      
+      
+      
+      
+      
+      <Excluded_Packages Name="$(BDS)\bin\bcbofficexp100.bpl">CodeGear C++Builder Office XP Servers Package</Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+    </Excluded_Packages></Delphi.Personality><ModelSupport>False</ModelSupport></BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
+  <ItemGroup>
+    <DelphiCompile Include="NominaPdronOS.dpr">
+      <MainSource>MainSource</MainSource>
+    </DelphiCompile>
+    <DCCReference Include="..\..\CLASES\CCategoriasCCB.pas" />
+    <DCCReference Include="..\..\CLASES\CNomecla.pas" />
+    <DCCReference Include="..\..\CLASES\CObrasSocialesCCB.pas" />
+    <DCCReference Include="..\..\CLASES\CUtiles.pas" />
+    <DCCReference Include="..\..\CLASES\CUtilidadesStringGrid.pas" />
+    <DCCReference Include="..\..\CLASES\Delphi2007_Migracion\CServers2000_Excel.pas" />
+    <DCCReference Include="..\..\Delphi2007_Migraciones\EMail\MsgEditor.pas">
+      <Form>fmMessageEditor</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\Delphi2007_Migraciones\EMail\MsgEdtAdv.pas">
+      <Form>frmAdvancedOptions</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\Delphi2007_Migraciones\EMail\smtpauth.pas">
+      <Form>frmSMTPAuthentication</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\Interfases\ImgForms.pas">
+      <Form>contenedorImg</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\INTERNET\rasdial\DELPHI\RAS\Formauto.pas">
+      <Form>AutoForm</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\INTERNET\rasdial\DELPHI\RAS\FormPos.pas" />
+    <DCCReference Include="..\..\INTERNET\rasdial\DELPHI\RAS\Llamar.pas">
+      <Form>Form1</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\INTERNET\rasdial\DELPHI\RAS\LogMsg.pas" />
+    <DCCReference Include="..\..\INTERNET\rasdial\DELPHI\RAS\RAS.PAS" />
+    <DCCReference Include="..\..\INTERNET\rasdial\DELPHI\RAS\RasDial1.pas">
+      <Form>RasDialerForm</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\INTERNET\rasdial\DELPHI\RAS\RasDial2.pas" />
+    <DCCReference Include="..\..\INTERNET\rasdial\DELPHI\RAS\RasDial3.pas" />
+    <DCCReference Include="..\..\INTERNET\rasdial\DELPHI\RAS\RasDial4.pas" />
+    <DCCReference Include="..\..\INTERNET\rasdial\DELPHI\RAS\RasDial5.pas" />
+    <DCCReference Include="..\..\INTERNET\rasdial\DELPHI\RAS\VERLOGS.pas">
+      <Form>fmConsultar</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\INTRANET\EMail\MsgEdtAdv.pas">
+      <Form>frmAdvancedOptions</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\SME\IVA\PreparacionViaTrabajo.pas">
+      <Form>fmPreparacionVia</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\Varios\Backup\backup.pas" />
+    <DCCReference Include="..\..\Varios\Backup\comodines.pas">
+      <Form>fmAgregarArchivos</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\Varios\Backup\Lzrw1kh.pas" />
+    <DCCReference Include="..\..\Varios\Backup\Selectarchivos.pas">
+      <Form>fmSeleArchivos</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\Varios\Backup\Unit1.pas">
+      <Form>fmBackup</Form>
+    </DCCReference>
+    <DCCReference Include="Afiliados.pas">
+      <Form>fmAfiliados</Form>
+    </DCCReference>
+    <DCCReference Include="NominaAfiliado.pas">
+      <Form>fmListAfiliados</Form>
+    </DCCReference>
+    <DCCReference Include="NominaPadronObrasSociales.pas">
+      <Form>fmListPadronObrasSociales</Form>
+    </DCCReference>
+  </ItemGroup>
+</Project>

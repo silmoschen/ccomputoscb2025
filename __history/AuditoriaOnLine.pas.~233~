@@ -1,0 +1,808 @@
+unit AuditoriaOnLine;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, ComCtrls, StdCtrls, Mask, Grids, IdAntiFreezeBase,
+  IdAntiFreeze, IdComponent, IdTCPConnection, IdTCPClient,
+  IdExplicitTLSClientServerBase, IdFTP, IdBaseComponent, IdIntercept, IdLogBase,
+  IdLogDebug, IdFTPCommon, Contnrs, Buttons;
+
+type
+  TfmAuditoriaOnLine = class(TForm)
+    StatusBar1: TStatusBar;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    Panel3: TPanel;
+    btnTransferir: TButton;
+    Panel5: TPanel;
+    Label3: TLabel;
+    Label4: TLabel;
+    desde: TMaskEdit;
+    hasta: TMaskEdit;
+    GroupBox1: TGroupBox;
+    RadioButton1: TRadioButton;
+    RadioButton2: TRadioButton;
+    GroupBox2: TGroupBox;
+    Label1: TLabel;
+    Label2: TLabel;
+    host: TMaskEdit;
+    ftp: TMaskEdit;
+    Label5: TLabel;
+    Label6: TLabel;
+    usuario: TMaskEdit;
+    contrasenia: TMaskEdit;
+    Panel6: TPanel;
+    btnDescargar: TButton;
+    btnSubir: TButton;
+    IdLogDebug1: TIdLogDebug;
+    IdFTP1: TIdFTP;
+    Panel7: TPanel;
+    Si: TSpeedButton;
+    Ninguno: TSpeedButton;
+    Todos: TSpeedButton;
+    btnAplicar: TButton;
+    TabSheet3: TTabSheet;
+    Panel8: TPanel;
+    GroupBox3: TGroupBox;
+    Label7: TLabel;
+    desde1: TMaskEdit;
+    Label8: TLabel;
+    hasta1: TMaskEdit;
+    RadioButton3: TRadioButton;
+    RadioButton4: TRadioButton;
+    Panel9: TPanel;
+    btnDispositivo: TButton;
+    btnEmitir: TButton;
+    Panel10: TPanel;
+    btnCerrar: TButton;
+    GroupBox4: TGroupBox;
+    CheckBox1: TCheckBox;
+    btnControlEstados: TButton;
+    Label9: TLabel;
+    fecha: TMaskEdit;
+    CheckBox2: TCheckBox;
+    Panel4: TPanel;
+    Panel11: TPanel;
+    E: TStringGrid;
+    T: TStringGrid;
+    CheckBox3: TCheckBox;
+    btnChequearReferencias: TButton;
+    resumen: TLabel;
+    IdAntiFreeze1: TIdAntiFreeze;
+    CheckBox4: TCheckBox;
+    CheckBox5: TCheckBox;
+    ftpPasivo: TCheckBox;
+    Label10: TLabel;
+    dirremoto: TMaskEdit;
+    procedure EKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure desdeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure hastaKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure btnDescargarClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure Panel1Resize(Sender: TObject);
+    procedure RadioButton1Click(Sender: TObject);
+    procedure RadioButton2Click(Sender: TObject);
+    procedure EDblClick(Sender: TObject);
+    procedure EKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure SiClick(Sender: TObject);
+    procedure TodosClick(Sender: TObject);
+    procedure NingunoClick(Sender: TObject);
+    procedure btnSubirClick(Sender: TObject);
+    procedure btnAplicarClick(Sender: TObject);
+    procedure desde1KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure hasta1KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure RadioButton3KeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure btnDispositivoClick(Sender: TObject);
+    procedure btnEmitirClick(Sender: TObject);
+    procedure btnCerrarClick(Sender: TObject);
+    procedure CheckBox1Click(Sender: TObject);
+    procedure fechaKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure btnControlEstadosClick(Sender: TObject);
+    procedure CheckBox2Click(Sender: TObject);
+    procedure CheckBox3Click(Sender: TObject);
+    procedure btnChequearReferenciasClick(Sender: TObject);
+    procedure TabSheet1Show(Sender: TObject);
+  private
+    { Private declarations }
+    AbortTransfer, datosok, redim: Boolean;
+    con: Cardinal;
+    TransferrignData: Boolean;
+    BytesToTransfer: LongWord;
+    STime: TDateTime;
+    salida: char;
+    procedure conectarFTP;
+    procedure DesconectarFTP;
+    procedure ChageDir(DirName: String);
+    procedure CargarOrdenes(tipo: integer);
+  public
+    { Public declarations }
+  end;
+
+var
+  fmAuditoriaOnLine: TfmAuditoriaOnLine;
+
+implementation
+
+uses CAuditoriaOnLine, CAuditoriaCCB, CUtiles, HTTPCliente, CConfigForms, CBDT, CUtilidadesStringGrid,
+     CProfesionalCCB, DetalleDeterminacionesOnLine, CUtilidadesArchivos,
+     Disposit, CObrasSocialesCCB;
+
+{$R *.dfm}
+
+procedure TfmAuditoriaOnLine.conectarFTP;
+begin
+  if IdFTP1.Connected then try
+    if TransferrignData then IdFTP1.Abort;
+    IdFTP1.Quit;
+    finally
+  end else with IdFTP1 do try
+    {$IFDEF VER140}
+    User := usuario.Text;
+    {$ENDIF}
+    {$IFDEF VER185}
+    UserName := usuario.Text;
+    {$ENDIF}
+    Password := contrasenia.Text;
+    Host     := ftp.Text;
+    Connect;
+    //Self.ChageDir(''); // modificado para el servidor linux (auditoriareconquista) el 07/12/2013
+
+    if (dirremoto.Text <> '') then Self.ChageDir(dirremoto.Text);
+  finally
+  end;
+end;
+
+procedure TfmAuditoriaOnLine.DesconectarFTP;
+begin
+  if IdFTP1.Connected then try
+    IdFTP1.Disconnect;
+    finally
+  end
+end;
+
+procedure TfmAuditoriaOnLine.ChageDir(DirName: String);
+begin
+  try
+    IdFTP1.ChangeDir(DirName);
+    {$IFDEF VER140}
+    IdFTP1.TransferType := ftASCII;
+    {$ENDIF}
+    {$IFDEF VER185}
+    IdFTP1.TransferType := ftASCII;
+    {$ENDIF}
+  finally
+  end;
+end;
+
+procedure TfmAuditoriaOnLine.CheckBox1Click(Sender: TObject);
+begin
+  if (CheckBox1.Checked) then begin
+    GroupBox4.Enabled := true;
+    fecha.SetFocus;
+  end else begin
+    btnControlEstados.Enabled := false;
+    GroupBox4.Enabled := false;
+  end;
+  btnChequearReferencias.Enabled := CheckBox1.Checked;
+end;
+
+procedure TfmAuditoriaOnLine.CheckBox2Click(Sender: TObject);
+var
+  l, listaos: TStringList;
+  i, j, k: integer;
+  Name, codos: String;
+begin
+  if (CheckBox2.Checked) then begin
+   if (utiles.ctrlFecha(desde.Text, '') and utiles.ctrlFecha(hasta.Text, '')) then begin
+
+    if (utiles.msgSiNo('Esta Opción le Permite Ajustar el Estado de las Determinaciones Auditadas que se han Transferido en otros Procesos.' + chr(13) +
+                       'Este Proceso puede tardar varios minutos. Seguro para Proceder ?')) then begin
+
+      Refresh;
+      if (Length(Trim(host.Text)) > 0) and (Length(Trim(ftp.Text)) > 0) and (Length(Trim(usuario.Text)) > 0) or (Length(Trim(contrasenia.Text)) > 0) then Begin
+        StatusBar1.Panels[0].Text := 'Invocando Script Remoto ...!'; StatusBar1.refresh;
+        RadioButton1.Checked := false;
+        RadioButton2.Checked := false;
+        Application.CreateForm(TfmClientHTML, fmClientHTML);
+        fmClientHTML.cbURL.Text := host.Text + '/operaciones/exportar_ordenes.php?desde=' + utiles.sExprFecha2000(desde.Text) + '&' + 'hasta=' + utiles.sExprFecha2000(hasta.Text);
+        fmClientHTML.FormActivate(Self);
+        fmClientHTML.btnGoClick(Self);
+        StatusBar1.Panels[0].Text := 'Exportando Datos Remotos ...!'; StatusBar1.refresh;
+
+        StatusBar1.Panels[0].Text := 'Transfiriendo a Equipo Local ...!'; StatusBar1.refresh;
+
+        conectarFTP;
+        if IdFTP1.Connected then begin
+
+          //ChageDir('/var/www/html/reco/actualizar');
+
+          //IdFTP1.ChangeDir('/var/www/html/reco/actualizar');
+
+          l := TStringList.Create;
+          IdFTP1.List(l);
+          for i := 1 to l.Count do Begin
+            if (Pos('.txt', l.Strings[i-1]) > 0) then Begin
+              if (Pos('cab_auditoria.txt', l.Strings[i-1]) > 0) then Name := 'cab_auditoria.txt';
+              if (Pos('det_auditoria.txt', l.Strings[i-1]) > 0) then Name := 'det_auditoria.txt';
+              if (Pos('pac_auditoria.txt', l.Strings[i-1]) > 0) then Name := 'pac_auditoria.txt';
+              if Pos('.txt', Name) > 0 then Begin
+                StatusBar1.Panels[0].Text := 'Descargando ' + l.Strings[i-1] + ' de: ' + ftp.Text; StatusBar1.Refresh;
+                IdFTP1.TransferType := ftBinary;
+                BytesToTransfer := IdFTP1.Size(ExtractFileName(l.Strings[i-1]));
+                IdFTP1.Get(Name, dbs.DirSistema + '\auditoria\online\download\' + Name, true);
+              end;
+            End;
+          end;
+        end;
+        DesconectarFTP;
+
+        StatusBar1.Panels[0].Text := ''; StatusBar1.refresh;
+
+        if (utiles.msgSiNo('El Procesamiento de Datos Remotos se ha Realizado,' + chr(13) +
+                       '¿ Desea Transferirlos para Procesarlos Localmente ?' + chr(13) +
+                       'Este Proceso Puede Demorar Varios Minutos.')) then begin
+          Refresh;
+
+          grid.IniciarGrilla(E);
+          StatusBar1.Panels[0].Text := 'Sincronizando Datos ...!'; StatusBar1.refresh;
+          listaos := auditonline.SincronizarDeterminaciones;
+
+          StatusBar1.Panels[0].Text := 'Recalculano Totales ' + codos + ' ...!'; StatusBar1.refresh;
+          grid.IniciarGrilla(T);
+          for k := 1 to listaos.Count do begin
+            codos := listaos.Strings[k-1];
+            obsocial.SincronizarArancel(codos, Copy(hasta.Text, 4, 2) + '/' + Copy(utiles.sExprFecha2000(hasta.Text), 1, 4));
+            T.Cells[0, k] := codos;
+            T.Cells[1, k] := utiles.FormatearNumero(FloatToStr(auditoriacb.setRecalcularTotalAnalisisMensual(hasta.Text, codos, true)));
+          end;
+          T.Row := 1;
+          listaos.Free; listaos := nil;
+
+          Panel3.Enabled := true;
+          RadioButton2.Checked := true;
+          StatusBar1.Panels[0].Text := ''; StatusBar1.refresh;
+        end;
+      end else begin
+        utiles.msgError('Falta Definir Algun(os) Parametro(s) para el Procesamiento Remoto de Datos ...!');
+      end;
+      CheckBox2.Checked := false;
+      desde.SetFocus;
+    end;
+   end else begin
+     utiles.msgError('Las Fechas Proporcionadas son Incorrectas ...!');
+     CheckBox2.Checked := false;
+   end;
+  end;
+end;
+
+procedure TfmAuditoriaOnLine.CheckBox3Click(Sender: TObject);
+begin
+  Panel4.Visible := CheckBox3.Checked;
+end;
+
+procedure TfmAuditoriaOnLine.btnSubirClick(Sender: TObject);
+var
+  i: integer;
+  l, lt: TStringList;
+  transferido: boolean;
+begin
+  //utiles.msgError('Actualmente esta Opción No se utiliza ...!');
+  //exit;
+  if (utiles.msgSiNo('Esta Opción Replicará los Datos en el Servidor Remoto.' + chr(13) + 'Seguro para Proceder ?')) then begin
+    StatusBar1.Panels[0].Text := 'Exportando Datos ...!'; StatusBar1.Refresh;
+    l := TStringList.Create; lt := TStringList.Create;
+
+    For i := 1 to E.RowCount do begin
+      if (length(trim(E.Cells[0, i])) = 0) then break;
+      if (E.cells[9, i] = 'S') then begin
+        l.Add(E.Cells[4, i]);
+        lt.Add(E.Cells[4, i]);
+      end;
+    end;
+
+    auditonline.Exportar(l);
+
+    if (utiles.msgSiNo('El Procesamiento de Ordenes Terminó Correctamente.' + chr(13) + 'Seguro para Bajarlas y Procesarlas ?') = false) then exit;
+
+    l.Clear;
+    transferido := false;
+
+    conectarFTP;
+    if IdFTP1.Connected then begin
+     StatusBar1.Panels[0].Text := 'Transfiriendo Datos ...!'; StatusBar1.refresh;
+     l.Add(dbs.DirSistema + '\auditoria\online\upload\cab_auditoria_mod.txt');
+     l.Add(dbs.DirSistema + '\auditoria\online\upload\det_auditoria_mod.txt');
+     IdFTP1.TransferType := ftBinary;
+     for i := 1 to l.Count do Begin
+       IdFTP1.Put(l.Strings[i-1], ExtractFileName(l.Strings[i-1]));
+     end;
+     ChageDir(idftp1.RetrieveCurrentDir);
+     transferido := true;
+    end;
+   desconectarFTP;
+
+   if (transferido) then begin
+    StatusBar1.Panels[0].Text := 'Transfiriendo Datos Remotos ...!'; StatusBar1.refresh;
+    Application.CreateForm(TfmClientHTML, fmClientHTML);
+    fmClientHTML.cbURL.Text := host.Text + '/operaciones/descargar_archivos_ftp.php?host=' + host.Text + '&' + 'hostftp=' + ftp.Text + '&' + 'us=' + usuario.Text + '&' + 'ps=' + contrasenia.Text;
+    fmClientHTML.FormActivate(Self);
+    fmClientHTML.btnGoClick(Self);
+
+    StatusBar1.Panels[0].Text := 'Importando Ordenes ...!'; StatusBar1.refresh;
+    fmClientHTML.cbURL.Text := host.Text + '/operaciones/importar_ordenes.php?estad0=xxtop95';
+    fmClientHTML.btnGoClick(Self);
+
+    fmClientHTML.Release; fmClientHTML := Nil;
+
+    auditonline.MarcarOrdenTransferida(lt);
+
+    NingunoClick(Self);
+   end;
+
+   lt.Free; lt := Nil;
+   StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+  end;
+
+  desde.setFocus;
+end;
+
+procedure TfmAuditoriaOnLine.CargarOrdenes(tipo: integer);
+// Objetivo...: Cargar Ordenes
+var
+  i: integer;
+  l: TObjectList;
+  objeto: TTAuditoriaOnLine;
+begin
+  StatusBar1.Panels[0].Text := 'Prorratenado Ordenes Lapso ' + desde.Text + ' - ' + hasta.Text + ' ...!'; StatusBar1.Refresh;
+  i := 0;
+  grid.IniciarGrilla(E);
+  if (tipo = 1) then
+    l := auditonline.setOrdenesImportadas(desde.Text, hasta.Text, '1')
+  else
+    l := auditonline.setOrdenesImportadas(desde.Text, hasta.Text, '2');
+
+  for i := 1 to l.Count do begin
+    objeto := TTAuditoriaOnLine(l.Items[i-1]);
+    profesional.getDatos(objeto.Efector);
+    auditoriacb.getDatos(objeto.Nroauditoria);
+    E.Cells[0, i] := objeto.Nroauditoria;
+    E.Cells[1, i] := objeto.Fecha;
+    E.Cells[2, i] := profesional.nombre;
+    E.Cells[3, i] := auditoriacb.Nompac;
+    E.Cells[4, i] := objeto.Idonline;
+    E.Cells[5, i] := objeto.Nrodoc;
+    E.Cells[6, i] := objeto.Codos;
+    E.Cells[7, i] := objeto.Auditada;
+    E.Cells[8, i] := objeto.Transferida;
+    E.Cells[10,i] := objeto.Altapac;
+    E.Cells[11,i] := IntToStr(i);
+    E.Cells[12,i] := objeto.Idonline;
+  end;
+  l.Free; l := Nil;
+
+  if (i > 0)  then begin
+    panel11.Enabled := true;
+  end else begin
+    panel11.Enabled := false;
+  end;
+
+  if (i > 0) then
+    StatusBar1.Panels[1].Text := IntToStr(i-1) + ' Ordenes';
+
+  resumen.Caption := IntToStr(i-1) + ' Ord. Procesadas';
+  desde.setFocus;
+  StatusBar1.Panels[0].Text := '';
+end;
+
+procedure TfmAuditoriaOnLine.btnAplicarClick(Sender: TObject);
+var
+  archivo: TextFile;
+begin
+  AssignFile(archivo, dbs.DirSistema + '\ftpauditoria.ini');
+  rewrite(archivo);
+  writeln(archivo, host.Text);
+  writeln(archivo, ftp.Text);
+  writeln(archivo, usuario.Text);
+  writeln(archivo, contrasenia.Text);
+  if (ftpPasivo.Checked) then writeln(archivo, 'S') else writeln(archivo, 'N');
+  writeln(archivo, dirremoto.Text);
+  closeFile(archivo);
+  host.SetFocus;
+end;
+
+procedure TfmAuditoriaOnLine.btnCerrarClick(Sender: TObject);
+begin
+  PageControl1.ActivePage := TabSheet1;
+end;
+
+procedure TfmAuditoriaOnLine.btnChequearReferenciasClick(Sender: TObject);
+begin
+  StatusBar1.Panels[0].Text := 'Procesando Referencias ...!'; StatusBar1.Refresh;
+  auditonline.ChequearReferencias;
+  CheckBox1.Checked := false;
+  StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+end;
+
+procedure TfmAuditoriaOnLine.btnControlEstadosClick(Sender: TObject);
+begin
+  if (utiles.ctrlFecha(fecha.Text, '')) then begin
+    StatusBar1.Panels[0].Text := 'Procesando Estados ...!'; StatusBar1.Refresh;
+    auditonline.AjustarEstados(fecha.Text);
+    fecha.Text := '';
+    StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+    CheckBox1.Checked := false;
+    CheckBox1.SetFocus;
+  end else
+    utiles.msgError('La Fecha es Incorrecta ...!');
+end;
+
+procedure TfmAuditoriaOnLine.btnDescargarClick(Sender: TObject);
+var
+  l, listaos: TStringList;
+  i, j, k: integer;
+  Name, codos: String;
+begin
+  if (Length(Trim(host.Text)) > 0) and (Length(Trim(ftp.Text)) > 0) and (Length(Trim(usuario.Text)) > 0) or (Length(Trim(contrasenia.Text)) > 0) then Begin
+    if not (checkbox5.Checked) then begin
+      StatusBar1.Panels[0].Text := 'Invocando Script Remoto ...!'; StatusBar1.refresh;
+      RadioButton1.Checked := false;
+      RadioButton2.Checked := false;
+      Application.CreateForm(TfmClientHTML, fmClientHTML);
+      fmClientHTML.cbURL.Text := host.Text + '/operaciones/exportar_ordenes.php?desde=' + utiles.sExprFecha2000(desde.Text) + '&hasta=' + utiles.sExprFecha2000(hasta.Text);
+      fmClientHTML.FormActivate(Self);
+      fmClientHTML.btnGoClick(Self);
+      StatusBar1.Panels[0].Text := 'Exportando Datos Remotos ...!'; StatusBar1.refresh;
+
+      //fmClientHTML.ShowModal;
+
+      if (utiles.msgSiNo('El Procesamiento de Ordenes Terminó Correctamente.' + chr(13) + 'Seguro para Bajarlas y Procesarlas ?') = false) then begin
+        StatusBar1.Panels[0].Text := '';
+        exit;
+      end;
+
+      StatusBar1.Panels[0].Text := 'Transfiriendo a Equipo Local ...!'; StatusBar1.refresh;
+
+      IdFtp1.Passive := ftpPasivo.Checked;
+
+      conectarFTP;
+      if IdFTP1.Connected then begin
+          l := TStringList.Create;
+          IdFTP1.List(l);
+          for i := 1 to l.Count do Begin
+
+            if (Pos('.txt', l.Strings[i-1]) > 0) then Begin
+              if (Pos('cab_auditoria.txt', l.Strings[i-1]) > 0) then Name := 'cab_auditoria.txt';
+              if (Pos('det_auditoria.txt', l.Strings[i-1]) > 0) then Name := 'det_auditoria.txt';
+              if (Pos('pac_auditoria.txt', l.Strings[i-1]) > 0) then Name := 'pac_auditoria.txt';
+              if (Pos('pendientes.txt', l.Strings[i-1]) > 0)    then Name := 'pendientes.txt';
+              if (Pos('diagnosticos.txt', l.Strings[i-1]) > 0)  then Name := 'diagnosticos.txt';
+              if (Pos('medicos.txt', l.Strings[i-1]) > 0)       then Name := 'medicos.txt';
+              if (Pos('medicos_cab.txt', l.Strings[i-1]) > 0)   then Name := 'medicos_cab.txt';
+              if Pos('.txt', Name) > 0 then Begin
+                StatusBar1.Panels[0].Text := 'Descargando ' + l.Strings[i-1] + ' de: ' + ftp.Text; StatusBar1.Refresh;
+                IdFTP1.TransferType := ftBinary;
+                BytesToTransfer := IdFTP1.Size(ExtractFileName(l.Strings[i-1]));
+                IdFTP1.Get(Name, dbs.DirSistema + '\auditoria\online\download\' + Name, true);
+              end;
+            End;
+          end;
+      end;
+      DesconectarFTP;
+
+      StatusBar1.Panels[0].Text := ''; StatusBar1.refresh;
+    end;
+
+    if (utiles.msgSiNo('El Procesamiento de Datos Remotos se ha Realizado,' + chr(13) +
+                       '¿ Desea Transferirlos para Procesarlos Localmente ?' + chr(13) +
+                       'Este Proceso Puede Demorar Varios Minutos.')) then begin
+      Refresh;
+      grid.IniciarGrilla(E);
+      // Damos de Alta en la Base de Datos Local
+      StatusBar1.Panels[0].Text := 'Sincronizando Datos ...!'; StatusBar1.refresh;
+      listaos := auditonline.ImportarOrdenesOnline;
+      if (CheckBox4.Checked) then begin
+        grid.IniciarGrilla(T);
+        for k := 1 to listaos.Count do begin
+          codos := listaos.Strings[k-1];
+          StatusBar1.Panels[0].Text := 'Recalculano Totales ' + codos + ' ...!'; StatusBar1.refresh;
+          obsocial.SincronizarArancel(codos, Copy(hasta.Text, 4, 2) + '/' + Copy(utiles.sExprFecha2000(hasta.Text), 1, 4));
+          T.Cells[0, k] := codos;
+          T.Cells[1, k] := utiles.FormatearNumero(FloatToStr(auditoriacb.setRecalcularTotalAnalisisMensual(hasta.Text, codos, true)));
+        end;
+        T.Row := 1;
+      end;
+      listaos.Free; listaos := nil;
+      Panel3.Enabled := true;
+      RadioButton2.Checked := true;
+      StatusBar1.Panels[0].Text := ''; StatusBar1.refresh;
+    end;
+  end else begin
+    utiles.msgError('Falta Definir Algun(os) Parametro(s) para el Procesamiento Remoto de Datos ...!');
+  end;
+end;
+
+procedure TfmAuditoriaOnLine.btnDispositivoClick(Sender: TObject);
+begin
+  if not Assigned(Dispositivo) then Application.CreateForm(TDispositivo, Dispositivo);
+  Dispositivo.ShowModal;
+  salida := 'P';
+  if Dispositivo.Impresor.Checked then salida := 'I';
+  ActiveControl := btnEmitir;
+end;
+
+procedure TfmAuditoriaOnLine.btnEmitirClick(Sender: TObject);
+begin
+  if (utiles.ctrlFecha(desde1.Text, '')) and (utiles.ctrlFecha(hasta1.Text, '')) then begin
+    StatusBar1.Panels[0].Text := 'Generando Informe ...!'; StatusBar1.Refresh;
+    if (RadioButton3.Checked) then auditonline.ListarControl(desde1.Text, hasta1.Text, salida);
+    if (RadioButton4.Checked) then auditonline.ListarControlPorProfesional(desde1.Text, hasta1.Text, salida);
+  end;
+  StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+  btnCerrar.setFocus;
+end;
+
+procedure TfmAuditoriaOnLine.desde1KeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if (utiles.ctrlFecha(desde1)) then hasta1.SetFocus;
+end;
+
+procedure TfmAuditoriaOnLine.desdeKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_ESCAPE) then Close;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if (utiles.ctrlFecha(desde)) then hasta.SetFocus;
+end;
+
+procedure TfmAuditoriaOnLine.EDblClick(Sender: TObject);
+var
+  i, j, items1, items2: integer;
+begin
+  if (Length(trim(E.Cells[0, E.Row])) > 0) then begin
+    StatusBar1.Panels[0].Text := 'Procesando Datos / Recuperando Orden ...!'; StatusBar1.Refresh;
+    Application.CreateForm(TfmEdicionDeterminaciones, fmEdicionDeterminaciones);
+    fmEdicionDeterminaciones.npaciente.Caption    := E.Cells[3, E.Row];
+    fmEdicionDeterminaciones.efector.Caption      := E.Cells[2, E.Row];
+    fmEdicionDeterminaciones.fecha.Caption        := E.Cells[1, E.Row];
+    fmEdicionDeterminaciones.nroauditoria.Caption := E.Cells[0, E.Row];
+    fmEdicionDeterminaciones.nrodoc               := E.Cells[5, E.Row];
+    fmEdicionDeterminaciones.codos                := E.Cells[6, E.Row];
+    fmEdicionDeterminaciones.totmes.Caption       := utiles.FormatearNumero(FloatToStr(auditoriacb.setTotalAnalisisMensual(E.Cells[1, E.Row], E.Cells[6, E.Row], false)));
+    fmEdicionDeterminaciones.CargarItems;
+    fmEdicionDeterminaciones.CargarHistorial;
+    fmEdicionDeterminaciones.Obs.Text             := auditonline.getObservacion(E.Cells[4, E.Row]);
+    fmEdicionDeterminaciones.Observacion.Text     := auditonline.getObsauditor(E.Cells[4, E.Row]);
+
+    fmEdicionDeterminaciones.ShowModal;
+
+    if (fmEdicionDeterminaciones.seleccionOK) then begin
+      if (utiles.msgSiNo('Seguro para Registrar Cambios Efectuados en Orden ' + E.Cells[0, E.Row] + ' ?')) then begin
+
+        StatusBar1.Panels[0].Text := 'Registrando Orden ...!'; StatusBar1.Refresh;
+
+        For i := 1 to fmEdicionDeterminaciones.items1 do auditoriacb.RegistrarItems(E.Cells[0, E.Row], utiles.sLlenarIzquierda(IntToStr(i), 3, '0'), fmEdicionDeterminaciones.CA.Cells[0, i], fmEdicionDeterminaciones.CA.Cells[1, i], 'A', StrToFloat(fmEdicionDeterminaciones.CA.Cells[2, i]), StrToFloat(fmEdicionDeterminaciones.CA.Cells[3, i]), fmEdicionDeterminaciones.items1 + fmEdicionDeterminaciones.items2, false, 'S', 'N', StrToFloat(fmEdicionDeterminaciones.CA.Cells[3, i]), 0);
+        j := fmEdicionDeterminaciones.items1;
+        For i := 1 to fmEdicionDeterminaciones.items2 do Begin
+          Inc(j);
+          auditoriacb.RegistrarItems(E.Cells[0, E.Row], utiles.sLlenarIzquierda(IntToStr(j), 3, '0'), fmEdicionDeterminaciones.CR.Cells[0, i], fmEdicionDeterminaciones.CR.Cells[1, i], 'R', 0, 0, fmEdicionDeterminaciones.items1 + fmEdicionDeterminaciones.items2, false, 'S', 'N', 0, 0);
+        end;
+        auditoriacb.RegistrarTotalMensual(E.Cells[6, E.Row], E.Cells[1, E.Row], StrToFloat(fmEdicionDeterminaciones.totmes.Caption));
+
+        auditonline.MarcarOrdenAuditada(E.Cells[4, E.Row], fmEdicionDeterminaciones.observacion.Text);
+        E.Cells[7, E.Row] := 'S';
+
+        grid.BorrarRenglon_SinRenumerar(E);
+      end;
+
+      StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+    end;
+    fmEdicionDeterminaciones.Release; fmEdicionDeterminaciones := Nil;
+    if (length(trim(E.Cells[0, 1])) > 0) then E.setFocus else RadioButton1Click(Self);
+  end else begin
+    utiles.msgError('El Registro Seleccionado es Incorrecto ...!');
+    E.SetFocus;
+  end;
+
+end;
+
+procedure TfmAuditoriaOnLine.EKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) then EDblClick(Self);
+  if (Key = VK_SPACE) then SiClick(Self);
+  if (Key = VK_DELETE) then
+    if (utiles.msgSiNo('Seguro para Eliminar Orden ' + E.Cells[0, E.Row] + ' ?')) then begin
+      auditonline.BorrarReferencia(E.Cells[12, E.Row]);
+      CargarOrdenes(2);
+    end;
+end;
+
+procedure TfmAuditoriaOnLine.EKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  StatusBar1.Panels[0].Text := 'Seleccione una Orden y Pulse ENTER para Editarla';
+end;
+
+procedure TfmAuditoriaOnLine.fechaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if (utiles.ctrlFecha(fecha)) then begin
+      btnControlEstados.Enabled := true;
+      btnControlEstados.SetFocus;
+    end;
+end;
+
+procedure TfmAuditoriaOnLine.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  auditonline.desconectar;
+  auditoriacb.desconectar;
+  profesional.desconectar;
+  grid.GuardarAnchoColumnas(fmAuditoriaOnLine, E);
+  configform.Guardar(fmAuditoriaOnLine, redim);
+  Release; fmAuditoriaOnLine := Nil;
+end;
+
+procedure TfmAuditoriaOnLine.FormShow(Sender: TObject);
+var
+  archivo: TextFile;
+  v1, v2, v3, v4, v5, v6: string;
+begin
+  configform.Setear(fmAuditoriaOnLine);
+
+  E.Cells[0, 0]  := 'Nro.Auditoría';
+  E.Cells[1, 0]  := 'Fecha';
+  E.Cells[2, 0]  := 'Efector';
+  E.Cells[3, 0]  := 'Paciente';
+  E.Cells[4, 0]  := 'Id. Orden';
+  E.Cells[5, 0]  := 'Nro. Doc.';
+  E.Cells[7, 0]  := 'Audit?';
+  E.Cells[8, 0]  := 'Trans?';
+  E.Cells[9, 0]  := 'S';
+  E.Cells[10,0]  := 'A/P';
+  E.Cells[11,0]  := 'Orden';
+  E.Cells[12,0]  := 'Código de Barra';
+
+  T.Cells[0, 0]  := 'Cód. OS';
+  T.Cells[1, 0]  := 'Tot. Acum.';
+
+  E.ColWidths[4] := -1;
+  E.ColWidths[6] := -1;
+
+  grid.RecuperarAnchoColumnas(fmAuditoriaOnLine, E);
+
+  if (FileExists(dbs.DirSistema + '\ftpauditoria.ini')) then begin
+    AssignFile(archivo, dbs.DirSistema + '\ftpauditoria.ini');
+    reset(archivo);
+    readln(archivo, v1);
+    readln(archivo, v2);
+    readln(archivo, v3);
+    readln(archivo, v4);
+    readln(archivo, v5);
+    readln(archivo, v6);
+    host.Text := v1;
+    ftp.Text := v2;
+    usuario.Text := v3;
+    contrasenia.Text := v4;
+    if (v5 = 'S') then ftpPasivo.Checked := true;
+    dirremoto.Text := v6;
+
+    closeFile(archivo);
+  end;
+
+  salida := 'P';
+  auditonline.conectar;
+  auditoriacb.conectar;
+  profesional.conectar;
+  desde.setFocus;
+
+  redim := false;
+end;
+
+procedure TfmAuditoriaOnLine.hasta1KeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_UP) then desde1.setFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if (utiles.ctrlFecha(hasta1)) then begin
+      RadioButton3.SetFocus;
+    end;
+end;
+
+procedure TfmAuditoriaOnLine.hastaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_UP) then desde.setFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if (utiles.ctrlFecha(hasta)) then begin
+      btnDescargar.Enabled := true;
+      GroupBox1.Enabled    := true;
+      btnDescargar.SetFocus;
+    end;
+end;
+
+procedure TfmAuditoriaOnLine.NingunoClick(Sender: TObject);
+var
+  i: integer;
+begin
+  For i := 1 to E.RowCount do begin
+    if (length(trim(E.Cells[0, i])) = 0) then break;
+    E.cells[9, i] := '';
+    E.Refresh;
+  end;
+end;
+
+procedure TfmAuditoriaOnLine.Panel1Resize(Sender: TObject);
+begin
+  redim := true;
+end;
+
+procedure TfmAuditoriaOnLine.RadioButton1Click(Sender: TObject);
+begin
+  if (utiles.ctrlFecha(desde.Text, '')) and (utiles.ctrlFecha(hasta.Text, '')) then
+    if (RadioButton1.Checked) then CargarOrdenes(1)
+  else
+    utiles.msgError('Controle las Fechas, las mismas pueden estar Incorrectas ...!');
+end;
+
+procedure TfmAuditoriaOnLine.RadioButton2Click(Sender: TObject);
+begin
+  if (utiles.ctrlFecha(desde.Text, '')) and (utiles.ctrlFecha(hasta.Text, '')) then
+    if (RadioButton2.Checked) then CargarOrdenes(2)
+  else
+    utiles.msgError('Controle las Fechas, las mismas pueden estar Incorrectas ...!');
+end;
+
+procedure TfmAuditoriaOnLine.RadioButton3KeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) then
+    btnDispositivo.SetFocus;
+end;
+
+procedure TfmAuditoriaOnLine.SiClick(Sender: TObject);
+var
+  i: integer;
+begin
+  if Length(Trim(E.cells[0, E.row])) > 0 then Begin
+    if E.cells[9, E.row] <> 'S' then E.cells[9, E.row] := 'S' else E.cells[9, E.row] := ' ';
+    if (E.row < E.rowcount) and (Length(Trim(E.cells[0, E.row + 1])) > 0) then E.row := E.row + 1;
+    E.Refresh;
+  end;
+  btnSubir.Enabled := false;
+  For i := 1 to E.RowCount do begin
+    if (length(trim(E.Cells[0, i])) = 0) then break;
+    if (E.cells[9, i] = 'S') then begin
+      btnSubir.Enabled := true;
+      break;
+    end;
+  end;
+end;
+
+procedure TfmAuditoriaOnLine.TabSheet1Show(Sender: TObject);
+begin
+  desde.setFocus;
+end;
+
+procedure TfmAuditoriaOnLine.TodosClick(Sender: TObject);
+var
+  i: integer;
+begin
+  For i := 1 to E.RowCount do begin
+    if (length(trim(E.Cells[0, i])) = 0) then break;
+    E.cells[9, i] := 'S';
+    E.Refresh;
+  end;
+  if (length(trim(E.Cells[0, 1])) > 0) then btnSubir.Enabled := true;
+end;
+
+end.

@@ -1,0 +1,491 @@
+unit TablaDebitosCreditos;
+
+interface
+
+uses
+  SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
+  Forms, Dialogs, StdCtrls, ExtCtrls, Buttons, DB, DBTables, Mask, DBCtrls,
+  ComCtrls, ToolWin, Editv;
+
+type
+  TfmTablaDebCred = class(TForm)
+    StatusBar1: TStatusBar;
+    DTS: TDataSource;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
+    TabSheet3: TTabSheet;
+    Panel2: TPanel;
+    ScrollBox: TScrollBox;
+    Label1: TLabel;
+    Label2: TLabel;
+    items: TMaskEdit;
+    descrip: TMaskEdit;
+    importe: TEditValid;
+    Panel1: TPanel;
+    ScrollBox1: TScrollBox;
+    Label5: TLabel;
+    cat: TLabel;
+    Label7: TLabel;
+    idcat: TMaskEdit;
+    BuscarCat: TBitBtn;
+    monto: TEditValid;
+    Label6: TLabel;
+    desitems: TLabel;
+    items1: TLabel;
+    Panel3: TPanel;
+    ScrollBox2: TScrollBox;
+    Label10: TLabel;
+    Label11: TLabel;
+    ditems: TLabel;
+    itemsprof: TLabel;
+    monton: TEditValid;
+    montod: TEditValid;
+    Label9: TLabel;
+    idprof: TMaskEdit;
+    BuscarProf: TBitBtn;
+    np: TLabel;
+    mesesLiq: TButton;
+    Label12: TLabel;
+    Label8: TLabel;
+    Label13: TLabel;
+    Label4: TLabel;
+    per_inicio: TMaskEdit;
+    per_final: TMaskEdit;
+    Label14: TLabel;
+    Label15: TLabel;
+    Label16: TLabel;
+    Label3: TLabel;
+    Panel4: TPanel;
+    ToolBar1: TToolBar;
+    DBNavigator: TDBNavigator;
+    Alta: TToolButton;
+    Baja: TToolButton;
+    Modificar: TToolButton;
+    Buscar: TToolButton;
+    Deshacer: TToolButton;
+    Salir: TToolButton;
+    Label17: TLabel;
+    Label18: TLabel;
+    btnBorrar: TButton;
+
+    procedure itemsKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure descripKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure AltaClick(Sender: TObject);
+    procedure BajaClick(Sender: TObject);
+    procedure ModificarClick(Sender: TObject);
+    procedure DeshacerClick(Sender: TObject);
+    procedure SalirClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure DBNavigatorBeforeAction(Sender: TObject;
+      Button: TNavigateBtn);
+    procedure importeKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure FormShow(Sender: TObject);
+    procedure TabSheet2Show(Sender: TObject);
+    procedure idcatKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure BuscarCatClick(Sender: TObject);
+    procedure montoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure TabSheet3Show(Sender: TObject);
+    procedure montonKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure montodKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure mesesLiqClick(Sender: TObject);
+    procedure BuscarProfClick(Sender: TObject);
+    procedure idprofKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure TabSheet3Hide(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure per_inicioKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure per_finalKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure TabSheet1Hide(Sender: TObject);
+    procedure TabSheet1Show(Sender: TObject);
+    procedure Panel2Resize(Sender: TObject);
+    procedure btnBorrarClick(Sender: TObject);
+  private
+    { Private declarations }
+    procedure GuardarItems;
+    procedure CargarDatos;
+    procedure DatosProfesional;
+    procedure DatosDebitosIndividuales;
+  public
+    { Public declarations }
+    NoCerrarFinal, redim: boolean;
+    procedure DatosCategoria;
+    procedure IniciarMontosIndividuales;
+  end;
+
+var
+  fmTablaDebCred: TfmTablaDebCred;
+
+implementation
+
+uses CDebitosCreditosCentroBioq, CUtiles, ImgForms, CCategoriasCCB,
+  NominaDeCategoriasLab, EleccionProfesionales, EleccionMeses, CProfesionalCCB,
+  NominaDeProfesionalesLiquidacionOS, CConfigForms;
+
+{$R *.DFM}
+
+procedure TfmTablaDebCred.GuardarItems;
+begin
+  importe.Text := utiles.FormatearNumero(importe.Text);
+  if (Length(Trim(items.Text)) > 0) and (Length(Trim(descrip.Text)) > 0) then
+    debitoscreditos.Guardar(items.Text, descrip.Text, StrToFloat(importe.Text));
+end;
+
+procedure TfmTablaDebCred.CargarDatos;
+begin
+  debitoscreditos.getDatos(items.Text);
+  descrip.Text := debitoscreditos.Descrip;
+  importe.Text := utiles.FormatearNumero(FloatToStr(debitoscreditos.Importe));
+end;
+
+procedure TfmTablaDebCred.DatosCategoria;
+begin
+  categoria.getDatos(idcat.Text);
+  cat.Caption := categoria.Categoria;
+  debitoscreditos.getDatos(items1.Caption, idcat.Text);
+  monto.Text := utiles.FormatearNumero(FloatToStr(debitoscreditos.ImporteCat));
+end;
+
+procedure TfmTablaDebCred.DatosProfesional;
+Begin
+  profesional.getDatos(idprof.Text);
+  np.Caption      := profesional.nombre;
+  per_inicio.SetFocus;
+end;
+
+procedure TfmTablaDebCred.DatosDebitosIndividuales;
+Begin
+  debitoscreditos.getDatosDCProf(itemsprof.Caption, idprof.Text, per_inicio.Text);
+  monton.Text     := utiles.FormatearNumero(FloatToStr(debitoscreditos.MontoN));
+  montod.Text     := utiles.FormatearNumero(FloatToStr(debitoscreditos.MontoD));
+  per_final.Text  := debitoscreditos.Per_final;
+  if debitoscreditos.MontoN > 0 then btnBorrar.Enabled := True else btnBorrar.Enabled := False;
+end;
+
+procedure TfmTablaDebCred.IniciarMontosIndividuales;
+Begin
+  np.Caption := ''; monton.Text := utiles.FormatearNumero('0'); montod.Text := utiles.FormatearNumero('0'); per_inicio.Text := ''; per_final.Text := '';
+end;
+
+procedure TfmTablaDebCred.itemsKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if Key = VK_INSERT then AltaClick(Sender);
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if Length(Trim(items.Text)) > 0 then Begin
+      items.Text := utiles.sLlenarIzquierda(items.Text, 4, '0');
+      if debitoscreditos.Buscar(items.Text) then Begin
+        CargarDatos;
+        StatusBar1.Panels[0].Text := '';
+        StatusBar1.Panels[1].Text := 'Modifica';
+        ActiveControl := descrip;
+      end else
+        if utiles.DarDeAlta('Items ' + items.Text) then Begin
+          CargarDatos;
+          StatusBar1.Panels[0].Text := '';
+          StatusBar1.Panels[1].Text := 'Nuevo';
+          ActiveControl := descrip;
+        end;
+      end;
+    end;
+end;
+
+procedure TfmTablaDebCred.descripKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := items;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(descrip.Text)) > 0 then ActiveControl := importe;
+end;
+
+procedure TfmTablaDebCred.AltaClick(Sender: TObject);
+begin
+  items.Text    := utiles.sLlenarIzquierda(debitoscreditos.Nuevo, 4, '0');
+  if fmTablaDebCred.Active then ActiveControl := descrip;
+end;
+
+procedure TfmTablaDebCred.BajaClick(Sender: TObject);
+begin
+  if debitoscreditos.Buscar(items.Text) then
+   if utiles.BajaRegistro(' Seguro para Eliminar Items ' + descrip.Text + ' ?') then Begin
+     debitoscreditos.Borrar(items.Text);
+     items.Text := debitoscreditos.Items;
+     CargarDatos;
+   end;
+  if fmTablaDebCred.Active then  ActiveControl := descrip;
+end;
+
+procedure TfmTablaDebCred.ModificarClick(Sender: TObject);
+begin
+  ActiveControl := items;
+end;
+
+procedure TfmTablaDebCred.DeshacerClick(Sender: TObject);
+begin
+  ActiveControl := items;
+end;
+
+procedure TfmTablaDebCred.SalirClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfmTablaDebCred.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  configform.Guardar(fmTablaDebCred, redim);
+  PageControl1.ActivePage := TabSheet1;
+    debitoscreditos.BuscarPorDescrip(debitoscreditos.tabla.FieldByName('descrip').AsString);
+  DBNavigator.DataSource := nil;
+  Release; fmTablaDebCred := nil;
+end;
+
+procedure TfmTablaDebCred.DBNavigatorBeforeAction(Sender: TObject;
+  Button: TNavigateBtn);
+begin
+  items.Text := debitoscreditos.tabla.FieldByName('items').AsString;
+  CargarDatos;
+end;
+
+procedure TfmTablaDebCred.importeKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := descrip;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    importe.Text := utiles.FormatearNumero(importe.Text);
+    if (Length(Trim(items.Text)) > 0) and (Length(Trim(descrip.Text)) > 0) and (StrToFloat(importe.Text) >= 0) then Begin
+      GuardarItems;
+      ActiveControl := items;
+     if NoCerrarFinal then Close;
+   end else utiles.msgError('No se suministraron suficientes datos ...!');
+  end;
+end;
+
+procedure TfmTablaDebCred.FormShow(Sender: TObject);
+begin
+  if not configform.Setear(fmTablaDebCred) then Left:=(Screen.Width - Width) div 2;
+  DTS.DataSet := debitoscreditos.tabla;
+  if Length(Trim(items.Text)) > 0 then Begin
+    CargarDatos;
+    if debitoscreditos.Discriminacion = '' then descrip.setFocus;
+    if debitoscreditos.Discriminacion = 'C' then Begin
+      PageControl1.ActivePage := TabSheet2;
+      idcat.SetFocus;
+    end;
+    if debitoscreditos.Discriminacion = 'I' then Begin
+      PageControl1.ActivePage := TabSheet3;
+      idprof.SetFocus;
+    end;
+  end;
+  redim := False;
+end;
+
+procedure TfmTablaDebCred.TabSheet2Show(Sender: TObject);
+begin
+  if Length(Trim(descrip.Text)) > 0 then Begin
+    items1.Caption    := items.Text;
+    desitems.Caption  := descrip.Text;
+    idcat.Enabled := True; monto.Enabled := True; BuscarCat.Enabled := True;
+    ActiveControl := idcat;
+  end else Begin
+    idcat.Enabled := False; monto.Enabled := False; BuscarCat.Enabled := False;
+  end;
+end;
+
+procedure TfmTablaDebCred.idcatKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if not categoria.Buscar(idcat.Text) then BuscarCatClick(Sender);
+    DatosCategoria;
+    ActiveControl := monto;
+  end;
+end;
+
+procedure TfmTablaDebCred.BuscarCatClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmListCategoriasLab, fmListCategoriasLab);
+  fmListCategoriasLab.introSalir := True;
+  fmListCategoriasLab.ShowModal;
+  if fmListCategoriasLab.seleccionOK then Begin
+    idcat.Text := categoria.tabla.FieldByName('idcategoria').AsString;
+    DatosCategoria;
+    ActiveControl := monto;
+  end;
+  fmListCategoriasLab.Release; fmListCategoriasLab := nil;
+end;
+
+procedure TfmTablaDebCred.montoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := idcat;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(monto.Text)) > 0 then Begin
+      monto.Text := utiles.FormatearNumero(monto.Text); 
+      debitoscreditos.GuardarDCCat(items1.Caption, idcat.Text, StrToFloat(monto.Text));
+      debitoscreditos.FijarTipoDeDiscriminacion(items1.Caption, 'C');   // Por categoría
+      idcat.Text := ''; cat.Caption := ''; monto.Text := utiles.FormatearNumero('0'); 
+      ActiveControl := idcat;
+    end;
+end;
+
+procedure TfmTablaDebCred.TabSheet3Show(Sender: TObject);
+begin
+  Refresh;
+  if Length(Trim(descrip.Text)) > 0 then Begin
+    itemsprof.Caption := items.Text;
+    debitoscreditos.getDatos(itemsprof.Caption);
+    ditems.Caption    := debitoscreditos.Descrip;
+    idprof.SetFocus;
+    profesional.conectar;
+  end else
+    Panel3.Enabled := False;
+end;
+
+procedure TfmTablaDebCred.montonKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then per_final.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(monton.Text)) > 0 then Begin
+      monton.Text := utiles.FormatearNumero(monton.Text);
+      montod.SetFocus;
+    end;
+end;
+
+procedure TfmTablaDebCred.montodKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := per_final;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    monton.Text := utiles.FormatearNumero(monton.Text);
+    montod.Text := utiles.FormatearNumero(montod.Text);
+    if (StrToFloat(monton.Text) + StrToFloat(montod.Text)) = 0 then debitoscreditos.BorrarDCProf(itemsprof.Caption, idprof.Text, per_inicio.Text);
+    if Length(Trim(montod.Text)) >= 0 then Begin
+      montod.Text := utiles.FormatearNumero(montod.Text);
+      debitoscreditos.GuardarDCProf(itemsprof.Caption, idprof.Text, per_inicio.Text, per_final.Text, StrToFloat(monton.Text), StrToFloat(montod.Text));
+      debitoscreditos.FijarTipoDeDiscriminacion(itemsprof.Caption, 'I');   // Individual
+      if StrToFloat(montod.Text) > 0 then Begin
+        mesesLiq.Enabled := True;
+        mesesLiq.SetFocus;
+      end else Begin
+        debitoscreditos.BorrarMeses(itemsprof.Caption, idprof.Text);
+        IniciarMontosIndividuales;
+        idprof.SetFocus;
+      end;
+    end;
+  end;
+end;
+
+procedure TfmTablaDebCred.mesesLiqClick(Sender: TObject);
+var
+  r: TQuery;
+begin
+  Application.CreateForm(TfmEleMeses, fmEleMeses);
+  r := debitoscreditos.setMeses(itemsprof.Caption, idprof.Text);
+  r.Open;
+  while not r.Eof do Begin
+    fmEleMeses.MarcarMes(r.FieldByName('mes').AsString);
+    r.Next;
+  end;
+  r.Close; r.Free;
+  fmEleMeses.ShowModal;
+  debitoscreditos.GuardarMes(itemsprof.Caption, idprof.Text, fmEleMeses.mesesSel, StrToFloat(montod.Text));
+  fmEleMeses.Release; fmEleMeses := nil;
+  IniciarMontosIndividuales;
+  mesesLiq.Enabled := False;
+  idprof.SetFocus;
+end;
+
+procedure TfmTablaDebCred.BuscarProfClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmListProfesionalesLiq, fmListProfesionalesLiq);
+  fmListProfesionalesLiq.introSalir := True;
+  fmListProfesionalesLiq.ShowModal;
+  if fmListProfesionalesLiq.seleccionOK then Begin
+    idprof.Text := profesional.tperso.FieldByName('idprof').AsString;
+    DatosProfesional;
+  end;
+  fmListProfesionalesLiq.Release; fmListProfesionalesLiq := nil;  
+end;
+
+procedure TfmTablaDebCred.idprofKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if profesional.Buscar(idprof.Text) then DatosProfesional else BuscarProfClick(Sender);
+end;
+
+procedure TfmTablaDebCred.TabSheet3Hide(Sender: TObject);
+begin
+  idprof.Text := '';
+  profesional.desconectar;
+end;
+
+procedure TfmTablaDebCred.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+end;
+
+procedure TfmTablaDebCred.per_inicioKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then idprof.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.verificarPeriodo(per_inicio.Text, 'Periodo Incorrecto ...!') then Begin
+      DatosDebitosIndividuales;
+      per_final.SetFocus;
+    end;
+end;
+
+procedure TfmTablaDebCred.per_finalKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then per_inicio.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.verificarPeriodo(per_final.Text, 'Periodo Incorrecto ...!') then monton.SetFocus;
+end;
+
+procedure TfmTablaDebCred.TabSheet1Hide(Sender: TObject);
+begin
+  GuardarItems;
+  Alta.Enabled := False; Baja.Enabled := False; Modificar.Enabled := False; Buscar.Enabled := False; Deshacer.Enabled := False;
+end;
+
+procedure TfmTablaDebCred.TabSheet1Show(Sender: TObject);
+begin
+  Alta.Enabled := True; Baja.Enabled := True; Modificar.Enabled := True; Buscar.Enabled := True; Deshacer.Enabled := True;
+end;
+
+procedure TfmTablaDebCred.Panel2Resize(Sender: TObject);
+begin
+  redim := True;
+end;
+
+procedure TfmTablaDebCred.btnBorrarClick(Sender: TObject);
+begin
+  if debitoscreditos.BuscarDCProf(itemsprof.Caption, idprof.Text, per_inicio.Text) then Begin
+    if utiles.msgSiNo('Seguro para Borrar Período ' + per_inicio.Text + ' ?') then Begin
+      debitoscreditos.BorrarDCProf(itemsprof.Caption, idprof.Text, per_inicio.Text);
+      per_inicio.Text := ''; per_final.Text := ''; monton.Text := ''; montod.Text := '';
+      idprof.setFocus;
+      btnBorrar.Enabled := False;
+    end;
+  end;
+end;
+
+end.

@@ -1,0 +1,847 @@
+unit FormMigrar2013;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, DBtables, StdCtrls, CBDT, CUtiles, CIDBFM,
+     CFirebird, IBTable, IBQuery, CUtilidadesArchivos;
+
+type
+  TForm1 = class(TForm)
+    Edit1: TEdit;
+    Button1: TButton;
+    res: TLabel;
+    Edit2: TEdit;
+    Edit3: TEdit;
+    CheckBox1: TCheckBox;
+    Edit4: TEdit;
+    ListBox1: TListBox;
+    Button2: TButton;
+    Label1: TLabel;
+    Button3: TButton;
+    Button4: TButton;
+    ListBox2: TListBox;
+    procedure Button1Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
+  private
+    { Private declarations }
+    lote: TStringList;
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  tabla: TTable;
+  tablaib: TIBtable;
+  lista: TStringList;
+  i ,j, k: integer;
+  p, dir, per1, per2: string;
+begin
+  lista := TStringList.Create;
+
+  if (checkbox1.checked) then firebird.Conectar(edit4.Text + '\factib\factcentro.gdb', 'sysdba', 'masterkey') else
+  //firebird.Conectar('c:\sidelphi32\sgen\ccomputoscb\interbase\centrobioq.gdb', 'sysdba', 'masterkey');
+  firebird.Conectar(edit4.Text +  '\interbase\centrobioq.gdb', 'sysdba', 'masterkey');
+
+  if (checkbox1.Checked) then begin
+
+  tabla := datosdb.openDB('categorias_profesionales', '', '', edit1.Text + '\archdat');
+  tablaib := firebird.InstanciarTabla('categorias_profesionales');
+
+  firebird.TransacSQL('delete from ' + tablaib.TableName);
+
+  tabla.Open; tablaib.Open;
+  while not tabla.eof do begin
+    tablaib.Append;
+
+    tablaib.FieldByName('idprof').Value := tabla.FieldByName('idprof').Value;
+    tablaib.FieldByName('periodo').Value := tabla.FieldByName('periodo').Value;
+    tablaib.FieldByName('categoria').Value := tabla.FieldByName('categoria').Value;
+
+    tablaib.Post;
+
+    tabla.Next;
+  end;
+
+  firebird.RegistrarTransaccion(tablaib);
+
+  tabla.Close; tablaib.Close;
+
+  //----------------------------------------------------------------------------
+
+  tabla := datosdb.openDB('posiva_prof', '', '', edit1.Text + '\archdat');
+  tablaib := firebird.InstanciarTabla('posiva_prof');
+
+  firebird.TransacSQL('delete from ' + tablaib.TableName);
+
+  tabla.Open; tablaib.Open;
+  while not tabla.eof do begin
+    tablaib.Append;
+
+    tablaib.FieldByName('idprof').Value := tabla.FieldByName('idprof').Value;
+    tablaib.FieldByName('periodo').Value := tabla.FieldByName('periodo').Value;
+    tablaib.FieldByName('retieneiva').Value := tabla.FieldByName('retieneiva').Value;
+    tablaib.FieldByName('ajustedc').Value := tabla.FieldByName('ajustedc').Value;
+    tablaib.FieldByName('periodo1').Value := tabla.FieldByName('periodo1').Value;
+
+    tablaib.Post;
+
+    tabla.Next;
+  end;
+
+  firebird.RegistrarTransaccion(tablaib);  
+
+  tabla.Close; tablaib.Close;
+
+  //----------------------------------------------------------------------------
+
+  tabla := datosdb.openDB('profesih', '', '', edit1.Text + '\archdat');
+  tablaib := firebird.InstanciarTabla('profesih');
+
+  firebird.TransacSQL('delete from ' + tablaib.TableName);
+
+  tabla.Open; tablaib.Open;
+  while not tabla.eof do begin
+    tablaib.Append;
+
+    tablaib.FieldByName('idprof').Value := tabla.FieldByName('idprof').Value;
+    tablaib.FieldByName('nrocuit').Value := tabla.FieldByName('nrocuit').Value;
+    tablaib.FieldByName('telefono').Value := tabla.FieldByName('telefono').Value;
+    tablaib.FieldByName('email').Value := tabla.FieldByName('email').Value;
+    tablaib.FieldByName('idcategoria').Value := tabla.FieldByName('idcategoria').Value;
+    tablaib.FieldByName('matricula').Value := tabla.FieldByName('matricula').Value;
+    tablaib.FieldByName('fechamat').Value := tabla.FieldByName('fechamat').Value;
+    tablaib.FieldByName('retieneiva').Value := tabla.FieldByName('retieneiva').Value;
+    tablaib.FieldByName('ajustedc').Value := tabla.FieldByName('ajustedc').Value;
+    tablaib.FieldByName('codfact').Value := tabla.FieldByName('codfact').Value;
+    tablaib.FieldByName('retieneiva').Value := tabla.FieldByName('retieneiva').Value;
+    tablaib.FieldByName('nivel2').Value := tabla.FieldByName('nivel2').Value;
+
+    tablaib.Post;
+
+    tabla.Next;
+  end;
+
+  firebird.RegistrarTransaccion(tablaib);
+
+  tabla.Close; tablaib.Close;
+
+  //----------------------------------------------------------------------------
+
+  tabla := datosdb.openDB('profesio', '', '', edit1.Text + '\archdat');
+  tablaib := firebird.InstanciarTabla('profesio');
+
+  firebird.TransacSQL('delete from ' + tablaib.TableName);
+
+  tabla.Open; tablaib.Open;
+  while not tabla.eof do begin
+    tablaib.Append;
+
+    tablaib.FieldByName('idprof').Value := tabla.FieldByName('idprof').Value;
+    tablaib.FieldByName('nombre').Value := tabla.FieldByName('nombre').Value;
+    tablaib.FieldByName('direccion').Value := tabla.FieldByName('direccion').Value;
+    tablaib.FieldByName('cp').Value := tabla.FieldByName('cp').Value;
+    tablaib.FieldByName('orden').Value := tabla.FieldByName('orden').Value;
+    tablaib.FieldByName('localidad').Value := tabla.FieldByName('localidad').Value;
+    if (datosdb.verificarSiExisteCampo(tabla, 'factglobal')) then tablaib.FieldByName('factglobal').Value := tabla.FieldByName('factglobal').Value else tablaib.FieldByName('factglobal').Value := 'N';
+
+    tablaib.Post;
+
+
+    lista.Add(tabla.FieldByName('idprof').AsString);
+
+    //utiles.msgError(tabla.FieldByName('idprof').Value);
+
+    tabla.Next;
+  end;
+
+  firebird.RegistrarTransaccion(tablaib);
+
+  tabla.Close; tablaib.Close;
+
+  //----------------------------------------------------------------------------
+
+  tabla := datosdb.openDB('paciente', '', '', edit1.Text + '\archdat');
+  tablaib := firebird.InstanciarTabla('paciente');
+
+  firebird.TransacSQL('delete from ' + tablaib.TableName);
+
+  tabla.Open; tablaib.Open;
+  while not tabla.eof do begin
+    tablaib.Append;
+
+    tablaib.FieldByName('idprof').Value := tabla.FieldByName('idprof').Value;
+    tablaib.FieldByName('codpac').Value := tabla.FieldByName('codpac').Value;
+    tablaib.FieldByName('nombre').Value := tabla.FieldByName('nombre').Value;
+    tablaib.FieldByName('alta').Value := tabla.FieldByName('alta').Value;
+    tablaib.FieldByName('gravadoiva').Value := tabla.FieldByName('gravadoiva').Value;
+    tablaib.FieldByName('nrodoc').Value := tabla.FieldByName('nrodoc').Value;
+    tablaib.FieldByName('exportar').Value := tabla.FieldByName('exportar').Value;
+
+    tablaib.Post;
+
+    tabla.Next;
+  end;
+
+  firebird.RegistrarTransaccion(tablaib);
+
+  tabla.Close; tablaib.Close;
+
+  //----------------------------------------------------------------------------
+  end;
+
+  if not (checkbox1.Checked) then begin
+    listBox1.Clear;
+    tablaib := firebird.InstanciarTabla('profesio');
+    tablaib.Open;
+    while not tablaib.eof do begin
+      lista.Add(tablaib.FieldByName('idprof').AsString);
+      listbox1.Items.Add(tablaib.FieldByName('idprof').AsString);
+      tablaib.Next;
+    end;
+    tablaib.Close;
+  end;
+  listBox1.refresh;
+
+  firebird.Desconectar; 
+
+  firebird.Conectar(edit4.Text + '\factib\factlabwork.gdb', 'sysdba', 'masterkey');
+
+  for i := 1 to 1000000 do begin
+
+  p := copy(edit2.Text, 1, 2) + copy(edit2.Text, 4, 4);
+
+  dir := edit1.Text + '\' + p;
+
+  k := 0;
+
+  for j := 1 to lista.Count do begin
+
+  //utiles.msgError((dir+'\' + lista[j-1]));
+
+  if (directoryexists(dir+'\' + lista[j-1])) then begin
+
+  //============================================================================
+
+  res.Caption := lista[j-1]; res.Refresh;
+
+  tabla := datosdb.openDB('cabfact', '', '', dir+'\' + lista[j-1]);
+  tablaib := firebird.InstanciarTabla('cabfact');
+
+  firebird.TransacSQL('delete from ' + tablaib.TableName + ' where periodo = ' + '''' + edit2.text + '''' + ' and idprof = ' + '''' + lista[j-1] + '''');
+
+  tabla.Open; tablaib.Open;
+  while not tabla.eof do begin
+    if (tabla.FieldByName('idprof').AsString > '') and (tabla.FieldByName('periodo').AsString > '')
+    and (tabla.FieldByName('codos').AsString > '') then begin
+    tablaib.Append;
+
+    tablaib.FieldByName('idprof').Value := tabla.FieldByName('idprof').Value;
+    tablaib.FieldByName('periodo').Value := tabla.FieldByName('periodo').Value;
+    tablaib.FieldByName('codos').Value := tabla.FieldByName('codos').Value;
+    tablaib.FieldByName('fecha').Value := tabla.FieldByName('fecha').Value;
+    if (datosdb.verificarSiExisteCampo(tabla, 'retiva')) then tablaib.FieldByName('retiva').Value := tabla.FieldByName('retiva').Value else tablaib.FieldByName('retiva').Value := 'N';
+
+    tablaib.Post;
+    end;
+
+    tabla.Next;
+  end;
+
+  firebird.RegistrarTransaccion(tablaib);
+
+  datosdb.closeDB(tabla); firebird.closeDB(tablaib);
+  //tabla.Close; tablaib.Close;
+
+  //============================================================================
+
+  tabla := datosdb.openDB('detfact', '', '', dir+'\' + lista[j-1]);
+  tablaib := firebird.InstanciarTabla('detfact');
+
+  firebird.TransacSQL('delete from ' + tablaib.TableName + ' where periodo = ' + '''' + edit2.text + '''' + ' and idprof = ' + '''' + lista[j-1] + '''');
+
+  tabla.Open; tablaib.Open;
+  while not tabla.eof do begin
+    if (tabla.FieldByName('orden').AsString > '') and (tabla.FieldByName('periodo').AsString > '')
+    and (tabla.FieldByName('codos').AsString > '') and (tabla.FieldByName('items').AsString > '') then begin
+    {if (firebird.Buscar(tablaib, 'PERIODO;IDPROF;CODOS;ITEMS;ORDEN', tabla.FieldByName('periodo').Value,
+    tabla.FieldByName('idprof').Value, tabla.FieldByName('codos').Value, tabla.FieldByName('items').Value,
+    tabla.FieldByName('orden').Value)) then tablaib.Edit else tablaib.Append;}
+
+    tablaib.Append;
+
+    tablaib.FieldByName('idprof').Value := tabla.FieldByName('idprof').Value;
+    tablaib.FieldByName('periodo').Value := tabla.FieldByName('periodo').Value;
+    tablaib.FieldByName('codos').Value := tabla.FieldByName('codos').Value;
+    tablaib.FieldByName('items').Value := tabla.FieldByName('items').Value;
+    tablaib.FieldByName('orden').Value := tabla.FieldByName('orden').Value;
+    tablaib.FieldByName('codpac').Value := tabla.FieldByName('codpac').Value;
+    tablaib.FieldByName('nombre').Value := tabla.FieldByName('nombre').Value;
+    tablaib.FieldByName('codanalisis').Value := tabla.FieldByName('codanalisis').Value;
+    if (datosdb.verificarSiExisteCampo(tabla, 'profiva')) then tablaib.FieldByName('profiva').Value := tabla.FieldByName('profiva').Value else tablaib.FieldByName('profiva').Value := '';
+    if (datosdb.verificarSiExisteCampo(tabla, 'osiva')) then tablaib.FieldByName('osiva').Value := tabla.FieldByName('osiva').Value else tablaib.FieldByName('osiva').Value := '';
+    if (datosdb.verificarSiExisteCampo(tabla, 'ref1')) then tablaib.FieldByName('ref1').Value := tabla.FieldByName('ref1').Value else tablaib.FieldByName('ref1').Value := '';
+    if (datosdb.verificarSiExisteCampo(tabla, 'retiva')) then tablaib.FieldByName('retiva').Value := tabla.FieldByName('retiva').Value else tablaib.FieldByName('retiva').Value := '';
+
+    tablaib.Post;
+    end;
+
+    tabla.Next;
+  end;
+
+  firebird.RegistrarTransaccion(tablaib);
+
+  datosdb.closeDB(tabla); firebird.closeDB(tablaib);
+
+  //============================================================================
+
+  tabla := datosdb.openDB('idordenes', '', '', dir+'\' + lista[j-1]);
+  tablaib := firebird.InstanciarTabla('idordenes');
+
+  firebird.TransacSQL('delete from ' + tablaib.TableName + ' where periodo = ' + '''' + edit2.text + '''' + ' and idprof = ' + '''' + lista[j-1] + '''');
+
+  tabla.Open; tablaib.Open;
+  while not tabla.eof do begin
+    tablaib.Append;
+
+    tablaib.FieldByName('idprof').Value := tabla.FieldByName('idprof').Value;
+    tablaib.FieldByName('periodo').Value := tabla.FieldByName('periodo').Value;
+    tablaib.FieldByName('orden').Value := tabla.FieldByName('orden').Value;
+
+    tablaib.Post;
+
+    tabla.Next;
+  end;
+
+  firebird.RegistrarTransaccion(tablaib);
+
+  datosdb.closeDB(tabla); firebird.closeDB(tablaib);
+
+  //============================================================================
+
+
+  end;
+
+  end;
+
+  if (edit2.Text = edit3.Text) then break;
+
+  edit2.Text := utiles.SumarPeriodo(edit2.Text, '1');
+  edit2.Refresh;
+
+
+  end;
+
+
+  //----------------------------------------------------------------------------
+
+
+  Close;
+
+
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+var
+  tabla: TTable;
+  tablaib: TIBtable;
+  lista: TStringList;
+  i ,j, k, m: integer;
+  p, dir, per1, per2: string;
+begin
+  firebird.Conectar(edit4.Text + '\factib\factlabwork.gdb', 'sysdba', 'masterkey');
+
+  tabla := datosdb.openDB('profesio', '', '', edit4.Text + '\archdat');
+
+  lista := TStringList.Create;
+  lote := TStringList.Create;
+
+  m := 0;
+
+  tabla.Open;
+  while not tabla.eof do begin
+    lista.Add(tabla.FieldByName('idprof').AsString);
+    tabla.next;
+  end; 
+
+  for i := 1 to 1000000 do begin
+
+  p := copy(edit2.Text, 1, 2) + copy(edit2.Text, 4, 4);
+
+  dir := edit1.Text + '\' + p;
+
+  k := 0;
+
+  for j := 1 to lista.Count do begin
+
+  //utiles.msgError((dir+'\' + lista[j-1]));
+
+  if (directoryexists(dir+'\' + lista[j-1])) then begin
+
+  //============================================================================
+
+  res.Caption := lista[j-1]; res.Refresh;
+
+  tabla := datosdb.openDB('ordenes_audit', '', '', dir+'\' + lista[j-1]);
+  //tablaib := firebird.InstanciarTabla('ordenes_audit');
+
+  //firebird.TransacSQL('delete from ' + tablaib.TableName + ' where periodo = ' + '''' + edit2.text + '''' + ' and idprof = ' + '''' + lista[j-1] + '''');
+
+  //lote.Add('delete from ordenes_audit where periodo = ' + '''' + edit2.text + '''' + ' and idprof = ' + '''' + lista[j-1] + '''');
+
+  tabla.Open; //tablaib.Open;
+  while not tabla.eof do begin
+    {tablaib.Append;
+
+    tablaib.FieldByName('idprof').Value := tabla.FieldByName('idprof').Value;
+    tablaib.FieldByName('periodo').Value := tabla.FieldByName('periodo').Value;
+    tablaib.FieldByName('nroauditoria').Value := tabla.FieldByName('nroauditoria').Value;
+    tablaib.FieldByName('items').Value := tabla.FieldByName('items').Value;
+    tablaib.FieldByName('facturada').Value := tabla.FieldByName('facturada').Value;
+
+    tablaib.Post;}
+
+    lote.Add('insert into ordenes_audit (idprof, periodo, nroauditoria, items, facturada) values (' +
+       '''' + tabla.FieldByName('idprof').Value + '''' + ', ' +
+       '''' + tabla.FieldByName('periodo').Value + '''' + ', ' +
+       '''' + tabla.FieldByName('nroauditoria').Value + '''' + ', ' +
+       '''' + tabla.FieldByName('items').Value + '''' + ', ' +
+       '''' + tabla.FieldByName('facturada').Value + '''' + ')');
+
+    inc(m);
+    if (m > 1000) then begin
+       firebird.TransacSQLBatch(lote);
+       m := 0;
+       lote.Clear;
+    end;
+
+    tabla.Next;
+  end;
+
+  //firebird.RegistrarTransaccion(tablaib);
+
+  datosdb.closeDB(tabla); //firebird.closeDB(tablaib);
+  end;
+  end;
+  if (edit2.Text = edit3.Text) then break;
+
+  edit2.Text := utiles.SumarPeriodo(edit2.Text, '1');
+  edit2.Refresh;
+
+  end;
+  //tabla.Close; tablaib.Close;
+
+  firebird.TransacSQLBatch(lote);
+
+end;
+
+procedure TForm1.Button3Click(Sender: TObject);
+var
+  tabla: TTable;
+  tablaib: TIBtable;
+  lista: TStringList;
+  i ,j, k, ii: integer;
+  p, dir, per1, per2, a1, a2, a3, a4: string;
+  archivo: TextFile;
+begin
+  lista := TStringList.Create;
+
+  AssignFile(archivo, 'z:\' + copy(edit2.Text, 4, 4) + '.sql');
+  rewrite(archivo);
+
+  firebird.Conectar(edit4.Text + '\factib\factlabcent.gdb', 'sysdba', 'masterkey');
+
+  for i := 1 to 1000000 do begin
+
+  p := copy(edit2.Text, 1, 2) + copy(edit2.Text, 4, 4);
+
+  dir := edit1.Text + '\' + p;
+
+  k := 0;
+
+  //for j := 1 to lista.Count do begin
+
+  //utiles.msgError((dir));
+
+  if (directoryexists(dir{+'\' + lista[j-1]})) then begin
+
+  //============================================================================
+
+  //res.Caption := lista[j-1]; res.Refresh;
+
+  //============================================================================
+
+  tabla := datosdb.openDB('detfact', '', '', dir{+'\' + lista[j-1]});
+  //tablaib := firebird.InstanciarTabla('detfact');
+
+  //firebird.TransacSQL('delete from ' + tablaib.TableName + ' where periodo = ' + '''' + edit2.text + '''' + ' and idprof = ' + '''' + lista[j-1] + '''');
+
+  writeln(archivo, 'delete from detfact where periodo = ' + '''' + edit2.text + '''' + ';');
+
+  tabla.Open; //tablaib.Open;
+  while not tabla.eof do begin
+
+    if (tabla.FieldByName('orden').AsString > '') and (tabla.FieldByName('periodo').AsString > '')
+    and (tabla.FieldByName('codos').AsString > '') and (tabla.FieldByName('items').AsString > '') then begin
+    {if (firebird.Buscar(tablaib, 'PERIODO;IDPROF;CODOS;ITEMS;ORDEN', tabla.FieldByName('periodo').Value,
+    tabla.FieldByName('idprof').Value, tabla.FieldByName('codos').Value, tabla.FieldByName('items').Value,
+    tabla.FieldByName('orden').Value)) then tablaib.Edit else tablaib.Append;}
+
+    {tablaib.Append;
+
+    tablaib.FieldByName('idprof').Value := tabla.FieldByName('idprof').Value;
+    tablaib.FieldByName('periodo').Value := tabla.FieldByName('periodo').Value;
+    tablaib.FieldByName('codos').Value := tabla.FieldByName('codos').Value;
+    tablaib.FieldByName('items').Value := tabla.FieldByName('items').Value;
+    tablaib.FieldByName('orden').Value := tabla.FieldByName('orden').Value;
+    tablaib.FieldByName('codpac').Value := tabla.FieldByName('codpac').Value;
+    tablaib.FieldByName('nombre').Value := tabla.FieldByName('nombre').Value;
+    tablaib.FieldByName('codanalisis').Value := tabla.FieldByName('codanalisis').Value;}
+
+    if (datosdb.verificarSiExisteCampo(tabla, 'profiva')) then a1 := tabla.FieldByName('profiva').Value else a1 := '';
+    if (datosdb.verificarSiExisteCampo(tabla, 'osiva')) then a2 := tabla.FieldByName('osiva').Value else a2:= '';
+    if (datosdb.verificarSiExisteCampo(tabla, 'ref1')) then a3 := tabla.FieldByName('ref1').ASSTRING else a3 := '';
+    if (datosdb.verificarSiExisteCampo(tabla, 'retiva')) then a4 := tabla.FieldByName('retiva').ASSTRING else a4 := '';
+
+    //tablaib.Post;
+
+    writeln(archivo, 'insert into detfact(idprof, periodo, codos, items, orden, codpac, nombre, codanalisis, profiva, osiva, ref1, retiva) values (' +
+    '''' + tabla.FieldByName('idprof').asstring + '''' + ', ' +
+    '''' + tabla.FieldByName('periodo').asstring + '''' + ', ' +
+    '''' + tabla.FieldByName('codos').asstring + '''' + ', ' +
+    '''' + tabla.FieldByName('items').asstring + '''' + ', ' +
+    '''' + tabla.FieldByName('orden').asstring + '''' + ', ' +
+    '''' + tabla.FieldByName('codpac').asstring + '''' + ', ' +
+    '"' + tabla.FieldByName('nombre').asstring + '"' + ', ' +
+    '''' + tabla.FieldByName('codanalisis').asstring + '''' + ', ' +
+    '''' + a1 + '''' + ', ' +
+    '''' + a2 + '''' + ', ' +
+    '''' + a3 + '''' + ', ' +
+    '''' + a4 + '''' + ');');
+
+
+    end;
+
+    tabla.Next;
+  end;
+
+  //firebird.RegistrarTransaccion(tablaib);
+
+  datosdb.closeDB(tabla); //firebird.closeDB(tablaib);
+
+
+  //lote.SaveToFile('z:\' + copy(edit2.Text, 4, 4) + '.sql');
+
+  //============================================================================
+
+
+  //end;
+
+  end;
+
+
+
+
+  if (edit2.Text = edit3.Text) then break;
+
+  edit2.Text := utiles.SumarPeriodo(edit2.Text, '1');
+  edit2.Refresh;
+
+
+  end;
+
+
+  //----------------------------------------------------------------------------
+
+  closeFile(archivo);
+  Close;
+
+end;
+
+procedure TForm1.Button4Click(Sender: TObject);
+var
+  i: integer;
+  tabla: TTable;
+  ls: TStringList;
+begin
+  if (DirectoryExists((edit4.text) + '\distribucion')) then begin
+    ListBox2.Items := utilesarchivos.setListaDirectorios(edit4.text + '\distribucion');
+  end else
+    exit;
+
+  ls := TStringList.create;
+  firebird.Conectar(edit4.Text + '\factib\distribucioncent.gdb', 'sysdba', 'masterkey');
+
+  {lote.Clear;
+  lote.add('delete from controlliq;');
+
+  tabla := datosdb.openDB('controlliq', '', '', edit4.text + '\distribucion\control');
+  tabla.Open;
+  while not tabla.eof do begin
+    if (tabla.FieldByName('porcentaje').asfloat > 0) then
+
+    lote.Add('insert into controlliq(periodo, periodoliq, codos, porcentaje) values (' +
+    '"' + tabla.FieldByName('periodo').asstring + '"' + ', ' +
+    '"' + tabla.FieldByName('periodoliq').asstring + '"' + ', ' +
+    '"' +  tabla.FieldByName('codos').asstring + '"' + ', ' +
+    utiles.StringRemplazarCaracteres(tabla.FieldByName('porcentaje').asstring, ',', '.') + ');');
+
+     tabla.Next;
+  end;
+  datosdb.closeDB(tabla);
+  firebird.TransacSQLBatch(lote);
+  //lote.SaveToFile('z:\script1.sql');
+
+
+  lote.Clear;
+  lote.add('delete from cabajustesind;');
+  lote.add('delete from dcprofes;');
+  lote.add('delete from depositos;');
+  lote.add('delete from detajindiv;');
+  lote.add('delete from montos;');
+  lote.add('delete from montosret;');
+
+  for i := 1 to ListBox2.Count do Begin
+
+    if (length(trim(ListBox2.Items[i-1])) > 10)then begin
+
+    tabla := datosdb.openDB('cabajustesind', '', '', edit4.text + '\distribucion\' + ListBox2.Items[i-1]);
+    tabla.Open;
+    while not tabla.eof do begin
+    lote.Add('insert into cabajustesind(periodo, codos, perliq, nrodist, importe, porcentaje, fecha) values (' +
+    '"' + tabla.FieldByName('periodo').asstring + '"' + ', ' +
+    '"' + tabla.FieldByName('codos').asstring + '"' + ', ' +
+    '"' +  tabla.FieldByName('perliq').asstring + '"' + ', ' +
+    '"' + copy( ListBox2.Items[i-1], 11, 2) + '"' + ', ' +
+    utiles.StringRemplazarCaracteres(tabla.FieldByName('importe').asstring, ',', '.') + ', ' +
+    utiles.StringRemplazarCaracteres(tabla.FieldByName('porcentaje').asstring, ',', '.') + ', ' +
+    '"' + tabla.FieldByName('fecha').asstring + '"' + ');');
+
+
+    tabla.Next;
+    end;
+    datosdb.closeDB(tabla);
+    firebird.TransacSQLBatch(lote);
+    //lote.SaveToFile('z:\script2.sql');
+
+    lote.clear;
+    tabla := datosdb.openDB('dcprofes', '', '', edit4.text + '\distribucion\' + ListBox2.Items[i-1]);
+    tabla.Open;
+    while not tabla.eof do begin
+    lote.Add('insert into dcprofes(periodo, idprof, items, nrodist, idajuste, descripaj, importeaj, tipomov) values (' +
+    '"' + tabla.FieldByName('periodo').asstring + '"' + ', ' +
+    '"' + tabla.FieldByName('idprof').asstring + '"' + ', ' +
+    '"' +  tabla.FieldByName('items').asstring + '"' + ', ' +
+    '"' + copy( ListBox2.Items[i-1], 11, 2) + '"' + ', ' +
+    '"' + tabla.FieldByName('idajuste').asstring + '"' + ', ' +
+    '"' + tabla.FieldByName('descripaj').asstring + '"' + ', ' +
+    utiles.StringRemplazarCaracteres(tabla.FieldByName('importeaj').asstring, ',', '.') + ', ' +
+
+    '"' + tabla.FieldByName('tipomov').asstring + '"' + ');');
+
+
+    tabla.Next;
+    end;
+    datosdb.closeDB(tabla);
+    firebird.TransacSQLBatch(lote);
+    //lote.SaveToFile('z:\script3.sql');
+
+    if (FileExists(edit4.text + '\distribucion\' + ListBox2.Items[i-1] + '\depositos.db')) then begin
+
+    lote.clear;
+    tabla := datosdb.openDB('depositos', '', '', edit4.text + '\distribucion\' + ListBox2.Items[i-1]);
+    tabla.Open;
+    while not tabla.eof do begin
+    lote.Add('insert into depositos(periodo, idprof, codbco, nrodist, fecha, observacion) values (' +
+    '"' + copy( ListBox2.Items[i-1], 5, 2) + '/' + copy( ListBox2.Items[i-1], 7, 4) + '"' + ', ' +
+    '"' + tabla.FieldByName('idprof').asstring + '"' + ', ' +
+    '"' +  tabla.FieldByName('codbco').asstring + '"' + ', ' +
+    '"' + copy( ListBox2.Items[i-1], 11, 2) + '"' + ', ' +
+    '"' + tabla.FieldByName('fecha').asstring + '"' + ', ' +
+    '"' + tabla.FieldByName('observacion').asstring + '"' + ');');
+
+
+    tabla.Next;
+    end;
+    datosdb.closeDB(tabla);
+    firebird.TransacSQLBatch(lote);
+    //lote.SaveToFile('z:\script4.sql');
+    end;
+
+    if (FileExists(edit4.text + '\distribucion\' + ListBox2.Items[i-1] + '\detajindiv.db')) then begin
+
+    lote.clear;
+    tabla := datosdb.openDB('detajindiv', '', '', edit4.text + '\distribucion\' + ListBox2.Items[i-1]);
+    tabla.Open;
+    while not tabla.eof do begin
+    lote.Add('insert into detajindiv(periodo, codos, idprof, items, nrodist, concepto, importe, perliq, protegido) values (' +
+    '"' + tabla.FieldByName('periodo').asstring + '"' + ', ' +
+    '"' + tabla.FieldByName('codos').asstring + '"' + ', ' +
+    '"' +  tabla.FieldByName('idprof').asstring + '"' + ', ' +
+    '"' +  tabla.FieldByName('items').asstring + '"' + ', ' +
+    '"' + copy( ListBox2.Items[i-1], 11, 2) + '"' + ', ' +
+    QuotedStr(tabla.FieldByName('concepto').asstring) + ', ' +
+    utiles.StringRemplazarCaracteres(tabla.FieldByName('importe').asstring, ',', '.') + ', ' +
+    '"' + tabla.FieldByName('perliq').asstring + '"' + ', ' +
+    '"' + tabla.FieldByName('protegido').asstring + '"' + ');');
+
+
+    tabla.Next;
+    end;
+    datosdb.closeDB(tabla);
+    firebird.TransacSQLBatch(lote);
+    //lote.SaveToFile('z:\script5.sql');
+    ls.AddStrings(lote);
+    lote.clear;
+    end;
+
+    if (FileExists(edit4.text + '\distribucion\' + ListBox2.Items[i-1] + '\montos.db')) then begin
+
+    lote.clear;
+    tabla := datosdb.openDB('montos', '', '', edit4.text + '\distribucion\' + ListBox2.Items[i-1]);
+    tabla.Open;
+    while not tabla.eof do begin
+    lote.Add('insert into montos(periodo, idprof, items, nrodist, monto, total, monto1, monto2, monto3, monto4, monto5) values (' +
+    '"' + copy( ListBox2.Items[i-1], 5, 2) + '/' + copy( ListBox2.Items[i-1], 7, 4) + '"' + ', ' +
+    '"' +  tabla.FieldByName('idprof').asstring + '"' + ', ' +
+    '"' +  tabla.FieldByName('items').asstring + '"' + ', ' +
+    '"' + copy( ListBox2.Items[i-1], 11, 2) + '"' + ', ' +
+    utiles.sLlenarIzquierda(utiles.StringRemplazarCaracteres(tabla.FieldByName('monto').asstring, ',', '.'), 2, '0') + ', ' +
+    utiles.sLlenarIzquierda(utiles.StringRemplazarCaracteres(tabla.FieldByName('total').asstring, ',', '.'), 2, '0') + ', ' +
+    utiles.sLlenarIzquierda(utiles.StringRemplazarCaracteres(tabla.FieldByName('monto1').asstring, ',', '.'), 2, '0') + ', ' +
+    utiles.sLlenarIzquierda(utiles.StringRemplazarCaracteres(tabla.FieldByName('monto2').asstring, ',', '.'), 2, '0') + ', ' +
+    utiles.sLlenarIzquierda(utiles.StringRemplazarCaracteres(tabla.FieldByName('monto3').asstring, ',', '.'), 2, '0') + ', ' +
+    utiles.sLlenarIzquierda(utiles.StringRemplazarCaracteres(tabla.FieldByName('monto4').asstring, ',', '.'), 2, '0') + ', ' +
+    utiles.sLlenarIzquierda(utiles.StringRemplazarCaracteres(tabla.FieldByName('monto5').asstring, ',', '.'), 2, '0') + ');');
+
+
+    tabla.Next;
+    end;
+    datosdb.closeDB(tabla);
+    firebird.TransacSQLBatch(lote);
+    //lote.SaveToFile('z:\script6.sql');
+    lote.clear;
+    end;
+
+     if (FileExists(edit4.text + '\distribucion\' + ListBox2.Items[i-1] + '\montosret.db')) then begin
+
+    lote.clear;
+    tabla := datosdb.openDB('montosret', '', '', edit4.text + '\distribucion\' + ListBox2.Items[i-1]);
+    tabla.Open;
+    while not tabla.eof do begin
+    lote.Add('insert into montosret(periodo, idprof, codos, nrodist, perliq, monto, retencion, porcentaje, items) values (' +
+    '"' + tabla.FieldByName('periodo').asstring + '"' + ', ' +
+    '"' +  tabla.FieldByName('idprof').asstring + '"' + ', ' +
+    '"' +  tabla.FieldByName('codos').asstring + '"' + ', ' +
+    '"' + copy( ListBox2.Items[i-1], 11, 2) + '"' + ', ' +
+    '"' + copy( ListBox2.Items[i-1], 5, 2) + '/' + copy( ListBox2.Items[i-1], 7, 4) + '"' + ', ' +
+    utiles.sLlenarIzquierda(utiles.StringRemplazarCaracteres(tabla.FieldByName('monto').asstring, ',', '.'), 2, '0') + ', ' +
+    utiles.sLlenarIzquierda(utiles.StringRemplazarCaracteres(tabla.FieldByName('retencion').asstring, ',', '.'), 2, '0') + ', ' +
+    utiles.sLlenarIzquierda(utiles.StringRemplazarCaracteres(tabla.FieldByName('porcentaje').asstring, ',', '.'), 2, '0') + ', ' +
+    utiles.sLlenarIzquierda(utiles.StringRemplazarCaracteres(tabla.FieldByName('items').asstring, ',', '.'), 2, '0') + ');');
+
+
+    tabla.Next;
+    end;
+    datosdb.closeDB(tabla);
+    //lote.SaveToFile('z:\script7.sql');
+    firebird.TransacSQLBatch(lote);
+    lote.clear;
+    end;
+
+    End;
+
+  end;}
+
+
+  ListBox2.Clear;
+
+  if (DirectoryExists((edit4.text) + '\distribucion\Ganancias')) then begin
+    ListBox2.Items := utilesarchivos.setListaDirectorios(edit4.text + '\distribucion\Ganancias');
+  end else
+    exit;
+
+   lote.Add('delete from subtotalesliq');
+   lote.Add('delete from subtotganancias');
+
+   for i := 1 to ListBox2.Count do Begin
+
+    if (length(trim(ListBox2.Items[i-1])) > 7)then begin
+
+    tabla := datosdb.openDB('subtotalesliq', '', '', edit4.text + '\distribucion\Ganancias\' + ListBox2.Items[i-1]);
+    tabla.Open;
+    while not tabla.eof do begin
+    lote.Add('insert into subtotalesliq(periodo, idprof, nroliq, monto, monto1, consumo) values (' +
+    '"' + tabla.FieldByName('periodo').asstring + '"' + ', ' +
+    '"' + tabla.FieldByName('idprof').asstring + '"' + ', ' +
+    '"' +  tabla.FieldByName('nroliq').asstring + '"' + ', ' +
+    utiles.StringRemplazarCaracteres(tabla.FieldByName('monto').asstring, ',', '.') + ', ' +
+    utiles.StringRemplazarCaracteres(tabla.FieldByName('monto1').asstring, ',', '.') + ', ' +
+    '"' + tabla.FieldByName('consumo').asstring + '"' + ');');
+
+
+    tabla.Next;
+    end;
+
+    firebird.TransacSQLBatch(lote);
+    lote.clear;
+
+
+
+    tabla := datosdb.openDB('subtotganancias', '', '', edit4.text + '\distribucion\Ganancias\' + ListBox2.Items[i-1]);
+    tabla.Open;
+    while not tabla.eof do begin
+    lote.Add('insert into subtotganancias(periodo, idprof, monto, monto1) values (' +
+    '"' + tabla.FieldByName('periodo').asstring + '"' + ', ' +
+    '"' + tabla.FieldByName('idprof').asstring + '"' + ', ' +
+    utiles.StringRemplazarCaracteres(tabla.FieldByName('monto').asstring, ',', '.') + ', ' +
+    utiles.StringRemplazarCaracteres(tabla.FieldByName('monto1').asstring, ',', '.') + ', ' +
+    ');');
+
+
+    tabla.Next;
+    end;
+
+    firebird.TransacSQLBatch(lote);
+    lote.clear;
+
+
+
+    end;
+
+   End;
+
+  //close;
+
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  edit3.Text := utiles.setPeriodoActual;
+  edit3.Text := utiles.SumarPeriodo(edit3.Text, '1');
+
+  edit1.Text := 'c:\shmsoft\fact_lab';
+  edit1.Text := 'c:\shmsoft\fact_lab\facturaciones';
+  checkbox1.Checked := false;
+  
+end;
+
+procedure TForm1.FormShow(Sender: TObject);
+begin
+  lote := TStringList.Create;
+end;
+
+end.

@@ -1,0 +1,172 @@
+unit upFtp;
+
+interface
+
+uses
+ Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, ExtCtrls, ComCtrls, CFTP, IdAntiFreezeBase, IdAntiFreeze,
+  IdComponent, IdTCPConnection, IdTCPClient, IdExplicitTLSClientServerBase,
+  IdFTP, IdBaseComponent, IdIntercept, IdLogBase, IdLogDebug, IdFTPCommon, CUtiles,
+  CUtilidadesArchivos, CBDT, Contnrs;
+
+type
+  TfmFTP = class(TForm)
+    Panel1: TPanel;
+    Label1: TLabel;
+    modulo: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    btnIniciar: TButton;
+    btnCerrar: TButton;
+    StatusBar1: TStatusBar;
+    IdLogDebug1: TIdLogDebug;
+    IdFTP1: TIdFTP;
+    procedure FormCanResize(Sender: TObject; var NewWidth, NewHeight: Integer;
+      var Resize: Boolean);
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure btnCerrarClick(Sender: TObject);
+    procedure btnIniciarClick(Sender: TObject);
+  private
+    { Private declarations }
+    con: Cardinal;
+    AbortTransfer, TransferrignData: Boolean;
+    BytesToTransfer: LongWord;
+    STime: TDateTime;
+    function  procesarUrl(url: string): TStringList;
+    procedure conectarFTP;
+    procedure desconectarFTP;
+    procedure ChageDir(DirName: String);
+  public
+    { Public declarations }
+  end;
+
+var
+  fmFTP: TfmFTP;
+
+implementation
+
+uses HTTPCliente, uploadftp;
+
+{$R *.dfm}
+
+function TfmFTP.procesarUrl(url: string): TStringList;
+var
+  l: TStringList;
+  i: integer;
+begin
+  fmClientHTML.Edit1.text := url;
+  fmClientHTML.btnDispararClick(self);
+  l := TStringList.Create;
+  for i := 1 to fmClientHTML.memoHTML.Lines.Count do
+    l.Add(fmClientHTML.memoHTML.Lines[i-1]);
+  result := l;
+end;
+
+procedure TfmFTP.conectarFTP;
+begin
+  if IdFTP1.Connected then try
+    if TransferrignData then IdFTP1.Abort;
+    IdFTP1.Quit;
+    finally
+  end else with IdFTP1 do try
+    {$IFDEF VER140}
+    User := usuario.Text;
+    {$ENDIF}
+    {$IFDEF VER185}
+    UserName := ftp.usuario;
+    {$ENDIF}
+    Password := ftp.pass;
+    Host     := ftp.ftp;
+    Connect;
+    //Self.ChageDir('');  11/12/2013 - actualizado
+  finally
+  end;
+end;
+
+procedure TfmFTP.DesconectarFTP;
+begin
+  if IdFTP1.Connected then try
+    IdFTP1.Disconnect;
+    finally
+  end
+end;
+
+procedure TfmFTP.btnCerrarClick(Sender: TObject);
+begin
+  fmFTP.Release; fmFTP := nil;
+  Close;
+end;
+
+procedure TfmFTP.btnIniciarClick(Sender: TObject);
+var
+  l: TStringlist;
+  i: integer;
+  id, reporte, periodo, tipo, iduser, archivo: string;
+  c: boolean;
+  x: textfile;
+begin
+  if (utiles.msgSiNo('Esta Opción Transferirá los Archivos Procesados a un Servidor Remoto.' + chr(13) + 'Seguro para Proceder ?')) then begin
+    Refresh;
+    c := false;
+
+    ftp.conectar;
+    ftp.getDatos(2);   // facturación
+
+    if (ftp.__error <> '') then begin
+      utiles.msgError(ftp.__error);
+      btnIniciar.Enabled := false;
+      exit;
+    end;
+
+    conectarFTP;
+    if IdFTP1.Connected then begin
+      StatusBar1.Panels[0].Text := 'Transfiriendo Datos ...!'; StatusBar1.refresh;
+      IdFTP1.TransferType := ftBinary;
+      archivo := dbs.DirSistema + '\temp\totalesri.json';
+      IdFTP1.Put(archivo, ExtractFileName(archivo));
+    end;
+
+    ChageDir(idftp1.RetrieveCurrentDir);
+    desconectarFTP;
+
+    StatusBar1.Panels[0].Text := 'Actualizando Montos ...!'; StatusBar1.Refresh;
+    utiles.msgError(ftp.host + '/api/ObrasSocialesTotalesIva/sincro/0');
+    procesarUrl(ftp.host + '/api/ObrasSocialesTotalesIva/sincro/0');
+
+    StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+  end;
+end;
+
+procedure TfmFTP.ChageDir(DirName: String);
+begin
+  try
+    IdFTP1.ChangeDir(DirName);
+    {$IFDEF VER140}
+    IdFTP1.TransferType := ftASCII;
+    {$ENDIF}
+    {$IFDEF VER185}
+    IdFTP1.TransferType := ftASCII;
+    {$ENDIF}
+  finally
+  end;
+end;
+
+procedure TfmFTP.FormCanResize(Sender: TObject; var NewWidth,
+  NewHeight: Integer; var Resize: Boolean);
+begin
+  StatusBar1.Panels[0].Width := (Width - (Width div 5));
+end;
+
+procedure TfmFTP.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  fmClientHTML.Release; fmClientHTML := nil;
+end;
+
+procedure TfmFTP.FormShow(Sender: TObject);
+begin
+  Application.CreateForm(TfmClientHTML, fmClientHTML);
+  fmClientHTML.FormActivate(self);
+end;
+
+end.

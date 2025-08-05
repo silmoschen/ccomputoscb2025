@@ -1,0 +1,193 @@
+object fmReportsAFIP: TfmReportsAFIP
+  Left = 0
+  Top = 0
+  Caption = 'fmReportsAFIP'
+  ClientHeight = 107
+  ClientWidth = 371
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Button1: TButton
+    Left = 240
+    Top = 32
+    Width = 75
+    Height = 25
+    Caption = 'IMPRIMIR'
+    TabOrder = 0
+    OnClick = Button1Click
+  end
+  object Database: TDatabase
+    Connected = True
+    DatabaseName = 'centrobioq'
+    DriverName = 'INTRBASE'
+    KeepConnection = False
+    LoginPrompt = False
+    Params.Strings = (
+      
+        'SERVER NAME=C:\sidelphi32\SGen\ccomputoscb\interbase\centrobioq.' +
+        'gdb'
+      'USER NAME=sysdba'
+      'OPEN MODE=READ/WRITE'
+      'SCHEMA CACHE SIZE=8'
+      'LANGDRIVER='
+      'SQLQRYMODE='
+      'SQLPASSTHRU MODE=SHARED AUTOCOMMIT'
+      'SCHEMA CACHE TIME=-1'
+      'MAX ROWS=-1'
+      'BATCH COUNT=200'
+      'ENABLE SCHEMA CACHE=FALSE'
+      'SCHEMA CACHE DIR='
+      'ENABLE BCD=FALSE'
+      'BLOBS TO CACHE=64'
+      'BLOB SIZE=32'
+      'PASSWORD=masterkey')
+    SessionName = 'Default'
+    Left = 16
+    Top = 8
+  end
+  object Query: TQuery
+    AutoCalcFields = False
+    DatabaseName = 'centrobioq'
+    SQL.Strings = (
+      
+        'select periodo, codos, items, descrip, montoitem, observacion fr' +
+        'om datosfactreport where copia = '#39'ORIGINAL'#39)
+    Left = 48
+    Top = 8
+    object QueryPERIODO: TStringField
+      FieldName = 'PERIODO'
+      Size = 7
+    end
+    object QueryCODOS: TStringField
+      FieldName = 'CODOS'
+      Size = 6
+    end
+    object QueryITEMS: TStringField
+      FieldName = 'ITEMS'
+      Size = 2
+    end
+    object QueryDESCRIP: TStringField
+      FieldName = 'DESCRIP'
+      Size = 255
+    end
+    object QueryMONTOITEM: TFloatField
+      FieldName = 'MONTOITEM'
+    end
+    object QueryOBSERVACION: TStringField
+      FieldName = 'OBSERVACION'
+      Size = 255
+    end
+  end
+  object RvProject: TRvProject
+    Engine = RvSystem
+    ProjectFile = 'reports/reportResultado.rav'
+    Left = 80
+    Top = 8
+  end
+  object RvSystem: TRvSystem
+    TitleSetup = 'Output Options'
+    TitleStatus = 'Report Status'
+    TitlePreview = 'Report Preview'
+    SystemFiler.StatusFormat = 'Generating page %p'
+    SystemPreview.FormWidth = 850
+    SystemPreview.FormHeight = 600
+    SystemPreview.ZoomFactor = 100.000000000000000000
+    SystemPrinter.ScaleX = 100.000000000000000000
+    SystemPrinter.ScaleY = 100.000000000000000000
+    SystemPrinter.StatusFormat = 'Printing page %p'
+    SystemPrinter.Title = 'Rave Report'
+    SystemPrinter.UnitsFactor = 1.000000000000000000
+    Left = 112
+    Top = 8
+  end
+  object RvDataSetConnectionDetail: TRvDataSetConnection
+    RuntimeVisibility = rtEndUser
+    RestoreDataSet = False
+    DataSet = Query
+    Left = 144
+    Top = 8
+  end
+  object QueryMaster: TQuery
+    AutoCalcFields = False
+    DatabaseName = 'centrobioq'
+    SQL.Strings = (
+      
+        'select distinct copia, periodo, codos, idcompr, tipo, sucursal, ' +
+        'numero, fechavto1, fechavto2, fecha, cae, obrasocial, cuit, mont' +
+        'o, vtocae from datosfactreport order by orden')
+    Left = 48
+    Top = 48
+    object QueryMasterCOPIA: TStringField
+      FieldName = 'COPIA'
+      Size = 12
+    end
+    object QueryMasterPERIODO: TStringField
+      FieldName = 'PERIODO'
+      Size = 7
+    end
+    object QueryMasterCODOS: TStringField
+      FieldName = 'CODOS'
+      Size = 6
+    end
+    object QueryMasterIDCOMPR: TStringField
+      FieldName = 'IDCOMPR'
+      Size = 3
+    end
+    object QueryMasterTIPO: TStringField
+      FieldName = 'TIPO'
+      Size = 1
+    end
+    object QueryMasterSUCURSAL: TStringField
+      FieldName = 'SUCURSAL'
+      Size = 4
+    end
+    object QueryMasterNUMERO: TStringField
+      FieldName = 'NUMERO'
+      Size = 8
+    end
+    object QueryMasterFECHAVTO1: TStringField
+      FieldName = 'FECHAVTO1'
+      Size = 10
+    end
+    object QueryMasterFECHAVTO2: TStringField
+      FieldName = 'FECHAVTO2'
+      Size = 10
+    end
+    object QueryMasterFECHA: TStringField
+      FieldName = 'FECHA'
+      Size = 10
+    end
+    object QueryMasterCAE: TStringField
+      FieldName = 'CAE'
+      Size = 40
+    end
+    object QueryMasterOBRASOCIAL: TStringField
+      FieldName = 'OBRASOCIAL'
+      Size = 255
+    end
+    object QueryMasterCUIT: TStringField
+      FieldName = 'CUIT'
+      Size = 13
+    end
+    object QueryMasterMONTO: TFloatField
+      FieldName = 'MONTO'
+    end
+    object QueryMasterVTOCAE: TStringField
+      FieldName = 'VTOCAE'
+      Size = 10
+    end
+  end
+  object RvDataSetConnectionMaster: TRvDataSetConnection
+    RuntimeVisibility = rtEndUser
+    RestoreDataSet = False
+    DataSet = QueryMaster
+    Left = 144
+    Top = 48
+  end
+end

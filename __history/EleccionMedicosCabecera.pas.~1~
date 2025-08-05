@@ -1,0 +1,238 @@
+unit EleccionMedicosCabecera;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  ComCtrls, Grids, ExtCtrls, ImgForms, ToolWin, DBTables, StdCtrls, Mask,
+  Buttons, Menus;
+
+type
+  TfmEleMedicosCabecera = class(TForm)
+    Panel2: TPanel;
+    ScrollBox: TScrollBox;
+    Panel3: TPanel;
+    F: TStringGrid;
+    Panel4: TPanel;
+    Si: TSpeedButton;
+    Ninguno: TSpeedButton;
+    Todos: TSpeedButton;
+    P: TSpeedButton;
+    A: TSpeedButton;
+    S: TSpeedButton;
+    U: TSpeedButton;
+    Label1: TLabel;
+    buscar: TMaskEdit;
+    Label3: TLabel;
+    Actualizar: TSpeedButton;
+    PopupMenu: TPopupMenu;
+    Seleccionar1: TMenuItem;
+    odos1: TMenuItem;
+    Ninguno1: TMenuItem;
+    procedure SiClick(Sender: TObject);
+    procedure TodosClick(Sender: TObject);
+    procedure NingunoClick(Sender: TObject);
+    procedure PClick(Sender: TObject);
+    procedure buscarChange(Sender: TObject);
+    procedure buscarKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure ActualizarClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure Panel3Resize(Sender: TObject);
+  private
+    { Private declarations }
+    nroitems: integer;
+  public
+    { Public declarations }
+    tipo, IdSel, NomSel, codos: string; profSeleccionados, intro, filtrarProfFacturacion, redim: Boolean; cantidadSel: Integer;
+    lista: TStringList;
+    procedure CargarDatos;
+    procedure SeleccionarProf(xidprof: String);
+    procedure FijarProfPredeterminado(xidprof: String);
+  end;
+
+var
+  fmEleMedicosCabecera: TfmEleMedicosCabecera;
+
+implementation
+
+uses CMedicosCabCCB, CMedicosCCB, CUtiles, CUtilidadesStringGrid, CConfigForms;
+
+{$R *.DFM}
+
+procedure TfmEleMedicosCabecera.SeleccionarProf(xidprof: String);
+var
+  i: integer;
+begin
+ For i := 1 to F.RowCount do Begin
+   if Length(Trim(F.cells[0, i])) = 0 then Break;
+   if F.cells[1, i] = xidprof then Begin
+     F.cells[2, i] := 'S';
+     Break;
+   end;
+ end;
+end;
+
+procedure TfmEleMedicosCabecera.FijarProfPredeterminado(xidprof: String);
+begin
+  lista := TStringList.Create;
+  lista.Add(xidprof);
+end;
+
+procedure TfmEleMedicosCabecera.CargarDatos;
+var
+  r: TStringList; i, p: integer;
+begin
+  F.cells[0, 0] := 'Profesional'; F.cells[1, 0] := 'Cód.'; F.cells[2, 0] := 'S';
+
+  grid.IniciarGrilla(F);
+  medico.conectar;
+  r := medcab.setListaMedicosCabecera(codos);
+  For i := 1 to r.Count do Begin
+    p := Pos(';1', r.Strings[i-1]);
+    F.cells[0, i] := Copy(r.Strings[i-1], 1, p-1);
+    F.cells[1, i] := Copy(r.Strings[i-1], p+2, 4);
+  end;
+  medico.desconectar;
+  r.Destroy;
+  nroItems := i;
+  F.Refresh;
+  Label3.Caption := '1';
+end;
+
+procedure TfmEleMedicosCabecera.SiClick(Sender: TObject);
+begin
+  if Length(Trim(F.cells[0, F.row])) > 0 then Begin
+    if F.cells[2, F.row] <> 'S' then F.cells[2, F.row] := 'S' else F.cells[2, F.row] := ' ';
+    if (F.row < F.rowcount) and (Length(Trim(F.cells[0, F.row + 1])) > 0) then F.row := F.row + 1;
+    F.Refresh;
+  end;
+end;
+
+procedure TfmEleMedicosCabecera.TodosClick(Sender: TObject);
+var
+  i: integer;
+begin
+  For i := 1 to nroItems do F.cells[2, i] := 'S';
+  F.Refresh;
+end;
+
+procedure TfmEleMedicosCabecera.NingunoClick(Sender: TObject);
+var
+  i: integer;
+begin
+  For i := 1 to nroItems do F.cells[2, i] := ' ';
+  lista := Nil;
+  buscar.Text := '';
+  F.Refresh;
+end;
+
+procedure TfmEleMedicosCabecera.PClick(Sender: TObject);
+begin
+  if Sender = P then F.row := 1;
+  if Sender = U then F.row := nroItems;
+  if Sender = A then if F.row > 1 then F.row := F.row - 1;
+  if Sender = S then if F.row < nroItems then F.row := F.row + 1;
+  F.Refresh;
+end;
+
+procedure TfmEleMedicosCabecera.buscarChange(Sender: TObject);
+var
+  caracteres, i: integer;
+begin
+  caracteres := Length(Trim(buscar.Text));
+  For i := 1 to nroItems do Begin
+    if UpperCase(buscar.Text) = UpperCase(Copy(F.cells[0, i], 1, caracteres)) then Begin
+      F.row := i; F.Refresh; Break;
+    end;
+  end;
+end;
+
+procedure TfmEleMedicosCabecera.buscarKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if Key = VK_UP then Begin
+    if F.row > 1 then F.row := F.row - 1;
+    ActiveControl := F; F. Refresh;
+  end;
+  if Key = VK_DOWN then Begin
+    if F.row < nroItems then F.row := F.row + 1;
+    ActiveControl := F; F. Refresh;
+  end;
+  if Key = VK_RETURN then ActiveControl := F;
+end;
+
+procedure TfmEleMedicosCabecera.FormClose(Sender: TObject; var Action: TCloseAction);
+var
+  i, j: Integer;
+begin
+  configform.Guardar(fmEleMedicosCabecera, redim);
+  lista := TStringList.Create;
+  lista.Clear;
+  Label3.Caption := IntToStr(F.row);
+
+  j := 0; ProfSeleccionados := False; cantidadSel := 0;
+  For i := 1 to F.RowCount - 1 do Begin
+    if Length(Trim(F.cells[1, i])) = 0 then Break;
+    if Copy(F.cells[2, i], 1, 1) = 'S' then Begin
+      IdSel := F.Cells[1, i]; NomSel := F.Cells[0, i];
+      Inc(j);
+      ProfSeleccionados := True;
+      lista.Add(F.cells[1, i]);
+    end;
+  end;
+  cantidadSel := j;
+  if j = 1 then
+    if F.Row > 1 then F.Row := F.Row - 1;
+  if (cantidadSel = 0) and (intro) then Begin
+    IdSel := F.Cells[1, F.Row]; NomSel := F.Cells[0, F.Row];   // Valores por defecto
+    lista.Add(F.Cells[1, F.Row]);
+    ProfSeleccionados := True;
+  end;
+
+  if cantidadSel = 0 then lista := Nil;
+end;
+
+procedure TfmEleMedicosCabecera.FKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+ if Key = VK_ESCAPE then Close;
+ if Key = VK_RETURN then Begin
+   intro := True;
+   Close;
+ end;
+ if Key = VK_SPACE  then SiClick(Sender);
+end;
+
+procedure TfmEleMedicosCabecera.ActualizarClick(Sender: TObject);
+begin
+  CargarDatos;
+end;
+
+procedure TfmEleMedicosCabecera.FormCreate(Sender: TObject);
+begin
+  lista := TStringList.Create;
+end;
+
+procedure TfmEleMedicosCabecera.FormShow(Sender: TObject);
+var
+  i: Integer;
+begin
+  if not configform.Setear(fmEleMedicosCabecera) then Left := StrToInt(FormatFloat('####', (Screen.DesktopWidth / 2) - (Width / 2)));
+  buscar.Text   := '';
+  F.row         := StrToInt(Label3.Caption);
+  redim := false;
+  CargarDatos;
+  buscar.SetFocus;
+end;
+
+procedure TfmEleMedicosCabecera.Panel3Resize(Sender: TObject);
+begin
+  redim := True;
+end;
+
+end.

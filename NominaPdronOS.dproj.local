@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2008/06/17 09:29:51.656.pas,C:\sidelphi32\Delphi2007_Migraciones\EMail\Setup.pas=</Transaction>
+    <Transaction>2008/06/17 09:29:51.671.dfm,C:\sidelphi32\Delphi2007_Migraciones\EMail\Setup.dfm=</Transaction>
+    <Transaction>2008/06/17 09:29:57.687.pas,C:\sidelphi32\Delphi2007_Migraciones\EMail\Main.pas=</Transaction>
+    <Transaction>2008/06/17 09:29:57.687.dfm,C:\sidelphi32\Delphi2007_Migraciones\EMail\Main.dfm=</Transaction>
+    <Transaction>2008/06/17 20:39:14.781.pas,C:\sidelphi32\SGen\ccomputoscb\MontosProfesionales.pas=</Transaction>
+    <Transaction>2008/06/17 20:39:14.781.dfm,C:\sidelphi32\SGen\ccomputoscb\MontosProfesionales.dfm=</Transaction>
+  </Transactions>
+</BorlandProject>

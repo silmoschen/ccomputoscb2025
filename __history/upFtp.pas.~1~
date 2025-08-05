@@ -1,0 +1,24 @@
+unit upFtp;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs;
+
+type
+  TfmFTP = class(TForm)
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  fmFTP: TfmFTP;
+
+implementation
+
+{$R *.dfm}
+
+end.

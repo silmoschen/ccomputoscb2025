@@ -1,0 +1,44 @@
+object fmDetalleFacturado: TfmDetalleFacturado
+  Left = 0
+  Top = 0
+  Caption = 'Detalle Facturado'
+  ClientHeight = 349
+  ClientWidth = 610
+  Color = clBtnFace
+  Font.Charset = ANSI_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poMainFormCenter
+  PixelsPerInch = 96
+  TextHeight = 13
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 330
+    Width = 610
+    Height = 19
+    Panels = <
+      item
+        Width = 300
+      end
+      item
+        Width = 50
+      end>
+    ExplicitWidth = 579
+  end
+  object TPanel
+    Left = 0
+    Top = 0
+    Width = 610
+    Height = 330
+    Align = alClient
+    BevelInner = bvLowered
+    BorderWidth = 4
+    TabOrder = 1
+    ExplicitTop = -41
+    ExplicitWidth = 571
+    ExplicitHeight = 390
+  end
+end

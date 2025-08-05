@@ -1,0 +1,51 @@
+unit CIntegridadReferencial;
+
+interface
+
+uses SysUtils, CFacturacionCCB;
+
+type
+
+TTIntegridadReferencial = class(TObject)            // Superclase
+ public
+  { Declaraciones Públicas }
+  function   verificarEfector(xidprof: string): boolean;
+  function   verificarObraSocial(xcodos: string): boolean;
+ private
+  { Declaraciones Privadas }
+end;
+
+function verificarIntegridad: TTIntegridadReferencial;
+
+implementation
+
+var
+  xverificarIntegridad: TTIntegridadReferencial = nil;
+
+function TTIntegridadReferencial.verificarEfector(xidprof: string): boolean;
+begin
+  result := false;
+end;
+
+function TTIntegridadReferencial.verificarObraSocial(xcodos: string): boolean;
+begin
+  result := facturacion.verificarObraSocial(xcodos);
+end;
+
+{===============================================================================}
+
+function verificarIntegridad: TTIntegridadReferencial;
+begin
+  if xverificarIntegridad = nil then
+    xverificarIntegridad := TTIntegridadReferencial.Create();
+  Result := xverificarIntegridad;
+end;
+
+{===============================================================================}
+
+initialization
+
+finalization
+  xverificarIntegridad.Free;
+
+end.

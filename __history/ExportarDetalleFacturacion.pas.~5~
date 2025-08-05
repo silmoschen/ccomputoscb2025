@@ -1,0 +1,75 @@
+unit ExportarDetalleFacturacion;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, CUtiles, StdCtrls, Mask, ExtCtrls, ComCtrls, CFacturacionCCB;
+
+type
+  TfmExportarDetalleFacturacion = class(TForm)
+    StatusBar1: TStatusBar;
+    Panel1: TPanel;
+    Label1: TLabel;
+    modulo: TLabel;
+    btnIniciar: TButton;
+    btnCerrar: TButton;
+    periodo: TMaskEdit;
+    procedure periodoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure btnIniciarClick(Sender: TObject);
+    procedure btnCerrarClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormShow(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  fmExportarDetalleFacturacion: TfmExportarDetalleFacturacion;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfmExportarDetalleFacturacion.btnCerrarClick(Sender: TObject);
+begin
+  close;
+end;
+
+procedure TfmExportarDetalleFacturacion.btnIniciarClick(Sender: TObject);
+begin
+  StatusBar1.Panels[0].Text := 'Exportando Datos ...!'; StatusBar1.Refresh;
+  facturacion.conectar;
+  facturacion.exportarDetalleFacturacion(periodo.Text);
+  facturacion.desconectar;
+  StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+end;
+
+procedure TfmExportarDetalleFacturacion.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  fmExportarDetalleFacturacion.Release; fmExportarDetalleFacturacion := nil;
+end;
+
+procedure TfmExportarDetalleFacturacion.FormShow(Sender: TObject);
+begin
+  periodo.Text := utiles.setPeriodoActual;
+  periodo.SetFocus;
+end;
+
+procedure TfmExportarDetalleFacturacion.periodoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+      if utiles.verificarPeriodo(periodo.Text) then Begin
+        btnIniciar.SetFocus;
+      End;
+  End;
+
+end;
+
+end.

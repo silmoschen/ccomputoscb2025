@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2009/03/18 09:12:16.671.pas,C:\sidelphi32\CLASES\CEstadisticasFacturacionCCB.pas=</Transaction>
+    <Transaction>2009/03/18 09:12:23.796.pas,C:\sidelphi32\SGen\ccomputoscb\Estadisticas.pas=</Transaction>
+    <Transaction>2009/03/18 09:12:23.796.dfm,C:\sidelphi32\SGen\ccomputoscb\Estadisticas.dfm=</Transaction>
+    <Transaction>2009/03/18 09:12:31.609.pas,C:\sidelphi32\CLASES\CEstadisticas.pas=</Transaction>
+    <Transaction>2010/11/23 21:13:13.406.pas,D:\sidelphi32\SGen\ccomputoscb\clases\CNBU.pas=</Transaction>
+    <Transaction>2010/11/23 21:14:20.484.pas,D:\sidelphi32\SGen\ccomputoscb\tablaNBU.pas=</Transaction>
+    <Transaction>2010/11/23 21:14:20.484.dfm,D:\sidelphi32\SGen\ccomputoscb\tablaNBU.dfm=</Transaction>
+    <Transaction>2011/05/06 08:57:40.343.pas,D:\sidelphi32\CLASES\CLiquidacionObrasSocCCB.pas=</Transaction>
+    <Transaction>2013/12/30 15:55:51.669.pas,C:\sidelphi32\SGen\ccomputoscb\actpadronesOS.pas=</Transaction>
+    <Transaction>2013/12/30 15:55:51.669.dfm,C:\sidelphi32\SGen\ccomputoscb\actpadronesOS.dfm=</Transaction>
+    <Transaction>2014/06/23 14:47:17.410.pas,C:\sidelphi32\SGen\SFact\Comprobantes.pas=</Transaction>
+    <Transaction>2014/06/23 14:47:17.434.dfm,C:\sidelphi32\SGen\SFact\Comprobantes.dfm=</Transaction>
+    <Transaction>2020/05/27 14:44:37.540.pas,C:\sidelphi32\SGen\ccomputoscb\clases\CAuditoriaCCB.pas=</Transaction>
+  </Transactions>
+</BorlandProject>

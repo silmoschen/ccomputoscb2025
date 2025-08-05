@@ -1,0 +1,419 @@
+unit MontosProfesionales;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Editv, ComCtrls, ExtCtrls, DBCtrls, ToolWin, Buttons,
+  Mask, DBTables, Grids, DBGrids, BorBtns;
+
+type
+  TfmMontosProfesional = class(TForm)
+    Panel5: TPanel;
+    ScrollBox1: TScrollBox;
+    StatusBar1: TStatusBar;
+    Panel1: TPanel;
+    Label7: TLabel;
+    descrip: TLabel;
+    Label2: TLabel;
+    os: TLabel;
+    Label3: TLabel;
+    codfact: TLabel;
+    Label8: TLabel;
+    totos: TLabel;
+    codos: TMaskEdit;
+    BuscarOS: TBitBtn;
+    Periodo: TMaskEdit;
+    idprof: TMaskEdit;
+    btnRegistrar: TButton;
+    btnCancelar: TButton;
+    Panel2: TPanel;
+    Panel3: TPanel;
+    S: TStringGrid;
+    GroupBox1: TGroupBox;
+    Label9: TLabel;
+    Label4: TLabel;
+    Label11: TLabel;
+    Label12: TLabel;
+    Label6: TLabel;
+    monto: TEditValid;
+    UG: TEditValid;
+    UB: TEditValid;
+    caran: TEditValid;
+    buscarProf: TBitBtn;
+    Label10: TLabel;
+    Label1: TLabel;
+    Label5: TLabel;
+    Label13: TLabel;
+    Label14: TLabel;
+    Label15: TLabel;
+    perLiq: TLabel;
+    totp: TCheckBox;
+    Panel4: TPanel;
+    ToolBar1: TToolBar;
+    DBNavigator: TDBNavigator;
+    Alta: TToolButton;
+    Baja: TToolButton;
+    Modificar: TToolButton;
+    Buscar: TToolButton;
+    Deshacer: TToolButton;
+    Salir: TToolButton;
+    ndist: TLabel;
+    neto: TEditValid;
+    Label16: TLabel;
+    procedure montoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure BuscarOSClick(Sender: TObject);
+    procedure codosKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure SalirClick(Sender: TObject);
+    procedure UGKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure UBKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure caranKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure FormShow(Sender: TObject);
+    procedure idprofKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure btnRegistrarClick(Sender: TObject);
+    procedure btnCancelarClick(Sender: TObject);
+    procedure DBGridDblClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure PeriodoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure buscarProfClick(Sender: TObject);
+    procedure SKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure SDblClick(Sender: TObject);
+    procedure netoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+  private
+    { Private declarations }
+    items: Integer; modifica, redim: Boolean;
+    archivo: TextFile;
+    procedure DatosObraSocial;
+    procedure CargarMontos;
+    procedure CargarDatosProfesional;
+    function  setTotalFacturado: Real;
+    procedure CargarPagos;
+    procedure TotalObraSocial;
+  public
+    { Public declarations }
+    nrodist: String;
+  end;
+
+var
+  fmMontosProfesional: TfmMontosProfesional;
+
+implementation
+
+uses CFacturacionCCB, CObrasSocialesCCB, CProfesionalCCB, CUtiles, NominaObrasSociales, CConfigForms,
+     NominaDeProfesionalesLiquidacionOS, CUtilidadesStringGrid, CBDT, CLiquidacionObrasSocCCB;
+
+{$R *.dfm}
+
+procedure TfmMontosProfesional.DatosObraSocial;
+Begin
+  Refresh;
+  obsocial.getDatos(codos.Text);
+  os.Caption := obsocial.Nombre;
+  totos.Caption := utiles.FormatearNumero(FloatToStr(facturacion.setTotalFactObraSocial(periodo.Text, codos.Text)));
+  CargarPagos;
+  idprof.SetFocus;
+end;
+
+procedure TfmMontosProfesional.CargarMontos;
+Begin
+  monto.Text    := utiles.FormatearNumero(FloatToStr(facturacion.setTotalProfesional(periodo.Text, idprof.Text, codos.Text)));
+  ub.Text       := utiles.FormatearNumero(FloatToStr(facturacion.setTotalUB));
+  ug.Text       := utiles.FormatearNumero(FloatToStr(facturacion.setTotalUG));
+  caran.Text    := utiles.FormatearNumero(FloatToStr(facturacion.setTotalCaran));
+  neto.Text     := utiles.FormatearNumero(FloatToStr(facturacion.setTotalNeto));
+end;
+
+procedure TfmMontosProfesional.CargarDatosProfesional;
+Begin
+  Refresh;
+  profesional.getDatos(idprof.Text);
+  descrip.Caption := profesional.nombre;
+  codfact.Caption := profesional.Codfact;
+  CargarMontos;
+  GroupBox1.Enabled := True;
+  if not totp.Checked then UG.SetFocus else neto.SetFocus;
+end;
+
+function  TfmMontosProfesional.setTotalFacturado: Real;
+var
+  i: Integer;
+  t: Real;
+Begin
+  t := 0;
+  for i := 1 to S.RowCount do Begin
+    if Length(Trim(S.Cells[0, i])) = 0 then Break;
+    t := t + StrToFloat(S.Cells[2, i]);
+  end;
+  Result := t;
+end;
+
+procedure  TfmMontosProfesional.CargarPagos;
+var
+  i: Integer;
+  r: TQuery;
+Begin
+  r := facturacion.setTotalesProfesionales(periodo.Text, codos.Text);
+  r.Open; i := 0;
+  grid.IniciarGrilla(S);
+  while not r.Eof do Begin
+    Inc(i);
+    S.Cells[0, i] := r.FieldByName('idprof').AsString;
+    S.Cells[1, i] := r.FieldByName('nombre').AsString;
+    S.Cells[2, i] := utiles.FormatearNumero(r.FieldByName('monto').AsString);
+    S.Cells[3, i] := utiles.FormatearNumero(r.FieldByName('ub').AsString);
+    S.Cells[4, i] := utiles.FormatearNumero(r.FieldByName('ug').AsString);
+    S.Cells[5, i] := utiles.FormatearNumero(r.FieldByName('caran').AsString);
+    S.Cells[6, i] := utiles.FormatearNumero(r.FieldByName('neto').AsString);
+    S.Row         := i;
+    r.Next;
+  end;
+  items := i;
+  totos.Caption := utiles.FormatearNumero(FloatToStr(setTotalFacturado));
+  if i > 0 then btnRegistrar.Enabled := True;
+  TotalObraSocial;
+end;
+
+procedure  TfmMontosProfesional.TotalObraSocial;
+var
+  i: Integer; t: Real;
+Begin
+  t := 0;
+  For i := 1 to S.RowCount do Begin
+    if Length(Trim(S.Cells[0, i])) = 0 then Break;
+    t := t + StrToFloat(S.Cells[2, i]);
+  end;
+  totos.Caption := utiles.FormatearNumero(FloatToStr(t));
+end;
+
+procedure TfmMontosProfesional.montoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  i: Integer;
+begin
+  if Key = VK_UP then ActiveControl := neto;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if Length(Trim(monto.Text)) > 0 then Begin
+      monto.Text := utiles.FormatearNumero(monto.Text);
+      if (StrToFloat(monto.Text) > 0) and (obsocial.Buscar(codos.Text)) and (profesional.Buscar(idprof.Text)) and (utiles.verificarPeriodo(periodo.Text, '')) and (Length(Trim(periodo.Text)) = 7) then Begin
+        if not modifica then Inc(items);
+        if not modifica then i := items else i := S.Row;
+        S.Cells[0, i] := idprof.Text;
+        S.Cells[1, i] := descrip.Caption;
+        S.Cells[2, i] := monto.Text;
+        S.Cells[3, i] := ub.Text;
+        S.Cells[4, i] := ug.Text;
+        S.Cells[5, i] := caran.Text;
+        S.Cells[6, i] := neto.Text;
+        S.Row         := i;
+        totos.Caption := utiles.FormatearNumero(FloatToStr(setTotalFacturado));
+        monto.Text := utiles.FormatearNumero('0'); ub.Text := monto.Text; ug.Text := monto.Text; caran.Text := monto.Text; neto.Text := monto.Text;
+        modifica := False;
+        btnRegistrar.Enabled := True;
+        btnRegistrarClick(Self);
+        periodo.SetFocus;
+      end else Begin
+        utiles.msgError('Error, Faltan Datos o hay Incorrectos ...!');
+        btnRegistrar.Enabled := False;
+      end;
+    end;
+  end;
+end;
+
+procedure TfmMontosProfesional.BuscarOSClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmListObrasSociales, fmListObrasSociales);
+  fmListObrasSociales.introSalir := True;
+  fmListObrasSociales.ShowModal;
+  codos.Text := obsocial.tabla.FieldByName('codos').AsString;
+  DatosObraSocial;
+  fmListObrasSociales.Release; fmListObrasSociales := nil;
+  Refresh;
+end;
+
+procedure TfmMontosProfesional.codosKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if Key = VK_UP then periodo.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if not obsocial.Buscar(codos.Text) then BuscarOSClick(Sender) else DatosObraSocial;
+end;
+
+procedure TfmMontosProfesional.SalirClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfmMontosProfesional.UGKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := codos;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    ug.Text := utiles.FormatearNumero(ug.text);
+    ActiveControl := UB;
+  end;
+end;
+
+procedure TfmMontosProfesional.UBKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := UG;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    UB.Text := utiles.FormatearNumero(UB.text);
+    ActiveControl := caran;
+  end;
+end;
+
+procedure TfmMontosProfesional.caranKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := ug;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    caran.Text := utiles.FormatearNumero(caran.text);
+    ActiveControl := neto;
+  end;
+end;
+
+procedure TfmMontosProfesional.FormShow(Sender: TObject);
+var
+  i: Integer;
+begin
+  profesional.BuscarPorNombre('');
+  configform.Setear(fmMontosProfesional);
+  S.Cells[0, 0] := 'Id.Prof.'; S.Cells[1, 0] := 'Profesional'; S.Cells[2, 0] := 'Monto Fact.'; S.Cells[3, 0] := 'U.B.'; S.Cells[4, 0] := 'U.G.'; S.Cells[5, 0] := 'C.Aranc.'; S.Cells[6, 0] := 'Neto';
+  if FileExists(dbs.DirSistema + '\ini_t.ini') then Begin
+    AssignFile(archivo, dbs.DirSistema + '\ini_t.ini');
+    reset(archivo);
+    ReadLn(archivo, i);
+    if i = 1 then totp.Checked := True else totp.Checked := False;
+    closeFile(archivo);
+  end;
+  ndist.Caption := nrodist;
+  periodo.SetFocus;
+  redim := False;
+end;
+
+procedure TfmMontosProfesional.idprofKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if Key = VK_UP then codos.SetFocus;
+  if (Key = VK_RETURN) then
+    if obsocial.Buscar(codos.Text) then
+      if not profesional.Buscar(idprof.Text) then buscarProfClick(Self) else CargarDatosProfesional;
+end;
+
+procedure TfmMontosProfesional.btnRegistrarClick(Sender: TObject);
+var
+  i: Integer;
+  porcent: Real; fecha: String;
+begin
+  TotalObraSocial;
+  for i := 1 to S.RowCount do Begin
+    if Length(Trim(S.Cells[0, i])) = 0 then Break;
+    facturacion.IngresarMontoFacturadoProfesional(periodo.Text, S.Cells[0, i], S.Cells[1, i], codos.Text, codfact.Caption, StrToFloat(S.Cells[3, i]), StrToFloat(S.Cells[4, i]), StrToFloat(S.Cells[5, i]), StrToFloat(S.Cells[2, i]), StrToFloat(S.Cells[6, i]));
+  end;
+  // Total Facturado para la Obra Social
+  facturacion.IngresarMontoFacturadoObraSocial(periodo.Text, codos.Text, os.Caption, StrToFloat(totos.Caption));
+  // Entrada para la distribución
+  distribucionos.getDatos(perLiq.Caption + nrodist, codos.Text, perLiq.Caption, '');
+  if distribucionos.Porcentaje > 0 then porcent := distribucionos.Porcentaje else porcent := 100;
+  if distribucionos.ExisteLiquidacion then fecha := distribucionos.Fecha else fecha := utiles.setFechaActual;
+  distribucionos.GuardarLiquidacion(perLiq.Caption + nrodist, codos.Text, periodo.Text, fecha, nrodist, StrToFloat(totos.Caption), porcent);
+  btnCancelarClick(Self);
+end;
+
+procedure TfmMontosProfesional.btnCancelarClick(Sender: TObject);
+begin
+  monto.Text := utiles.FormatearNumero('0'); ub.Text := monto.Text; ug.Text := monto.Text; caran.Text := monto.Text;
+  periodo.SetFocus;
+  grid.IniciarGrilla(S);
+  btnRegistrar.Enabled := False;
+end;
+
+procedure TfmMontosProfesional.DBGridDblClick(Sender: TObject);
+begin
+  idprof.Text := profesional.tperso.FieldByName('idprof').AsString;
+  CargarDatosProfesional;
+end;
+
+procedure TfmMontosProfesional.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  AssignFile(archivo, dbs.DirSistema + '\ini_t.ini');
+  rewrite(archivo);
+  if totp.Checked then WriteLn(archivo, 1) else WriteLn(archivo, 0);
+  closeFile(archivo);
+  configform.Guardar(fmMontosProfesional, redim);
+end;
+
+procedure TfmMontosProfesional.PeriodoKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.verificarPeriodo(periodo.Text) then codos.SetFocus;
+end;
+
+procedure TfmMontosProfesional.buscarProfClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmListProfesionalesLiq, fmListProfesionalesLiq);
+  fmListProfesionalesLiq.introSalir := True;
+  fmListProfesionalesLiq.ShowModal;
+  if fmListProfesionalesLiq.seleccionOK then Begin
+    idprof.Text := profesional.tperso.FieldByName('idprof').AsString;
+    CargarDatosProfesional;
+  end;
+  fmListProfesionalesLiq.Release; fmListProfesionalesLiq := nil;
+  Refresh;
+end;
+
+procedure TfmMontosProfesional.SKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then SDblClick(Self);
+  if Key = VK_DELETE then Begin
+    if Length(Trim(S.Cells[0, S.Row])) > 0 then
+      if utiles.msgSiNo('Seguro para Borrar Monto Profesional ' + S.Cells[1, S.Row] + ' ?') then Begin
+        facturacion.BorrarMontoFacturadoProfesional(periodo.Text, S.Cells[0, S.Row], codos.Text);
+        CargarPagos;
+        periodo.SetFocus;
+      end;
+    idprof.SetFocus;
+  end;
+end;
+
+procedure TfmMontosProfesional.SDblClick(Sender: TObject);
+begin
+  if Length(Trim(S.Cells[0, S.Row])) > 0 then Begin
+    idprof.Text     := S.Cells[0, S.Row];
+    descrip.Caption := S.Cells[1, S.Row];
+    UG.Text         := S.Cells[3, S.Row];
+    UB.Text         := S.Cells[4, S.Row];
+    caran.Text      := S.Cells[5, S.Row];
+    monto.Text      := S.Cells[2, S.Row];
+    neto.Text       := S.Cells[6, S.Row];
+    modifica        := True;
+    idprof.SetFocus;
+  end;
+end;
+
+procedure TfmMontosProfesional.netoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := caran;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    neto.Text := utiles.FormatearNumero(neto.text);
+    ActiveControl := monto;
+  end;
+end;
+
+end.

@@ -1,0 +1,237 @@
+object fmFacturacionAfip: TfmFacturacionAfip
+  Left = 0
+  Top = 0
+  Caption = 'Facturaci'#243'n AFIP'
+  ClientHeight = 299
+  ClientWidth = 635
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  OnClose = FormClose
+  OnResize = FormResize
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel2: TPanel
+    Left = 0
+    Top = 0
+    Width = 635
+    Height = 280
+    Align = alClient
+    BevelInner = bvLowered
+    BorderWidth = 4
+    Caption = 'Panel2'
+    TabOrder = 0
+    OnResize = Panel2Resize
+    object ScrollBox: TScrollBox
+      Left = 6
+      Top = 6
+      Width = 623
+      Height = 268
+      HorzScrollBar.Increment = 1
+      HorzScrollBar.Margin = 1
+      HorzScrollBar.Range = 10
+      VertScrollBar.Margin = 6
+      VertScrollBar.Range = 10
+      Align = alClient
+      AutoScroll = False
+      BorderStyle = bsNone
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 0
+      object Panel1: TPanel
+        Left = 0
+        Top = 0
+        Width = 623
+        Height = 37
+        Align = alTop
+        BevelOuter = bvNone
+        TabOrder = 0
+        object Label1: TLabel
+          Left = 15
+          Top = 10
+          Width = 41
+          Height = 13
+          Alignment = taRightJustify
+          Caption = 'Per'#237'odo:'
+        end
+        object Label2: TLabel
+          Left = 151
+          Top = 10
+          Width = 33
+          Height = 13
+          Alignment = taRightJustify
+          Caption = 'Fecha:'
+        end
+        object periodo: TMaskEdit
+          Left = 62
+          Top = 7
+          Width = 60
+          Height = 21
+          CharCase = ecUpperCase
+          EditMask = '99/9999;1; '
+          MaxLength = 7
+          TabOrder = 0
+          Text = '  /    '
+          OnKeyDown = periodoKeyDown
+        end
+        object fecha: TMaskEdit
+          Left = 190
+          Top = 7
+          Width = 65
+          Height = 21
+          CharCase = ecUpperCase
+          EditMask = '99/99/99;1; '
+          MaxLength = 8
+          TabOrder = 1
+          Text = '  /  /  '
+          OnKeyDown = periodoKeyDown
+        end
+        object Panel5: TPanel
+          Left = 417
+          Top = 0
+          Width = 206
+          Height = 37
+          Align = alRight
+          BevelOuter = bvNone
+          TabOrder = 2
+          object btnTest: TButton
+            Left = 10
+            Top = 6
+            Width = 75
+            Height = 25
+            Caption = 'Test WS'
+            TabOrder = 0
+            OnClick = btnTestClick
+          end
+          object btnUltimoNro: TButton
+            Left = 91
+            Top = 5
+            Width = 104
+            Height = 26
+            Caption = 'Obtener Ultimo Nro.'
+            TabOrder = 1
+            OnClick = btnUltimoNroClick
+          end
+        end
+      end
+      object Panel3: TPanel
+        Left = 0
+        Top = 37
+        Width = 623
+        Height = 190
+        Align = alClient
+        BevelInner = bvLowered
+        TabOrder = 1
+        object D: TStringGrid
+          Left = 2
+          Top = 2
+          Width = 619
+          Height = 186
+          Align = alClient
+          BorderStyle = bsNone
+          ColCount = 8
+          DefaultRowHeight = 15
+          FixedCols = 0
+          RowCount = 10000
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowSelect]
+          ParentFont = False
+          TabOrder = 0
+          OnKeyDown = DKeyDown
+          ColWidths = (
+            269
+            41
+            16
+            64
+            64
+            64
+            64
+            64)
+        end
+      end
+      object Panel4: TPanel
+        Left = 0
+        Top = 227
+        Width = 623
+        Height = 41
+        Align = alBottom
+        BevelOuter = bvNone
+        TabOrder = 2
+        ExplicitLeft = -40
+        ExplicitTop = 233
+        object Label3: TLabel
+          Left = 437
+          Top = 12
+          Width = 82
+          Height = 13
+          Alignment = taRightJustify
+          Caption = 'Copias a Imprimir:'
+        end
+        object btnFacturar: TButton
+          Left = 15
+          Top = 6
+          Width = 133
+          Height = 25
+          Caption = 'Generar Comprobante'
+          TabOrder = 0
+          OnClick = btnFacturarClick
+        end
+        object btnImprimir: TButton
+          Left = 154
+          Top = 6
+          Width = 123
+          Height = 25
+          Caption = 'Imprimir Comprobante'
+          TabOrder = 1
+          OnClick = btnImprimirClick
+        end
+        object copias: TMaskEdit
+          Left = 525
+          Top = 9
+          Width = 33
+          Height = 21
+          CharCase = ecUpperCase
+          EditMask = '9;1; '
+          MaxLength = 1
+          TabOrder = 2
+          Text = '2'
+          OnKeyDown = periodoKeyDown
+        end
+      end
+    end
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 280
+    Width = 635
+    Height = 19
+    Panels = <
+      item
+        Width = 285
+      end
+      item
+        Width = 50
+      end>
+  end
+  object HTTPRIO1: THTTPRIO
+    WSDLLocation = 'http://i-mmo.net:8080/arpsoa/ws/facturaService?wsdl'
+    HTTPWebNode.UseUTF8InHeader = True
+    HTTPWebNode.InvokeOptions = []
+    Converter.Options = [soTryAllSchema, soRootRefNodesToBody, soCacheMimeResponse, soUTF8EncodeXML]
+    Left = 376
+    Top = 8
+  end
+end

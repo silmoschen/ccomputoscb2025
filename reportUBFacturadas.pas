@@ -1,0 +1,75 @@
+unit reportUBFacturadas;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Buttons, Mask, ExtCtrls, ComCtrls, CFacturacionCCB, CUtiles;
+
+type
+  TfmUBFacturadas = class(TForm)
+    StatusBar1: TStatusBar;
+    Panel2: TPanel;
+    ScrollBox: TScrollBox;
+    Label11: TLabel;
+    periodo: TMaskEdit;
+    dispSalida: TBitBtn;
+    emitir: TBitBtn;
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure dispSalidaClick(Sender: TObject);
+    procedure emitirClick(Sender: TObject);
+  private
+    { Private declarations }
+    salida: char;
+  public
+    { Public declarations }
+  end;
+
+var
+  fmUBFacturadas: TfmUBFacturadas;
+
+implementation
+
+uses Disposit;
+
+{$R *.dfm}
+
+procedure TfmUBFacturadas.dispSalidaClick(Sender: TObject);
+begin
+  if not Assigned(Dispositivo) then Application.CreateForm(TDispositivo, Dispositivo);
+  Dispositivo.ShowModal;
+  ActiveControl := emitir;
+end;
+
+procedure TfmUBFacturadas.emitirClick(Sender: TObject);
+begin
+  if not (utiles.verificarPeriodo(periodo.Text)) then begin
+    exit;
+  end;
+  
+
+  salida := 'P';
+  if Dispositivo.Impresor.Checked then salida := 'I';
+
+  StatusBar1.Panels[0].Text := 'Generando Informe ...!'; StatusBar1.Refresh;
+  facturacion.listarUBFacturadas(periodo.Text, salida);
+  StatusBar1.Panels[0].text := '';
+
+end;
+
+procedure TfmUBFacturadas.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  facturacion.desconectar;
+  Dispositivo.Release; Dispositivo := nil;
+end;
+
+procedure TfmUBFacturadas.FormShow(Sender: TObject);
+begin
+  facturacion.conectar;
+  facturacion.DireccionarLaboratorio(utiles.setPeriodoActual, '000000');
+  Application.CreateForm(TDispositivo, Dispositivo);
+  //periodo.text := '09/2021';
+end;
+
+end.

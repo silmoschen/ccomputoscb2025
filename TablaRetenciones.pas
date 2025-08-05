@@ -1,0 +1,773 @@
+unit TablaRetenciones;
+
+interface
+
+uses
+  SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
+  Forms, Dialogs, StdCtrls, ExtCtrls, Buttons, DB, DBTables, Mask, DBCtrls,
+  ComCtrls, ToolWin, Editv, Grids;
+
+type
+  TfmTablaRetenciones = class(TForm)
+    StatusBar1: TStatusBar;
+    DTS: TDataSource;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
+    Panel2: TPanel;
+    ScrollBox: TScrollBox;
+    Panel1: TPanel;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    items: TMaskEdit;
+    descrip: TMaskEdit;
+    porcentaje: TEditValid;
+    tope: TEditValid;
+    escalas: TCheckBox;
+    Panel3: TPanel;
+    Panel4: TPanel;
+    GroupBox1: TGroupBox;
+    Label7: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
+    desde: TEditValid;
+    hasta: TEditValid;
+    por: TEditValid;
+    Panel6: TPanel;
+    E: TStringGrid;
+    Panel7: TPanel;
+    ScrollBox1: TScrollBox;
+    Panel8: TPanel;
+    Label10: TLabel;
+    itemscuit: TLabel;
+    desccuit: TLabel;
+    Label11: TLabel;
+    cuit1: TMaskEdit;
+    Label12: TLabel;
+    cuit2: TMaskEdit;
+    Label13: TLabel;
+    Panel9: TPanel;
+    C: TStringGrid;
+    BuscarCuit1: TBitBtn;
+    BuscarCuit2: TBitBtn;
+    prof1: TLabel;
+    prof2: TLabel;
+    Panel10: TPanel;
+    ToolBar1: TToolBar;
+    DBNavigator: TDBNavigator;
+    Alta: TToolButton;
+    Baja: TToolButton;
+    Modificar: TToolButton;
+    Buscar: TToolButton;
+    Deshacer: TToolButton;
+    Salir: TToolButton;
+    Label14: TLabel;
+    Label15: TLabel;
+    ret: TMaskEdit;
+    Label16: TLabel;
+    exedente: TEditValid;
+    Label17: TLabel;
+    retfija: TEditValid;
+    TabSheet3: TTabSheet;
+    Panel11: TPanel;
+    Panel12: TPanel;
+    Label18: TLabel;
+    itdif: TLabel;
+    ndif: TLabel;
+    Label21: TLabel;
+    codosdif: TMaskEdit;
+    BuscarOS: TBitBtn;
+    osd: TLabel;
+    Label23: TLabel;
+    Label24: TLabel;
+    porcentajedif: TEditValid;
+    Panel13: TPanel;
+    D: TStringGrid;
+    retiva: TMaskEdit;
+    Label19: TLabel;
+    Label20: TLabel;
+    Label22: TLabel;
+    Label25: TLabel;
+    honorarios: TMaskEdit;
+    Panel5: TPanel;
+    btnRegistrar: TButton;
+    btnCerrar: TButton;
+    Label26: TLabel;
+    Label27: TLabel;
+    porcentajetot: TEditValid;
+    Label28: TLabel;
+    chkExcluir: TComboBox;
+    excluir: TCheckBox;
+
+    procedure itemsKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure descripKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure AltaClick(Sender: TObject);
+    procedure BajaClick(Sender: TObject);
+    procedure ModificarClick(Sender: TObject);
+    procedure DeshacerClick(Sender: TObject);
+    procedure SalirClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure DBNavigatorBeforeAction(Sender: TObject;
+      Button: TNavigateBtn);
+    procedure porcentajeKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure FormShow(Sender: TObject);
+    procedure topeKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure escalasClick(Sender: TObject);
+    procedure desdeKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure hastaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure porKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure EDblClick(Sender: TObject);
+    procedure btnRegistrarClick(Sender: TObject);
+    procedure btnCerrarClick(Sender: TObject);
+    procedure escalasKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure EKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure cuit1KeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure BuscarCuit1Click(Sender: TObject);
+    procedure cuit2KeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure BuscarCuit2Click(Sender: TObject);
+    procedure TabSheet2Show(Sender: TObject);
+    procedure CKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure retKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure PageControl1Resize(Sender: TObject);
+    procedure exedenteKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure retfijaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure codosdifKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure BuscarOSClick(Sender: TObject);
+    procedure porcentajedifKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure TabSheet3Show(Sender: TObject);
+    procedure DKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure DDblClick(Sender: TObject);
+    procedure retivaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure FormActivate(Sender: TObject);
+    procedure honorariosKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure porcentajetotKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure excluirClick(Sender: TObject);
+  private
+    { Private declarations }
+    redim, modif, mdif, act: Boolean;
+    it, id: Integer;
+    procedure CargarDatos;
+    function  GuardarRetencion: Boolean;
+    procedure CargarCuit1;
+    procedure CargarCuit2;
+    procedure CargarDatosObraSocial;
+    procedure CargarRetenciones;
+  public
+    { Public declarations }
+  end;
+
+var
+  fmTablaRetenciones: TfmTablaRetenciones;
+
+implementation
+
+uses CRetencionesCentroBioq, CUtiles, ImgForms, CConfigForms, CUtilidadesStringGrid,
+     CProfesionalCCB, NominaDeProfesionales, CObrasSocialesCCB, NominaDeProfesionalesLiquidacionOS,
+     NominaObrasSociales, EleccionProfesionales;
+
+{$R *.DFM}
+
+procedure TfmTablaRetenciones.CargarDatos;
+var
+  r: TQuery;
+  i: Integer;
+begin
+  retenciones.getDatos(items.Text);
+  descrip.Text       := retenciones.Descrip;
+  ret.Text           := retenciones.RetLiq;
+  retiva.Text        := retenciones.Retiva;
+  porcentaje.Text    := utiles.FormatearNumero(FloatToStr(retenciones.Porcentaje));
+  tope.Text          := utiles.FormatearNumero(FloatToStr(retenciones.Tope));
+  Honorarios.Text    := retenciones.Honorarios;
+  porcentajetot.Text := utiles.FormatearNumero(FloatToStr(retenciones.PorcentajeTot));
+  chkExcluir.Text    := retenciones.Excluir;
+
+  r := retenciones.setEscala(items.Text);
+  r.Open; i := 0;
+  escalas.Checked := False;
+  if r.RecordCount > 0 then Begin
+    escalas.Checked := True;
+    while not r.Eof do Begin
+      Inc(i);
+      E.Cells[0, i] := utiles.FormatearNumero(r.FieldByName('desde').AsString);
+      E.Cells[1, i] := utiles.FormatearNumero(r.FieldByName('hasta').AsString);
+      E.Cells[2, i] := utiles.FormatearNumero(r.FieldByName('porc').AsString);
+      E.Cells[3, i] := utiles.FormatearNumero(r.FieldByName('retfija').AsString);
+      E.Cells[4, i] := utiles.FormatearNumero(r.FieldByName('exedente').AsString);
+      r.Next;
+    end;
+  end;
+  it := i;
+end;
+
+function TfmTablaRetenciones.GuardarRetencion: Boolean;
+begin
+  if (Length(Trim(items.Text)) > 0) and (Length(Trim(descrip.Text)) > 0) and (Length(Trim(porcentaje.Text)) > 0)  and (utiles.Sionoct(ret.Text, 'SN', '')) and (utiles.Sionoct(retiva.Text, 'SN', '')) and (utiles.Sionoct(honorarios.Text, 'SN', '')) then Begin
+    retenciones.Grabar(items.Text, descrip.Text, ret.Text, retiva.Text, honorarios.Text, chkExcluir.Text, StrToFloat(porcentaje.Text), StrToFloat(tope.Text), StrToFloat(porcentajetot.Text));
+    Result := True;
+  end else
+    Result := False;
+end;
+
+procedure TfmTablaRetenciones.CargarCuit1;
+var
+  l: TStringList;
+  i, p: Integer;
+Begin
+  profesional.getDatos(cuit1.Text);
+  prof1.Caption := Copy(profesional.nombre, 1, 35);
+
+  grid.IniciarGrilla(C);
+  l := retenciones.setCuit(itemscuit.Caption, cuit1.Text);
+  For i := 1 to l.Count do Begin
+    p := Pos(';1', l.Strings[i-1]);
+    C.Cells[0, i] := Copy(l.Strings[i-1], p+2, 6);
+    profesional.getDatos(C.Cells[0, i]);
+    C.Cells[1, i] := profesional.nombre;
+    C.Row         := i;
+  end;
+
+  cuit2.SetFocus;
+end;
+
+procedure TfmTablaRetenciones.CargarCuit2;
+var
+  i: Integer;
+Begin
+  if (profesional.Buscar(cuit1.Text)) and (profesional.Buscar(cuit2.Text)) then Begin
+    profesional.getDatos(cuit2.Text);
+    prof2.Caption := Copy(profesional.nombre, 1, 35);
+    For i := 1 to C.RowCount do
+      if Length(Trim(C.Cells[0, i])) = 0 then Break;
+    C.Cells[0, i] := cuit2.Text;
+    C.Cells[1, i] := profesional.nombre;
+    C.Row         := i;
+
+    retenciones.UnificarCuit(itemscuit.Caption, cuit1.Text, C.Cells[0, i]);
+
+    cuit2.Text := '';
+    cuit2.SelLength := 6;
+    cuit2.SetFocus;
+  end else
+    utiles.msgError('Verifique los Nros. de C.U.I.T. ...!');
+end;
+
+procedure TfmTablaRetenciones.CargarDatosObraSocial;
+Begin
+  obsocial.getDatos(codosdif.Text);
+  osd.Caption := obsocial.Nombre;
+  porcentajedif.SetFocus;
+end;
+
+procedure TfmTablaRetenciones.CargarRetenciones;
+// Objetivo...: Cargar Retenciones
+var
+  i: Integer;
+  l: TStringList;
+Begin
+  grid.IniciarGrilla(D);
+  l := retenciones.setPorcentajes(itdif.Caption);
+  For i := 1 to l.Count do Begin
+    D.Cells[0, i] := Copy(l.Strings[i-1], 1, 6);
+    obsocial.getDatos(D.Cells[0, i]);
+    D.Cells[1, i] := obsocial.Nombre;
+    D.Cells[2, i] := utiles.FormatearNumero(Trim(Copy(l.Strings[i-1], 7, 10)));
+    if D.Cells[0, i] = codosdif.Text then D.Row := i;
+  end;
+end;
+
+procedure TfmTablaRetenciones.itemsKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if Key = VK_INSERT then AltaClick(Sender);
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if retenciones.Buscar(items.Text) then Begin
+      CargarDatos;
+      StatusBar1.Panels[0].Text := '';
+      StatusBar1.Panels[1].Text := 'Modifica';
+      ActiveControl := ret;
+    end else
+      if utiles.DarDeAlta('Items ' + items.Text) then Begin
+        CargarDatos;
+        StatusBar1.Panels[0].Text := '';
+        StatusBar1.Panels[1].Text := 'Nuevo';
+        ActiveControl := ret;
+      end;
+    end;
+end;
+
+procedure TfmTablaRetenciones.descripKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := retiva;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(descrip.Text)) > 0 then ActiveControl := porcentaje;
+end;
+
+procedure TfmTablaRetenciones.AltaClick(Sender: TObject);
+begin
+  items.Text    := utiles.sLlenarIzquierda(retenciones.Nuevo, 2, '0');
+  ActiveControl := descrip;
+end;
+
+procedure TfmTablaRetenciones.BajaClick(Sender: TObject);
+begin
+  if retenciones.Buscar(items.Text) then
+   if utiles.BajaRegistro(' Seguro para Eliminar Items ' + descrip.Text + ' ?') then Begin
+     retenciones.Borrar(items.Text);
+     items.Text := retenciones.Items;
+     CargarDatos;
+   end;
+  ActiveControl := descrip;
+end;
+
+procedure TfmTablaRetenciones.ModificarClick(Sender: TObject);
+begin
+  ActiveControl := items;
+end;
+
+procedure TfmTablaRetenciones.DeshacerClick(Sender: TObject);
+begin
+  ActiveControl := items;
+end;
+
+procedure TfmTablaRetenciones.SalirClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfmTablaRetenciones.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  profesional.desconectar;
+  configform.Guardar(fmTablaRetenciones, redim);
+  DBNavigator.DataSource := nil;
+  Release; fmTablaRetenciones := nil;
+end;
+
+procedure TfmTablaRetenciones.DBNavigatorBeforeAction(Sender: TObject;
+  Button: TNavigateBtn);
+begin
+  items.Text := retenciones.tabla.FieldByName('items').AsString;
+  CargarDatos;
+end;
+
+procedure TfmTablaRetenciones.porcentajeKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := descrip;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    porcentaje.Text := utiles.FormatearNumero(porcentaje.Text);
+    ActiveControl := Tope;
+  end;
+end;
+
+procedure TfmTablaRetenciones.porcentajetotKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := honorarios;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    porcentajetot.Text := utiles.FormatearNumero(porcentajetot.Text);
+    if GuardarRetencion then ActiveControl := escalas else utiles.msgError('No se suministraron suficientes datos ...!');
+  end;
+end;
+
+procedure TfmTablaRetenciones.FormShow(Sender: TObject);
+begin
+  if not configform.Setear(fmTablaRetenciones) then Left:=(Screen.Width - Width) div 2;
+  DTS.DataSet := retenciones.tabla;
+  profesional.conectar;
+  if Length(Trim(items.Text)) > 0 then Begin
+    CargarDatos;
+    ActiveControl := descrip;
+  end else ActiveControl := items;
+  E.Cells[0, 0] := 'Mas de'; E.Cells[1, 0] := 'a'; E.Cells[2, 0] := 'Por.'; E.Cells[3, 0] := 'R.Fija'; E.Cells[4, 0] := 'Exedente';
+  D.Cells[0, 0] := 'Cód.'; D.Cells[1, 0] := 'Obra Social'; D.Cells[2, 0] := 'Porcentaje';
+  redim := False;
+end;
+
+procedure TfmTablaRetenciones.topeKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := porcentaje;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    tope.Text := utiles.FormatearNumero(tope.Text);
+    honorarios.SetFocus;
+  end;
+end;
+
+procedure TfmTablaRetenciones.escalasClick(Sender: TObject);
+begin
+  if act then Begin
+  if escalas.Checked then Begin
+    if GuardarRetencion then Begin
+      Panel3.Enabled := True;
+      desde.SetFocus;
+    end else
+      utiles.msgError('Error al Guardar Retención ...!');
+  end else Begin
+    Panel3.Enabled := False;
+    Close;
+  end;
+  end;
+end;
+
+procedure TfmTablaRetenciones.desdeKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then
+    if it > 0 then btnRegistrar.SetFocus;
+  if Key = VK_UP then escalas.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(desde.Text)) > 0 then Begin
+      desde.Text := utiles.FormatearNumero(desde.Text);
+      hasta.SetFocus;
+    end;
+end;
+
+procedure TfmTablaRetenciones.hastaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then desde.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(hasta.Text)) > 0 then Begin
+      hasta.Text := utiles.FormatearNumero(hasta.Text);
+      por.SetFocus;
+    end;
+end;
+
+procedure TfmTablaRetenciones.porKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then hasta.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(por.Text)) > 0 then Begin
+      por.Text := utiles.FormatearNumero(por.Text);
+      retfija.SetFocus;
+    end;
+end;
+
+procedure TfmTablaRetenciones.EDblClick(Sender: TObject);
+begin
+  desde.Text    := E.Cells[0, E.Row];
+  hasta.Text    := E.Cells[1, E.Row];
+  por.Text      := E.Cells[2, E.Row];
+  retfija.Text  := E.Cells[3, E.Row];
+  exedente.Text := E.Cells[4, E.Row];
+  modif         := True;
+  desde.SetFocus;
+end;
+
+procedure TfmTablaRetenciones.btnRegistrarClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  GuardarRetencion;
+  for i := 1 to E.RowCount do Begin
+    if Length(Trim(E.Cells[0, i])) = 0 then Break;
+    retenciones.GuardarRet(items.Text, utiles.sLlenarIzquierda(IntToStr(i), 2, '0'), StrToFloat(E.Cells[0, i]), StrToFloat(E.Cells[1, i]), StrToFloat(E.Cells[2, i]), StrToFloat(E.Cells[3, i]), StrToFloat(E.Cells[4, i]), it);
+  end;
+  btnCerrar.SetFocus;
+end;
+
+procedure TfmTablaRetenciones.btnCerrarClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfmTablaRetenciones.escalasKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then escalasClick(Self);
+end;
+
+procedure TfmTablaRetenciones.EKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_DELETE then
+    if Length(Trim(E.Cells[0, E.Row])) > 0 then
+      if utiles.BajaRegistro('Seguro para Eliminar Items ?') then Begin
+        grid.BorrarRenglon_SinRenumerar(E);
+        Dec(it);
+      end;
+  desde.SetFocus;
+end;
+
+procedure TfmTablaRetenciones.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+end;
+
+procedure TfmTablaRetenciones.cuit1KeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if profesional.Buscar(cuit1.Text) then CargarCuit1 else BuscarCuit1Click(Self);
+end;
+
+procedure TfmTablaRetenciones.BuscarCuit1Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmListProfesionalesLiq, fmListProfesionalesLiq);
+  fmListProfesionalesLiq.introSalir := True;
+  fmListProfesionalesLiq.on2     := True;
+  fmListProfesionalesLiq.ShowModal;
+  if fmListProfesionalesLiq.seleccionOK then Begin
+    cuit1.Text := profesional.tperso.FieldByName('idprof').AsString;
+    CargarCuit1;
+  end;
+  fmListProfesionalesLiq.Release; fmListProfesionalesLiq := Nil;
+end;
+
+procedure TfmTablaRetenciones.cuit2KeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then cuit1.setFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if profesional.Buscar(cuit2.Text) then CargarCuit2 else BuscarCuit2Click(Self);
+end;
+
+procedure TfmTablaRetenciones.BuscarCuit2Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmListProfesionalesLiq, fmListProfesionalesLiq);
+  fmListProfesionalesLiq.introSalir := True;
+  fmListProfesionalesLiq.on2     := True;
+  fmListProfesionalesLiq.ShowModal;
+  if fmListProfesionalesLiq.seleccionOK then Begin
+    cuit2.Text := profesional.tperso.FieldByName('idprof').AsString;
+    CargarCuit2;
+  end;
+  fmListProfesionalesLiq.Release; fmListProfesionalesLiq := Nil;
+end;
+
+procedure TfmTablaRetenciones.TabSheet2Show(Sender: TObject);
+begin
+  itemscuit.Caption := items.Text;
+  desccuit.Caption  := descrip.Text;
+  C.Cells[0, 0]     := 'Código';
+  C.Cells[1, 0]     := 'Nombre del Profesional';
+end;
+
+procedure TfmTablaRetenciones.CKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_DELETE then
+    if Length(Trim(C.Cells[0, C.Row])) > 0 then
+      if utiles.msgSiNo('Seguro para Borrar C.U.I.T. Laboratorio ?') then Begin
+        retenciones.BorrarCuit(itemscuit.Caption, cuit1.Text, C.Cells[0, C.Row]);
+        grid.BorrarRenglon_SinRenumerar(C);
+      end;
+end;
+
+procedure TfmTablaRetenciones.retKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then items.setFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.Sionoct(ret.Text, 'SN', 'Las Opciones son S ó N ...!') then retiva.setFocus;
+end;
+
+procedure TfmTablaRetenciones.PageControl1Resize(Sender: TObject);
+begin
+  redim := True;
+end;
+
+procedure TfmTablaRetenciones.excluirClick(Sender: TObject);
+var
+  i: integer;
+begin
+  if (excluir.Checked) then begin
+    if not Assigned(fmEleProfesional) then Application.CreateForm(TfmEleProfesional, fmEleProfesional);
+    fmEleProfesional.CargarDatos;
+
+    for i := 1 to fmEleProfesional.F.RowCount do begin
+      if (retenciones.getExcluye(items.text, fmEleProfesional.F.Cells[1, i])) then
+        fmEleProfesional.F.Cells[2, i] := 'S';
+    end;
+
+    fmEleProfesional.ShowModal;
+
+    for i := 1 to fmEleProfesional.F.RowCount do begin
+      if (length(trim(fmEleProfesional.F.Cells[0, i])) = 0) then break;
+      retenciones.ExcluirLaboratorio(items.text, fmEleProfesional.F.Cells[1, i], fmEleProfesional.F.Cells[2, i]);
+    end;
+
+    fmEleProfesional.Release; fmEleProfesional := nil;
+
+  end;
+end;
+
+procedure TfmTablaRetenciones.exedenteKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+var
+  i: Integer;
+begin
+  if Key = VK_UP then retfija.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(exedente.Text)) > 0 then Begin
+      exedente.Text := utiles.FormatearNumero(exedente.Text);
+
+      if not modif then Begin
+        Inc(it);
+        i := it;
+      end else
+        i := E.Row;
+
+      E.Cells[0, i] := desde.Text;
+      E.Cells[1, i] := hasta.Text;
+      E.Cells[2, i] := por.Text;
+      E.Cells[3, i] := retfija.Text;
+      E.Cells[4, i] := exedente.Text;
+      E.Row         := i;
+
+      modif := False;
+
+      desde.Text := ''; hasta.Text := ''; por.Text := ''; exedente.Text := ''; retfija.Text := '';
+
+      desde.SetFocus;
+    end;
+end;
+
+procedure TfmTablaRetenciones.retfijaKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then por.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(retfija.Text)) > 0 then Begin
+      retfija.Text := utiles.FormatearNumero(retfija.Text);
+      exedente.SetFocus;
+    end;
+end;
+
+procedure TfmTablaRetenciones.codosdifKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if obsocial.Buscar(codosdif.Text) then CargarDatosObraSocial else BuscarOSClick(Self);
+  end;
+end;
+
+procedure TfmTablaRetenciones.BuscarOSClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmListObrasSociales, fmListObrasSociales);
+  fmListObrasSociales.introSalir := True;
+  fmListObrasSociales.ShowModal;
+  if fmListObrasSociales.seleccionOK then Begin
+    codosdif.Text := obsocial.tabla.FieldByName('codos').AsString;
+    CargarDatosObraSocial;
+  end;
+  fmListObrasSociales.Release; fmListObrasSociales := Nil;
+end;
+
+procedure TfmTablaRetenciones.porcentajedifKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+var
+  i: Integer;
+begin
+  if Key = VK_UP then ActiveControl := codosdif;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    porcentajedif.Text := utiles.FormatearNumero(porcentajedif.Text);
+
+    if (obsocial.Buscar(codosdif.Text)) and (StrToFloat(porcentajedif.Text) > 0) then Begin
+
+      if not mdif then Begin
+        Inc(id);
+        i := id;
+      end else
+        i := D.Row;
+
+      D.Cells[0, i] := codosdif.Text;
+      D.Cells[1, i] := osd.Caption;
+      D.Cells[2, i] := porcentajedif.Text;
+      modif := False;
+
+      retenciones.RegistrarPorcentaje(codosdif.Text, itdif.Caption, StrToFloat(porcentajedif.Text));
+      CargarRetenciones;
+
+      codosdif.Text := ''; osd.Caption := ''; porcentajedif.Text := '';
+      codosdif.SetFocus;
+      
+    end else
+      utiles.msgError('Controle, Existen Datos Incorrectos ...!');
+
+  end;
+end;
+
+procedure TfmTablaRetenciones.TabSheet3Show(Sender: TObject);
+begin
+  itdif.Caption := items.Text;
+  ndif.Caption     := descrip.Text;
+  CargarRetenciones;
+end;
+
+procedure TfmTablaRetenciones.DKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_DELETE then
+    if Length(Trim(D.Cells[0, D.Row])) = 0 then utiles.msgError('El Registro Seleccionado es Incorrecto ...!') else
+      if utiles.msgSiNo('Seguro para Borrar Porcentaje Obra Social ' + D.Cells[1, D.Row] + ' ?') then Begin
+        retenciones.BorrarPorcentaje(D.Cells[0, D.Row], itdif.Caption);
+        CargarRetenciones;
+        codosdif.SetFocus;
+      end;
+end;
+
+procedure TfmTablaRetenciones.DDblClick(Sender: TObject);
+begin
+  if Length(Trim(D.Cells[0, D.Row])) = 0 then utiles.msgError('El Registro Seleccionado es Incorrecto ...!') else Begin
+    codosdif.Text      := D.Cells[0, D.Row];
+    osd.Caption        := D.Cells[1, D.Row];
+    porcentajedif.Text := D.Cells[2, D.Row];
+    modif := True;
+    codosdif.SetFocus;
+  end;
+end;
+
+procedure TfmTablaRetenciones.retivaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ret.setFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.Sionoct(retiva.Text, 'SN', 'Las Opciones son S ó N ...!') then descrip.setFocus;
+end;
+
+procedure TfmTablaRetenciones.FormActivate(Sender: TObject);
+begin
+  act := True;
+end;
+
+procedure TfmTablaRetenciones.honorariosKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := tope;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if utiles.Sionoct(honorarios.Text, 'SN', 'Las Opciones son S ó N ...!') then porcentajetot.SetFocus;
+  end;
+end;
+
+end.

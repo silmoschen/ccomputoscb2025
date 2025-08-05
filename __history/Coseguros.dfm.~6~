@@ -1,0 +1,201 @@
+object fmCoseguros: TfmCoseguros
+  Left = 0
+  Top = 0
+  Caption = 'Coseguros Obras Sociales'
+  ClientHeight = 213
+  ClientWidth = 512
+  Color = clBtnFace
+  Font.Charset = ANSI_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  OnClose = FormClose
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 194
+    Width = 512
+    Height = 19
+    Panels = <
+      item
+        Width = 50
+      end
+      item
+        Width = 50
+      end>
+    ExplicitLeft = 288
+    ExplicitTop = 160
+    ExplicitWidth = 0
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 512
+    Height = 194
+    Align = alClient
+    BevelInner = bvLowered
+    BorderWidth = 4
+    TabOrder = 1
+    ExplicitLeft = 248
+    ExplicitTop = 112
+    ExplicitWidth = 185
+    ExplicitHeight = 41
+    object Panel2: TPanel
+      Left = 6
+      Top = 6
+      Width = 500
+      Height = 60
+      Align = alTop
+      BevelOuter = bvNone
+      TabOrder = 0
+      object Label1: TLabel
+        Left = 8
+        Top = 8
+        Width = 58
+        Height = 13
+        Alignment = taRightJustify
+        Caption = 'Obra Social:'
+      end
+      object nos: TLabel
+        Left = 155
+        Top = 9
+        Width = 27
+        Height = 13
+        Caption = '         '
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clNavy
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        ParentFont = False
+      end
+      object Label2: TLabel
+        Left = 25
+        Top = 36
+        Width = 41
+        Height = 13
+        Alignment = taRightJustify
+        Caption = 'Per'#237'odo:'
+      end
+      object Label15: TLabel
+        Left = 150
+        Top = 36
+        Width = 54
+        Height = 13
+        Alignment = taRightJustify
+        Caption = 'Porcentaje:'
+      end
+      object codos: TMaskEdit
+        Left = 70
+        Top = 5
+        Width = 58
+        Height = 21
+        EditMask = '999999;1; '
+        MaxLength = 6
+        TabOrder = 0
+        Text = '      '
+      end
+      object BuscarProfesional: TBitBtn
+        Left = 132
+        Top = 5
+        Width = 20
+        Height = 22
+        Hint = 'Buscar Profesional'
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 1
+        OnClick = BuscarProfesionalClick
+        Glyph.Data = {
+          F6000000424DF600000000000000760000002800000010000000100000000100
+          0400000000008000000000000000000000001000000010000000000000000000
+          8000008000000080800080000000800080008080000080808000C0C0C0000000
+          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+          FFFFFFFFFFF000FFFFFFFFFFFF0BB00FFFFFFFFFFF0BB00FFFFFFFFFFFF00FFF
+          FFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0BB00F
+          FFFFFFFF00F0BB00FFFFFFF0B00F0BB00FFFFFF0B00FF0B00FFFFFF0BB000BB0
+          0FFFFFFF0BBBBB00FFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFF}
+      end
+      object periodo: TMaskEdit
+        Left = 70
+        Top = 33
+        Width = 53
+        Height = 21
+        EditMask = '99/9999;1; '
+        MaxLength = 7
+        TabOrder = 2
+        Text = '  /    '
+      end
+      object porcentaje: TEditValid
+        Left = 207
+        Top = 33
+        Width = 64
+        Height = 21
+        TabOrder = 3
+        Valid = tvDecimal
+      end
+      object Panel4: TPanel
+        Left = 426
+        Top = 0
+        Width = 74
+        Height = 60
+        Align = alRight
+        BevelOuter = bvNone
+        TabOrder = 4
+        ExplicitHeight = 56
+        object Button1: TButton
+          Left = 3
+          Top = 3
+          Width = 68
+          Height = 25
+          Caption = '&Registrar'
+          TabOrder = 0
+        end
+        object Button2: TButton
+          Left = 3
+          Top = 31
+          Width = 68
+          Height = 25
+          Caption = '&Cancelar'
+          TabOrder = 1
+        end
+      end
+    end
+    object Panel3: TPanel
+      Left = 6
+      Top = 66
+      Width = 500
+      Height = 122
+      Align = alClient
+      BevelInner = bvLowered
+      Caption = 'Panel3'
+      TabOrder = 1
+      ExplicitLeft = 368
+      ExplicitTop = 152
+      ExplicitWidth = 185
+      ExplicitHeight = 41
+      object S: TStringGrid
+        Left = 2
+        Top = 2
+        Width = 496
+        Height = 118
+        Align = alClient
+        BorderStyle = bsNone
+        ColCount = 2
+        DefaultRowHeight = 15
+        FixedCols = 0
+        RowCount = 500
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowSelect]
+        TabOrder = 0
+        ExplicitWidth = 548
+        ExplicitHeight = 111
+        ColWidths = (
+          89
+          164)
+      end
+    end
+  end
+end

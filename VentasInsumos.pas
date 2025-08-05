@@ -1,0 +1,749 @@
+unit VentasInsumos;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ComCtrls, Mask, StdCtrls, Editv, Buttons, Grids, DBCtrls,
+  ToolWin, ExtCtrls, DB, Menus, Printers;
+
+type
+  TfmVentasInsumos = class(TForm)
+    Panel26: TPanel;
+    ToolBar1: TToolBar;
+    DBNavigator: TDBNavigator;
+    Alta: TToolButton;
+    Baja: TToolButton;
+    Modificar: TToolButton;
+    Buscar: TToolButton;
+    Deshacer: TToolButton;
+    Salir: TToolButton;
+    Panel27: TPanel;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    Panel2: TPanel;
+    ScrollBox: TScrollBox;
+    Panel3: TPanel;
+    S: TStringGrid;
+    TabSheet2: TTabSheet;
+    Panel7: TPanel;
+    ScrollBox1: TScrollBox;
+    Panel10: TPanel;
+    Panel11: TPanel;
+    GroupBox4: TGroupBox;
+    RadioButton1: TRadioButton;
+    Panel6: TPanel;
+    Panel8: TPanel;
+    btnCerrar: TBitBtn;
+    Panel9: TPanel;
+    Label14: TLabel;
+    Label27: TLabel;
+    per: TMaskEdit;
+    Panel12: TPanel;
+    Label25: TLabel;
+    np: TLabel;
+    Label47: TLabel;
+    idlab: TMaskEdit;
+    BuscarProfes: TBitBtn;
+    Panel13: TPanel;
+    dispSalida: TBitBtn;
+    emitir: TBitBtn;
+    TabSheet4: TTabSheet;
+    StatusBar1: TStatusBar;
+    Panel20: TPanel;
+    Label2: TLabel;
+    Label11: TLabel;
+    Label3: TLabel;
+    nos: TLabel;
+    Label1: TLabel;
+    periodo: TMaskEdit;
+    fecha: TMaskEdit;
+    idprof: TMaskEdit;
+    BuscarProfesional: TBitBtn;
+    concepto: TMaskEdit;
+    Label4: TLabel;
+    idinsumo: TMaskEdit;
+    BuscarInsumo: TBitBtn;
+    dis: TLabel;
+    Panel1: TPanel;
+    btnCancelar: TButton;
+    btnRegistrar: TButton;
+    Label15: TLabel;
+    monto: TEditValid;
+    Label6: TLabel;
+    cantidad: TEditValid;
+    btnFinalizar: TButton;
+    Panel4: TPanel;
+    ScrollBox2: TScrollBox;
+    Panel5: TPanel;
+    Panel14: TPanel;
+    Label7: TLabel;
+    nrocopias: TEditValid;
+    Label8: TLabel;
+    lineassep: TEditValid;
+    Label9: TLabel;
+    Panel16: TPanel;
+    btnAplicar: TButton;
+    Label10: TLabel;
+    Label12: TLabel;
+    topeitems: TEditValid;
+    DTS: TDataSource;
+    PopupMenuDetalle: TPopupMenu;
+    EditarItems1: TMenuItem;
+    BorrarItems1: TMenuItem;
+    modificarOrden: TCheckBox;
+    Panel15: TPanel;
+    Panel17: TPanel;
+    FormatoImpr: TMemo;
+    CheckBox1: TCheckBox;
+    Label5: TLabel;
+    Panel18: TPanel;
+    Label13: TLabel;
+    impresora: TComboBox;
+    RadioButton2: TRadioButton;
+    E: TStringGrid;
+    PopupMenu1: TPopupMenu;
+    BorrarTodoelPerodo1: TMenuItem;
+    procedure periodoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure fechaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure idprofKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure idinsumoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure conceptoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure BuscarProfesionalClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure BuscarInsumoClick(Sender: TObject);
+    procedure montoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure cantidadKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure btnRegistrarClick(Sender: TObject);
+    procedure SDblClick(Sender: TObject);
+    procedure SKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure btnFinalizarClick(Sender: TObject);
+    procedure btnCancelarClick(Sender: TObject);
+    procedure SalirClick(Sender: TObject);
+    procedure btnAplicarClick(Sender: TObject);
+    procedure FormatoImprChange(Sender: TObject);
+    procedure CheckBox1Click(Sender: TObject);
+    procedure DBNavigatorClick(Sender: TObject; Button: TNavigateBtn);
+    procedure BorrarItems1Click(Sender: TObject);
+    procedure modificarOrdenClick(Sender: TObject);
+    procedure BuscarClick(Sender: TObject);
+    procedure Panel3Resize(Sender: TObject);
+    procedure BuscarProfesClick(Sender: TObject);
+    procedure emitirClick(Sender: TObject);
+    procedure btnCerrarClick(Sender: TObject);
+    procedure periodoChange(Sender: TObject);
+    procedure RadioButton1KeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure idlabKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure dispSalidaClick(Sender: TObject);
+    procedure TabSheet1Show(Sender: TObject);
+    procedure BajaClick(Sender: TObject);
+    procedure TabSheet1Hide(Sender: TObject);
+    procedure TabSheet2Show(Sender: TObject);
+    procedure perKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure RadioButton2KeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure BorrarTodoelPerodo1Click(Sender: TObject);
+  private
+    { Private declarations }
+    items: Integer; impr: String;
+    modificado, redim, noImprime, ExisteOrden: Boolean;
+    idr: String; salida: char;
+    archivo: TextFile;
+  public
+    { Public declarations }
+    procedure CargarDatosProfesional;
+    procedure CargarDatosInsumos;
+    procedure IniciarDatos;
+    procedure CargarDatos;
+    procedure ImprimirOrden(salida: char);
+  end;
+
+var
+  fmVentasInsumos: TfmVentasInsumos;
+
+implementation
+
+uses CProfesionalCCB, CInsumos_CentroBioq, CCVentas_CCB, CUtiles, NominaDeProfesionalesLiquidacionOS,
+     NominaDePrecios, CUtilidadesStringGrid, BuscarOrdenesVentaInsumos, CConfigForms,
+     EleccionProfesionales, Disposit, CBDT, ConfigurarImpresora;
+
+{$R *.dfm}
+
+procedure TfmVentasInsumos.CargarDatosProfesional;
+Begin
+  profesional.getDatos(idprof.Text);
+  nos.Caption := profesional.nombre;
+  if not modificarOrden.Checked then Begin
+    grid.IniciarGrilla(S);
+    items := 0;
+  end;
+  idinsumo.SetFocus;
+end;
+
+procedure TfmVentasInsumos.CargarDatosInsumos;
+Begin
+  insumo.getDatos(idinsumo.Text);
+  dis.Caption := insumo.Descrip;
+  monto.Text  := utiles.FormatearNumero(FloatToStr(insumo.Precio_Vta));
+  cantidad.SetFocus;
+end;
+
+procedure TfmVentasInsumos.IniciarDatos;
+Begin
+  idinsumo.Text := ''; dis.Caption := ''; cantidad.Text := ''; monto.Text := ''; concepto.Text := '';
+  btnFinalizar.Enabled := False;
+  btnRegistrar.Enabled := False;
+  modificado           := False;
+  if items > 0 then btnFinalizar.Enabled := True else btnFinalizar.Enabled := True;
+end;
+
+procedure TfmVentasInsumos.CargarDatos;
+var
+  l: TStringList;
+  i, p1, p2: Integer;
+Begin
+  grid.IniciarGrilla(E);
+  ventainsumos.getDatos(ventainsumos.tabla.FieldByName('periodo').AsString, ventainsumos.tabla.FieldByName('idprof').AsString, ventainsumos.tabla.FieldByName('items').AsString);
+  periodo.Text := ventainsumos.Periodo;
+  fecha.Text   := ventainsumos.Fecha;
+  idprof.Text  := ventainsumos.Idprof;
+  idr          := ventainsumos.Items;
+  CargarDatosProfesional;
+
+  l := ventainsumos.setItems;
+  for i := 1 to l.Count do Begin
+    S.Cells[0, i] := utiles.sLlenarIzquierda(IntToStr(i), 3, '0');
+    S.Cells[2, i] := Copy(l.Strings[i-1], 1, 5);
+    insumo.getDatos(S.Cells[2, i]);
+    S.Cells[3, i] := insumo.Descrip;
+    p1 := Pos(';1', l.Strings[i-1]);
+    p2 := Pos(';2', l.Strings[i-1]);
+    S.Cells[1, i] := utiles.FormatearNumero(Copy(l.Strings[i-1], 6, (p1-6)));
+    E.Cells[0, i] := S.Cells[1, i];  // Reservamos, por si hay una modificación para ajustar el stock
+    S.Cells[4, i] := utiles.FormatearNumero(Copy(l.Strings[i-1], p1+2, p2- (p1+2)));
+    S.Cells[5, i] := utiles.FormatearNumero(FloatToStr(StrToFloat(S.Cells[1, i]) * StrToFloat(S.Cells[4, i])));
+    S.Row         := i;
+  end;
+
+  if i > 0 then items := i-1 else items := 0;
+
+  idprof.SetFocus;
+end;
+
+procedure TfmVentasInsumos.ImprimirOrden(salida: char);
+Begin
+  if salida = 'P' then ventainsumos.ImprimirOrden(salida) else Begin
+    if utiles.VerificarSiElSgtringTieneUnNumeroValido(impr, 'No hay Impresora Seleccionada, Hágalo desde la solapa Parámetros ...!') then Begin
+      if Not Assigned(Dispositivo) then Application.CreateForm(TDispositivo, Dispositivo);
+      Dispositivo.Impresor.Checked := True;
+      Application.CreateForm(TfmConfigImpresora, fmConfigImpresora);
+      fmConfigImpresora.seleccionar_impresora := impr;   // Indice Impresora
+      fmConfigImpresora.FormShow(Self);                  // Load Seteos
+      ventainsumos.ImprimirOrden('I');
+      if Assigned(fmConfigImpresora) then Begin
+        fmConfigImpresora.Release; fmConfigImpresora := nil;
+      end;
+    end;
+  end;
+end;
+
+procedure TfmVentasInsumos.periodoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.verificarPeriodo(periodo.Text) then fecha.SetFocus;
+end;
+
+procedure TfmVentasInsumos.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_F5 then Begin
+    if ventainsumos.Buscar(periodo.Text, idprof.Text, idr) then Begin
+      ImprimirOrden('P');
+      if utiles.msgSiNo('Generar una Copia Impresa de la Autorización ?') then ImprimirOrden('I');
+    end;
+  end;
+end;
+
+procedure TfmVentasInsumos.fechaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then periodo.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.ctrlFecha(fecha) then idprof.SetFocus;
+end;
+
+procedure TfmVentasInsumos.idprofKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if Key = VK_UP then fecha.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if profesional.Buscar(idprof.Text) then CargarDatosProfesional else BuscarProfesionalClick(Self);
+end;
+
+procedure TfmVentasInsumos.idinsumoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then
+    if btnFinalizar.Enabled then btnFinalizar.SetFocus;
+  if Key = VK_UP then idprof.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if Length(Trim(idinsumo.Text)) > 0 then idinsumo.Text := utiles.sLlenarIzquierda(idinsumo.Text, 5, '0');
+    if insumo.Buscar(idinsumo.Text) then CargarDatosInsumos else BuscarInsumoClick(Self);
+  end;
+end;
+
+procedure TfmVentasInsumos.conceptoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  i: Integer;
+begin
+  if Key = VK_UP then monto.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if (utiles.verificarPeriodo(periodo.Text, '')) and (utiles.ctrlFecha(fecha.Text, '')) and (profesional.Buscar(idprof.Text)) and (insumo.Buscar(idinsumo.Text)) and (StrToFloat(Trim(monto.Text)) > 0) then Begin
+      if not modificado then Begin
+        Inc(items);
+        i := items;
+      end else
+        i := S.Row;
+
+        if i <= StrToInt(topeitems.Text) then Begin
+          S.Cells[0, i] := utiles.sLlenarIzquierda(IntToStr(i), 3, '0');
+          S.Cells[1, i] := cantidad.Text;
+          S.Cells[2, i] := idinsumo.Text;
+          S.Cells[3, i] := dis.Caption;
+          S.Cells[4, i] := monto.Text;
+          S.Cells[5, i] := utiles.FormatearNumero(FloatToStr(StrToFloat(monto.Text)  * StrToFloat(cantidad.Text)));
+          S.Cells[6, i] := concepto.Text;
+
+          S.Row         := i;
+        end else
+          utiles.msgError('La cantidad de Items Registrados Supera el Tope ...!');
+
+        IniciarDatos;
+        Idinsumo.SetFocus;
+      end;
+  end;
+end;
+
+procedure TfmVentasInsumos.BuscarProfesionalClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmListProfesionalesLiq, fmListProfesionalesLiq);
+  fmListProfesionalesLiq.introSalir := True;
+  fmListProfesionalesLiq.on2        := True;
+  fmListProfesionalesLiq.ShowModal;
+  Refresh;
+  if fmListProfesionalesLiq.seleccionOK then Begin
+    idprof.Text := profesional.tperso.FieldByName('idprof').AsString; Refresh;
+    CargarDatosProfesional;
+  end;
+  fmListProfesionalesLiq.Release; fmListProfesionalesLiq := nil;
+end;
+
+procedure TfmVentasInsumos.FormShow(Sender: TObject);
+begin
+  if not configform.Setear(fmVentasInsumos) then Begin
+    Width  := 513; Height := 422;
+  end;
+  S.Cells[0, 0] := 'It.'; S.Cells[1, 0] := 'Cant.'; S.Cells[2, 0] := 'Código'; S.Cells[3, 0] := 'Descripción'; S.Cells[4, 0] := 'Precio'; S.Cells[5, 0] := 'Total'; S.Cells[6, 0] := 'Concepto';
+  periodo.Text := utiles.setPeriodoActual;
+  fecha.Text   := utiles.setFechaActual;
+  idprof.SetFocus;
+  ventainsumos.conectar;
+  DTS.DataSet  := ventainsumos.tabla;
+
+  ventainsumos.getDatosModeloImpresion;
+  FormatoImpr.Text := ventainsumos.ModeloImpr;
+  nrocopias.Text   := IntToStr(ventainsumos.Copias);
+  topeitems.Text   := IntToStr(ventainsumos.TopeItems);
+  lineassep.Text   := IntToStr(ventainsumos.Separacion);
+
+  grid.RecuperarAnchoColumnas(fmVentasInsumos, S);
+  if Length(Trim(topeitems.Text)) = 0 then topeitems.Text := '10';
+  redim := False; salida := 'P';
+
+  impresora.Items := printer.Printers;
+  impr := '0';
+  if FileExists(dbs.DirSistema + '\impresion_vinsumos.ini') then Begin
+    AssignFile(archivo, dbs.DirSistema + '\impresion_vinsumos.ini');
+    Reset(archivo);
+    ReadLn(archivo, impr);
+    closeFile(archivo);
+    if Length(Trim(impr)) > 0 then impresora.Text :=  impresora.Items[StrToInt(impr)];
+  end;
+
+  btnAplicar.Enabled := False;
+end;
+
+procedure TfmVentasInsumos.BuscarInsumoClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmListInsumos, fmListInsumos);
+  fmListInsumos.introSalir := True;
+  fmListInsumos.ShowModal;
+  Refresh;
+  if fmListInsumos.seleccionOK then Begin
+    idinsumo.Text := insumo.tabla.FieldByName('id').AsString; Refresh;
+    CargarDatosInsumos;
+  end;
+  fmListInsumos.Release; fmListInsumos := nil;
+end;
+
+procedure TfmVentasInsumos.montoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then cantidad.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(monto.Text)) > 0 then Begin
+      monto.Text := utiles.FormatearNumero(monto.Text);
+      concepto.SetFocus;
+    end;
+end;
+
+procedure TfmVentasInsumos.cantidadKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then idinsumo.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(cantidad.Text)) > 0 then Begin
+      cantidad.Text := utiles.FormatearNumero(cantidad.Text);
+      concepto.SetFocus;
+    end;
+end;
+
+procedure TfmVentasInsumos.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  configform.Guardar(fmVentasInsumos, redim);
+  grid.GuardarAnchoColumnas(fmVentasInsumos, S);
+  ventainsumos.desconectar;
+  fmVentasInsumos.Release; fmVentasInsumos := Nil;
+end;
+
+procedure TfmVentasInsumos.btnRegistrarClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  if not modificarOrden.Checked then ExisteOrden := True;
+
+  if modificarOrden.Checked then Begin // Restablecemos el Stock
+    For i := 1 to S.RowCount do Begin
+      if Length(Trim(S.Cells[0, i])) = 0 then Break;
+      if (E.Cells[0, i] = '') then E.Cells[0, i] := '0';
+      insumo.AgregarStock(S.Cells[2, i], StrToFloat(E.Cells[0, i]));
+    end;
+  end;
+
+  For i := 1 to S.RowCount do Begin
+    if Length(Trim(S.Cells[0, i])) = 0 then Break;
+    if not ExisteOrden then Begin
+      insumo.QuitarStock(S.Cells[2, i], StrToFloat(S.Cells[1, i]));
+      ventainsumos.Registrar(periodo.Text, idprof.Text, '', S.Cells[0, i], S.Cells[2, i], fecha.Text, S.Cells[6, i], StrToFloat(S.Cells[1, i]), StrToFloat(S.Cells[4, i]), items);
+    end else Begin
+      insumo.QuitarStock(S.Cells[2, i], StrToFloat(S.Cells[1, i]));
+      ventainsumos.Registrar(periodo.Text, idprof.Text, idr, S.Cells[0, i], S.Cells[2, i], fecha.Text, S.Cells[6, i], StrToFloat(S.Cells[1, i]), StrToFloat(S.Cells[4, i]), items);
+    end;
+  end;
+
+  if Not noImprime then Begin
+    ventainsumos.Buscar(periodo.Text, idprof.Text, ventainsumos.Items);  // recuperamos la instancia a imprimird 
+    ImprimirOrden('P');
+    if utiles.msgSiNo('Generar una Copia Impresa de la Autorización ?') then ImprimirOrden('I');
+  end;
+  
+  modificarOrden.Checked := False;
+  ExisteOrden            := False;
+  items                  := 0;
+  modificarOrden.Checked := False;
+  idprof.setFocus;
+
+  if Not (noImprime) or (Length(Trim(S.Cells[0, 1])) = 0) then
+    btnCancelarClick(Self);
+end;
+
+procedure TfmVentasInsumos.SDblClick(Sender: TObject);
+begin
+  if Length(Trim(S.Cells[0, S.Row])) > 0 then Begin
+    modificado := True;
+    cantidad.Text := S.Cells[1, S.Row];
+    idinsumo.Text := S.Cells[2, S.Row];
+    dis.Caption   := S.Cells[3, S.Row];
+    monto.Text    := S.Cells[4, S.Row];
+    concepto.Text := S.Cells[6, S.Row];
+    idinsumo.SetFocus;
+  end;
+end;
+
+procedure TfmVentasInsumos.SKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_DELETE then BorrarItems1Click(Self);
+end;
+
+procedure TfmVentasInsumos.btnFinalizarClick(Sender: TObject);
+begin
+  btnRegistrar.Enabled := True;
+  btnRegistrar.SetFocus;
+end;
+
+procedure TfmVentasInsumos.btnCancelarClick(Sender: TObject);
+begin
+  IniciarDatos;
+  idprof.Text := ''; nos.Caption := '';
+  grid.IniciarGrilla(S);
+  grid.IniciarGrilla(E);
+  items := 0;
+  btnFinalizar.Enabled   := False;
+  modificarOrden.Checked := False;
+  idprof.setFocus;
+end;
+
+procedure TfmVentasInsumos.SalirClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfmVentasInsumos.btnAplicarClick(Sender: TObject);
+begin
+  if {(FormatoImpr.Lines.Count > 0) and} (Length(Trim(nrocopias.Text)) > 0) and (Length(Trim(topeitems.Text)) > 0) and (Length(Trim(lineassep.Text)) > 0) then Begin
+    ventainsumos.DefinirModeloImpresion(FormatoImpr.Text, StrToInt(nrocopias.Text), StrToInt(topeitems.Text), StrToInt(lineassep.Text));
+    AssignFile(archivo, dbs.DirSistema + '\impresion_vinsumos.ini');
+    Rewrite(archivo);
+    impr := IntToStr(impresora.ItemIndex);
+    WriteLn(archivo, impr);     
+    closeFile(archivo);
+    btnAplicar.Enabled := False;
+    CheckBox1.Checked  := False;
+    PageControl1.ActivePage := TabSheet1;
+  end else
+    utiles.msgError('Existen Datos Incompletos o Erroneos ...!');
+end;
+
+procedure TfmVentasInsumos.FormatoImprChange(Sender: TObject);
+begin
+  btnAplicar.Enabled := True;
+end;
+
+procedure TfmVentasInsumos.CheckBox1Click(Sender: TObject);
+begin
+  if CheckBox1.Checked then Begin
+    FormatoImpr.Enabled := True;
+    nrocopias.Enabled   := True;
+    topeitems.Enabled   := True;
+    lineassep.Enabled   := True;
+  end else Begin
+    FormatoImpr.Enabled := False;
+    nrocopias.Enabled   := False;
+    topeitems.Enabled   := False;
+    lineassep.Enabled   := False;
+  end;
+end;
+
+procedure TfmVentasInsumos.DBNavigatorClick(Sender: TObject;
+  Button: TNavigateBtn);
+begin
+  CargarDatos;
+end;
+
+procedure TfmVentasInsumos.BorrarItems1Click(Sender: TObject);
+begin
+  if Length(Trim(S.Cells[0, S.Row])) > 0 then
+    if utiles.msgSiNo('Seguro para Borrar Items ?') then Begin
+      // Si el comprobante ya está registrado ajustamos el items
+      if ventainsumos.ExisteOrden then
+        insumo.AgregarStock(S.Cells[2, S.Row], StrToFloat(E.Cells[0, S.Row]));
+      grid.BorrarRenglon(S);
+      grid.RegenerarItems(S, 3);
+      grid.BorrarRenglon(E);
+      Dec(items);
+      S.Row := items;
+      if Length(Trim(S.Cells[0, 1])) = 0 then Begin
+        ventainsumos.Borrar(periodo.Text, idprof.Text, idr);
+        idprof.Text := ''; nos.Caption := '';
+        modificarOrden.Checked := False;
+        idprof.SetFocus;
+      end else Begin
+        NoImprime := True;
+        btnRegistrarClick(Self);
+        NoImprime := False;
+        idinsumo.SetFocus;
+      end;
+      IniciarDatos;
+    end;
+end;
+
+procedure TfmVentasInsumos.BorrarTodoelPerodo1Click(Sender: TObject);
+begin
+  if (utiles.msgSiNo('Seguro para Borrar Operaciones Período ?')) then begin
+    ventainsumos.Borrar(periodo.Text, idprof.text);
+    btnCancelarClick(Self);
+  end;
+end;
+
+procedure TfmVentasInsumos.modificarOrdenClick(Sender: TObject);
+begin
+  if modificarorden.Checked then
+    if Length(Trim(S.Cells[0, 1])) > 0 then Begin
+      idinsumo.SetFocus;
+      btnFinalizar.Enabled := True;
+    end else
+      btnFinalizar.Enabled := False;
+end;
+
+procedure TfmVentasInsumos.BuscarClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmBuscarOrdenesInsumos, fmBuscarOrdenesInsumos);
+  fmBuscarOrdenesInsumos.ShowModal;
+  if fmBuscarOrdenesInsumos.seleccionOK then Begin
+    periodo.Text := fmBuscarOrdenesInsumos.periodo.Text;
+    idprof.Text  := fmBuscarOrdenesInsumos.idprof.Text;
+    idr          := fmBuscarOrdenesInsumos.S.Cells[3, fmBuscarOrdenesInsumos.S.Row];
+    ventainsumos.Buscar(periodo.Text, idprof.Text, idr);
+    ExisteOrden  := ventainsumos.ExisteOrden;
+    modificarOrden.Checked := True;
+    CargarDatos;
+    idinsumo.SetFocus;
+  end;
+  fmBuscarOrdenesInsumos.Release; fmBuscarOrdenesInsumos := Nil;
+end;
+
+procedure TfmVentasInsumos.Panel3Resize(Sender: TObject);
+begin
+  redim := True;
+end;
+
+procedure TfmVentasInsumos.BuscarProfesClick(Sender: TObject);
+begin
+  if not Assigned(fmEleProfesional) then Begin
+    Application.CreateForm(TfmEleProfesional, fmEleProfesional);
+    fmEleProfesional.CargarDatos;
+  end;
+  fmEleProfesional.ShowModal;
+  if fmEleProfesional.cantidadSel = 0 then Begin
+    idlab.Text := fmEleProfesional.IdSel;
+    profesional.getDatos(idLab.Text);
+    np.Caption := profesional.nombre;
+  end;
+  if fmEleProfesional.cantidadSel >= 1 then np.Caption := IntToStr(fmEleProfesional.cantidadSel) + ' Prof. Seleccionados';
+  if (fmEleProfesional.cantidadSel >= 1) or (Length(Trim(idLab.Text)) > 0) then ActiveControl := dispSalida else ActiveControl := idLab;
+end;
+
+procedure TfmVentasInsumos.emitirClick(Sender: TObject);
+begin
+  if RadioButton1.Checked then Begin
+    if not Assigned(fmEleProfesional) then ventainsumos.ListarDetalleOperaciones(per.Text, Nil, salida) else
+      ventainsumos.ListarDetalleOperaciones(per.Text, fmEleProfesional.lista, salida);
+  end;
+  if RadioButton2.Checked then
+   if not Assigned(fmEleProfesional) then ventainsumos.ListarResumenProfesional(per.Text, Nil, salida) else
+     ventainsumos.ListarResumenProfesional(per.Text, fmEleProfesional.lista, salida);
+
+  btnCerrar.SetFocus;
+end;
+
+procedure TfmVentasInsumos.btnCerrarClick(Sender: TObject);
+begin
+  idlab.Text := ''; np.Caption := '';
+  PageControl1.ActivePage := TabSheet1;
+end;
+
+procedure TfmVentasInsumos.periodoChange(Sender: TObject);
+begin
+  per.Text := periodo.Text;
+end;
+
+procedure TfmVentasInsumos.RadioButton1KeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then dispSalida.SetFocus;
+end;
+
+procedure TfmVentasInsumos.idlabKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := per;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if not profesional.Buscar(idlab.Text) then BuscarProfesClick(Sender) else Begin
+      profesional.getDatos(idLab.Text);
+      np.Caption := profesional.nombre;
+      if not Assigned(fmEleProfesional) then Application.CreateForm(TfmEleProfesional, fmEleProfesional);
+      fmEleProfesional.lista.Clear;
+      fmEleProfesional.lista.Add(idLab.Text);
+    end;
+    ActiveControl := RadioButton1;
+  end;
+end;
+
+procedure TfmVentasInsumos.dispSalidaClick(Sender: TObject);
+begin
+  Application.CreateForm(TDispositivo, Dispositivo);
+  Dispositivo.ShowModal;
+  salida := 'P';
+  if Dispositivo.Impresor.Checked then salida := 'I';
+  Dispositivo.Release; Dispositivo := nil;
+  ActiveControl := Emitir;
+end;
+
+procedure TfmVentasInsumos.TabSheet1Show(Sender: TObject);
+begin
+  idprof.SetFocus;
+  dbnavigator.Enabled := True; alta.Enabled := True; baja.Enabled := True; modificar.Enabled := True; deshacer.Enabled := True; buscar.Enabled := True;
+end;
+
+procedure TfmVentasInsumos.BajaClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  if ventainsumos.Buscar(periodo.Text, idprof.Text, idr) then
+    if utiles.BajaRegistro('Seguro para Borrar Orden Profesional ' + nos.Caption + ' ?') then Begin
+      // Actualizamos el stock
+      For i := 1 to S.RowCount do Begin
+        if Length(Trim(S.Cells[0, i])) = 0 then Break;
+        insumo.AgregarStock(S.Cells[2, i], StrToFloat(S.Cells[1, i]));
+      end;
+      ventainsumos.Borrar(periodo.Text, idprof.Text, idr);
+      IniciarDatos;
+      grid.IniciarGrilla(S);
+      modificarOrden.Checked := False;
+      items := 0;
+      idprof.SetFocus;
+    end;
+end;
+
+procedure TfmVentasInsumos.TabSheet1Hide(Sender: TObject);
+begin
+  dbnavigator.Enabled := False; alta.Enabled := False; baja.Enabled := False; modificar.Enabled := False; deshacer.Enabled := False; buscar.Enabled := False;
+end;
+
+procedure TfmVentasInsumos.TabSheet2Show(Sender: TObject);
+begin
+  per.SetFocus;
+end;
+
+procedure TfmVentasInsumos.perKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    if utiles.verificarPeriodo(per.Text) then idLab.SetFocus; 
+end;
+
+procedure TfmVentasInsumos.RadioButton2KeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then dispSalida.setFocus;
+end;
+
+end.

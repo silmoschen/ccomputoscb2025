@@ -1,0 +1,5529 @@
+<?xml version="1.0"?>
+
+<obrassociales>
+  <obsocial>
+  <codos>000000</codos>
+  <nombre>*** ARANCELES PARTICULAR</nombre>
+  <nombrec>P A R T I C U L A R</nombrec>
+  <direccion>null</direccion>
+  <localidad>null</localidad>
+  <codpos>3560</codpos>
+  <ub>0,52</ub>
+  <ug>1,26</ug>
+  <rieub>0,52</rieub>
+  <rieug>1,26</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>null</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>21,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>000001</codos>
+  <nombre>*** ARANCELES DIFERENCIALES NBU</nombre>
+  <nombrec>null</nombrec>
+  <direccion>null</direccion>
+  <localidad>null</localidad>
+  <codpos>null</codpos>
+  <ub>1,00</ub>
+  <ug>1,00</ug>
+  <rieub>1,00</rieub>
+  <rieug>1,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>null</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>000002</codos>
+  <nombre>*** ARANCELES PARTICULARES INTERCAJAS</nombre>
+  <nombrec>null</nombrec>
+  <direccion>null</direccion>
+  <localidad>null</localidad>
+  <codpos>null</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>null</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121000</codos>
+  <nombre>*** ARANCELES DIFERENCIALES</nombre>
+  <nombrec>null</nombrec>
+  <direccion>null</direccion>
+  <localidad>null</localidad>
+  <codpos>null</codpos>
+  <ub>0,60</ub>
+  <ug>2,23</ug>
+  <rieub>0,60</rieub>
+  <rieug>2,23</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>null</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>N</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121001</codos>
+  <nombre>VIALIDAD</nombre>
+  <nombrec>Obra Social de Vialidad Nacional-</nombrec>
+  <direccion>25 de mayo 1867 1 piso</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,78</ub>
+  <ug>0,97</ug>
+  <rieub>0,78</rieub>
+  <rieug>0,97</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>null</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu></factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121002</codos>
+  <nombre>OSTEL- JUBILADOS</nombre>
+  <nombrec>Servicios y Prestaciones Medicas S.A.-Conv OSTEL</nombrec>
+  <direccion>MIGUELETES  1231 - PISO  5  of. "A</direccion>
+  <localidad>C.A.B.A.</localidad>
+  <codpos>1426</codpos>
+  <ub>0,19</ub>
+  <ug>1,46</ug>
+  <rieub>0,19</rieub>
+  <rieug>1,46</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>30-71177851-5</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121003</codos>
+  <nombre>ACEITEROS</nombre>
+  <nombrec>null</nombrec>
+  <direccion>null</direccion>
+  <localidad>PARANA</localidad>
+  <codpos>null</codpos>
+  <ub>1,20</ub>
+  <ug>3,20</ug>
+  <rieub>1,20</rieub>
+  <rieug>3,20</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>null</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>S</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121004</codos>
+  <nombre>OSPAG</nombre>
+  <nombrec>Obra Social del Personal Gastronomico</nombrec>
+  <direccion>H.Irigoyen 1419 2. piso</direccion>
+  <localidad>CAPITAL FEDERAL</localidad>
+  <codpos>1089</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>null</nrocuit>
+  <categoria>null</categoria>
+  <tope>null</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>null</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu></factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121005</codos>
+  <nombre>IAPOS</nombre>
+  <nombrec>Instituto Autarquico Provincial de Obra Social</nombrec>
+  <direccion>Rivadavia 3452</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,65</ub>
+  <ug>2,10</ug>
+  <rieub>0,53</rieub>
+  <rieug>1,75</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-99917935-1</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>S</capitada>
+  <noimport>N</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121006</codos>
+  <nombre>LUIS PASTEUR</nombre>
+  <nombrec>GRUPO MEDICO ACE- CONV LUIS PASTEUR</nombrec>
+  <direccion>SUIPACHA 2395</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>1,86</ub>
+  <ug>5,25</ug>
+  <rieub>1,86</rieub>
+  <rieug>5,25</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>30-70771145-7</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>N</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121010</codos>
+  <nombre>OSFICA</nombre>
+  <nombrec>EN EL HOGAR S.A (ADMED)</nombrec>
+  <direccion>AV. FADER 3360</direccion>
+  <localidad>CORDOBA</localidad>
+  <codpos>5009</codpos>
+  <ub>0,52</ub>
+  <ug>1,84</ug>
+  <rieub>0,52</rieub>
+  <rieug>1,84</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>R.I</codpfis>
+  <nrocuit>30-71314800-4</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121011</codos>
+  <nombre>LUZ Y FUERZA</nombre>
+  <nombrec>MUTUAL PROVINCIAL LUZ Y FUERZA</nombrec>
+  <direccion>junin 2957</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,65</ub>
+  <ug>2,20</ug>
+  <rieub>0,65</rieub>
+  <rieug>2,20</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-69989670-1</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>S</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121013</codos>
+  <nombre>OSECAC</nombre>
+  <nombrec>Obra Social de Empleados de Comercio</nombrec>
+  <direccion>San Martin 838</direccion>
+  <localidad>RECONQUISTA</localidad>
+  <codpos>3560</codpos>
+  <ub>0,52</ub>
+  <ug>1,26</ug>
+  <rieub>0,52</rieub>
+  <rieug>1,26</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>null</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>S</capitada>
+  <noimport>N</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu></factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121014</codos>
+  <nombre>UNION PERSONAL</nombre>
+  <nombrec>G.M. AGRUPACION DE COLABORACION</nombrec>
+  <direccion>SAN LORENZO 2780</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>1,25</ub>
+  <ug>3,25</ug>
+  <rieub>1,25</rieub>
+  <rieug>3,25</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>R.I</codpfis>
+  <nrocuit>30-71735890-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>S</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121015</codos>
+  <nombre>OSPA VIAL</nombre>
+  <nombrec>Obra Social del Personal de la Actividad Vial</nombrec>
+  <direccion>San Jeronimo 1641</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>1,10</ub>
+  <ug>3,10</ug>
+  <rieub>1,10</rieub>
+  <rieug>3,10</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-66316088-1</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>S</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121016</codos>
+  <nombre>OSPLAD - ITER MEDICINA S.A.</nombre>
+  <nombrec>ITER MEDICINA S.A -CONV. OSPLAD-</nombrec>
+  <direccion>AVDA.CORRIENTES 1675  7° PISO</direccion>
+  <localidad>C.A.B.A</localidad>
+  <codpos>1042</codpos>
+  <ub>0,26</ub>
+  <ug>0,97</ug>
+  <rieub>0,26</rieub>
+  <rieug>0,97</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-70473487-1</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121017</codos>
+  <nombre>PETROLEROS</nombre>
+  <nombrec>OBRA SOCIAL DEL PETROLEO Y GAS PRIVADOS-OSPEGAP</nombrec>
+  <direccion>AVDA CASEROS 715</direccion>
+  <localidad>BUENOS AIRES</localidad>
+  <codpos>1152</codpos>
+  <ub>0,65</ub>
+  <ug>2,30</ug>
+  <rieub>0,65</rieub>
+  <rieug>2,30</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>33-62818588-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121018</codos>
+  <nombre>PREVENCION SALUD S.A</nombre>
+  <nombrec>PREVENCION SALUD S.A</nombrec>
+  <direccion>AVDA.  INDEPENDENCIA  N. 333</direccion>
+  <localidad>SUNCHALES SANTA FE</localidad>
+  <codpos>2322</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>R/I</codpfis>
+  <nrocuit>30-71304500-0</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121019</codos>
+  <nombre>OSMATA</nombre>
+  <nombrec>Obra Social del Sindicato de mecanicos y afines del transpor</nombrec>
+  <direccion>Av Belgrano 665 2do piso</direccion>
+  <localidad>Capital Federal</localidad>
+  <codpos>1092</codpos>
+  <ub>0,90</ub>
+  <ug>1,00</ug>
+  <rieub>0,90</rieub>
+  <rieug>1,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>R:I</codpfis>
+  <nrocuit>30-59041263-1</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121020</codos>
+  <nombre>CAMIONEROS</nombre>
+  <nombrec>OBRA SOCIAL DE  CONDUCTORES  CAMIONEROS</nombrec>
+  <direccion>ORO#O 1085</direccion>
+  <localidad>ROSARIO</localidad>
+  <codpos>2000</codpos>
+  <ub>1,95</ub>
+  <ug>5,59</ug>
+  <rieub>1,95</rieub>
+  <rieug>5,59</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-66150769-8</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>S</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121021</codos>
+  <nombre>AMEP</nombre>
+  <nombrec>Asociacion Mutual de Empleados Publicos</nombrec>
+  <direccion>Corrientes 2660</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>1,40</ub>
+  <ug>3,60</ug>
+  <rieub>1,40</rieub>
+  <rieug>3,60</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>30-70473487-1</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>N</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121022</codos>
+  <nombre>LADRILLEROS</nombre>
+  <nombrec>VISITAR SRL- CONV LADRILLEROS</nombrec>
+  <direccion>VIAMONTE 377</direccion>
+  <localidad>C.A.B.A.</localidad>
+  <codpos>1053</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>33-65712962-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121023</codos>
+  <nombre>OSPIT</nombre>
+  <nombrec>Obra Social del Personal de la Industria Textil</nombrec>
+  <direccion>Calle 14  esq. San Martin</direccion>
+  <localidad>AVELLANEDA</localidad>
+  <codpos>3561</codpos>
+  <ub>0,52</ub>
+  <ug>1,26</ug>
+  <rieub>0,52</rieub>
+  <rieug>1,26</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>null</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121024</codos>
+  <nombre>SEGUROS</nombre>
+  <nombrec>LA CASA DEL MEDICO MUTUAL- CONV OSSEG</nombrec>
+  <direccion>VIRASORO 1249</direccion>
+  <localidad>ROSARIO</localidad>
+  <codpos>2000</codpos>
+  <ub>0,52</ub>
+  <ug>0,97</ug>
+  <rieub>0,52</rieub>
+  <rieug>0,97</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-71012610-7</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121025</codos>
+  <nombre>PAPELEROS</nombre>
+  <nombrec>IMAGEN EN SALUD S.A CONV OSPPCYQ</nombrec>
+  <direccion>SALTA 424</direccion>
+  <localidad>PARANA-ENTRE RIOS</localidad>
+  <codpos>3100</codpos>
+  <ub>1,20</ub>
+  <ug>3,20</ug>
+  <rieub>1,20</rieub>
+  <rieug>3,20</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>R.I</codpfis>
+  <nrocuit>30-70890517-4</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121026</codos>
+  <nombre>MEDICUS</nombre>
+  <nombrec>MEDICUS S.A</nombrec>
+  <direccion>CORDOBA  1690</direccion>
+  <localidad>ROSARIO</localidad>
+  <codpos>2000</codpos>
+  <ub>0,26</ub>
+  <ug>1,85</ug>
+  <rieub>0,26</rieub>
+  <rieug>1,85</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>S</codpfis>
+  <nrocuit>30-54677131-4</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>N</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121027</codos>
+  <nombre>UOM</nombre>
+  <nombrec>OSUOMRA</nombrec>
+  <direccion>ADOLFO  ALSINA 485</direccion>
+  <localidad>CAPITAL  FEDERAL</localidad>
+  <codpos>1087</codpos>
+  <ub>1,00</ub>
+  <ug>3,10</ug>
+  <rieub>1,00</rieub>
+  <rieug>3,10</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-58520776-0</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>S</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121028</codos>
+  <nombre>UTA</nombre>
+  <nombrec>Obra Social Conductores de Transporte Colectivo de Pasajeros</nombrec>
+  <direccion>Moreno 2969</direccion>
+  <localidad>CABA</localidad>
+  <codpos>1209</codpos>
+  <ub>1,30</ub>
+  <ug>4,20</ug>
+  <rieub>1,30</rieub>
+  <rieug>4,20</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-65767771-6</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121029</codos>
+  <nombre>MUTUAL 25 DE JUNIO PLAN 1</nombre>
+  <nombrec>Mutual Federada 25 de Junio</nombrec>
+  <direccion>SAN JERONIMO 3320</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>2,16</ub>
+  <ug>5,70</ug>
+  <rieub>2,16</rieub>
+  <rieug>5,70</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-54159260-8</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121030</codos>
+  <nombre>SUTIAGA</nombre>
+  <nombrec>Obra Social del  sindicato unido de trabajadores de la indus</nombrec>
+  <direccion>Sarmiento 2225</direccion>
+  <localidad>ROSARIO</localidad>
+  <codpos>2000</codpos>
+  <ub>1,43</ub>
+  <ug>4,68</ug>
+  <rieub>1,43</rieub>
+  <rieug>4,68</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>30-69535903-5</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121031</codos>
+  <nombre>MULTISERVICIO SRL</nombre>
+  <nombrec>MULTISERVICIO SRL</nombrec>
+  <direccion>SAN JERONIMO 1831</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,78</ub>
+  <ug>1,46</ug>
+  <rieub>0,78</rieub>
+  <rieug>1,46</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>null</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu></factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121032</codos>
+  <nombre>OSPIL</nombre>
+  <nombrec>Obra social del Personal de la Industria Lechera</nombrec>
+  <direccion>Belgrano 3544</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>1,50</ub>
+  <ug>4,30</ug>
+  <rieub>1,50</rieub>
+  <rieug>4,30</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>30-58419478-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121033</codos>
+  <nombre>DIBA DE LA ARMADA 100%</nombre>
+  <nombrec>Direccion de Bienestar de la Armada</nombrec>
+  <direccion>FREYRE 2452</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>1,50</ub>
+  <ug>4,30</ug>
+  <rieub>1,50</rieub>
+  <rieug>4,30</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>30-67435656-7</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121034</codos>
+  <nombre>ALIMENTACION-OSPIA</nombre>
+  <nombrec>Obra social del personal de la Industria de la Aliment</nombrec>
+  <direccion>Venezuela 1326</direccion>
+  <localidad>Capital Federal</localidad>
+  <codpos>1095</codpos>
+  <ub>0,52</ub>
+  <ug>1,26</ug>
+  <rieub>0,52</rieub>
+  <rieug>1,26</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-64399773-4</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121035</codos>
+  <nombre>CRECER SALUD</nombre>
+  <nombrec>VENSON S.A. -CRECER SALUD</nombrec>
+  <direccion>BELGRANO 236 PISO 7 OF. D</direccion>
+  <localidad>BUENOS AIRES</localidad>
+  <codpos>1708</codpos>
+  <ub>0,65</ub>
+  <ug>2,25</ug>
+  <rieub>0,65</rieub>
+  <rieug>2,25</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>null</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>N</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121036</codos>
+  <nombre>OSPAC -</nombre>
+  <nombrec>Obra Social de los Profesionales del Arte de Curar</nombrec>
+  <direccion>25 de  mayo 1867</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,53</ub>
+  <ug>1,75</ug>
+  <rieub>0,53</rieub>
+  <rieug>1,30</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>30-99901165-5</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121037</codos>
+  <nombre>OSPESGA</nombre>
+  <nombrec>Obra Social del Personal de Estaciones de Servicios, G</nombrec>
+  <direccion>Rio Bamba 1075</direccion>
+  <localidad>ROSARIO</localidad>
+  <codpos>2000</codpos>
+  <ub>2,16</ub>
+  <ug>6,60</ug>
+  <rieub>2,16</rieub>
+  <rieug>6,60</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-68091804-6</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121038</codos>
+  <nombre>OSPICA</nombre>
+  <nombrec>CONEXION SALUD SRL -CONV OSPICA</nombrec>
+  <direccion>MOREAU DE JUSTO A. AV 846 PISO :3 </direccion>
+  <localidad>C.A.B.A</localidad>
+  <codpos>1107</codpos>
+  <ub>0,52</ub>
+  <ug>1,26</ug>
+  <rieub>0,52</rieub>
+  <rieug>1,26</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>30-71463313-5</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121039</codos>
+  <nombre>ATSA 100%</nombre>
+  <nombrec>Obra social de trabajadores de la Sanidad Argentina</nombrec>
+  <direccion>1. de mayo 2718</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>1,75</ub>
+  <ug>6,14</ug>
+  <rieub>1,75</rieub>
+  <rieug>6,14</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>30-59738231-2</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121040</codos>
+  <nombre>MADEREROS</nombre>
+  <nombrec>Obra Social del Personal de la Industria Maderera</nombrec>
+  <direccion>Rojas 254</direccion>
+  <localidad>CAPITAL FEDERAL</localidad>
+  <codpos>1405</codpos>
+  <ub>1,25</ub>
+  <ug>3,25</ug>
+  <rieub>1,25</rieub>
+  <rieug>3,25</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>30-50289264-5</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121041</codos>
+  <nombre>OSFA 80%</nombre>
+  <nombrec>INSTITUTO DE OBRA SOCIALS DE LAS FUERZAS ARMADAS (IOSFA)</nombrec>
+  <direccion>PASO 551</direccion>
+  <localidad>Ciudad  Autonoma de  Bs</localidad>
+  <codpos>1031</codpos>
+  <ub>0,90</ub>
+  <ug>3,36</ug>
+  <rieub>0,90</rieub>
+  <rieug>3,36</rieug>
+  <porcentaje>80,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-71429214-1</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121042</codos>
+  <nombre>AMUR</nombre>
+  <nombrec>Asociacion Mutual Ruralista</nombrec>
+  <direccion>1. de  mayo  2116/22</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>2,16</ub>
+  <ug>5,70</ug>
+  <rieub>2,16</rieub>
+  <rieug>5,70</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-56751013-8</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121043</codos>
+  <nombre>AMOEIAG</nombre>
+  <nombrec>Asociacion mutual entre Obreors y Empleados de la Indu</nombrec>
+  <direccion>Sarmiento 2225</direccion>
+  <localidad>ROSARIO</localidad>
+  <codpos>2000</codpos>
+  <ub>1,68</ub>
+  <ug>5,18</ug>
+  <rieub>1,68</rieub>
+  <rieug>5,18</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>INC</codpfis>
+  <nrocuit>30-67746941-9</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121044</codos>
+  <nombre>INGENIEROS</nombre>
+  <nombrec>Caja de prevision social de los profesionales de la in</nombrec>
+  <direccion>san jeronimo 3033</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,90</ub>
+  <ug>2,60</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>30-64504070-4</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121045</codos>
+  <nombre>OSDE </nombre>
+  <nombrec>Organizacion de Sevicios Directos Empresarios</nombrec>
+  <direccion>RIVADAVIA 3238</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>3,28</ub>
+  <ug>8,49</ug>
+  <rieub>3,28</rieub>
+  <rieug>8,49</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>30-54674125-3</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121046</codos>
+  <nombre>AVALIAN</nombre>
+  <nombrec>ACA  SALUD-Cooperativa de prestaciones de servicios medicos </nombrec>
+  <direccion>Corrientes 880</direccion>
+  <localidad>ROSARIO</localidad>
+  <codpos>2000</codpos>
+  <ub>0,26</ub>
+  <ug>1,94</ug>
+  <rieub>0,16</rieub>
+  <rieug>1,21</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>RI</codpfis>
+  <nrocuit>30-60495864-0</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>5,91</topemin>
+  <topemax>11,83</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121047</codos>
+  <nombre>BANCARIOS</nombre>
+  <nombrec>Obra Social de Bancarios -SOLIDARIDAD</nombrec>
+  <direccion>URQUIZA 2215</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,52</ub>
+  <ug>1,26</ug>
+  <rieub>0,52</rieub>
+  <rieug>1,26</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-69156146-8</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121048</codos>
+  <nombre>AVALIAN PLAN 11 - PMO</nombre>
+  <nombrec>ACA SALUD-Cooperativa de prestaciones de servicios medicos </nombrec>
+  <direccion>Corrientes 880</direccion>
+  <localidad>Rosario</localidad>
+  <codpos>2000</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>RI</codpfis>
+  <nrocuit>30-60495864-0</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121049</codos>
+  <nombre>CONSEJO PROFESIONAL</nombre>
+  <nombrec>Consejo profesional de Ciencias Economicas de la  Pcia  de  </nombrec>
+  <direccion>San Lorenzo 1849</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,90</ub>
+  <ug>2,60</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>33-65030440-9</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>5,91</topemin>
+  <topemax>11,83</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121050</codos>
+  <nombre>STAFF MEDICO S.A</nombre>
+  <nombrec>STAFF MEDICO S.A</nombrec>
+  <direccion>AVDA. INDEPENDENCIA 206</direccion>
+  <localidad>SUNCHALES</localidad>
+  <codpos>2322</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>RES</codpfis>
+  <nrocuit>30-57779728-1</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121051</codos>
+  <nombre>CAJA FORENSE</nombre>
+  <nombrec>Caja Forense de Abogados y Procuradores. de la 1. circ</nombrec>
+  <direccion>3 de febrero 2761 1. pis</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,90</ub>
+  <ug>2,60</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>30-63648630-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121052</codos>
+  <nombre>ASIO 50%</nombre>
+  <nombrec>Asociacion Mutual de Servicios de Internacion y Operac</nombrec>
+  <direccion>CALLE 12 N. 339</direccion>
+  <localidad>AVELLANEDA</localidad>
+  <codpos>3561</codpos>
+  <ub>0,79</ub>
+  <ug>3,05</ug>
+  <rieub>0,74</rieub>
+  <rieug>2,60</rieug>
+  <porcentaje>50,00</porcentaje>
+  <codpfis>RI</codpfis>
+  <nrocuit>30-59836423-7</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>5,91</topemin>
+  <topemax>11,83</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121053</codos>
+  <nombre>OSETYA</nombre>
+  <nombrec>Obra Social de Empleados Textiles y Afines</nombrec>
+  <direccion>Avda. Montes de Oca 1437</direccion>
+  <localidad>CIUDAD AUTONOMA DE BS A</localidad>
+  <codpos>8136</codpos>
+  <ub>1,50</ub>
+  <ug>4,70</ug>
+  <rieub>1,50</rieub>
+  <rieug>4,70</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>33-63368181-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121054</codos>
+  <nombre>OSPIDA</nombre>
+  <nombrec>OBRA SOCIAL DEL PERSONAL DE IMPRENTAS, DIARIOS Y AFINES</nombrec>
+  <direccion>SAN JOSE 157</direccion>
+  <localidad>BUENOS AIRES</localidad>
+  <codpos>1076</codpos>
+  <ub>1,25</ub>
+  <ug>3,25</ug>
+  <rieub>1,25</rieub>
+  <rieug>3,25</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>30-60952194-1</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>5,91</topemin>
+  <topemax>11,83</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121055</codos>
+  <nombre>TELEVISION</nombre>
+  <nombrec>Obra Social del Personal de Television</nombrec>
+  <direccion>QUINTINO BOCAYUVA 50 </direccion>
+  <localidad>BUENOS AIRES </localidad>
+  <codpos>1181</codpos>
+  <ub>1,30</ub>
+  <ug>3,35</ug>
+  <rieub>1,30</rieub>
+  <rieug>3,35</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-51674838-5</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121056</codos>
+  <nombre>SAN PEDRO</nombre>
+  <nombrec>CONFERENCIA EPISCOPAL ARGENTINA                    </nombrec>
+  <direccion>Rodriguez Pe#a 846 4. pi</direccion>
+  <localidad>CIUDAD AUTONOMA DE  BS.</localidad>
+  <codpos>1020</codpos>
+  <ub>1,30</ub>
+  <ug>3,50</ug>
+  <rieub>1,30</rieub>
+  <rieug>3,50</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-51731290-4</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121057</codos>
+  <nombre>JERARQUICOS</nombre>
+  <nombrec>ASOCIACION MUTUAL JERARQUICOS DE BANCOS OFICIALES</nombrec>
+  <direccion>Avda. Facundo Zuviria 4586</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>2,31</ub>
+  <ug>6,10</ug>
+  <rieub>2,31</rieub>
+  <rieug>6,10</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-68695518-0</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121058</codos>
+  <nombre>OSPIQYP-Obra Social de ind. quimica</nombre>
+  <nombrec>OBRA SOCIAL PERSONAL INDUSTRIA QUIMICA Y PETROQUIMICA</nombrec>
+  <direccion>MEXICO 1474</direccion>
+  <localidad>CIUD. AUTOM. DE BS.AS</localidad>
+  <codpos>1100</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-65339202-4</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121059</codos>
+  <nombre>FE SALUD TOTAL</nombre>
+  <nombrec>ASOCIACION MUTUAL MEDICA VILLA MARIA</nombrec>
+  <direccion>ENTRE RIOS 711</direccion>
+  <localidad>VILLA MARIA- CORDOBA</localidad>
+  <codpos>5900</codpos>
+  <ub>1,35</ub>
+  <ug>3,60</ug>
+  <rieub>1,35</rieub>
+  <rieug>3,60</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-63860427-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>5,91</topemin>
+  <topemax>11,83</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121060</codos>
+  <nombre>PANADEROS</nombre>
+  <nombrec>Obra Social del Personal de Panaderias</nombrec>
+  <direccion>null</direccion>
+  <localidad>null</localidad>
+  <codpos>null</codpos>
+  <ub>0,30</ub>
+  <ug>1,20</ug>
+  <rieub>0,30</rieub>
+  <rieug>1,20</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>null</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121061</codos>
+  <nombre>CORREOS</nombre>
+  <nombrec>Obra social del personal de Correos y Telegrafistas</nombrec>
+  <direccion>null</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,19</ub>
+  <ug>1,35</ug>
+  <rieub>0,19</rieub>
+  <rieug>1,35</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>null</nrocuit>
+  <categoria>S</categoria>
+  <tope>null</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>null</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu></factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121062</codos>
+  <nombre>GALENO ARGENTINA</nombre>
+  <nombrec>GALENO ARGENTINA  S.A.</nombrec>
+  <direccion>DELLEPIANE ELVIRA RAWSON DE 150</direccion>
+  <localidad>CAPITAL FEDERAL</localidad>
+  <codpos>1107</codpos>
+  <ub>3,83</ub>
+  <ug>10,81</ug>
+  <rieub>3,83</rieub>
+  <rieug>10,81</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>30-52242816-3</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121063</codos>
+  <nombre>ASOCIACION MUTUAL DE PRODUCTORES AGROPECUARIOS E I</nombre>
+  <nombrec>Asociacion Mutual de Productores Agropecuarios e Industrias</nombrec>
+  <direccion>null</direccion>
+  <localidad>null</localidad>
+  <codpos>null</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>null</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121065</codos>
+  <nombre>AMPARO ABALOS</nombre>
+  <nombrec>Mutual Amparos Abalos</nombrec>
+  <direccion>4 de enero 2040</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,65</ub>
+  <ug>2,30</ug>
+  <rieub>0,65</rieub>
+  <rieug>2,30</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>null</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>N</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121066</codos>
+  <nombre>NUMEN</nombre>
+  <nombrec>Mutual Federada 25 de Junio</nombrec>
+  <direccion>San Jeronimo 2360</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>30-54159280-8</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>N</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121067</codos>
+  <nombre>SANCOR </nombre>
+  <nombrec>ASOCIACION MUTUAL  SANCOR</nombrec>
+  <direccion>AVDA INDEPENDENCIA 206</direccion>
+  <localidad>SUNCHALES SANTA FE</localidad>
+  <codpos>2322</codpos>
+  <ub>0,26</ub>
+  <ug>1,94</ug>
+  <rieub>0,26</rieub>
+  <rieug>1,94</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-59035479-8</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121068</codos>
+  <nombre>LEY 5110</nombre>
+  <nombrec>Asociacion Mutual de Pensionados Sociales Ley 5110</nombrec>
+  <direccion>Avda. Freeyre 2580</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,65</ub>
+  <ug>2,30</ug>
+  <rieub>0,65</rieub>
+  <rieug>2,30</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>33-65787919-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121069</codos>
+  <nombre>PAMI</nombre>
+  <nombrec>Instituto de Prevision Social para Jubilados y Pension</nombrec>
+  <direccion>1 DEMAYO 2269</direccion>
+  <localidad>SAMTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>1,04</ub>
+  <ug>3,08</ug>
+  <rieub>0,93</rieub>
+  <rieug>2,75</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>null</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>S</capitada>
+  <noimport>N</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121070</codos>
+  <nombre>FARMACIA 75%  AMBULATORIO BUENOS AIRES</nombre>
+  <nombrec>Obra Social del Personal de Farmacias</nombrec>
+  <direccion>CONSTITUCION 2066</direccion>
+  <localidad>CAPITAL FEDERAL</localidad>
+  <codpos>1254</codpos>
+  <ub>1,40</ub>
+  <ug>3,60</ug>
+  <rieub>1,40</rieub>
+  <rieug>3,60</rieug>
+  <porcentaje>75,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>33-64810438-9</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121071</codos>
+  <nombre>DASUTEN</nombre>
+  <nombrec>Direccion de accion Social Universidad Tecnologica Nac</nombrec>
+  <direccion>Rivadavia 581 </direccion>
+  <localidad>BUENOS AIRES</localidad>
+  <codpos>1002</codpos>
+  <ub>0,90</ub>
+  <ug>2,60</ug>
+  <rieub>0,90</rieub>
+  <rieug>2,60</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-54667116-6</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121072</codos>
+  <nombre>PASTELEROS</nombre>
+  <nombrec>O.S.T.P.C.P.H.Y A.R.A</nombrec>
+  <direccion>BOGADO 4541</direccion>
+  <localidad>CAPITAL FEDERAL</localidad>
+  <codpos>1183</codpos>
+  <ub>1,40</ub>
+  <ug>3,60</ug>
+  <rieub>1,40</rieub>
+  <rieug>3,60</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-67906538-2</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121073</codos>
+  <nombre>DOCTHOS</nombre>
+  <nombrec>HSBC SALUD S.A.</nombrec>
+  <direccion>San  Lorenzo  1121</direccion>
+  <localidad>ROSARIO</localidad>
+  <codpos>2000</codpos>
+  <ub>0,52</ub>
+  <ug>1,45</ug>
+  <rieub>0,52</rieub>
+  <rieug>1,45</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>null</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>null</capitada>
+  <noimport>null</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu></factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121074</codos>
+  <nombre>FARMACIA AMBULARIO BS AS 100%</nombre>
+  <nombrec>Obra Social del personal de farmacias</nombrec>
+  <direccion>Constitucion 2066</direccion>
+  <localidad>CAPITAL FEDERAL</localidad>
+  <codpos>1254</codpos>
+  <ub>1,40</ub>
+  <ug>3,60</ug>
+  <rieub>1,40</rieub>
+  <rieug>3,60</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>33-64810438-9</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121075</codos>
+  <nombre>CONSOLIDAR SALUD</nombre>
+  <nombrec>CONSOLIDAR SALUD S.A</nombrec>
+  <direccion>AV. INDEPENDENCIA 169</direccion>
+  <localidad>CAPITAL FEDERAL</localidad>
+  <codpos>1099</codpos>
+  <ub>0,80</ub>
+  <ug>2,50</ug>
+  <rieub>0,80</rieub>
+  <rieug>2,50</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>30-52063497-1</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>N</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121076</codos>
+  <nombre>OSTYR</nombre>
+  <nombrec>Obra social de Telegrafistas y Radiotelegrafistas</nombrec>
+  <direccion>chacabuco 140</direccion>
+  <localidad>CAPITAL FEDERAL</localidad>
+  <codpos>1069</codpos>
+  <ub>0,26</ub>
+  <ug>1,94</ug>
+  <rieub>0,26</rieub>
+  <rieug>1,97</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>null</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121077</codos>
+  <nombre>OSDEPYM-SCIS MEDICINA PRIVADA</nombre>
+  <nombrec>OSDEPYM-SCIS MEDICINA PRIVADA</nombrec>
+  <direccion>AVDA PUYRREDON 1777 PISO 1°</direccion>
+  <localidad>BUENOS AIRES</localidad>
+  <codpos>1119</codpos>
+  <ub>2,16</ub>
+  <ug>5,70</ug>
+  <rieub>2,16</rieub>
+  <rieug>5,70</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>30-70842808-2</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121080</codos>
+  <nombre>OSPACA-AUTOMOVIL CLUB</nombre>
+  <nombrec>ITER MEDICINA S.A  CONV. OSPACA AUTOMOV.CLUB</nombrec>
+  <direccion>AVDA. CORRIENTES 1675 -7 PISO</direccion>
+  <localidad>C.A.B.A</localidad>
+  <codpos>1042</codpos>
+  <ub>0,26</ub>
+  <ug>1,94</ug>
+  <rieub>0,26</rieub>
+  <rieug>1,94</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-70473487-1</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121081</codos>
+  <nombre>OSDOP</nombre>
+  <nombrec>CEL SALUD SRL CONV,OSDOP</nombrec>
+  <direccion>9 DE JULIO 1147</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,52</ub>
+  <ug>1,26</ug>
+  <rieub>0,52</rieub>
+  <rieug>1,26</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>30-69983887-6</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121082</codos>
+  <nombre>IAPOS ACC. DE TRABAJO</nombre>
+  <nombrec>Instituto Autarquico Provincial de Obra Social</nombrec>
+  <direccion>rivadavia 3452</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,58</ub>
+  <ug>1,93</ug>
+  <rieub>0,58</rieub>
+  <rieug>1,32</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-99917935-1</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121083</codos>
+  <nombre>QUALITAS</nombre>
+  <nombrec>QUALITAS S.A</nombrec>
+  <direccion>Avda. Libertador 498 8</direccion>
+  <localidad>CAPITAL FEDERAL</localidad>
+  <codpos>1001</codpos>
+  <ub>0,52</ub>
+  <ug>1,26</ug>
+  <rieub>0,52</rieub>
+  <rieug>1,26</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>RI</codpfis>
+  <nrocuit>30-60964511-9</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>null</capitada>
+  <noimport>null</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu></factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121084</codos>
+  <nombre>FE SALUD 9 SALUD</nombre>
+  <nombrec>FIDEICOMISO ASOC.  MEDICA DPTO CASTELLAnos</nombrec>
+  <direccion>avda  Mitre 111</direccion>
+  <localidad>RAFAELA</localidad>
+  <codpos>2300</codpos>
+  <ub>1,35</ub>
+  <ug>3,60</ug>
+  <rieub>1,35</rieub>
+  <rieug>3,60</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>E</codpfis>
+  <nrocuit>30-7114147 --</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>5,91</topemin>
+  <topemax>11,83</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121085</codos>
+  <nombre>FEMECHACO</nombre>
+  <nombrec>FEME CHACO</nombrec>
+  <direccion>AVDA AVALOS 450</direccion>
+  <localidad>RESITENCIA</localidad>
+  <codpos>3500</codpos>
+  <ub>1,35</ub>
+  <ug>3,60</ug>
+  <rieub>1,35</rieub>
+  <rieug>3,60</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>null</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>5,91</topemin>
+  <topemax>11,83</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121086</codos>
+  <nombre>OSPE</nombre>
+  <nombrec>OBRA SOCIAL DE  PETROLEROS</nombrec>
+  <direccion>SARMIENTO 1588/98</direccion>
+  <localidad>ROSARIO</localidad>
+  <codpos>2000</codpos>
+  <ub>0,52</ub>
+  <ug>1,26</ug>
+  <rieub>0,52</rieub>
+  <rieug>1,26</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-66187671-5</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121087</codos>
+  <nombre>ANDAR- VISITAR</nombre>
+  <nombrec>VISITAR SRL- CONV ANDAR</nombrec>
+  <direccion>Carlos Pelegrini 1175 piso 2B </direccion>
+  <localidad>CAPITAL FEDERAL</localidad>
+  <codpos>1009</codpos>
+  <ub>0,52</ub>
+  <ug>1,26</ug>
+  <rieub>0,52</rieub>
+  <rieug>1,26</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>33-65712962-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121088</codos>
+  <nombre>TECNICOS DE FUTBOL</nombre>
+  <nombrec>Obra social de Tecnicos de Futbol</nombrec>
+  <direccion>Viamionte 1328 1. piso o</direccion>
+  <localidad>BUENOS AIRES</localidad>
+  <codpos>1053</codpos>
+  <ub>0,28</ub>
+  <ug>1,54</ug>
+  <rieub>0,28</rieub>
+  <rieug>1,54</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>null</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>null</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu></factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121089</codos>
+  <nombre>SWISS MEDICAL</nombre>
+  <nombrec>SWISS MEDICAL S.A</nombrec>
+  <direccion>ARENALES  1826- 1. PISO</direccion>
+  <localidad>CAPITAL FEDERAL</localidad>
+  <codpos>1124</codpos>
+  <ub>2,38</ub>
+  <ug>6,28</ug>
+  <rieub>2,38</rieub>
+  <rieug>6,28</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>30-65485516-8</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121090</codos>
+  <nombre>FE SALUD ASISTENCIA MEDICA</nombre>
+  <nombrec>ASOC.  MEDICA  DPTO  CASTELLANOS</nombrec>
+  <direccion>Avda. Mitre 111</direccion>
+  <localidad>RAFAELA</localidad>
+  <codpos>2300</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>RES</codpfis>
+  <nrocuit>30-54359417-9</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>5,91</topemin>
+  <topemax>11,83</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121092</codos>
+  <nombre>FE SALUD DORADO FULL</nombre>
+  <nombrec>ASOCIACION MUTUAL MEDICA VILLA MARIA</nombrec>
+  <direccion>ENTRE RIOS 711</direccion>
+  <localidad>VILLA MARIA-CORDOBA</localidad>
+  <codpos>5900</codpos>
+  <ub>1,35</ub>
+  <ug>3,60</ug>
+  <rieub>1,35</rieub>
+  <rieug>3,60</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-63860427-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121093</codos>
+  <nombre>FE SALUD PERSONAL</nombre>
+  <nombrec>ASOCIACION MUTUAL MEDICA VILLA MARIA</nombrec>
+  <direccion>ENTRE RIOS 711</direccion>
+  <localidad>VILLA MARIA- CORDOBA</localidad>
+  <codpos>5900</codpos>
+  <ub>1,35</ub>
+  <ug>3,60</ug>
+  <rieub>1,35</rieub>
+  <rieug>3,60</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-63860427-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>5,91</topemin>
+  <topemax>11,83</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121094</codos>
+  <nombre>FE SALUD INTERNACION</nombre>
+  <nombrec>ASOCIACION MUTUAL MEDICA VILLA MARIA</nombrec>
+  <direccion>ENTRE RIOS 711</direccion>
+  <localidad>VILLA MARIA- CORDOBA</localidad>
+  <codpos>5900</codpos>
+  <ub>1,35</ub>
+  <ug>3,60</ug>
+  <rieub>1,35</rieub>
+  <rieug>3,60</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-63860427-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>5,91</topemin>
+  <topemax>11,83</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121095</codos>
+  <nombre>FE SALUD PLAN SOCIAL</nombre>
+  <nombrec>ASOCIACION MUTUAL MEDICA VILLA MARIA</nombrec>
+  <direccion>ENTRE RIOS 711</direccion>
+  <localidad>VILLA MARIA- CORDOBA</localidad>
+  <codpos>5900</codpos>
+  <ub>1,20</ub>
+  <ug>3,25</ug>
+  <rieub>1,20</rieub>
+  <rieug>3,25</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXT</codpfis>
+  <nrocuit>30-63860427-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>5,91</topemin>
+  <topemax>11,83</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121096</codos>
+  <nombre>FE SALUD ASE</nombre>
+  <nombrec>ASOCIACION MUTUAL MEDIACA VILLA MARIA</nombrec>
+  <direccion>ENTRE RIOS 715</direccion>
+  <localidad>VILLA MARIA- CORDOBA</localidad>
+  <codpos>5900</codpos>
+  <ub>1,35</ub>
+  <ug>3,60</ug>
+  <rieub>1,35</rieub>
+  <rieug>3,60</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-63860427-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121097</codos>
+  <nombre>MOSAISTAS</nombre>
+  <nombrec>OBRA SOCIAL DEL PERSONAL MOSAISTA</nombrec>
+  <direccion>QUIRNO 89</direccion>
+  <localidad>CAPITAL FEDERAL</localidad>
+  <codpos>1406</codpos>
+  <ub>1,25</ub>
+  <ug>3,25</ug>
+  <rieub>1,25</rieub>
+  <rieug>3,25</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>30-60658818-2</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121098</codos>
+  <nombre>OSTRAC -SCIS-MEDICINA PRIVADA-</nombre>
+  <nombrec>SCIS-MEDICINA PRIVADA- CONV. O.S.T.R.A.C.</nombrec>
+  <direccion>AVDA.  PUEYRREDON 1777 PISO 1.</direccion>
+  <localidad>CIUDAD AUTONOMA DE  BS.</localidad>
+  <codpos>1119</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>30-70842808-2</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121099</codos>
+  <nombre>OSPACA CEVERCEROS</nombre>
+  <nombrec>SCIS MEDICINA PRIVADA-CONV OSPACA CERVECEROS</nombrec>
+  <direccion>PUEYRREDON 1777 PISO 1</direccion>
+  <localidad>CAPITAL FEDERAL</localidad>
+  <codpos>1119</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>30-70842808-2</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121105</codos>
+  <nombre>IAPOS AFILIADO EN TRANSITO</nombre>
+  <nombrec>IAPOS</nombrec>
+  <direccion>RIVADAVIA 3452</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,58</ub>
+  <ug>1,93</ug>
+  <rieub>0,58</rieub>
+  <rieug>1,32</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-99917935-1</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121114</codos>
+  <nombre>UNION PERSONAL-REFACTURACION</nombre>
+  <nombrec>G.M. AGRUPACION DE COLABORACION</nombrec>
+  <direccion>SAN LORENZO 2780</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>1,25</ub>
+  <ug>3,25</ug>
+  <rieub>1,25</rieub>
+  <rieug>3,25</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>30-71735890-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121127</codos>
+  <nombre>UOM -PACIENTE  EN  TRANSITO</nombre>
+  <nombrec>OSUOMRA</nombrec>
+  <direccion>ADOLFO ALSINA 485</direccion>
+  <localidad>CAPITAL   FEDERAL</localidad>
+  <codpos>1087</codpos>
+  <ub>1,00</ub>
+  <ug>3,10</ug>
+  <rieub>1,00</rieub>
+  <rieug>3,10</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-58520776-0</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121129</codos>
+  <nombre>MUTUAL FEDERADA 25 DE JUNIO PLAN 2</nombre>
+  <nombrec>MUTUAL FEDERADA 25 DE JUNIO </nombrec>
+  <direccion>SAN JERONIMO 3320</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>R</codpfis>
+  <nrocuit>30-54159260-8</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121141</codos>
+  <nombre>OSFA 50%</nombre>
+  <nombrec>Instituto de Obra Social de las Fuerzas Armadas (IOSFA)</nombrec>
+  <direccion>PASO 551</direccion>
+  <localidad>Cidad Autonoma  de  Bs.</localidad>
+  <codpos>1031</codpos>
+  <ub>0,90</ub>
+  <ug>3,36</ug>
+  <rieub>0,90</rieub>
+  <rieug>3,36</rieug>
+  <porcentaje>50,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-71429214-1</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121142</codos>
+  <nombre>AMUR MEDIAR</nombre>
+  <nombrec>ASOCIACION MUTUAL RURALISTA</nombrec>
+  <direccion>1° DE MAYO 2116/22</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>2,16</ub>
+  <ug>5,70</ug>
+  <rieub>2,16</rieub>
+  <rieug>5,70</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-56751013-8</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121159</codos>
+  <nombre>FE SALUD PLAN 60</nombre>
+  <nombrec>ASOCIACION MUTUAL MEDICA VILLA MARIA</nombrec>
+  <direccion>ENTRE RIOS 711</direccion>
+  <localidad>VILLA MARIA- CORDOBA</localidad>
+  <codpos>5900</codpos>
+  <ub>1,35</ub>
+  <ug>3,60</ug>
+  <rieub>1,35</rieub>
+  <rieug>3,60</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-63860427-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121167</codos>
+  <nombre>SANCOR  PLAN S1000-S500</nombre>
+  <nombrec>ASOCIACION MUTUAL SANCOR</nombrec>
+  <direccion>Avda. Independencia 206</direccion>
+  <localidad>Sunchales</localidad>
+  <codpos>2322</codpos>
+  <ub>0,26</ub>
+  <ug>1,94</ug>
+  <rieub>1,26</rieub>
+  <rieug>0,94</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-59035479-8</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121168</codos>
+  <nombre>SANCOR INTERNACION</nombre>
+  <nombrec>ASOCIACION MUTUAL SANCOR</nombrec>
+  <direccion>Avda. Independencia 206</direccion>
+  <localidad>Sunchales</localidad>
+  <codpos>2322</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-59035479-8</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121169</codos>
+  <nombre>PAMI - ARANCELES NOMENCLADOR NACIONAL</nombre>
+  <nombrec>Instituto de Prevision Social para Jubilados y Pension</nombrec>
+  <direccion>25de mayo  e  Iriondo</direccion>
+  <localidad>RECONQUISTA</localidad>
+  <codpos>3560</codpos>
+  <ub>1,04</ub>
+  <ug>3,08</ug>
+  <rieub>0,93</rieub>
+  <rieug>2,75</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>null</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>S</capitada>
+  <noimport>N</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>N</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121187</codos>
+  <nombre>MOLINEROS -CONV REVELAR</nombre>
+  <nombrec>REVELAR SA -CONV MOLINEROS</nombrec>
+  <direccion>BALCARCE 1511 OF 1</direccion>
+  <localidad>ROSARIO</localidad>
+  <codpos>2000</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-71052999-6</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121191</codos>
+  <nombre>FE SALUD GENTE JOVEN</nombre>
+  <nombrec>ASOCIACION MUTUAL MEDICA VILLA MARIA</nombrec>
+  <direccion>ENTRE RIOS 711</direccion>
+  <localidad>VILLA MARIA- CORDOBA</localidad>
+  <codpos>5900</codpos>
+  <ub>1,35</ub>
+  <ug>3,60</ug>
+  <rieub>1,35</rieub>
+  <rieug>3,60</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-63860427-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121201</codos>
+  <nombre>VIALIDAD - INTERNADOS</nombre>
+  <nombrec>Obra Social de Vialidad Nacional</nombrec>
+  <direccion>25 de mayo 1867 1 piso</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,78</ub>
+  <ug>0,97</ug>
+  <rieub>0,78</rieub>
+  <rieug>0,97</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>null</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu></factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121202</codos>
+  <nombre>OSTEL- INTERNACION</nombre>
+  <nombrec>Servicios y Prestaciones Medicas SA -conv OSTEL</nombrec>
+  <direccion>MIGUELETES   1231 - Piso 5  of: "A</direccion>
+  <localidad>C.A.B.A.</localidad>
+  <codpos>1426</codpos>
+  <ub>0,19</ub>
+  <ug>1,46</ug>
+  <rieub>0,19</rieub>
+  <rieug>1,46</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>30-71177851-5</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121203</codos>
+  <nombre>ACEITEROS INTERNACION</nombre>
+  <nombrec>IMAGEN EN SALUD S.A- conv. ACEITERO</nombrec>
+  <direccion>SALTA 424</direccion>
+  <localidad>PARANA</localidad>
+  <codpos>3100</codpos>
+  <ub>1,20</ub>
+  <ug>3,20</ug>
+  <rieub>1,20</rieub>
+  <rieug>3,20</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>30-70890517-4</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>S</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121205</codos>
+  <nombre>IAPOS INTERNACION</nombre>
+  <nombrec>Instituto Autarquico Provincial de Obra Social</nombrec>
+  <direccion>Rivadavia 3452</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,65</ub>
+  <ug>2,10</ug>
+  <rieub>0,53</rieub>
+  <rieug>1,75</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-99917935-1</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>S</capitada>
+  <noimport>N</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121210</codos>
+  <nombre>OSFICA INTERNACION</nombre>
+  <nombrec>EN EL HOGAR S.A (ADMED)</nombrec>
+  <direccion>AV FADER</direccion>
+  <localidad>CORDOBA</localidad>
+  <codpos>3360</codpos>
+  <ub>0,52</ub>
+  <ug>1,84</ug>
+  <rieub>0,52</rieub>
+  <rieug>1,84</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>R.I</codpfis>
+  <nrocuit>30-71314800-4</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>S</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121211</codos>
+  <nombre>LUZ Y FUERZA INTERNACION</nombre>
+  <nombrec>MUTUAL PROVINCIAL LUZ Y FUERZA</nombrec>
+  <direccion>Junin 2957</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,60</ub>
+  <ug>2,23</ug>
+  <rieub>0,60</rieub>
+  <rieug>2,23</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-69989670-1</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121213</codos>
+  <nombre>OSECAC INTERNACION</nombre>
+  <nombrec>Obra Social de Empleados de Comercio</nombrec>
+  <direccion>San Martin 838</direccion>
+  <localidad>RECONQUISTA</localidad>
+  <codpos>3560</codpos>
+  <ub>0,52</ub>
+  <ug>1,26</ug>
+  <rieub>0,52</rieub>
+  <rieug>1,26</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>null</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>S</capitada>
+  <noimport>N</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu></factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121214</codos>
+  <nombre>UNION PERSONAL INTERNACION</nombre>
+  <nombrec>G.M. AGRUPACION DE COLABORACION</nombrec>
+  <direccion>SAN LORENZO 2780</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>1,25</ub>
+  <ug>3,25</ug>
+  <rieub>1,25</rieub>
+  <rieug>3,25</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>30-71735890-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121215</codos>
+  <nombre>OSPA VIAL INTERNACION</nombre>
+  <nombrec>Obra Social del Personal de la Actividad Vial</nombrec>
+  <direccion>San Jeronimo 1641</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>1,10</ub>
+  <ug>3,10</ug>
+  <rieub>1,10</rieub>
+  <rieug>3,10</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-66316088-1</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>S</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121216</codos>
+  <nombre>OSPLAD INTERNACION</nombre>
+  <nombrec>ITER MEDICINA S.A -CONV. OSPLAD-</nombrec>
+  <direccion>AVDA.CORRIENTES 1675  7° PISO</direccion>
+  <localidad>C.A.B.A.</localidad>
+  <codpos>1042</codpos>
+  <ub>0,26</ub>
+  <ug>0,97</ug>
+  <rieub>0,26</rieub>
+  <rieug>0,97</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-70473487-1</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121217</codos>
+  <nombre>PETROLEROS INTERNACION</nombre>
+  <nombrec>OBRA SOCIAL DEL PETROLEO Y GAS PRIVADOS-OSPEGAP</nombrec>
+  <direccion>AVDA CASEROS 715</direccion>
+  <localidad>BUENOS AIRES</localidad>
+  <codpos>1152</codpos>
+  <ub>0,65</ub>
+  <ug>2,30</ug>
+  <rieub>0,65</rieub>
+  <rieug>2,30</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>33-62818588-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121219</codos>
+  <nombre>OSMATA INTERNACION</nombre>
+  <nombrec>Obra Social del sindicato de mecanicos y Afines del transpor</nombrec>
+  <direccion>Av Belgrano  665 2°piso </direccion>
+  <localidad>Capital Federal</localidad>
+  <codpos>1092</codpos>
+  <ub>0,90</ub>
+  <ug>1,00</ug>
+  <rieub>0,90</rieub>
+  <rieug>1,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>RI</codpfis>
+  <nrocuit>30-59041263-1</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>N</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121220</codos>
+  <nombre>CAMIONEROS INTERNACION</nombre>
+  <nombrec>OBRA  SOCIAL DE  CONDUCTORES  CAMIONEROS</nombrec>
+  <direccion>ORO#O 1085</direccion>
+  <localidad>ROSARIO</localidad>
+  <codpos>2000</codpos>
+  <ub>1,95</ub>
+  <ug>5,59</ug>
+  <rieub>1,95</rieub>
+  <rieug>5,59</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-66150769-8</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>S</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121221</codos>
+  <nombre>AMEP INTERNACION</nombre>
+  <nombrec>Asociacion Mutual de Empleados Publicos</nombrec>
+  <direccion>Corrientes 2660</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>1,40</ub>
+  <ug>3,60</ug>
+  <rieub>1,40</rieub>
+  <rieug>3,60</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>30-70473487-1</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>N</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121224</codos>
+  <nombre>SEGUROS INTERNACION</nombre>
+  <nombrec>LA CASA DEL MEDICO MUTUAL-CONV OSSEG</nombrec>
+  <direccion>VIRASORO 1249</direccion>
+  <localidad>ROSARIO</localidad>
+  <codpos>2000</codpos>
+  <ub>0,52</ub>
+  <ug>0,97</ug>
+  <rieub>0,52</rieub>
+  <rieug>0,97</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-71012610-7</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121225</codos>
+  <nombre>PAPELEROS INTERNACION</nombre>
+  <nombrec>IMAGEN EN SALUD S.A CONV OSPPCYQ</nombrec>
+  <direccion>SALTA 424</direccion>
+  <localidad>PARANA-ENTRE RIOS</localidad>
+  <codpos>3100</codpos>
+  <ub>1,20</ub>
+  <ug>3,20</ug>
+  <rieub>1,20</rieub>
+  <rieug>3,20</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>R.I</codpfis>
+  <nrocuit>30-70890517-4</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121227</codos>
+  <nombre>UOM INTERNACION</nombre>
+  <nombrec>OSUOMRA</nombrec>
+  <direccion>ADOLFO  ALSINA 485</direccion>
+  <localidad>CAPITAL  FEDERAL</localidad>
+  <codpos>1087</codpos>
+  <ub>1,00</ub>
+  <ug>3,10</ug>
+  <rieub>1,00</rieub>
+  <rieug>3,10</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-58520776-0</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121228</codos>
+  <nombre>UTA- INTERNACION</nombre>
+  <nombrec>Obra Social Conductores de Transporte Colectivo de Pasajeros</nombrec>
+  <direccion>Moreno 2969</direccion>
+  <localidad>CABA</localidad>
+  <codpos>1209</codpos>
+  <ub>1,30</ub>
+  <ug>4,20</ug>
+  <rieub>1,30</rieub>
+  <rieug>4,20</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-65767771-6</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121229</codos>
+  <nombre>MUTUAL 25 DE JUNIO INTERNACION PLAN 1</nombre>
+  <nombrec>Mutual Federada 25 de Junio</nombrec>
+  <direccion>SAN JERONIMO 3320</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>2,16</ub>
+  <ug>5,70</ug>
+  <rieub>2,16</rieub>
+  <rieug>5,70</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-54159260-8</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121230</codos>
+  <nombre>SUTIAGA INTERNACION</nombre>
+  <nombrec>Obra Social del  sindicato unido  de trabajadores de la Indu</nombrec>
+  <direccion>Sarmiento 2225</direccion>
+  <localidad>ROSARIO</localidad>
+  <codpos>2000</codpos>
+  <ub>1,43</ub>
+  <ug>4,68</ug>
+  <rieub>1,43</rieub>
+  <rieug>4,68</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>30-69535903-5</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121232</codos>
+  <nombre>OSPIL INTERNACION</nombre>
+  <nombrec>Obra social del Personal de la Industria Lechera</nombrec>
+  <direccion>Belgrano 3544</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>1,50</ub>
+  <ug>4,30</ug>
+  <rieub>1,50</rieub>
+  <rieug>4,30</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>30-58419478-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121233</codos>
+  <nombre>DIBA  -INTERNADO</nombre>
+  <nombrec>Direccion de Bienestar de la Armada</nombrec>
+  <direccion>FREYRE 2452</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>1,50</ub>
+  <ug>4,30</ug>
+  <rieub>1,50</rieub>
+  <rieug>4,30</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>30-67435656-7</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121234</codos>
+  <nombre>ALIMENTACION- OSPIA  INTERNACION</nombre>
+  <nombrec>Obra social del personal de la Industria de la Aliment</nombrec>
+  <direccion>Venezuela 1326</direccion>
+  <localidad>Capital Federal</localidad>
+  <codpos>1095</codpos>
+  <ub>0,52</ub>
+  <ug>1,26</ug>
+  <rieub>0,52</rieub>
+  <rieug>1,26</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-64399773-4</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>N</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121237</codos>
+  <nombre>OSPESGA INTERNACION</nombre>
+  <nombrec>Obra Social del Personal de Estaciones de Servicios, G</nombrec>
+  <direccion>Rio Bamba 1075</direccion>
+  <localidad>ROSARIO</localidad>
+  <codpos>2000</codpos>
+  <ub>2,16</ub>
+  <ug>6,60</ug>
+  <rieub>2,16</rieub>
+  <rieug>6,60</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-68091804-6</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121238</codos>
+  <nombre>OSPICA INTERNACION</nombre>
+  <nombrec>CONEXION SALUD SRL -CONV OSPICA</nombrec>
+  <direccion>MOREAU DE JUSTO A. AV 846 PISO:846</direccion>
+  <localidad>C.A.B.A.</localidad>
+  <codpos>1107</codpos>
+  <ub>0,52</ub>
+  <ug>1,26</ug>
+  <rieub>0,52</rieub>
+  <rieug>1,26</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>30-71463313-5</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121239</codos>
+  <nombre>ATSA 100% INTERNACION</nombre>
+  <nombrec>Asociacion Mutual de Servicios de Internacion y Operac</nombrec>
+  <direccion>1. de mayo 2718</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>1,75</ub>
+  <ug>6,14</ug>
+  <rieub>1,75</rieub>
+  <rieug>6,14</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>30-59738231-2</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>N</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121240</codos>
+  <nombre>MADEREROS INTERNACION</nombre>
+  <nombrec>Obra Social del Personal de la Industria Maderera</nombrec>
+  <direccion>Rojas 254</direccion>
+  <localidad>CAPITAL FEDERAL</localidad>
+  <codpos>1405</codpos>
+  <ub>1,25</ub>
+  <ug>3,25</ug>
+  <rieub>1,25</rieub>
+  <rieug>3,25</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>30-50289264-5</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121241</codos>
+  <nombre>OSFA 80% INTERNACION</nombre>
+  <nombrec>INSTITUTO DE OBRA SOCIAL DE LAS FUERZAS ARMADAS( IOSFA)</nombrec>
+  <direccion>PASO 551</direccion>
+  <localidad>Ciudad Autonoma de  Bs.</localidad>
+  <codpos>1031</codpos>
+  <ub>0,90</ub>
+  <ug>3,36</ug>
+  <rieub>0,90</rieub>
+  <rieug>3,36</rieug>
+  <porcentaje>80,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-71429214-1</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121243</codos>
+  <nombre>AMOEIAG INTERNACION</nombre>
+  <nombrec>Asociacion mutual entre Obreors y Empleados de la Indu</nombrec>
+  <direccion>Sarmiento 2225</direccion>
+  <localidad>ROSARIO</localidad>
+  <codpos>2000</codpos>
+  <ub>1,20</ub>
+  <ug>3,70</ug>
+  <rieub>1,20</rieub>
+  <rieug>3,70</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>30-67746941-9</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121247</codos>
+  <nombre>BANCARIOS INTERNACION</nombre>
+  <nombrec>Obra Social de Bancarios- SOLIDARIDAD</nombrec>
+  <direccion>URQUIZA 2215</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,52</ub>
+  <ug>1,26</ug>
+  <rieub>0,52</rieub>
+  <rieug>1,26</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-69156146-8</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121252</codos>
+  <nombre>ASIO INTERNACION</nombre>
+  <nombrec>Asociacion Mutual de Servicios de Internacion y Operac</nombrec>
+  <direccion>CALLE 12 N. 339</direccion>
+  <localidad>AVELLANEDA</localidad>
+  <codpos>3561</codpos>
+  <ub>0,79</ub>
+  <ug>3,05</ug>
+  <rieub>0,74</rieub>
+  <rieug>2,60</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>RI</codpfis>
+  <nrocuit>30-59836423-7</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>5,91</topemin>
+  <topemax>11,83</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121253</codos>
+  <nombre>OSETYA INTERNACION</nombre>
+  <nombrec>OBRA SOCIAL DE EMPLEADOS TEXTILES Y AFINES</nombrec>
+  <direccion>AVDA MONTES DE OCA 1437</direccion>
+  <localidad>CIUDAD AUTONOMA DE BS. </localidad>
+  <codpos>8136</codpos>
+  <ub>1,50</ub>
+  <ug>4,70</ug>
+  <rieub>1,50</rieub>
+  <rieug>4,70</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>33-63368181-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121255</codos>
+  <nombre>TELEVISION INTERNACION</nombre>
+  <nombrec>Obra Social del Personal de Television</nombrec>
+  <direccion>Quintino Bocayuva 50</direccion>
+  <localidad>CIUDAD AUTONOMA DE  BS.</localidad>
+  <codpos>1181</codpos>
+  <ub>1,30</ub>
+  <ug>3,35</ug>
+  <rieub>1,30</rieub>
+  <rieug>3,35</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-51674838-5</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121259</codos>
+  <nombre>FE SALUD VITAL</nombre>
+  <nombrec>ASOCIACION MUTUAL MEDICA VILLA MARIA</nombrec>
+  <direccion>ENTRE RIOS 711</direccion>
+  <localidad>VILLA MARIA- CORDOBA</localidad>
+  <codpos>5900</codpos>
+  <ub>1,35</ub>
+  <ug>3,60</ug>
+  <rieub>1,35</rieub>
+  <rieug>3,60</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-63860427-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121260</codos>
+  <nombre>FE SALUD OBRA SOCIAL</nombre>
+  <nombrec>ASOCIACION MUTUAL MEDICA VILLA MARIA</nombrec>
+  <direccion>ENTRE RIOS 711</direccion>
+  <localidad>VILLA MARIA- CORDOBA</localidad>
+  <codpos>5900</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-63860427-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121265</codos>
+  <nombre>AMPARO ABALOS INTERNACION</nombre>
+  <nombrec>Mutual Amparos Abalos</nombrec>
+  <direccion>4 de enero 2040</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,65</ub>
+  <ug>2,30</ug>
+  <rieub>0,65</rieub>
+  <rieug>2,30</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>null</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>N</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121268</codos>
+  <nombre>LEY 5110 INTERNACION</nombre>
+  <nombrec>Asociacion Mutual  Pensionados Sociales Ley 5110</nombrec>
+  <direccion>Avda  Freyre 2580</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,65</ub>
+  <ug>2,30</ug>
+  <rieub>0,65</rieub>
+  <rieug>2,30</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>33-65787919-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121269</codos>
+  <nombre>PAMI INTERNACION</nombre>
+  <nombrec>Instituto de Prevision Social para Jubilados y Pension</nombrec>
+  <direccion>25 de  mayo e  Iriondo</direccion>
+  <localidad>RECONQUISTA</localidad>
+  <codpos>3560</codpos>
+  <ub>0,52</ub>
+  <ug>1,74</ug>
+  <rieub>0,52</rieub>
+  <rieug>1,26</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>null</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>S</capitada>
+  <noimport>N</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu></factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121270</codos>
+  <nombre>FARMACIA 75 % INTERNACION BS.AS</nombre>
+  <nombrec>Obra Social del Personal de Farmacias</nombrec>
+  <direccion>CONSTITUCION 2066</direccion>
+  <localidad>CAPITAL FEDERAL</localidad>
+  <codpos>1254</codpos>
+  <ub>1,40</ub>
+  <ug>3,60</ug>
+  <rieub>1,40</rieub>
+  <rieug>3,60</rieug>
+  <porcentaje>75,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>33-64810438-9</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121276</codos>
+  <nombre>OSTYR INTERNACION</nombre>
+  <nombrec>Obra social de Telegrafistas y Radiotelegrafistas</nombrec>
+  <direccion>Chacabuco 140</direccion>
+  <localidad>CAPITAL FEDERAL</localidad>
+  <codpos>1069</codpos>
+  <ub>0,26</ub>
+  <ug>1,94</ug>
+  <rieub>0,26</rieub>
+  <rieug>1,94</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>null</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>N</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121277</codos>
+  <nombre>MOLINEROS INTERNACION-AMUR MEDIAR</nombre>
+  <nombrec>AMUR MEDIAR MOLINEROS</nombrec>
+  <direccion>1 DE MAYO 2116/22</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>2,16</ub>
+  <ug>5,70</ug>
+  <rieub>2,16</rieub>
+  <rieug>5,70</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>30-56751013-8</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>N</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121278</codos>
+  <nombre>ENSALUD CONVENIO MOLINERO S.A.</nombre>
+  <nombrec>ENSALUD S.A.</nombrec>
+  <direccion>San Martin 480 - CABA</direccion>
+  <localidad>Buenos Aires</localidad>
+  <codpos>0000</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>RI</codpfis>
+  <nrocuit>30-70711845-4</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121281</codos>
+  <nombre>OSDOP INTERNACION</nombre>
+  <nombrec>CEL SALUD SRL </nombrec>
+  <direccion>9 DE JULIO 1147</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,52</ub>
+  <ug>1,26</ug>
+  <rieub>0,52</rieub>
+  <rieug>1,26</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>30-69983887-6</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121287</codos>
+  <nombre>MOLINEROS CONV REVELAR-INTERNADO</nombre>
+  <nombrec>REVELAR S A -CONV COM MOLINEROS</nombrec>
+  <direccion>BALCARSE 1511 OF 1</direccion>
+  <localidad>ROSARIO</localidad>
+  <codpos>2000</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-71052999-6</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121291</codos>
+  <nombre>FE SALUD PLAN INFANTIL</nombre>
+  <nombrec>ASOCIACION MUTUAL MEDICA VILLA MARIA</nombrec>
+  <direccion>ENTRE RIOS 711</direccion>
+  <localidad>VILLA MARIA- CORDOBA</localidad>
+  <codpos>5900</codpos>
+  <ub>1,35</ub>
+  <ug>3,60</ug>
+  <rieub>1,35</rieub>
+  <rieug>3,60</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-63860427-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121305</codos>
+  <nombre>IAPOS HEMOTERAPIA</nombre>
+  <nombrec>Instituto Autarquico Provincial de Obra Social</nombrec>
+  <direccion>Rivadavia 3452</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,53</ub>
+  <ug>1,75</ug>
+  <rieub>0,53</rieub>
+  <rieug>1,20</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-99917935-1</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>S</capitada>
+  <noimport>N</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121310</codos>
+  <nombre>OSFICA - DIFERENCIAL</nombre>
+  <nombrec>IMAGEN EN SALUD S.A CONV.OSFICA</nombrec>
+  <direccion>SALTA 424</direccion>
+  <localidad>PARANA-ENTRE RIOS</localidad>
+  <codpos>3100</codpos>
+  <ub>0,00</ub>
+  <ug>0,10</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,10</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>R.I</codpfis>
+  <nrocuit>30-70890517-4</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121311</codos>
+  <nombre>LUZ Y FUERZA PLAN JOVEN</nombre>
+  <nombrec>MUTUAL PROVINCIAL LUZ Y FUERZA</nombrec>
+  <direccion>JUNIN 2957</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,60</ub>
+  <ug>2,23</ug>
+  <rieub>0,60</rieub>
+  <rieug>2,23</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30- 6998967-1</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>S</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121329</codos>
+  <nombre>MUTUAL FEDERADA 25 DE JUNIO -INT-PLAN 2</nombre>
+  <nombrec>MUTUAL FEDERADA 25 DE JUNIO</nombrec>
+  <direccion>SAN JERONIMO 3320</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-54159260-8</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121333</codos>
+  <nombre>DIBA ADHERENTE AMBULATORIO 80%</nombre>
+  <nombrec>Direccion de Bienestar de la Armada</nombrec>
+  <direccion>FREYRE 2452</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>1,50</ub>
+  <ug>4,30</ug>
+  <rieub>1,50</rieub>
+  <rieug>4,30</rieug>
+  <porcentaje>80,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>30-67435656-7</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121339</codos>
+  <nombre>ATSA 75%</nombre>
+  <nombrec>Obra social de trabajadores de la Sanidad Argentina</nombrec>
+  <direccion>1. de mayo  2718</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>1,75</ub>
+  <ug>6,14</ug>
+  <rieub>1,75</rieub>
+  <rieug>6,14</rieug>
+  <porcentaje>75,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>30-59738231-2</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>N</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121341</codos>
+  <nombre>IOSFA-</nombre>
+  <nombrec>INSTITUTO DE OBRA SOCIAL DE LAS FUERZAS ARMADAS(IOSFA)</nombrec>
+  <direccion>PASO 551</direccion>
+  <localidad>CIUDAD AUTON. DE  BS.AS</localidad>
+  <codpos>1031</codpos>
+  <ub>0,90</ub>
+  <ug>3,36</ug>
+  <rieub>0,90</rieub>
+  <rieug>3,36</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-71429214-1</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121342</codos>
+  <nombre>AMUR PLAN VERDE</nombre>
+  <nombrec>Asociacion Mutual Ruralista</nombrec>
+  <direccion>1. de  mayo  2116/22</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>2,16</ub>
+  <ug>5,70</ug>
+  <rieub>2,16</rieub>
+  <rieug>5,70</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-56751013-8</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121345</codos>
+  <nombre>OSDE CAT B</nombre>
+  <nombrec>Organizacion de servcios Directos empresario</nombrec>
+  <direccion>RIVADAVIA 3238</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>3,28</ub>
+  <ug>8,49</ug>
+  <rieub>3,28</rieub>
+  <rieug>8,49</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>30-54674125-3</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>N</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121346</codos>
+  <nombre>OSDE INTERNACION</nombre>
+  <nombrec>Organizacion de Sevicios Directos Empresarios</nombrec>
+  <direccion>RIVADAVIA 3238</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>3,28</ub>
+  <ug>8,49</ug>
+  <rieub>3,28</rieub>
+  <rieug>8,49</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>30-54674125-3</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121352</codos>
+  <nombre>ASIO 70%</nombre>
+  <nombrec>Asociacion Mutual de Servicios de Internacion y Operac</nombrec>
+  <direccion>CALLE 12 N. 339</direccion>
+  <localidad>AVELLANEDA</localidad>
+  <codpos>3561</codpos>
+  <ub>0,79</ub>
+  <ug>3,05</ug>
+  <rieub>0,74</rieub>
+  <rieug>2,60</rieug>
+  <porcentaje>70,00</porcentaje>
+  <codpfis>RI</codpfis>
+  <nrocuit>30-59836423-7</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>5,91</topemin>
+  <topemax>11,83</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121355</codos>
+  <nombre>TELEVISON  REFACTURACION</nombre>
+  <nombrec>OBRA SOCIAL DEL PERSONAL DE TELEVISION</nombrec>
+  <direccion>QUINTINO BOCAYUVA 50</direccion>
+  <localidad>Bs. As</localidad>
+  <codpos>1181</codpos>
+  <ub>1,30</ub>
+  <ug>3,35</ug>
+  <rieub>1,30</rieub>
+  <rieug>3,35</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXT</codpfis>
+  <nrocuit>30-51674838-5</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121359</codos>
+  <nombre>FE SALUD PLAN A</nombre>
+  <nombrec>ASOCIACION MUTUAL MEDICA VILLA MARIA</nombrec>
+  <direccion>ENTRE RIOS 711</direccion>
+  <localidad>VILLA MARIA-CORDOBA</localidad>
+  <codpos>5900</codpos>
+  <ub>1,35</ub>
+  <ug>3,60</ug>
+  <rieub>1,35</rieub>
+  <rieug>3,60</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-63860427-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>5,91</topemin>
+  <topemax>11,83</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121369</codos>
+  <nombre>PAMI TERAPIA INTENSIVA</nombre>
+  <nombrec>Instituto de Prevision Social para Jubilados y Pension</nombrec>
+  <direccion>25 de  mayo  e  Iriondo</direccion>
+  <localidad>RECONQUISTA</localidad>
+  <codpos>3560</codpos>
+  <ub>0,52</ub>
+  <ug>1,74</ug>
+  <rieub>0,52</rieub>
+  <rieug>1,26</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>null</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>S</capitada>
+  <noimport>N</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu></factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121370</codos>
+  <nombre>FARMACIA 100 % SANTA FE</nombre>
+  <nombrec>-OSADEF-Obra  Social de las Asociaciones de Empleados de Far</nombrec>
+  <direccion>Chacabuco 1818</direccion>
+  <localidad>Santa Fe</localidad>
+  <codpos>3000</codpos>
+  <ub>0,90</ub>
+  <ug>2,60</ug>
+  <rieub>0,90</rieub>
+  <rieug>2,60</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-70950571-4</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121381</codos>
+  <nombre>OSDOP (especial></nombre>
+  <nombrec>CEL SALUD SRL</nombrec>
+  <direccion>9 DE JULIO 1147</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>30-69983887-6</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121405</codos>
+  <nombre>IAPOS DETECC PRECOZ</nombre>
+  <nombrec>Instituto Autarquico Provincial de Obra Social</nombrec>
+  <direccion>Rivadavia 3452</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>30-99917935-1</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121433</codos>
+  <nombre>DIBA ADHERENTE INTERNADO</nombre>
+  <nombrec>Direccion de Bienestar de la Armada</nombrec>
+  <direccion>FREYRE 2452</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>1,50</ub>
+  <ug>4,30</ug>
+  <rieub>1,50</rieub>
+  <rieug>4,30</rieug>
+  <porcentaje>80,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>30-67435656-7</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121441</codos>
+  <nombre>IOSFA INTERNACION 100% </nombre>
+  <nombrec>IOSFA INTERNACION Instituto de Obra Social de las Fuerzas Ar</nombrec>
+  <direccion>PASO 551</direccion>
+  <localidad>Ciudad Autonoma de  Bs.</localidad>
+  <codpos>1031</codpos>
+  <ub>0,90</ub>
+  <ug>3,36</ug>
+  <rieub>0,90</rieub>
+  <rieug>3,36</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-71429214-1</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121442</codos>
+  <nombre>AMUR INTERNACION</nombre>
+  <nombrec>Asociacion Mutual Ruralista</nombrec>
+  <direccion>1. de  mayo  2116/22</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>RI</codpfis>
+  <nrocuit>30-56751013-8</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121445</codos>
+  <nombre>OSDE CAT C</nombre>
+  <nombrec>Organizacion de servicios directos Empresarios</nombrec>
+  <direccion>RIVADAVIA 3238</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>3,28</ub>
+  <ug>8,49</ug>
+  <rieub>3,28</rieub>
+  <rieug>8,49</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>30-54674125-3</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>N</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121452</codos>
+  <nombre>ASIO PLAN J 60%</nombre>
+  <nombrec>ASOCIACION MUTUAL DE SERVICIOS DE INTERNACIONES Y OPERACION </nombrec>
+  <direccion>CALLE 12 N°339</direccion>
+  <localidad>AVELLANEDA</localidad>
+  <codpos>3561</codpos>
+  <ub>0,79</ub>
+  <ug>3,05</ug>
+  <rieub>0,74</rieub>
+  <rieug>2,60</rieug>
+  <porcentaje>60,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>30-59836463-7</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121459</codos>
+  <nombre>FE SALUD PLAN B</nombre>
+  <nombrec>ASOCIACION MUTUAL MEDICA VILLA MARIA</nombrec>
+  <direccion>ENTRE RIOS 711</direccion>
+  <localidad>VILLA MARIA- CORDOBA</localidad>
+  <codpos>5900</codpos>
+  <ub>1,35</ub>
+  <ug>3,60</ug>
+  <rieub>1,35</rieub>
+  <rieug>3,60</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-63860427-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>5,91</topemin>
+  <topemax>11,83</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121469</codos>
+  <nombre>PAMI OP</nombre>
+  <nombrec>INSTITUTO DE SERVICIOS SOCILAES PARA JUBILADOS Y PENSIONADOS</nombrec>
+  <direccion>1° DE MAYO 2269</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,52</ub>
+  <ug>1,74</ug>
+  <rieub>0,52</rieub>
+  <rieug>1,26</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-52276392-2</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121470</codos>
+  <nombre>FARMACIA 100% INTERNACION BS.AS</nombre>
+  <nombrec>Obra Social del Personal de Farmacias</nombrec>
+  <direccion>CONSTITUCION 2066</direccion>
+  <localidad>CAPITAL FEDERAL</localidad>
+  <codpos>1254</codpos>
+  <ub>1,40</ub>
+  <ug>3,60</ug>
+  <rieub>1,40</rieub>
+  <rieug>3,60</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>33-64810438-9</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121505</codos>
+  <nombre>IAPOS- TERAPIA INTENSIVA</nombre>
+  <nombrec>Instituto Autarquico Pcial </nombrec>
+  <direccion>RIVADAVIA 3452</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,65</ub>
+  <ug>2,10</ug>
+  <rieub>0,53</rieub>
+  <rieug>1,75</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>30-99917935-1</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>S</capitada>
+  <noimport>N</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121559</codos>
+  <nombre>FE SALUD PLAN C</nombre>
+  <nombrec>ASOCIACION MUTUAL MEDICA VILLA MARIA</nombrec>
+  <direccion>ENTRE RIOS 711</direccion>
+  <localidad>VILLA MARIA- CORDOBA</localidad>
+  <codpos>5900</codpos>
+  <ub>1,35</ub>
+  <ug>3,60</ug>
+  <rieub>1,35</rieub>
+  <rieug>3,60</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-63860427-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>5,91</topemin>
+  <topemax>11,83</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121569</codos>
+  <nombre>PAMI- VETERANO DE GUERRA</nombre>
+  <nombrec>I.S.S.J YP-VETERANO DE GUERRA</nombrec>
+  <direccion>1° DE MAYO 2269</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,52</ub>
+  <ug>1,74</ug>
+  <rieub>0,52</rieub>
+  <rieug>1,74</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-52276392-2</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121605</codos>
+  <nombre>IAPOS NOMENCLADOR NACIONAL</nombre>
+  <nombrec>Instituto Autarquico Provincial de Obra Social</nombrec>
+  <direccion>RIVADAVIA 3452</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,65</ub>
+  <ug>2,10</ug>
+  <rieub>0,53</rieub>
+  <rieug>1,75</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-99917935-1</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121659</codos>
+  <nombre>FE SALUD PLAN D</nombre>
+  <nombrec>ASOCIACION MUTUAL MEDICA VILLA MARIA</nombrec>
+  <direccion>ENTRE RIOS 711</direccion>
+  <localidad>VILLA MARIA- CORDOBA</localidad>
+  <codpos>5900</codpos>
+  <ub>1,35</ub>
+  <ug>3,60</ug>
+  <rieub>1,35</rieub>
+  <rieug>3,60</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-63860427-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>5,91</topemin>
+  <topemax>11,83</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121669</codos>
+  <nombre>FEMEDICA</nombre>
+  <nombrec>Mutual Gremial Medica del Dto. Gral. Obligado</nombrec>
+  <direccion>Hipolito Irigoyen 1124</direccion>
+  <localidad>CAPITAL FEDERAL</localidad>
+  <codpos>1086</codpos>
+  <ub>1,35</ub>
+  <ug>3,60</ug>
+  <rieub>1,35</rieub>
+  <rieug>3,60</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>null</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>5,92</topemin>
+  <topemax>11,83</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121759</codos>
+  <nombre>COMECOR SALUD</nombre>
+  <nombrec>COMECOR SALUD</nombrec>
+  <direccion>25 de mayo e Iriondo</direccion>
+  <localidad>RECONQUISTA</localidad>
+  <codpos>3560</codpos>
+  <ub>0,13</ub>
+  <ug>0,97</ug>
+  <rieub>0,13</rieub>
+  <rieug>0,97</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>null</nrocuit>
+  <categoria>S</categoria>
+  <tope>S</tope>
+  <topemin>5,91</topemin>
+  <topemax>11,83</topemax>
+  <capitada>null</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu></factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121859</codos>
+  <nombre>FE SALUD UNIVERSITARIO</nombre>
+  <nombrec>ASOCIACION MUTUAL MEDICA VILLA MARIA</nombrec>
+  <direccion>ENTRE RIOS 711</direccion>
+  <localidad>VILLA MARIA- CORDOBA</localidad>
+  <codpos>5900</codpos>
+  <ub>1,35</ub>
+  <ug>3,60</ug>
+  <rieub>1,35</rieub>
+  <rieug>3,60</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-63860427-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>5,91</topemin>
+  <topemax>11,83</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121860</codos>
+  <nombre>GERDANNA</nombre>
+  <nombrec>GERDANNA  S.A</nombrec>
+  <direccion>Sarmiento 1866/70 1. y 2</direccion>
+  <localidad>CAPITAL FEDERAL</localidad>
+  <codpos>1044</codpos>
+  <ub>1,25</ub>
+  <ug>3,25</ug>
+  <rieub>1,25</rieub>
+  <rieug>3,25</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>null</codpfis>
+  <nrocuit>30-69760639-0</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121861</codos>
+  <nombre>MEDIFE</nombre>
+  <nombrec>MEDIFE ASOCIACION CIVIL</nombrec>
+  <direccion>HABEGGER 1398</direccion>
+  <localidad>RECONQUISTA -STA FE</localidad>
+  <codpos>3560</codpos>
+  <ub>2,57</ub>
+  <ug>6,78</ug>
+  <rieub>2,57</rieub>
+  <rieug>6,78</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>30-68273765-0</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121862</codos>
+  <nombre>MEDIFE REFACTURACION</nombre>
+  <nombrec>MEDIFE  ASOCIACION CIVIL -REFAC TURACION</nombrec>
+  <direccion>HABEGGER 1398</direccion>
+  <localidad>RQTA</localidad>
+  <codpos>3560</codpos>
+  <ub>2,57</ub>
+  <ug>6,78</ug>
+  <rieub>2,57</rieub>
+  <rieug>6,78</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>30-68273765-0</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121959</codos>
+  <nombre>FE SALUD AMBULATORIO</nombre>
+  <nombrec>ASOCIACION MUTUAL MEDICA DE VILLA MARIA</nombrec>
+  <direccion>ENTRE RIOS 715</direccion>
+  <localidad>VILLA MARIA- CORDOBA</localidad>
+  <codpos>5900</codpos>
+  <ub>1,35</ub>
+  <ug>3,60</ug>
+  <rieub>1,35</rieub>
+  <rieug>3,60</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-63860427-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>5,91</topemin>
+  <topemax>11,83</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121960</codos>
+  <nombre>OSPEDYC.- </nombre>
+  <nombrec>OBRA  SOCIAL DEL PERSONAL  DE  ENTIDADES  DEPORTIVAS  Y  CIV</nombrec>
+  <direccion>ALBERTI 646</direccion>
+  <localidad>CIUDAD AUTONOMA DE  BUE</localidad>
+  <codpos>1424</codpos>
+  <ub>1,00</ub>
+  <ug>1,00</ug>
+  <rieub>1,00</rieub>
+  <rieug>1,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-68833954-1</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121961</codos>
+  <nombre>OSPPCYQ</nombre>
+  <nombrec>IMAGEN EN SALUD S.A CONV.OSPPCYQ</nombrec>
+  <direccion>SALTA 414</direccion>
+  <localidad>PARANA-ENTRE RIOS</localidad>
+  <codpos>3100</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>R.I</codpfis>
+  <nrocuit>30-70890517-4</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121962</codos>
+  <nombre>OSPPCYQ INTERNACION</nombre>
+  <nombrec>IMAGEN EN SALUD S.A CONV OSPPCYQ</nombrec>
+  <direccion>SALTA 424</direccion>
+  <localidad>PARANA-ENTRE RIOS</localidad>
+  <codpos>3100</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>R.I</codpfis>
+  <nrocuit>30-70890517-4</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121963</codos>
+  <nombre>LA SEGUNDA ART</nombre>
+  <nombrec>LA SEGUNDA ART </nombrec>
+  <direccion>JUAN MANUEL DE ROSAS 957</direccion>
+  <localidad>ROSARIO</localidad>
+  <codpos>2000</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-68913348-3</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121964</codos>
+  <nombre>FEDERACION PATRONAL SEGUROS</nombre>
+  <nombrec>FEDERACION PATRONAL SEGUROS S.A</nombrec>
+  <direccion>AVDA 51 N°0770 </direccion>
+  <localidad>LA PLATA-BS AS</localidad>
+  <codpos>1900</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>R.I</codpfis>
+  <nrocuit>33-70736658-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121965</codos>
+  <nombre>SWISS MEDICAL - COVID</nombre>
+  <nombrec>SWISS MEDICAL S.A.</nombrec>
+  <direccion>ARENALES  1826- 1. PISO</direccion>
+  <localidad>CAPITAL FEDERAL</localidad>
+  <codpos>1124</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>RI</codpfis>
+  <nrocuit>30-65485516-8</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121967</codos>
+  <nombre>PODER JUDICIAL DE LA NACION</nombre>
+  <nombrec>Obra Social del Poder Judicial de la Nacion</nombrec>
+  <direccion>LAVALLE 1653</direccion>
+  <localidad>CIUDAD AUTONOMA BS-AS</localidad>
+  <codpos>1048</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-63619685-8</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121968</codos>
+  <nombre>PREVENCION - PLAN COVID</nombre>
+  <nombrec>PREVENCION-PLAN COVID</nombrec>
+  <direccion>AVDA.INDEPENDENCIA N°333</direccion>
+  <localidad>SUNCHALES STA FE</localidad>
+  <codpos>2322</codpos>
+  <ub>1,00</ub>
+  <ug>1,00</ug>
+  <rieub>1,00</rieub>
+  <rieug>1,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>RI</codpfis>
+  <nrocuit>30-71304500-0</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121969</codos>
+  <nombre>MUTUAL FEDERADA - PLAN COVID</nombre>
+  <nombrec>MUTUAL FEDERADA 25 DE JUNIO</nombrec>
+  <direccion>SAN JERONIMO 3320</direccion>
+  <localidad>SANTA FE </localidad>
+  <codpos>3000</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>R</codpfis>
+  <nrocuit>30-54159260-8</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121970</codos>
+  <nombre>SWISS MEDICAL INTERNACION</nombre>
+  <nombrec>SWISS MEDICAL INTERNACION</nombrec>
+  <direccion>ARENALES 1826 1° PISO </direccion>
+  <localidad>CAPITAL FEDERAL </localidad>
+  <codpos>1124</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>30-65485516-8</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121971</codos>
+  <nombre>UNION PERSONAL - COVID</nombre>
+  <nombrec>G.M. AGRUPACION DE COLABORACION</nombrec>
+  <direccion>SAN LORENZO 2780</direccion>
+  <localidad>SANTA FE</localidad>
+  <codpos>3000</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>R.I</codpfis>
+  <nrocuit>30-71735890-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121972</codos>
+  <nombre>UTEPLIM</nombre>
+  <nombrec>UNION TRABAJADORES DE EMPRESAS PRIVADAS DE LIMPIEZA</nombrec>
+  <direccion>BELGRANO AV 1180 PISO:1</direccion>
+  <localidad>CABA</localidad>
+  <codpos>1092</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-70090123-4</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121973</codos>
+  <nombre>CAMIONEROS PRIMERO</nombre>
+  <nombrec>GLOBAL EMPRESARIA S.A-CONV CAMIONEROS PRIMERO</nombrec>
+  <direccion>PASCO 1043</direccion>
+  <localidad>ROSARIO</localidad>
+  <codpos>2000</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>30-71513403-5</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121974</codos>
+  <nombre>SANCOR S700A</nombre>
+  <nombrec>SANCOR S700A</nombrec>
+  <direccion>AVDA INDEPENDENCIA 206</direccion>
+  <localidad>SUNCHALES SANTA FE</localidad>
+  <codpos>2322</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-59035479-8</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121975</codos>
+  <nombre>SANCOR S70SF</nombre>
+  <nombrec>SANCOR S70SF</nombrec>
+  <direccion>AVDA INDEPENDENCIA 206</direccion>
+  <localidad>SUNCHALES SANTA FE</localidad>
+  <codpos>2322</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-59035479-8</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121976</codos>
+  <nombre>OSIAD SALUD</nombre>
+  <nombrec>OBRA SOCIAL PARA EL PERSONAL DE LA INDUSTRIA ACEITERA DESMOT</nombrec>
+  <direccion>BELGRANO 1370 2do piso </direccion>
+  <localidad>CABA</localidad>
+  <codpos>1093</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-58331882-4</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121977</codos>
+  <nombre>OSIAD INTERNACION</nombre>
+  <nombrec>OBRA SOCIAL PARA EL PERSONAL DE LA INDUSTRIA ACEITERA DESMOT</nombrec>
+  <direccion>BELGRANO 1370 2do piso</direccion>
+  <localidad>CABA</localidad>
+  <codpos>1093</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-58331882-4</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121978</codos>
+  <nombre>OSPJN - PODER JUDICIAL</nombre>
+  <nombrec>OBRA SOCIAL PODER JUDICIAL DE LA NACION</nombrec>
+  <direccion>LAVALLE 1653</direccion>
+  <localidad>CABA</localidad>
+  <codpos>1048</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-63619685-8</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121979</codos>
+  <nombre>FE SALUD UNIMEDICA</nombre>
+  <nombrec>UNIMEDICA</nombrec>
+  <direccion>09 DE JULIO 11</direccion>
+  <localidad>CONCORDIA</localidad>
+  <codpos>3200</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>RI</codpfis>
+  <nrocuit>30-71089177-6</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121980</codos>
+  <nombre>PREVENCION ART</nombre>
+  <nombrec>PREVENCION A.R.T S.A</nombrec>
+  <direccion>RUTA NACIONAL 34 KM 257</direccion>
+  <localidad>SUNCHALES-STA FE</localidad>
+  <codpos>2322</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-68436191-7</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121981</codos>
+  <nombre>FE SALUD PRIMORDIAL</nombre>
+  <nombrec>ASOCIACION MUTUAL VILLA MARIA</nombrec>
+  <direccion>ENTRE RIOS 711</direccion>
+  <localidad>VILLA MARIA-CORDOBA</localidad>
+  <codpos>5900</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-63860427-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121982</codos>
+  <nombre>AVALIAN PLAN 2</nombre>
+  <nombrec>ACA SALUD-Cooperativa de prestaciones de servicios medicos</nombrec>
+  <direccion>CORRIENTES 880</direccion>
+  <localidad>ROSARIO</localidad>
+  <codpos>2000</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>RI</codpfis>
+  <nrocuit>30-60495864-0</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121983</codos>
+  <nombre>SANCOR SALUD-MONOTRIBUTO</nombre>
+  <nombrec>ASOCIACION MUTUAL SANCOR</nombrec>
+  <direccion>AVDA INDEPENDENCIA 206</direccion>
+  <localidad>SUNCHALES-SANTA FE</localidad>
+  <codpos>2322</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-59035479-8</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121984</codos>
+  <nombre>PREVENCION SALUD-MONOTRIBUTO</nombre>
+  <nombrec>PREVENCION SALUD S.A</nombrec>
+  <direccion>AVDA INDEPENDENCIA 333</direccion>
+  <localidad>SUNCHALES-SANTA FE</localidad>
+  <codpos>2322</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>RI</codpfis>
+  <nrocuit>30-71304500-0</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121985</codos>
+  <nombre>AMUR-facturacion diferida </nombre>
+  <nombrec>Asociacion Mutual Ruralista</nombrec>
+  <direccion>1° de mayo 2116/22</direccion>
+  <localidad>santa fe </localidad>
+  <codpos>3000</codpos>
+  <ub>2,16</ub>
+  <ug>5,70</ug>
+  <rieub>2,16</rieub>
+  <rieug>5,70</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EXE</codpfis>
+  <nrocuit>30-56751013-8</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121986</codos>
+  <nombre>FE SALUD CON VOS</nombre>
+  <nombrec>ASOCIACION MUTUAL MEDICA DE VILLA MARIA</nombrec>
+  <direccion>ENTRE RIOS 715</direccion>
+  <localidad>VILLA MARIA -CORDOBA</localidad>
+  <codpos>5900</codpos>
+  <ub>1,35</ub>
+  <ug>3,60</ug>
+  <rieub>1,35</rieub>
+  <rieug>3,60</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-63860427-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121987</codos>
+  <nombre>FE SALUD PLAN INTEGRAL</nombre>
+  <nombrec>ASOCIACION MUTUAL VILLA MARIA</nombrec>
+  <direccion>ENTRE RIOS 711</direccion>
+  <localidad>VILLA MARIA-CORDOBA</localidad>
+  <codpos>5900</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-63860427-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121988</codos>
+  <nombre>ASIO 100%</nombre>
+  <nombrec>Asoc. Mutual de servicios de Internacion y Operac.</nombrec>
+  <direccion>Calle 12 N° 339</direccion>
+  <localidad>Avellaneda</localidad>
+  <codpos>3561</codpos>
+  <ub>0,79</ub>
+  <ug>3,05</ug>
+  <rieub>0,74</rieub>
+  <rieug>2,60</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>RI</codpfis>
+  <nrocuit>30-59836423-7</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121989</codos>
+  <nombre>OSJERA (Personal jerarquico de la ind. grafica)</nombre>
+  <nombrec>Obra Social del personal jerarquico de la i ndustria grafica</nombrec>
+  <direccion>Moreno 1140 Piso 2</direccion>
+  <localidad>Ciudad Autonoma de Bs A</localidad>
+  <codpos>1091</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>100,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-69635177-1</nrocuit>
+  <categoria>S</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121990</codos>
+  <nombre>OPDEA(Obra Social del personal de direccion de las</nombre>
+  <nombrec>OBRA SOCIAL DEL PERSONAL DE DIRECCION DE LAS EMPRESAS DE ALI</nombrec>
+  <direccion>IRIGOYEN BERNARD 546 P.2</direccion>
+  <localidad>CAPITAL FEDERAL</localidad>
+  <codpos>1072</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>33-54833535-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121991</codos>
+  <nombre>FE SALUD PLAN PRIVILEGIO</nombre>
+  <nombrec>ASOCIACION MUTUAL VILLA MARIA</nombrec>
+  <direccion>ENTRE RIOS 711</direccion>
+  <localidad>CORDOBA</localidad>
+  <codpos>5900</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-63860427-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121992</codos>
+  <nombre>FE SALUD PLAN DESTACADO</nombre>
+  <nombrec>ASOCIACION MUTUAL VILLA MARIA</nombrec>
+  <direccion>ENTRE RIOS 711</direccion>
+  <localidad>CORDOBA</localidad>
+  <codpos>5900</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-63860427-9</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>N</noimport>
+  <retencioniva>10,50</retencioniva>
+  <retieneiva>S</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>S</pernbu>
+  </obsocial>
+</obrassociales>

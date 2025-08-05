@@ -1,0 +1,419 @@
+object fmDistribucionOrdenesFacturadas: TfmDistribucionOrdenesFacturadas
+  Left = 0
+  Top = 0
+  Caption = 'Distribuci'#243'n de Ordenes Facturadas'
+  ClientHeight = 353
+  ClientWidth = 764
+  Color = clBtnFace
+  Font.Charset = ANSI_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  OnCanResize = FormCanResize
+  OnClose = FormClose
+  OnResize = FormResize
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 334
+    Width = 764
+    Height = 19
+    Panels = <
+      item
+        Width = 50
+      end
+      item
+        Width = 50
+      end>
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 764
+    Height = 334
+    Align = alClient
+    BevelInner = bvLowered
+    BorderWidth = 4
+    TabOrder = 1
+    OnResize = Panel1Resize
+    object Panel2: TPanel
+      Left = 6
+      Top = 6
+      Width = 752
+      Height = 83
+      Align = alTop
+      BevelOuter = bvNone
+      TabOrder = 0
+      object Panel3: TPanel
+        Left = 635
+        Top = 0
+        Width = 117
+        Height = 83
+        Align = alRight
+        BevelOuter = bvNone
+        TabOrder = 0
+        object btnProcesar: TButton
+          Left = 9
+          Top = 4
+          Width = 108
+          Height = 25
+          Caption = 'Procesar Ordenes'
+          TabOrder = 0
+          OnClick = btnProcesarClick
+        end
+        object btnCerrar: TButton
+          Left = 9
+          Top = 31
+          Width = 108
+          Height = 25
+          Caption = '&Cerrar'
+          TabOrder = 1
+          OnClick = btnCerrarClick
+        end
+      end
+      object Panel8: TPanel
+        Left = 0
+        Top = 0
+        Width = 635
+        Height = 83
+        Align = alClient
+        BevelOuter = bvNone
+        TabOrder = 1
+        object Label1: TLabel
+          Left = 20
+          Top = 6
+          Width = 41
+          Height = 13
+          Alignment = taRightJustify
+          Caption = 'Per'#237'odo:'
+        end
+        object Label2: TLabel
+          Left = 125
+          Top = 6
+          Width = 56
+          Height = 13
+          Alignment = taRightJustify
+          Caption = 'Laboratorio:'
+        end
+        object Label3: TLabel
+          Left = 7
+          Top = 30
+          Width = 56
+          Height = 13
+          Alignment = taRightJustify
+          Caption = 'Laboratorio:'
+        end
+        object Label4: TLabel
+          Left = 415
+          Top = 31
+          Width = 98
+          Height = 13
+          Alignment = taRightJustify
+          Caption = '(a Distribuir Ordenes)'
+        end
+        object Label7: TLabel
+          Left = 5
+          Top = 55
+          Width = 58
+          Height = 13
+          Alignment = taRightJustify
+          Caption = 'Obra Social:'
+        end
+        object periodo: TMaskEdit
+          Left = 67
+          Top = 3
+          Width = 51
+          Height = 21
+          EditMask = '99/9999;1; '
+          MaxLength = 7
+          TabOrder = 0
+          Text = '  /    '
+        end
+        object listLaboratorios: TComboBox
+          Left = 185
+          Top = 4
+          Width = 341
+          Height = 21
+          ItemHeight = 13
+          TabOrder = 1
+          OnChange = listLaboratoriosChange
+        end
+        object listLaboratoriosDist: TComboBox
+          Left = 67
+          Top = 28
+          Width = 341
+          Height = 21
+          ItemHeight = 13
+          TabOrder = 2
+          OnChange = listLaboratoriosDistChange
+        end
+        object listLaboratorioDistID: TComboBox
+          Left = 317
+          Top = 27
+          Width = 65
+          Height = 21
+          ItemHeight = 13
+          TabOrder = 3
+          Visible = False
+        end
+        object listLaboratoriosID: TComboBox
+          Left = 402
+          Top = 5
+          Width = 65
+          Height = 21
+          ItemHeight = 13
+          TabOrder = 4
+          Visible = False
+        end
+        object listOS: TComboBox
+          Left = 67
+          Top = 53
+          Width = 341
+          Height = 21
+          ItemHeight = 13
+          TabOrder = 5
+          OnChange = listOSChange
+        end
+        object listCodos: TComboBox
+          Left = 317
+          Top = 52
+          Width = 65
+          Height = 21
+          ItemHeight = 13
+          TabOrder = 6
+          Visible = False
+        end
+        object btnRecargar: TButton
+          Left = 412
+          Top = 51
+          Width = 114
+          Height = 25
+          Caption = 'Recuperar Ordenes'
+          TabOrder = 7
+          OnClick = btnRecargarClick
+        end
+      end
+    end
+    object Panel5: TPanel
+      Left = 6
+      Top = 138
+      Width = 752
+      Height = 125
+      Align = alClient
+      BevelInner = bvLowered
+      TabOrder = 1
+      object A: TStringGrid
+        Left = 2
+        Top = 2
+        Width = 748
+        Height = 121
+        Align = alClient
+        BorderStyle = bsNone
+        ColCount = 6
+        Ctl3D = True
+        DefaultRowHeight = 15
+        Enabled = False
+        FixedCols = 0
+        RowCount = 10000
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goRowSelect]
+        ParentCtl3D = False
+        ParentFont = False
+        TabOrder = 0
+        OnKeyDown = AKeyDown
+        ColWidths = (
+          61
+          65
+          251
+          77
+          224
+          64)
+      end
+      object C: TStringGrid
+        Left = 5
+        Top = 25
+        Width = 717
+        Height = 94
+        BorderStyle = bsNone
+        ColCount = 15
+        Ctl3D = True
+        DefaultRowHeight = 15
+        FixedCols = 0
+        RowCount = 100000
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goRowSelect]
+        ParentCtl3D = False
+        ParentFont = False
+        TabOrder = 1
+        Visible = False
+        ColWidths = (
+          51
+          62
+          58
+          63
+          64
+          64
+          64
+          64
+          64
+          64
+          64
+          64
+          64
+          64
+          64)
+      end
+    end
+    object Panel7: TPanel
+      Left = 6
+      Top = 89
+      Width = 752
+      Height = 49
+      Align = alTop
+      BevelOuter = bvNone
+      TabOrder = 2
+      object GroupBox1: TGroupBox
+        Left = 8
+        Top = -2
+        Width = 417
+        Height = 48
+        Caption = ' Operaciones de Facturaci'#243'n '
+        TabOrder = 0
+        object Button1: TButton
+          Left = 8
+          Top = 16
+          Width = 190
+          Height = 25
+          Caption = 'Iniciar Proceso de Distribuci'#243'n'
+          TabOrder = 0
+          OnClick = Button1Click
+        end
+        object Button2: TButton
+          Left = 204
+          Top = 16
+          Width = 197
+          Height = 25
+          Caption = '&Finalizar / Cambiar de Laboratorio'
+          TabOrder = 1
+          OnClick = Button2Click
+        end
+      end
+    end
+    object Panel4: TPanel
+      Left = 6
+      Top = 263
+      Width = 752
+      Height = 65
+      Align = alBottom
+      BevelInner = bvLowered
+      TabOrder = 3
+      object Label5: TLabel
+        Left = 516
+        Top = 8
+        Width = 54
+        Height = 13
+        Caption = 'Total Fact.:'
+      end
+      object total: TLabel
+        Left = 663
+        Top = 8
+        Width = 3
+        Height = 13
+        Alignment = taRightJustify
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clNavy
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        ParentFont = False
+      end
+      object Label6: TLabel
+        Left = 516
+        Top = 23
+        Width = 79
+        Height = 13
+        Caption = 'Ord. Facturadas:'
+      end
+      object tf: TLabel
+        Left = 663
+        Top = 23
+        Width = 3
+        Height = 13
+        Alignment = taRightJustify
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clNavy
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        ParentFont = False
+      end
+      object Label8: TLabel
+        Left = 517
+        Top = 39
+        Width = 79
+        Height = 13
+        Caption = 'Ord. Pendientes:'
+      end
+      object tp: TLabel
+        Left = 663
+        Top = 39
+        Width = 3
+        Height = 13
+        Alignment = taRightJustify
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clNavy
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        ParentFont = False
+      end
+      object Panel6: TPanel
+        Left = 2
+        Top = 2
+        Width = 511
+        Height = 61
+        Align = alLeft
+        BevelOuter = bvNone
+        TabOrder = 0
+        object P: TStringGrid
+          Left = 0
+          Top = 0
+          Width = 511
+          Height = 61
+          Align = alClient
+          BorderStyle = bsNone
+          ColCount = 3
+          Ctl3D = True
+          DefaultRowHeight = 15
+          FixedCols = 0
+          RowCount = 2500
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goRowSelect]
+          ParentCtl3D = False
+          ParentFont = False
+          TabOrder = 0
+          ColWidths = (
+            78
+            306
+            103)
+        end
+      end
+    end
+  end
+end

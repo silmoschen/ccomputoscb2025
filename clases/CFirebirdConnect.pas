@@ -1,0 +1,205 @@
+unit CFirebirdConnect;
+
+interface
+
+uses SysUtils, IBDatabase, IBCustomDataSet, IBTable, IBQuery,
+     DB, Variants, IB, Classes, CBDT, CUtiles;
+
+const it = 20;
+
+type
+
+TTFirebirdConnect = class
+  IBDatabase: TIBDatabase;
+  IBTable: TIBTable;
+  IBTransaction: TIBTransaction;
+  Modulo, Host, Usuario, Password, Dir_Remoto, Dir_Remoto1: String;
+ public
+  { Declaraciones Públicas }
+  constructor Create;
+  destructor  Destroy; override;
+
+  function   Conectar(xbasedatos, xusuario, xpassword: String): Boolean;
+  procedure  Desconectar; overload;
+
+  function   InstanciarTabla(xtabla: String): TIBTable; overload;
+  function   verificarSiExisteCampo(tabla: TIBTable; campo:String): Boolean;
+
+  procedure  getModulo(xmodulo: String);
+ private
+  { Declaraciones Privadas }
+  modulos: array[1..it, 1..6] of String;
+  it: Integer;
+  procedure CargarModulos;
+end;
+
+function firebird: TTFirebirdConnect;
+
+implementation
+
+var
+  xfirebird: TTFirebirdConnect = nil;
+
+constructor TTFirebirdConnect.Create;
+begin
+  //CargarModulos;
+end;
+
+destructor TTFirebirdConnect.Destroy;
+begin
+  inherited Destroy;
+end;
+
+function TTFirebirdConnect.Conectar(xbasedatos, xusuario, xpassword: String): Boolean;
+var
+  E: Integer;
+Begin
+  if IBDatabase = Nil then Begin
+    IBDatabase := TIBDatabase.Create(Nil);
+    IBDatabase.DatabaseName := xbasedatos;
+    IBDatabase.Params.Add('user_name=' + xusuario);
+    IBDatabase.Params.Add('password=' + xpassword);
+    IBDatabase.TraceFlags := [];
+    IBDatabase.IdleTimer := 1;
+    IBDatabase.LoginPrompt := False;
+    try
+      IBDatabase.Open;
+      IBDatabase.Connected := true;
+    except
+      on E:EIBError do utiles.msgError(E.Message + ' ' + IntToStr(E.IBErrorCode));
+    end;
+
+    IBTransaction := TIBTransaction.Create(Nil);
+    IBTransaction.Params.Add('read_committed');
+    IBTransaction.Params.Add('rec_version');
+    IBTransaction.Params.Add('nowait');
+
+    IBDatabase.DefaultTransaction := IBTransaction;
+
+    IBTransaction.Active := true;
+    utiles.msgError('2');
+  end;
+
+  Result := IBDatabase.Connected;
+end;
+
+procedure TTFirebirdConnect.Desconectar;
+var
+  i: integer;
+Begin
+  if IBDatabase <> Nil then
+    // 01/05/2014
+    for i := IBDatabase.TransactionCount - 1 downto 0 do begin
+      if (IBDatabase.Transactions[i].Active) then begin
+        IBDatabase.Transactions[i].Rollback;
+        IBDatabase.Transactions[i].Active := false;
+      end;
+
+    IBTransaction.Destroy;
+    IBDatabase.RemoveTransactions;
+    IBDatabase.CloseDataSets;
+    IBDatabase.ForceClose;
+    IBDatabase.Destroy;
+    IBDatabase := Nil;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TTFirebirdConnect.CargarModulos;
+// Objetivo...: Cargar Módulos
+var
+  tabla: TIBTable;
+  i: Integer;
+Begin
+  if not (FileExists(dbs.DirSistema + '\firebird.gdb')) then exit;
+  if (modulos[1, 1] <> '') then exit;
+
+  conectar(dbs.DirSistema + '\firebird.gdb', 'sysdba', 'masterkey');
+  tabla := InstanciarTabla('firebird');
+  tabla.Open; i := 0;
+  while not tabla.Eof do Begin
+    Inc(i); it := i;
+    modulos[i, 1] := tabla.FieldByName('MODULO').AsString;
+    modulos[i, 2] := tabla.FieldByName('HOST').AsString;
+    modulos[i, 3] := tabla.FieldByName('USUARIO').AsString;
+    modulos[i, 4] := tabla.FieldByName('PASS').AsString;
+    if verificarSiExisteCampo(tabla, 'dir_remoto') then
+      modulos[i, 5] := tabla.FieldByName('DIR_REMOTO').AsString
+    else
+      modulos[i, 5] := 'N';
+    if verificarSiExisteCampo(tabla, 'dir_remoto1') then
+      modulos[i, 6] := tabla.FieldByName('DIR_REMOTO1').AsString
+    else
+      modulos[i, 6] := 'N';
+
+    tabla.Next;
+  end;
+  //tabla.Close;      
+  //desconectar;
+end;
+
+procedure TTFirebirdConnect.getModulo(xmodulo: String);
+// Objetivo...: Obtener un módulo
+var
+  i: Integer;
+Begin
+  if it = 0 then CargarModulos;
+  modulo := ''; host := ''; usuario := ''; password := '';
+
+  For i := 1 to it do Begin
+    if Trim(Lowercase(modulos[i, 1])) = Trim(Lowercase(xmodulo)) then Begin
+      modulo      := modulos[i, 1];
+      host        := modulos[i, 2];
+      usuario     := modulos[i, 3];
+      password    := modulos[i, 4];
+      dir_remoto  := modulos[i, 5];
+      dir_remoto1 := modulos[i, 6];
+      Break;
+    end;
+  end;
+end;
+
+function TTFirebirdConnect.verificarSiExisteCampo(tabla: TIBTable; campo: String): Boolean;
+// Objetivo...: verificar si existe campo
+var
+  i: Integer;
+begin
+  Result := False;
+  for i := 0 to tabla.FieldCount - 1 do Begin
+    if lowercase(tabla.FieldDefs[i].Name) = lowercase(campo) then Begin
+      Result := True;
+      Break;
+    end;
+  end;
+end;
+
+function  TTFirebirdConnect.InstanciarTabla(xtabla: String): TIBTable;
+// Objetivo...: Creamos una Instancia Nueva
+var
+  tabla: TIBTable;
+Begin
+  tabla               := TIBTable.Create(Nil);
+  tabla.CachedUpdates := False;
+  tabla.Transaction   := IBTransaction;
+  tabla.TableName     := UpperCase(xtabla);
+  Result              := tabla;
+end;
+
+{===============================================================================}
+
+function firebird: TTFirebirdConnect;
+begin
+  if xfirebird = nil then
+    xfirebird := TTFirebirdConnect.Create;
+  Result := xfirebird;
+end;
+
+{===============================================================================}
+
+initialization
+
+finalization
+  xfirebird.Free;
+
+end.

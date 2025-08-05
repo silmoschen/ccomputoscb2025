@@ -1,0 +1,17 @@
+object fmSoporteDigital: TfmSoporteDigital
+  Left = 0
+  Top = 0
+  Caption = 'Exportaci'#243'n Datos Soporte Digital'
+  ClientHeight = 387
+  ClientWidth = 624
+  Color = clBtnFace
+  Font.Charset = ANSI_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Arial'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poMainFormCenter
+  PixelsPerInch = 96
+  TextHeight = 14
+end

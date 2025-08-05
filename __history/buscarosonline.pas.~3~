@@ -1,0 +1,110 @@
+unit buscarosonline;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Grids, Mask, ExtCtrls, ComCtrls, CAuditoriaOnLine, CAuditoriaCCB,
+  CUtiles, Contnrs, CUtilidadesStringGrid, CProfesionalCCB;
+
+type
+  TfmBuscarOrdenesOnLine = class(TForm)
+    StatusBar1: TStatusBar;
+    Panel1: TPanel;
+    btnTransferir: TButton;
+    Panel5: TPanel;
+    Label3: TLabel;
+    Label4: TLabel;
+    desde: TMaskEdit;
+    hasta: TMaskEdit;
+    Panel6: TPanel;
+    btnSubir: TButton;
+    Panel11: TPanel;
+    E: TStringGrid;
+    procedure FormShow(Sender: TObject);
+    procedure btnSubirClick(Sender: TObject);
+  private
+    { Private declarations }
+    procedure CargarOrdenes;
+  public
+    { Public declarations }
+  end;
+
+var
+  fmBuscarOrdenesOnLine: TfmBuscarOrdenesOnLine;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfmBuscarOrdenesOnLine.CargarOrdenes;
+// Objetivo...: Cargar Ordenes
+var
+  i: integer;
+  l: TObjectList;
+  objeto: TTAuditoriaOnLine;
+begin
+  StatusBar1.Panels[0].Text := 'Prorratenado Ordenes Lapso ' + desde.Text + ' - ' + hasta.Text + ' ...!'; StatusBar1.Refresh;
+  i := 0;
+  grid.IniciarGrilla(E);
+  l := auditonline.setOrdenesImportadas(desde.Text, hasta.Text, '2');
+
+  for i := 1 to l.Count do begin
+    objeto := TTAuditoriaOnLine(l.Items[i-1]);
+    profesional.getDatos(objeto.Efector);
+    auditoriacb.getDatos(objeto.Nroauditoria);
+    E.Cells[0, i] := objeto.Nroauditoria;
+    E.Cells[1, i] := objeto.Fecha;
+    E.Cells[2, i] := profesional.nombre;
+    E.Cells[3, i] := auditoriacb.Nompac;
+    E.Cells[4, i] := objeto.Idonline;
+    E.Cells[5, i] := objeto.Nrodoc;
+    E.Cells[6, i] := objeto.Codos;
+    E.Cells[7, i] := objeto.Auditada;
+    E.Cells[8, i] := objeto.Transferida;
+    E.Cells[10,i] := objeto.Altapac;
+    E.Cells[11,i] := IntToStr(i);
+    E.Cells[12,i] := objeto.Idonline;
+  end;
+  l.Free; l := Nil;
+
+  if (i > 0)  then begin
+    panel11.Enabled := true;
+  end else begin
+    panel11.Enabled := false;
+  end;
+
+  if (i > 0) then
+    StatusBar1.Panels[1].Text := IntToStr(i-1) + ' Ordenes';
+
+  desde.setFocus;
+  StatusBar1.Panels[0].Text := '';
+end;
+
+
+procedure TfmBuscarOrdenesOnLine.btnSubirClick(Sender: TObject);
+begin
+  if (utiles.ctrlFecha(desde.Text, '')) and (utiles.ctrlFecha(hasta.Text, '')) then
+    CargarOrdenes
+  else
+    utiles.msgError('Controle las Fechas, las mismas pueden estar Incorrectas ...!');
+
+end;
+
+procedure TfmBuscarOrdenesOnLine.FormShow(Sender: TObject);
+begin
+  E.Cells[0, 0]  := 'Nro.Auditoría';
+  E.Cells[1, 0]  := 'Fecha';
+  E.Cells[2, 0]  := 'Efector';
+  E.Cells[3, 0]  := 'Paciente';
+  E.Cells[4, 0]  := 'Id. Orden';
+  E.Cells[5, 0]  := 'Nro. Doc.';
+  E.Cells[7, 0]  := 'Audit?';
+  E.Cells[8, 0]  := 'Trans?';
+  E.Cells[9, 0]  := 'S';
+  E.Cells[10,0]  := 'A/P';
+  E.Cells[11,0]  := 'Orden';
+  E.Cells[12,0]  := 'Código de Barra';
+end;
+
+end.

@@ -1,0 +1,36 @@
+  
+Escriba el Nombre de su Laboratorio
+Facturacion Resumen a Profesionales
+Periodo de Facturacion: 03/2022                              Hoja Nro.: 1
+ 
+--------------------------------------------------------------------------------
+Paciente       Cod.   Arancel Cod.   Arancel Cod.   Arancel Cod.   Arancel Cod.   Arancel   
+--------------------------------------------------------------------------------
+
+Profesional: PEZZ ANALIA GRACIELA             211008   Periodo: 03/2022
+ 
+Obra Social: PREVENCION SALUD S.A             121018
+ 
+                
+MASIN FISCH [S] 660475     286.65 660174     143.33 660412     143.33 660481     477.75 669913     3535.35 
+                669896     2866.50 660653     238.88 660982     1146.60 660876     238.88 660711     238.88 
+                660865     859.95 660866     859.95 660001     286.65 
+CORRALES AN [S] 660865     859.95 660867     859.95 668315     1146.60 660001     286.65 
+GARCIA ROME [N] 660475     286.65 660746     95.55 660412     143.33 660192     191.10 660481     477.75 
+                660711     238.88 660264     95.55 660736     382.20 660430     286.65 660001     286.65 
+                
+
+Nro. de Ordenes:    3 Comp. Arancelaria:    0.00 Subtotal Facturado:   16960.13
+--------------------------------------------------------------------------------
+                          Total de Ordenes        :            3
+                          Total de Prestaciones   :           27
+                          Unidades Gasto          :         0.00 $        0.00
+                          Unidades Honorario      :         0.00 $        0.00
+                          Compensacion Arancelaria:              $        0.00
+                                                                  ------------
+                          Subtotal Facturado      :              $    16960.13
+                          Subtotal Grabado        :              $    14475.83
+                          Subtotal Exento         :              $     2484.30
+                          I.V.A.                  :              $     1519.96
+                          Total Facturado         :              $    18480.09
+--------------------------------------------------------------------------------

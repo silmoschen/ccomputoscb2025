@@ -1,0 +1,46 @@
+object fmCoseguros: TfmCoseguros
+  Left = 0
+  Top = 0
+  Caption = 'Coseguros Obras Sociales'
+  ClientHeight = 213
+  ClientWidth = 564
+  Color = clBtnFace
+  Font.Charset = ANSI_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  PixelsPerInch = 96
+  TextHeight = 13
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 194
+    Width = 564
+    Height = 19
+    Panels = <
+      item
+        Width = 50
+      end
+      item
+        Width = 50
+      end>
+    ExplicitLeft = 288
+    ExplicitTop = 160
+    ExplicitWidth = 0
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 564
+    Height = 194
+    Align = alClient
+    BevelInner = bvLowered
+    BorderWidth = 4
+    TabOrder = 1
+    ExplicitLeft = 248
+    ExplicitTop = 112
+    ExplicitWidth = 185
+    ExplicitHeight = 41
+  end
+end

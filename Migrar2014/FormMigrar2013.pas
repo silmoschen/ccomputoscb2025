@@ -543,7 +543,7 @@ begin
   datosdb.closeDB(tabla); //firebird.closeDB(tablaib);
 
 
-  //lote.SaveToFile('z:\' + copy(edit2.Text, 4, 4) + '.sql');
+  lote.SaveToFile('f:\' + copy(edit2.Text, 4, 4) + '.sql');
 
   //============================================================================
 

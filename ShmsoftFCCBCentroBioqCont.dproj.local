@@ -107,5 +107,7 @@
     <Transaction>2021/03/31 08:45:11.839.dfm,C:\sidelphi32\SGen\asociacion\AsientosContables.dfm=C:\sidelphi32\SGen\ccomputoscb\AsientosContables.dfm</Transaction>
     <Transaction>2021/11/23 10:06:27.074.pas,C:\sidelphi32\SGen\ccomputoscb\Unit2.pas=C:\sidelphi32\SGen\ccomputoscb\reportUBFacturadas.pas</Transaction>
     <Transaction>2021/11/23 10:06:27.074.dfm,C:\sidelphi32\SGen\ccomputoscb\Unit2.dfm=C:\sidelphi32\SGen\ccomputoscb\reportUBFacturadas.dfm</Transaction>
+    <Transaction>2025/08/08 15:34:24.138.pas,C:\sidelphi32\SGen\damevin\NominaDeCategorias.pas=C:\sidelphi32\SGen\ccomputoscb\NominaDeCategorias.pas</Transaction>
+    <Transaction>2025/08/08 15:34:24.138.dfm,C:\sidelphi32\SGen\damevin\NominaDeCategorias.dfm=C:\sidelphi32\SGen\ccomputoscb\NominaDeCategorias.dfm</Transaction>
   </Transactions>
 </BorlandProject>

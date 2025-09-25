@@ -75,6 +75,10 @@ type
     resumen: TLabel;
     IdAntiFreeze1: TIdAntiFreeze;
     CheckBox4: TCheckBox;
+    CheckBox5: TCheckBox;
+    ftpPasivo: TCheckBox;
+    Label10: TLabel;
+    dirremoto: TMaskEdit;
     procedure EKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure desdeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure hastaKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -149,6 +153,8 @@ begin
     Host     := ftp.Text;
     Connect;
     //Self.ChageDir(''); // modificado para el servidor linux (auditoriareconquista) el 07/12/2013
+
+    if (dirremoto.Text <> '') then Self.ChageDir(dirremoto.Text);
   finally
   end;
 end;
@@ -214,10 +220,14 @@ begin
 
         conectarFTP;
         if IdFTP1.Connected then begin
+
+          //ChageDir('/var/www/html/reco/actualizar');
+
+          //IdFTP1.ChangeDir('/var/www/html/reco/actualizar');
+
           l := TStringList.Create;
           IdFTP1.List(l);
           for i := 1 to l.Count do Begin
-
             if (Pos('.txt', l.Strings[i-1]) > 0) then Begin
               if (Pos('cab_auditoria.txt', l.Strings[i-1]) > 0) then Name := 'cab_auditoria.txt';
               if (Pos('det_auditoria.txt', l.Strings[i-1]) > 0) then Name := 'det_auditoria.txt';
@@ -250,7 +260,8 @@ begin
             codos := listaos.Strings[k-1];
             obsocial.SincronizarArancel(codos, Copy(hasta.Text, 4, 2) + '/' + Copy(utiles.sExprFecha2000(hasta.Text), 1, 4));
             T.Cells[0, k] := codos;
-            T.Cells[1, k] := utiles.FormatearNumero(FloatToStr(auditoriacb.setRecalcularTotalAnalisisMensual(hasta.Text, codos, true)));
+            //T.Cells[1, k] := utiles.FormatearNumero(FloatToStr(auditoriacb.setRecalcularTotalAnalisisMensual(hasta.Text, codos, true)));
+            T.Cells[1, k] := '0';
           end;
           T.Row := 1;
           listaos.Free; listaos := nil;
@@ -298,6 +309,8 @@ begin
     end;
 
     auditonline.Exportar(l);
+
+    if (utiles.msgSiNo('El Procesamiento de Ordenes Terminó Correctamente.' + chr(13) + 'Seguro para Bajarlas y Procesarlas ?') = false) then exit;
 
     l.Clear;
     transferido := false;
@@ -399,6 +412,8 @@ begin
   writeln(archivo, ftp.Text);
   writeln(archivo, usuario.Text);
   writeln(archivo, contrasenia.Text);
+  if (ftpPasivo.Checked) then writeln(archivo, 'S') else writeln(archivo, 'N');
+  writeln(archivo, dirremoto.Text);
   closeFile(archivo);
   host.SetFocus;
 end;
@@ -436,43 +451,54 @@ var
   Name, codos: String;
 begin
   if (Length(Trim(host.Text)) > 0) and (Length(Trim(ftp.Text)) > 0) and (Length(Trim(usuario.Text)) > 0) or (Length(Trim(contrasenia.Text)) > 0) then Begin
-    StatusBar1.Panels[0].Text := 'Invocando Script Remoto ...!'; StatusBar1.refresh;
-    RadioButton1.Checked := false;
-    RadioButton2.Checked := false;
-    Application.CreateForm(TfmClientHTML, fmClientHTML);
-    fmClientHTML.cbURL.Text := host.Text + '/operaciones/exportar_ordenes.php?desde=' + utiles.sExprFecha2000(desde.Text) + '&hasta=' + utiles.sExprFecha2000(hasta.Text);
-    fmClientHTML.FormActivate(Self);
-    fmClientHTML.btnGoClick(Self);
-    StatusBar1.Panels[0].Text := 'Exportando Datos Remotos ...!'; StatusBar1.refresh;
+    if not (checkbox5.Checked) then begin
+      StatusBar1.Panels[0].Text := 'Invocando Script Remoto ...!'; StatusBar1.refresh;
+      RadioButton1.Checked := false;
+      RadioButton2.Checked := false;
+      Application.CreateForm(TfmClientHTML, fmClientHTML);
+      fmClientHTML.cbURL.Text := host.Text + '/operaciones/exportar_ordenes.php?desde=' + utiles.sExprFecha2000(desde.Text) + '&hasta=' + utiles.sExprFecha2000(hasta.Text);
+      fmClientHTML.FormActivate(Self);
+      fmClientHTML.btnGoClick(Self);
+      StatusBar1.Panels[0].Text := 'Exportando Datos Remotos ...!'; StatusBar1.refresh;
 
-    StatusBar1.Panels[0].Text := 'Transfiriendo a Equipo Local ...!'; StatusBar1.refresh;
+      //fmClientHTML.ShowModal;
 
-    conectarFTP;
-    if IdFTP1.Connected then begin
-        l := TStringList.Create;
-        IdFTP1.List(l);
-        for i := 1 to l.Count do Begin
+      if (utiles.msgSiNo('El Procesamiento de Ordenes Terminó Correctamente.' + chr(13) + 'Seguro para Bajarlas y Procesarlas ?') = false) then begin
+        StatusBar1.Panels[0].Text := '';
+        exit;
+      end;
 
-          if (Pos('.txt', l.Strings[i-1]) > 0) then Begin
-            if (Pos('cab_auditoria.txt', l.Strings[i-1]) > 0) then Name := 'cab_auditoria.txt';
-            if (Pos('det_auditoria.txt', l.Strings[i-1]) > 0) then Name := 'det_auditoria.txt';
-            if (Pos('pac_auditoria.txt', l.Strings[i-1]) > 0) then Name := 'pac_auditoria.txt';
-            if (Pos('pendientes.txt', l.Strings[i-1]) > 0)    then Name := 'pendientes.txt';
-            if (Pos('diagnosticos.txt', l.Strings[i-1]) > 0)  then Name := 'diagnosticos.txt';
-            if (Pos('medicos.txt', l.Strings[i-1]) > 0)       then Name := 'medicos.txt';
-            if (Pos('medicos_cab.txt', l.Strings[i-1]) > 0)   then Name := 'medicos_cab.txt';
-            if Pos('.txt', Name) > 0 then Begin
-              StatusBar1.Panels[0].Text := 'Descargando ' + l.Strings[i-1] + ' de: ' + ftp.Text; StatusBar1.Refresh;
-              IdFTP1.TransferType := ftBinary;
-              BytesToTransfer := IdFTP1.Size(ExtractFileName(l.Strings[i-1]));
-              IdFTP1.Get(Name, dbs.DirSistema + '\auditoria\online\download\' + Name, true);
-            end;
-          End;
-        end;
+      StatusBar1.Panels[0].Text := 'Transfiriendo a Equipo Local ...!'; StatusBar1.refresh;
+
+      IdFtp1.Passive := ftpPasivo.Checked;
+
+      conectarFTP;
+      if IdFTP1.Connected then begin
+          l := TStringList.Create;
+          IdFTP1.List(l);
+          for i := 1 to l.Count do Begin
+
+            if (Pos('.txt', l.Strings[i-1]) > 0) then Begin
+              if (Pos('cab_auditoria.txt', l.Strings[i-1]) > 0) then Name := 'cab_auditoria.txt';
+              if (Pos('det_auditoria.txt', l.Strings[i-1]) > 0) then Name := 'det_auditoria.txt';
+              if (Pos('pac_auditoria.txt', l.Strings[i-1]) > 0) then Name := 'pac_auditoria.txt';
+              if (Pos('pendientes.txt', l.Strings[i-1]) > 0)    then Name := 'pendientes.txt';
+              if (Pos('diagnosticos.txt', l.Strings[i-1]) > 0)  then Name := 'diagnosticos.txt';
+              if (Pos('medicos.txt', l.Strings[i-1]) > 0)       then Name := 'medicos.txt';
+              if (Pos('medicos_cab.txt', l.Strings[i-1]) > 0)   then Name := 'medicos_cab.txt';
+              if Pos('.txt', Name) > 0 then Begin
+                StatusBar1.Panels[0].Text := 'Descargando ' + l.Strings[i-1] + ' de: ' + ftp.Text; StatusBar1.Refresh;
+                IdFTP1.TransferType := ftBinary;
+                BytesToTransfer := IdFTP1.Size(ExtractFileName(l.Strings[i-1]));
+                IdFTP1.Get(Name, dbs.DirSistema + '\auditoria\online\download\' + Name, true);
+              end;
+            End;
+          end;
+      end;
+      DesconectarFTP;
+
+      StatusBar1.Panels[0].Text := ''; StatusBar1.refresh;
     end;
-    DesconectarFTP;
-
-    StatusBar1.Panels[0].Text := ''; StatusBar1.refresh;
 
     if (utiles.msgSiNo('El Procesamiento de Datos Remotos se ha Realizado,' + chr(13) +
                        '¿ Desea Transferirlos para Procesarlos Localmente ?' + chr(13) +
@@ -630,10 +656,10 @@ end;
 procedure TfmAuditoriaOnLine.FormShow(Sender: TObject);
 var
   archivo: TextFile;
-  v1, v2, v3, v4: string;
+  v1, v2, v3, v4, v5, v6: string;
 begin
   configform.Setear(fmAuditoriaOnLine);
-  
+
   E.Cells[0, 0]  := 'Nro.Auditoría';
   E.Cells[1, 0]  := 'Fecha';
   E.Cells[2, 0]  := 'Efector';
@@ -662,10 +688,15 @@ begin
     readln(archivo, v2);
     readln(archivo, v3);
     readln(archivo, v4);
+    readln(archivo, v5);
+    readln(archivo, v6);
     host.Text := v1;
     ftp.Text := v2;
     usuario.Text := v3;
     contrasenia.Text := v4;
+    if (v5 = 'S') then ftpPasivo.Checked := true;
+    dirremoto.Text := v6;
+
     closeFile(archivo);
   end;
 

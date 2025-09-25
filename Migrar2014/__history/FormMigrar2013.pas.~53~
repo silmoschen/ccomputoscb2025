@@ -54,7 +54,7 @@ begin
 
   if (checkbox1.checked) then firebird.Conectar(edit4.Text + '\factib\factcentro.gdb', 'sysdba', 'masterkey') else
   //firebird.Conectar('c:\sidelphi32\sgen\ccomputoscb\interbase\centrobioq.gdb', 'sysdba', 'masterkey');
-  firebird.Conectar(edit4.Text +  '\interbase\centrobioq.gdb', 'sysdba', 'masterkey');
+  firebird.Conectar(edit4.Text +  '\interbase\factcentro.gdb', 'sysdba', 'masterkey');
 
   if (checkbox1.Checked) then begin
 
@@ -577,6 +577,10 @@ var
   tabla: TTable;
   ls: TStringList;
 begin
+  if (DirectoryExists((edit4.text) + '\distribucion')) then begin
+    ListBox2.Items := utilesarchivos.setListaDirectorios(edit4.text + '\distribucion');
+  end else
+    exit;
 
   ls := TStringList.create;
   firebird.Conectar(edit4.Text + '\factib\distribucioncent.gdb', 'sysdba', 'masterkey');
@@ -738,11 +742,12 @@ begin
     tabla := datosdb.openDB('montosret', '', '', edit4.text + '\distribucion\' + ListBox2.Items[i-1]);
     tabla.Open;
     while not tabla.eof do begin
-    lote.Add('insert into montosret(periodo, idprof, codos, nrodist, monto, retencion, porcentaje, items) values (' +
+    lote.Add('insert into montosret(periodo, idprof, codos, nrodist, perliq, monto, retencion, porcentaje, items) values (' +
     '"' + tabla.FieldByName('periodo').asstring + '"' + ', ' +
     '"' +  tabla.FieldByName('idprof').asstring + '"' + ', ' +
     '"' +  tabla.FieldByName('codos').asstring + '"' + ', ' +
     '"' + copy( ListBox2.Items[i-1], 11, 2) + '"' + ', ' +
+    '"' + copy( ListBox2.Items[i-1], 5, 2) + '/' + copy( ListBox2.Items[i-1], 7, 4) + '"' + ', ' +
     utiles.sLlenarIzquierda(utiles.StringRemplazarCaracteres(tabla.FieldByName('monto').asstring, ',', '.'), 2, '0') + ', ' +
     utiles.sLlenarIzquierda(utiles.StringRemplazarCaracteres(tabla.FieldByName('retencion').asstring, ',', '.'), 2, '0') + ', ' +
     utiles.sLlenarIzquierda(utiles.StringRemplazarCaracteres(tabla.FieldByName('porcentaje').asstring, ',', '.'), 2, '0') + ', ' +
@@ -752,7 +757,7 @@ begin
     tabla.Next;
     end;
     datosdb.closeDB(tabla);
-    lote.SaveToFile('z:\script7.sql');
+    //lote.SaveToFile('z:\script7.sql');
     firebird.TransacSQLBatch(lote);
     lote.clear;
     end;
@@ -760,7 +765,73 @@ begin
     End;
 
   end;
-   ls.SaveToFile('z:\ssss.sql');
+
+
+  ListBox2.Clear;
+
+  if (DirectoryExists((edit4.text) + '\distribucion\Ganancias')) then begin
+    ListBox2.Items := utilesarchivos.setListaDirectorios(edit4.text + '\distribucion\Ganancias');
+  end else
+    exit;
+
+   lote.Add('delete from subtotalesliq');
+   lote.Add('delete from subtotganancias');
+
+   for i := 1 to ListBox2.Count do Begin
+
+    if (length(trim(ListBox2.Items[i-1])) > 5)then begin
+
+    if (fileexists(edit4.text + '\distribucion\Ganancias\' + ListBox2.Items[i-1] + '\subtotalesliq.db')) then begin
+    tabla := datosdb.openDB('subtotalesliq', '', '', edit4.text + '\distribucion\Ganancias\' + ListBox2.Items[i-1]);
+    tabla.Open;
+    while not tabla.eof do begin
+    lote.Add('insert into subtotalesliq(periodo, idprof, nroliq, monto, monto1, consumo) values (' +
+    '"' + ListBox2.Items[i-1] + '"' + ', ' +
+    '"' + tabla.FieldByName('idprof').asstring + '"' + ', ' +
+    '"' +  tabla.FieldByName('nroliq').asstring + '"' + ', ' +
+    utiles.StringRemplazarCaracteres(tabla.FieldByName('monto').asstring, ',', '.') + ', ' +
+    utiles.sLlenarIzquierda(utiles.StringRemplazarCaracteres(tabla.FieldByName('monto1').asstring, ',', '.'), 2, '0') + ', ' +
+    '"' + tabla.FieldByName('consumo').asstring + '"' + ');');
+
+
+    tabla.Next;
+    end;
+    tabla.close; tabla.free;
+
+    //utiles.msgError(lote.Strings[0]);
+    firebird.TransacSQLBatch(lote);
+    lote.clear;
+    end;
+
+
+    if (fileexists(edit4.text + '\distribucion\Ganancias\' + ListBox2.Items[i-1] + '\subtotganancias.db')) then begin
+
+    tabla := datosdb.openDB('subtotganancias', '', '', edit4.text + '\distribucion\Ganancias\' + ListBox2.Items[i-1]);
+    tabla.Open;
+    while not tabla.eof do begin
+    lote.Add('insert into subtotganancias(periodo, idprof, monto, monto1) values (' +
+    '"' + ListBox2.Items[i-1] + '"' + ', ' +
+    '"' + tabla.FieldByName('idprof').asstring + '"' + ', ' +
+    utiles.StringRemplazarCaracteres(tabla.FieldByName('monto').asstring, ',', '.') + ', ' +
+    utiles.sLlenarIzquierda(utiles.StringRemplazarCaracteres(tabla.FieldByName('monto1').asstring, ',', '.'), 2, '0') + 
+    ');');
+
+
+    tabla.Next;
+    end;
+
+    firebird.TransacSQLBatch(lote);
+    lote.clear;
+
+    tabla.close; tabla.free;
+    end;
+
+
+
+    end;
+
+   End;
+
   close;
 
 end;
@@ -770,21 +841,15 @@ begin
   edit3.Text := utiles.setPeriodoActual;
   edit3.Text := utiles.SumarPeriodo(edit3.Text, '1');
 
-  edit1.Text := 'c:\shmsoft\fact_lab';
-  edit1.Text := 'c:\shmsoft\fact_lab\facturaciones';
-  checkbox1.Checked := false;
+  //edit1.Text := 'c:\shmsoft\fact_lab';
+  //edit1.Text := 'c:\shmsoft\fact_lab\facturaciones';
+  //checkbox1.Checked := false;
   
 end;
 
 procedure TForm1.FormShow(Sender: TObject);
 begin
   lote := TStringList.Create;
-
-  if (DirectoryExists((edit4.text) + '\distribucion')) then begin
-    ListBox2.Items := utilesarchivos.setListaDirectorios(edit4.text + '\distribucion');
-  end;
-
-
 end;
 
 end.

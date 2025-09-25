@@ -2,8 +2,8 @@ object Form1: TForm1
   Left = 0
   Top = 0
   Caption = 'Form1'
-  ClientHeight = 344
-  ClientWidth = 431
+  ClientHeight = 395
+  ClientWidth = 594
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -12,6 +12,7 @@ object Form1: TForm1
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object res: TLabel
@@ -20,6 +21,13 @@ object Form1: TForm1
     Width = 39
     Height = 13
     Caption = '             '
+  end
+  object Label1: TLabel
+    Left = 248
+    Top = 192
+    Width = 68
+    Height = 13
+    Caption = 'base de datos'
   end
   object Edit1: TEdit
     Left = 8
@@ -88,5 +96,31 @@ object Form1: TForm1
     Caption = 'Ordenes Auditoria'
     TabOrder = 7
     OnClick = Button2Click
+  end
+  object Button3: TButton
+    Left = 8
+    Top = 304
+    Width = 201
+    Height = 25
+    Caption = 'Migrar Detfact Central'
+    TabOrder = 8
+    OnClick = Button3Click
+  end
+  object Button4: TButton
+    Left = 320
+    Top = 304
+    Width = 185
+    Height = 25
+    Caption = 'Migrar Distribucion'
+    TabOrder = 9
+    OnClick = Button4Click
+  end
+  object ListBox2: TListBox
+    Left = 424
+    Top = 184
+    Width = 153
+    Height = 97
+    ItemHeight = 13
+    TabOrder = 10
   end
 end

@@ -223,9 +223,6 @@
     <DCCReference Include="..\asociacion\RenumerarAsientos.pas">
       <Form>fmRenumerarAsientos</Form>
     </DCCReference>
-    <DCCReference Include="..\damevin\NominaDeCategorias.pas">
-      <Form>fmListCategorias</Form>
-    </DCCReference>
     <DCCReference Include="ActualizarMontosFijosNBU.pas">
       <Form>fmActMontosFijosNBU</Form>
     </DCCReference>
@@ -425,6 +422,9 @@
     </DCCReference>
     <DCCReference Include="NominaDebCred.pas">
       <Form>fmListDebCred</Form>
+    </DCCReference>
+    <DCCReference Include="NominaDeCategorias.pas">
+      <Form>fmListCategorias</Form>
     </DCCReference>
     <DCCReference Include="NominaDeCategoriasLab.pas">
       <Form>fmListCategoriasLab</Form>

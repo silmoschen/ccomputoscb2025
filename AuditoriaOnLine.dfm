@@ -335,6 +335,10 @@ object fmAuditoriaOnLine: TfmAuditoriaOnLine
     object TabSheet3: TTabSheet
       Caption = '&Informes de Control'
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Panel8: TPanel
         Left = 0
         Top = 0
@@ -458,6 +462,10 @@ object fmAuditoriaOnLine: TfmAuditoriaOnLine
     object TabSheet2: TTabSheet
       Caption = '&Par'#225'metros Generales'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Panel2: TPanel
         Left = 0
         Top = 0

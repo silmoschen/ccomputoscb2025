@@ -1,9 +1,9 @@
 object fmListCategorias: TfmListCategorias
   Left = 173
   Top = 107
-  Caption = 'Categor'#237'as de contactos'
-  ClientHeight = 341
-  ClientWidth = 555
+  Width = 571
+  Height = 382
+  Caption = 'Categor'#237'as de Laboratorios'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -12,23 +12,22 @@ object fmListCategorias: TfmListCategorias
   Font.Style = []
   OldCreateOrder = False
   OnClose = FormClose
-  OnResize = FormResize
+  OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter1: TSplitter
     Left = 0
-    Top = 80
-    Width = 555
+    Top = 78
+    Width = 563
     Height = 2
     Cursor = crVSplit
     Align = alTop
-    ExplicitWidth = 563
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 322
-    Width = 555
+    Top = 336
+    Width = 563
     Height = 19
     Panels = <
       item
@@ -37,20 +36,21 @@ object fmListCategorias: TfmListCategorias
       item
         Width = 50
       end>
+    SimplePanel = False
   end
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 555
-    Height = 27
+    Width = 563
+    Height = 25
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 1
     DesignSize = (
-      555
-      27)
+      563
+      25)
     object SpeedButton1: TSpeedButton
-      Left = 105
+      Left = 110
       Top = 0
       Width = 43
       Height = 24
@@ -65,7 +65,7 @@ object fmListCategorias: TfmListCategorias
       OnClick = SpeedButton1Click
     end
     object SpeedButton2: TSpeedButton
-      Left = 148
+      Left = 153
       Top = 0
       Width = 43
       Height = 24
@@ -80,7 +80,7 @@ object fmListCategorias: TfmListCategorias
       OnClick = SpeedButton2Click
     end
     object SpeedButton3: TSpeedButton
-      Left = 191
+      Left = 196
       Top = 0
       Width = 43
       Height = 24
@@ -108,8 +108,8 @@ object fmListCategorias: TfmListCategorias
       Height = 13
       Caption = 'Expr.:'
     end
-    object Listar: TSpeedButton
-      Left = 234
+    object SpeedButton4: TSpeedButton
+      Left = 239
       Top = 0
       Width = 43
       Height = 24
@@ -121,12 +121,12 @@ object fmListCategorias: TfmListCategorias
       ParentShowHint = False
       ShowHint = True
       Spacing = 2
-      OnClick = ListarClick
+      OnClick = SpeedButton4Click
     end
     object DBNavigator: TDBNavigator
       Left = 0
       Top = 0
-      Width = 105
+      Width = 110
       Height = 24
       DataSource = DTS
       VisibleButtons = [nbFirst, nbPrior, nbNext, nbLast, nbRefresh]
@@ -160,7 +160,6 @@ object fmListCategorias: TfmListCategorias
       Top = 1
       Width = 121
       Height = 21
-      CharCase = ecUpperCase
       TabOrder = 0
       OnChange = expresionChange
       OnKeyDown = expresionKeyDown
@@ -168,17 +167,17 @@ object fmListCategorias: TfmListCategorias
   end
   object Panel2: TPanel
     Left = 0
-    Top = 82
-    Width = 555
-    Height = 240
+    Top = 80
+    Width = 563
+    Height = 256
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
     object DBGrid: TDBGrid
       Left = 0
       Top = 0
-      Width = 555
-      Height = 240
+      Width = 563
+      Height = 256
       Align = alClient
       BorderStyle = bsNone
       DataSource = DTS
@@ -196,8 +195,8 @@ object fmListCategorias: TfmListCategorias
   end
   object Panel3: TPanel
     Left = 0
-    Top = 27
-    Width = 555
+    Top = 25
+    Width = 563
     Height = 53
     Align = alTop
     BevelOuter = bvNone
@@ -270,7 +269,7 @@ object fmListCategorias: TfmListCategorias
         'Impresora')
     end
     object Panel4: TPanel
-      Left = 479
+      Left = 487
       Top = 0
       Width = 76
       Height = 53

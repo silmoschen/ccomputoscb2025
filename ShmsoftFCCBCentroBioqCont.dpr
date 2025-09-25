@@ -54,7 +54,7 @@ uses
   NominaObrasSociales in 'NominaObrasSociales.pas' {fmListObrasSociales},
   EleccionMedicosCabecera in 'EleccionMedicosCabecera.pas' {fmEleMedicosCabecera},
   CObrasSocialesCCB in '..\..\CLASES\CObrasSocialesCCB.pas',
-  NominaDeCategorias in '..\damevin\NominaDeCategorias.pas' {fmListCategorias},
+  NominaDeCategorias in 'NominaDeCategorias.pas' {fmListCategorias},
   tabladecategoriasLab in 'tabladecategoriasLab.pas' {fmTablaCategoriasLab},
   CActualizaciones in '..\..\CLASES\CActualizaciones.pas',
   CActualizacionesCentroComputosCB in '..\..\CLASES\CActualizacionesCentroComputosCB.pas',

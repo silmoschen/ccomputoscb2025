@@ -76,6 +76,9 @@ type
     IdAntiFreeze1: TIdAntiFreeze;
     CheckBox4: TCheckBox;
     CheckBox5: TCheckBox;
+    ftpPasivo: TCheckBox;
+    Label10: TLabel;
+    dirremoto: TMaskEdit;
     procedure EKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure desdeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure hastaKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -150,6 +153,8 @@ begin
     Host     := ftp.Text;
     Connect;
     //Self.ChageDir(''); // modificado para el servidor linux (auditoriareconquista) el 07/12/2013
+
+    if (dirremoto.Text <> '') then Self.ChageDir(dirremoto.Text);
   finally
   end;
 end;
@@ -215,10 +220,14 @@ begin
 
         conectarFTP;
         if IdFTP1.Connected then begin
+
+          //ChageDir('/var/www/html/reco/actualizar');
+
+          //IdFTP1.ChangeDir('/var/www/html/reco/actualizar');
+
           l := TStringList.Create;
           IdFTP1.List(l);
           for i := 1 to l.Count do Begin
-
             if (Pos('.txt', l.Strings[i-1]) > 0) then Begin
               if (Pos('cab_auditoria.txt', l.Strings[i-1]) > 0) then Name := 'cab_auditoria.txt';
               if (Pos('det_auditoria.txt', l.Strings[i-1]) > 0) then Name := 'det_auditoria.txt';
@@ -251,7 +260,8 @@ begin
             codos := listaos.Strings[k-1];
             obsocial.SincronizarArancel(codos, Copy(hasta.Text, 4, 2) + '/' + Copy(utiles.sExprFecha2000(hasta.Text), 1, 4));
             T.Cells[0, k] := codos;
-            T.Cells[1, k] := utiles.FormatearNumero(FloatToStr(auditoriacb.setRecalcularTotalAnalisisMensual(hasta.Text, codos, true)));
+            //T.Cells[1, k] := utiles.FormatearNumero(FloatToStr(auditoriacb.setRecalcularTotalAnalisisMensual(hasta.Text, codos, true)));
+            T.Cells[1, k] := '0';
           end;
           T.Row := 1;
           listaos.Free; listaos := nil;
@@ -299,6 +309,8 @@ begin
     end;
 
     auditonline.Exportar(l);
+
+    if (utiles.msgSiNo('El Procesamiento de Ordenes Terminó Correctamente.' + chr(13) + 'Seguro para Bajarlas y Procesarlas ?') = false) then exit;
 
     l.Clear;
     transferido := false;
@@ -400,6 +412,8 @@ begin
   writeln(archivo, ftp.Text);
   writeln(archivo, usuario.Text);
   writeln(archivo, contrasenia.Text);
+  if (ftpPasivo.Checked) then writeln(archivo, 'S') else writeln(archivo, 'N');
+  writeln(archivo, dirremoto.Text);
   closeFile(archivo);
   host.SetFocus;
 end;
@@ -447,7 +461,16 @@ begin
       fmClientHTML.btnGoClick(Self);
       StatusBar1.Panels[0].Text := 'Exportando Datos Remotos ...!'; StatusBar1.refresh;
 
+      //fmClientHTML.ShowModal;
+
+      if (utiles.msgSiNo('El Procesamiento de Ordenes Terminó Correctamente.' + chr(13) + 'Seguro para Bajarlas y Procesarlas ?') = false) then begin
+        StatusBar1.Panels[0].Text := '';
+        exit;
+      end;
+
       StatusBar1.Panels[0].Text := 'Transfiriendo a Equipo Local ...!'; StatusBar1.refresh;
+
+      IdFtp1.Passive := ftpPasivo.Checked;
 
       conectarFTP;
       if IdFTP1.Connected then begin
@@ -492,7 +515,8 @@ begin
           StatusBar1.Panels[0].Text := 'Recalculano Totales ' + codos + ' ...!'; StatusBar1.refresh;
           obsocial.SincronizarArancel(codos, Copy(hasta.Text, 4, 2) + '/' + Copy(utiles.sExprFecha2000(hasta.Text), 1, 4));
           T.Cells[0, k] := codos;
-          T.Cells[1, k] := utiles.FormatearNumero(FloatToStr(auditoriacb.setRecalcularTotalAnalisisMensual(hasta.Text, codos, true)));
+          //T.Cells[1, k] := utiles.FormatearNumero(FloatToStr(auditoriacb.setRecalcularTotalAnalisisMensual(hasta.Text, codos, true)));
+          T.Cells[1, k] := '0';
         end;
         T.Row := 1;
       end;
@@ -633,10 +657,10 @@ end;
 procedure TfmAuditoriaOnLine.FormShow(Sender: TObject);
 var
   archivo: TextFile;
-  v1, v2, v3, v4: string;
+  v1, v2, v3, v4, v5, v6: string;
 begin
   configform.Setear(fmAuditoriaOnLine);
-  
+
   E.Cells[0, 0]  := 'Nro.Auditoría';
   E.Cells[1, 0]  := 'Fecha';
   E.Cells[2, 0]  := 'Efector';
@@ -665,10 +689,15 @@ begin
     readln(archivo, v2);
     readln(archivo, v3);
     readln(archivo, v4);
+    readln(archivo, v5);
+    readln(archivo, v6);
     host.Text := v1;
     ftp.Text := v2;
     usuario.Text := v3;
     contrasenia.Text := v4;
+    if (v5 = 'S') then ftpPasivo.Checked := true;
+    dirremoto.Text := v6;
+
     closeFile(archivo);
   end;
 

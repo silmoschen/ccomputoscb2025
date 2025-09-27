@@ -205,7 +205,9 @@ uses
   os_reglas in 'os_reglas.pas' {fmReglasOs},
   CUnidadesNBU in 'clases\CUnidadesNBU.pas',
   detalleFacturado in 'detalleFacturado.pas' {fmDetalleFacturado},
-  reportUBFacturadas in 'reportUBFacturadas.pas' {fmUBFacturadas};
+  reportUBFacturadas in 'reportUBFacturadas.pas' {fmUBFacturadas},
+  selectObraSocial in 'selectObraSocial.pas' {fmSelObraSocial},
+  CNomeclatura_ObraSocial in 'clases\CNomeclatura_ObraSocial.pas';
 
 {$R *.RES}
 

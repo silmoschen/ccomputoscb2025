@@ -4467,11 +4467,6 @@
   <retiva>0,00</retiva>
   </pfiscal>
   <pfiscal>
-  <codos>121990</codos>
-  <periodo>04/2024</periodo>
-  <retiva>10,50</retiva>
-  </pfiscal>
-  <pfiscal>
   <codos>121991</codos>
   <periodo>04/2024</periodo>
   <retiva>10,50</retiva>
@@ -4480,6 +4475,16 @@
   <codos>121992</codos>
   <periodo>04/2024</periodo>
   <retiva>10,50</retiva>
+  </pfiscal>
+  <pfiscal>
+  <codos>121993</codos>
+  <periodo>01/2025</periodo>
+  <retiva>0,00</retiva>
+  </pfiscal>
+  <pfiscal>
+  <codos>121994</codos>
+  <periodo>04/2025</periodo>
+  <retiva>0,00</retiva>
   </pfiscal>
   <pfiscal>
   <codos>122001</codos>

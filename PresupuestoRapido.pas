@@ -141,6 +141,7 @@ end;
 procedure TfmPresupuestoRapido.DatosAnalisis;
 var
   p: String;
+  r: real;
 begin
   if obsocial.FacturaNBU = 'N' then Begin
     obsocial.SincronizarArancel(codos.Text, Copy(utiles.sExprFecha2000(utiles.setFechaActual), 5, 2) + '/' + Copy(utiles.sExprFecha2000(utiles.setFechaActual), 1, 4));
@@ -158,6 +159,11 @@ begin
     precio.Text := utiles.FormatearNumero(FloatToStr(facturacion.setImporteAnalisis(codos.Text, codanalisis.Text, Copy(utiles.setFechaActual, 4, 2) + '/' + Copy(utiles.sExprFecha2000(utiles.setFechaActual), 1, 4))));
     p := precio.Text;
     //caption := Copy(utiles.setFechaActual, 4, 2) + '/' + Copy(utiles.sExprFecha2000(utiles.setFechaActual), 1, 4);
+
+    // Para NBU con unidades propias en obras sociales // 26/09/2025
+    r := facturacion.setNbuNomencladorObraSocial(codos.Text, codanalisis.Text);
+    if (r > 0) then Unnbu.Caption := utiles.FormatearNumero(floattostr(r));
+
   end;
   ActiveControl := precio;
 end;
@@ -222,6 +228,7 @@ begin
   grid.RecuperarAnchoColumnas(fmPresupuestoRapido, F);
   redim := False;
   TotalAnalisis;
+  Label71.Left := Label71.Left - 35;
 end;
 
 procedure TfmPresupuestoRapido.FormClose(Sender: TObject;

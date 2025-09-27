@@ -1,0 +1,54 @@
+object fmSelObraSocial: TfmSelObraSocial
+  Left = 0
+  Top = 0
+  Caption = 'Seleccionar Obra Social'
+  ClientHeight = 372
+  ClientWidth = 356
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poMainFormCenter
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 356
+    Height = 372
+    Align = alClient
+    BevelInner = bvLowered
+    BorderWidth = 4
+    Caption = 'Panel1'
+    TabOrder = 0
+    ExplicitLeft = -72
+    ExplicitWidth = 428
+    ExplicitHeight = 299
+    object F: TStringGrid
+      Left = 6
+      Top = 6
+      Width = 344
+      Height = 360
+      Align = alClient
+      BorderStyle = bsNone
+      ColCount = 2
+      DefaultRowHeight = 15
+      FixedCols = 0
+      RowCount = 10000
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clBlack
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect]
+      ParentFont = False
+      TabOrder = 0
+      ColWidths = (
+        269
+        41)
+    end
+  end
+end

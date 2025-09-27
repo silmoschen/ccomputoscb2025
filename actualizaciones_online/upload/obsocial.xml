@@ -929,17 +929,17 @@
   <obsocial>
   <codos>121038</codos>
   <nombre>OSPICA</nombre>
-  <nombrec>CONEXION SALUD SRL -CONV OSPICA</nombrec>
-  <direccion>MOREAU DE JUSTO A. AV 846 PISO :3 </direccion>
-  <localidad>C.A.B.A</localidad>
-  <codpos>1107</codpos>
+  <nombrec>OBRA SOCIAL DEL PERSONAL DE LA INSDUSTRIA DEL CUERO Y AFINES</nombrec>
+  <direccion>GIRIBONE 789  PISO:P.B</direccion>
+  <localidad>AVELLANEDA-BUENOS AIRES</localidad>
+  <codpos>1870</codpos>
   <ub>0,52</ub>
   <ug>1,26</ug>
   <rieub>0,52</rieub>
   <rieug>1,26</rieug>
   <porcentaje>0,00</porcentaje>
-  <codpfis>INS</codpfis>
-  <nrocuit>30-71463313-5</nrocuit>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-50790812-4</nrocuit>
   <categoria>S</categoria>
   <tope>N</tope>
   <topemin>0,00</topemin>
@@ -1070,7 +1070,7 @@
   <topemin>0,00</topemin>
   <topemax>0,00</topemax>
   <capitada>N</capitada>
-  <noimport>null</noimport>
+  <noimport>N</noimport>
   <retencioniva>10,50</retencioniva>
   <retieneiva>S</retieneiva>
   <factnbu>S</factnbu>
@@ -1095,7 +1095,7 @@
   <topemin>0,00</topemin>
   <topemax>0,00</topemax>
   <capitada>N</capitada>
-  <noimport>N</noimport>
+  <noimport>null</noimport>
   <retencioniva>0,00</retencioniva>
   <retieneiva>N</retieneiva>
   <factnbu>S</factnbu>
@@ -1195,7 +1195,7 @@
   <topemin>0,00</topemin>
   <topemax>0,00</topemax>
   <capitada>N</capitada>
-  <noimport>null</noimport>
+  <noimport>N</noimport>
   <retencioniva>10,50</retencioniva>
   <retieneiva>S</retieneiva>
   <factnbu>S</factnbu>
@@ -1295,7 +1295,7 @@
   <topemin>5,91</topemin>
   <topemax>11,83</topemax>
   <capitada>N</capitada>
-  <noimport>null</noimport>
+  <noimport>N</noimport>
   <retencioniva>10,50</retencioniva>
   <retieneiva>S</retieneiva>
   <factnbu>S</factnbu>
@@ -1545,7 +1545,7 @@
   <topemin>0,00</topemin>
   <topemax>0,00</topemax>
   <capitada>N</capitada>
-  <noimport>null</noimport>
+  <noimport>N</noimport>
   <retencioniva>10,50</retencioniva>
   <retieneiva>S</retieneiva>
   <factnbu>S</factnbu>
@@ -1945,7 +1945,7 @@
   <topemin>0,00</topemin>
   <topemax>0,00</topemax>
   <capitada>N</capitada>
-  <noimport>N</noimport>
+  <noimport>null</noimport>
   <retencioniva>0,00</retencioniva>
   <retieneiva>N</retieneiva>
   <factnbu>S</factnbu>
@@ -2320,7 +2320,7 @@
   <topemin>0,00</topemin>
   <topemax>0,00</topemax>
   <capitada>N</capitada>
-  <noimport>N</noimport>
+  <noimport>null</noimport>
   <retencioniva>0,00</retencioniva>
   <retieneiva>N</retieneiva>
   <factnbu>S</factnbu>
@@ -2463,7 +2463,7 @@
   <rieub>0,00</rieub>
   <rieug>0,00</rieug>
   <porcentaje>100,00</porcentaje>
-  <codpfis>R</codpfis>
+  <codpfis>EX</codpfis>
   <nrocuit>30-54159260-8</nrocuit>
   <categoria>N</categoria>
   <tope>N</tope>
@@ -3279,17 +3279,17 @@
   <obsocial>
   <codos>121238</codos>
   <nombre>OSPICA INTERNACION</nombre>
-  <nombrec>CONEXION SALUD SRL -CONV OSPICA</nombrec>
-  <direccion>MOREAU DE JUSTO A. AV 846 PISO:846</direccion>
-  <localidad>C.A.B.A.</localidad>
-  <codpos>1107</codpos>
+  <nombrec>OBRA SOCIAL DEL PERSONAL DE LA INDUSTRIA DEL CUERO Y AFINES </nombrec>
+  <direccion>GIRIBONE 789 PISO:P.B</direccion>
+  <localidad>AVELLANEDA-BUENOS AIRES</localidad>
+  <codpos>1870</codpos>
   <ub>0,52</ub>
   <ug>1,26</ug>
   <rieub>0,52</rieub>
   <rieug>1,26</rieug>
   <porcentaje>0,00</porcentaje>
-  <codpfis>INS</codpfis>
-  <nrocuit>30-71463313-5</nrocuit>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-50790812-4</nrocuit>
   <categoria>N</categoria>
   <tope>N</tope>
   <topemin>0,00</topemin>
@@ -3395,7 +3395,7 @@
   <topemin>0,00</topemin>
   <topemax>0,00</topemax>
   <capitada>N</capitada>
-  <noimport>null</noimport>
+  <noimport>N</noimport>
   <retencioniva>10,50</retencioniva>
   <retieneiva>S</retieneiva>
   <factnbu>S</factnbu>
@@ -3445,7 +3445,7 @@
   <topemin>5,91</topemin>
   <topemax>11,83</topemax>
   <capitada>N</capitada>
-  <noimport>null</noimport>
+  <noimport>N</noimport>
   <retencioniva>10,50</retencioniva>
   <retieneiva>S</retieneiva>
   <factnbu>S</factnbu>
@@ -3745,7 +3745,7 @@
   <topemin>0,00</topemin>
   <topemax>0,00</topemax>
   <capitada>N</capitada>
-  <noimport>N</noimport>
+  <noimport>null</noimport>
   <retencioniva>0,00</retencioniva>
   <retieneiva>N</retieneiva>
   <factnbu>S</factnbu>
@@ -4070,7 +4070,7 @@
   <topemin>5,91</topemin>
   <topemax>11,83</topemax>
   <capitada>N</capitada>
-  <noimport>null</noimport>
+  <noimport>N</noimport>
   <retencioniva>10,50</retencioniva>
   <retieneiva>S</retieneiva>
   <factnbu>S</factnbu>
@@ -4195,7 +4195,7 @@
   <topemin>0,00</topemin>
   <topemax>0,00</topemax>
   <capitada>N</capitada>
-  <noimport>N</noimport>
+  <noimport>null</noimport>
   <retencioniva>0,00</retencioniva>
   <retieneiva>N</retieneiva>
   <factnbu>S</factnbu>
@@ -4345,7 +4345,7 @@
   <topemin>0,00</topemin>
   <topemax>0,00</topemax>
   <capitada>N</capitada>
-  <noimport>null</noimport>
+  <noimport>N</noimport>
   <retencioniva>10,50</retencioniva>
   <retieneiva>S</retieneiva>
   <factnbu>S</factnbu>
@@ -4929,7 +4929,7 @@
   <obsocial>
   <codos>121969</codos>
   <nombre>MUTUAL FEDERADA - PLAN COVID</nombre>
-  <nombrec>MUTUAL FEDERADA 25 DE JUNIO</nombrec>
+  <nombrec>MUTUAL FEDERADA 25 DE JUNIO- PLAN COVID</nombrec>
   <direccion>SAN JERONIMO 3320</direccion>
   <localidad>SANTA FE </localidad>
   <codpos>3000</codpos>
@@ -4938,7 +4938,7 @@
   <rieub>0,00</rieub>
   <rieug>0,00</rieug>
   <porcentaje>0,00</porcentaje>
-  <codpfis>R</codpfis>
+  <codpfis>EX</codpfis>
   <nrocuit>30-54159260-8</nrocuit>
   <categoria>N</categoria>
   <tope>N</tope>
@@ -5004,7 +5004,7 @@
   <obsocial>
   <codos>121972</codos>
   <nombre>UTEPLIM</nombre>
-  <nombrec>UNION TRABAJADORES DE EMPRESAS PRIVADAS DE LIMPIEZA</nombrec>
+  <nombrec>UNION SALUD UTEPLIM S.A.S.</nombrec>
   <direccion>BELGRANO AV 1180 PISO:1</direccion>
   <localidad>CABA</localidad>
   <codpos>1092</codpos>
@@ -5013,8 +5013,8 @@
   <rieub>0,00</rieub>
   <rieug>0,00</rieug>
   <porcentaje>0,00</porcentaje>
-  <codpfis>EXE</codpfis>
-  <nrocuit>30-70090123-4</nrocuit>
+  <codpfis>INS</codpfis>
+  <nrocuit>30-71592266-1</nrocuit>
   <categoria>N</categoria>
   <tope>N</tope>
   <topemin>0,00</topemin>
@@ -5420,7 +5420,7 @@
   <topemin>0,00</topemin>
   <topemax>0,00</topemax>
   <capitada>N</capitada>
-  <noimport>null</noimport>
+  <noimport>N</noimport>
   <retencioniva>10,50</retencioniva>
   <retieneiva>S</retieneiva>
   <factnbu>S</factnbu>
@@ -5471,10 +5471,10 @@
   <topemax>0,00</topemax>
   <capitada>N</capitada>
   <noimport>null</noimport>
-  <retencioniva>10,50</retencioniva>
-  <retieneiva>S</retieneiva>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
   <factnbu>S</factnbu>
-  <pernbu>S</pernbu>
+  <pernbu>N</pernbu>
   </obsocial>
   <obsocial>
   <codos>121991</codos>
@@ -5525,5 +5525,55 @@
   <retieneiva>S</retieneiva>
   <factnbu>S</factnbu>
   <pernbu>S</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121993</codos>
+  <nombre>OSPIC GLOBAL CUERO</nombre>
+  <nombrec>GLOBAL EMPRESARIA-CONV OSPIC GLOBAL CUERO</nombrec>
+  <direccion>PASCO 1043</direccion>
+  <localidad>ROSARIO</localidad>
+  <codpos>2000</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>INS</codpfis>
+  <nrocuit>30-71513403-5</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
+  </obsocial>
+  <obsocial>
+  <codos>121994</codos>
+  <nombre>OSTCARA(OBRA SOCIAL DE LOS TRABAJADORES DE LA CARN</nombre>
+  <nombrec>OBRA SOCIAL DE LOS TRABAJADORES DE LA CARNE Y AFINES DE LA R</nombrec>
+  <direccion>PARANA 749 PISO 2 DTO: A</direccion>
+  <localidad>CIUDAD AUTONOMA DE BS A</localidad>
+  <codpos>1017</codpos>
+  <ub>0,00</ub>
+  <ug>0,00</ug>
+  <rieub>0,00</rieub>
+  <rieug>0,00</rieug>
+  <porcentaje>0,00</porcentaje>
+  <codpfis>EX</codpfis>
+  <nrocuit>30-70876719-7</nrocuit>
+  <categoria>N</categoria>
+  <tope>N</tope>
+  <topemin>0,00</topemin>
+  <topemax>0,00</topemax>
+  <capitada>N</capitada>
+  <noimport>null</noimport>
+  <retencioniva>0,00</retencioniva>
+  <retieneiva>N</retieneiva>
+  <factnbu>S</factnbu>
+  <pernbu>N</pernbu>
   </obsocial>
 </obrassociales>

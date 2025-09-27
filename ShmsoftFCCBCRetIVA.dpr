@@ -125,7 +125,8 @@ uses
   tablaNBU in 'tablaNBU.pas' {fmTablaNBU},
   CExportObrasSociales in 'clases\CExportObrasSociales.pas',
   CDatosEmpresa in 'clases\CDatosEmpresa.pas',
-  CPresupuestoRapidoFabbrissin in 'clases\CPresupuestoRapidoFabbrissin.pas';
+  CPresupuestoRapidoFabbrissin in 'clases\CPresupuestoRapidoFabbrissin.pas',
+  CNomeclatura_ObraSocial in 'clases\CNomeclatura_ObraSocial.pas';
 
 {$R *.RES}
 

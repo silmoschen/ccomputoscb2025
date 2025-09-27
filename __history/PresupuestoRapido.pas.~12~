@@ -60,6 +60,13 @@ type
     btnCerrar: TButton;
     Label9: TLabel;
     Unnbu: TLabel;
+    Panel7: TPanel;
+    t1: TEdit;
+    t2: TEdit;
+    t3: TEdit;
+    Label8: TLabel;
+    Label12: TLabel;
+    Label13: TLabel;
     procedure codosKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure BuscarOSClick(Sender: TObject);
@@ -146,9 +153,11 @@ begin
     obsocial.SincronizarArancelNBU(codos.Text, Copy(utiles.sExprFecha2000(utiles.setFechaActual), 5, 2) + '/' + Copy(utiles.sExprFecha2000(utiles.setFechaActual), 1, 4));
     nbu.getDatos(codanalisis.Text);
     des.Caption := nbu.descrip;
-    Unnbu.Caption := utiles.FormatearNumero(floattostr(unidadesNBU.Unidades));
+    Unnbu.Caption := utiles.FormatearNumero(floattostr(unidadesNBU.getUnidad(codanalisis.Text, Copy(utiles.sExprFecha2000(utiles.setFechaActual), 5, 2) + '/' + Copy(utiles.sExprFecha2000(utiles.setFechaActual), 1, 4))));
+    //Unnbu.Caption := utiles.FormatearNumero(floattostr(unidadesNBU.Unidades));
     precio.Text := utiles.FormatearNumero(FloatToStr(facturacion.setImporteAnalisis(codos.Text, codanalisis.Text, Copy(utiles.setFechaActual, 4, 2) + '/' + Copy(utiles.sExprFecha2000(utiles.setFechaActual), 1, 4))));
     p := precio.Text;
+    //caption := Copy(utiles.setFechaActual, 4, 2) + '/' + Copy(utiles.sExprFecha2000(utiles.setFechaActual), 1, 4);
   end;
   ActiveControl := precio;
 end;

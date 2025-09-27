@@ -276,6 +276,7 @@
     <DCCReference Include="clases\CLiquidacionObrasSocCCB.pas" />
     <DCCReference Include="clases\CMedicosCabAO.pas" />
     <DCCReference Include="clases\CNBU.pas" />
+    <DCCReference Include="clases\CNomeclatura_ObraSocial.pas" />
     <DCCReference Include="clases\CPadronOSCCB.pas" />
     <DCCReference Include="clases\CUBReferentes.pas" />
     <DCCReference Include="clases\CUnidadesNBU.pas" />
@@ -512,6 +513,9 @@
     </DCCReference>
     <DCCReference Include="SeleccionOrdenesFacturar.pas">
       <Form>fmSeleccionOrdenes</Form>
+    </DCCReference>
+    <DCCReference Include="selectObraSocial.pas">
+      <Form>fmSelObraSocial</Form>
     </DCCReference>
     <DCCReference Include="TablaDebitosCreditos.pas">
       <Form>fmTablaDebCred</Form>

@@ -28,7 +28,6 @@ object fmPresupuestoRapido: TfmPresupuestoRapido
     BorderWidth = 4
     Caption = 'Panel2'
     TabOrder = 0
-    ExplicitHeight = 329
     object ScrollBox: TScrollBox
       Left = 6
       Top = 6
@@ -43,7 +42,6 @@ object fmPresupuestoRapido: TfmPresupuestoRapido
       AutoScroll = False
       BorderStyle = bsNone
       TabOrder = 0
-      ExplicitHeight = 317
       object Panel9: TPanel
         Left = 0
         Top = 36
@@ -392,7 +390,6 @@ object fmPresupuestoRapido: TfmPresupuestoRapido
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 2
-        ExplicitHeight = 153
         object Panel10: TPanel
           Left = 0
           Top = 0
@@ -403,7 +400,6 @@ object fmPresupuestoRapido: TfmPresupuestoRapido
           BevelOuter = bvSpace
           TabOrder = 0
           OnResize = Panel10Resize
-          ExplicitHeight = 153
           object F: TStringGrid
             Left = 2
             Top = 2
@@ -426,7 +422,6 @@ object fmPresupuestoRapido: TfmPresupuestoRapido
             TabOrder = 0
             OnDblClick = FDblClick
             OnKeyDown = FKeyDown
-            ExplicitHeight = 149
             ColWidths = (
               18
               35
@@ -501,9 +496,6 @@ object fmPresupuestoRapido: TfmPresupuestoRapido
           Align = alRight
           BevelOuter = bvNone
           TabOrder = 0
-          ExplicitLeft = 175
-          ExplicitTop = 4
-          ExplicitHeight = 113
           object Label4: TLabel
             Left = 1
             Top = 2

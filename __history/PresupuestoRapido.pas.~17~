@@ -60,6 +60,13 @@ type
     btnCerrar: TButton;
     Label9: TLabel;
     Unnbu: TLabel;
+    Panel7: TPanel;
+    t1: TEdit;
+    t2: TEdit;
+    t3: TEdit;
+    Label8: TLabel;
+    Label12: TLabel;
+    Label13: TLabel;
     procedure codosKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure BuscarOSClick(Sender: TObject);
@@ -124,6 +131,7 @@ begin
     Label67.Visible := False; Label68.Visible := False; Label71.Visible := False; Label70.Visible := False;
     ub.Visible := False; ug.Visible := False; rieub.Visible := False; rieug.Visible := False;
     Label71.Visible := True; Label71.Caption := 'U.NBU.:'; rieub.Visible := True; Label7.Visible := true;
+    Label71.Left := Label71.Left - 35;
     rieub.Caption := utiles.FormatearNumero(FloatToStr(obsocial.valorNBU));
   end;
   grid.IniciarGrilla(F);
@@ -148,8 +156,13 @@ begin
     des.Caption := nbu.descrip;
     Unnbu.Caption := utiles.FormatearNumero(floattostr(unidadesNBU.getUnidad(codanalisis.Text, Copy(utiles.sExprFecha2000(utiles.setFechaActual), 5, 2) + '/' + Copy(utiles.sExprFecha2000(utiles.setFechaActual), 1, 4))));
     //Unnbu.Caption := utiles.FormatearNumero(floattostr(unidadesNBU.Unidades));
-    precio.Text := utiles.FormatearNumero(FloatToStr(facturacion.setImporteAnalisis(codos.Text, codanalisis.Text, Copy(utiles.setFechaActual, 5, 2) + '/' + Copy(utiles.sExprFecha2000(utiles.setFechaActual), 1, 4))));
+    precio.Text := utiles.FormatearNumero(FloatToStr(facturacion.setImporteAnalisis(codos.Text, codanalisis.Text, Copy(utiles.setFechaActual, 4, 2) + '/' + Copy(utiles.sExprFecha2000(utiles.setFechaActual), 1, 4))));
     p := precio.Text;
+    //caption := Copy(utiles.setFechaActual, 4, 2) + '/' + Copy(utiles.sExprFecha2000(utiles.setFechaActual), 1, 4);
+
+    // Para NBU con unidades propias en obras sociales // 26/09/2025
+    if (facturacion.setNbuNomencladorObraSocial <> 0) then Unnbu.Caption := utiles.FormatearNumero(floattostr(facturacion.setNbuNomencladorObraSocial));
+
   end;
   ActiveControl := precio;
 end;

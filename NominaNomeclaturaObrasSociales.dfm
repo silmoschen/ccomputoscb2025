@@ -36,7 +36,6 @@ object fmListNomeclaturaObrasSociales: TfmListNomeclaturaObrasSociales
       item
         Width = 50
       end>
-    ExplicitWidth = 571
   end
   object Panel1: TPanel
     Left = 0
@@ -46,7 +45,6 @@ object fmListNomeclaturaObrasSociales: TfmListNomeclaturaObrasSociales
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitWidth = 571
     DesignSize = (
       685
       25)
@@ -197,7 +195,6 @@ object fmListNomeclaturaObrasSociales: TfmListNomeclaturaObrasSociales
     BevelOuter = bvNone
     TabOrder = 2
     OnResize = Panel2Resize
-    ExplicitWidth = 571
     object DBGrid: TDBGrid
       Left = 0
       Top = 0
@@ -234,7 +231,6 @@ object fmListNomeclaturaObrasSociales: TfmListNomeclaturaObrasSociales
     ParentFont = False
     TabOrder = 3
     Visible = False
-    ExplicitWidth = 571
     object Label3: TLabel
       Left = 5
       Top = 5
@@ -303,7 +299,6 @@ object fmListNomeclaturaObrasSociales: TfmListNomeclaturaObrasSociales
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 3
-      ExplicitLeft = 495
       object emitir: TBitBtn
         Left = 1
         Top = 0
@@ -384,7 +379,6 @@ object fmListNomeclaturaObrasSociales: TfmListNomeclaturaObrasSociales
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 4
-    ExplicitWidth = 571
     object filtroOS: TSpeedButton
       Left = 5
       Top = 0
@@ -440,8 +434,7 @@ object fmListNomeclaturaObrasSociales: TfmListNomeclaturaObrasSociales
       Text = 'Elija Opci'#243'n'
       OnChange = ComboBox1Change
       Items.Strings = (
-        'Copia del Nomenclador'
-        'Copia desde otra O. Social'
+        'Importar desde Obra Social'
         '--------------------------------'
         'Borra Nomenclador')
     end

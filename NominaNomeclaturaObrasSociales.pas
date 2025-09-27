@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Db, Grids, DBGrids, Buttons, DBCtrls, ExtCtrls, ComCtrls, StdCtrls, Mask,
-  LMDCustomButton, LMDButton, Menus;
+  LMDCustomButton, LMDButton, Menus, DBTables;
 
 type
   TfmListNomeclaturaObrasSociales = class(TForm)
@@ -98,7 +98,7 @@ implementation
 
 uses CNomeclatura_ObraSocial, CUtiles, FichaPaciente, CConfigForms,
   NominaDeProfesionales, FichaNomecladorOS, NominaObrasSociales,
-  CObrasSocialesCCB, CBDT;
+  CObrasSocialesCCB, CBDT, selectObraSocial;
 
 {$R *.DFM}
 
@@ -272,8 +272,44 @@ end;
 
 procedure TfmListNomeclaturaObrasSociales.ComboBox1Change(Sender: TObject);
 var
-  codigo: string;
+  codigo, os: string;
+  r: TQuery;
+  i: integer;
 begin
+  if (ComboBox1.Text = 'Importar desde Obra Social') then begin
+    Application.CreateForm(TfmSelObraSocial, fmSelObraSocial);
+
+    r := obsocial.setobsocialsAlf;
+    r.open; i := 0;
+    while not r.Eof do begin
+      if (r.fieldbyname('codos').asstring <> codos.Caption) then begin
+        inc(i);
+        fmSelObraSocial.F.Cells[0, i] := r.fieldbyname('nombre').asstring;
+        fmSelObraSocial.F.Cells[1, i] := r.fieldbyname('codos').asstring;
+      end;
+      r.next;
+    end;
+    r.close; r.free;
+    fmSelObraSocial.ShowModal;
+
+    os := fmSelObraSocial.F.Cells[0, fmSelObraSocial.F.Row];
+    codigo := fmSelObraSocial.F.Cells[1, fmSelObraSocial.F.Row];
+
+    fmSelObraSocial.Release; fmSelObraSocial := nil;
+
+    if (utiles.msgSiNo('Esta Opción Importará el Nomenclador N.B.U. desde ' + os + ', la misma sobreescribira los Datos ' +
+                       'Actuales. Seguro para Proceder ?')) then begin
+
+                         nomeclaturaos.CopiarNBU(codigo, codos.Caption);
+                         nomeclaturaos.Filtrar(codos.Caption);
+
+                         exit;
+
+                       end;
+
+
+  end;
+
   if (ComboBox1.Text = 'Copia del Nomenclador') then begin
     if (utiles.msgSiNo('Esta Opción le Permite Realizar una Copia del Nomenclador N.B.U., la misma sobreescribira los Datos ' +
                        'Actuales. Seguro para Proceder ?')) then begin

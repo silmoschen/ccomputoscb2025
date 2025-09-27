@@ -99,7 +99,7 @@ implementation
 
 uses CObrasSocialesCCB, CNomeclaCCB, CUtiles, CBDT, CUtilidadesArchivos,
   FormAuto, RasDial3, RasDial2, RasDial1, RasDial4, CConfigForms, CNBU,
-  EleccionProfesionales, AutenticacionSMTP, CSMTP;
+  EleccionProfesionales, AutenticacionSMTP, CSMTP, CNomeclatura_ObraSocial;
 
 {$R *.dfm}
 
@@ -218,6 +218,11 @@ begin
   estado.Lines.Add('Exportando Nomenclaturas NBU');
   nbu.Exportar;
   nbu.desconectar;
+  // 26/09/2025
+  nomeclaturaos.conectar;
+  estado.Lines.Add('Exportando Nomenclaturas NBU Obras Sociales');
+  nomeclaturaos.Exportar;
+  nomeclaturaos.desconectar;
   estado.Lines.Add('Exportando Aranceles NBU');
   obsocial.ExportarArancelesNBUXML;
   estado.Lines.Add('Exportando Unidades NBU');
@@ -405,6 +410,7 @@ var
   l: TStringList;
   i: Integer;
 begin
+exit;
   if RadioButton1.Checked then Begin  // Transferir a Medio
     if ((Lowercase(Copy(DriveComboBox.Text, 1, 1)) = 'a') or (Lowercase(Copy(DriveComboBox.Text, 1, 1)) = 'b')) then Begin
       if Lowercase(Copy(DriveComboBox.Text, 1, 1)) = 'a' then d := 'a';

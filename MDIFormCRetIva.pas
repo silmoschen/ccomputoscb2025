@@ -136,6 +136,8 @@ type
     Pacientes1: TMenuItem;
     N18: TMenuItem;
     ExportacionesSoporteDigital1: TMenuItem;
+    NomencladorObraSocial1: TMenuItem;
+    NomencladorObraSocial2: TMenuItem;
     procedure FormActivate(Sender: TObject);
     procedure sistObrasSocialesClick(Sender: TObject);
     procedure Salir1Click(Sender: TObject);
@@ -187,6 +189,7 @@ type
     procedure ExportarFacturacinSoporteMagntico1Click(Sender: TObject);
     procedure ConfiguracinFTP1Click(Sender: TObject);
     procedure ExportacionesSoporteDigital1Click(Sender: TObject);
+    procedure NomencladorObraSocial1Click(Sender: TObject);
   private
     { Private declarations }
     FIniFileName : String;
@@ -216,7 +219,7 @@ uses CUtiles, CBDT, ImgForms, NominaPacientes, NominaNomeclador,
   PresupuestoRapido, BajarActualizacionesOnLine, Parametros, Nomina_NBU,
   RepararDatosParadox, distribucionOrdenesFacturadas, fmFacturacionOnLine,
   configaccesoremoto, exportarOrdenesSopMagnetico, fmConfigFTP, soportedigital,
-  PresupuestoRapidoTit;
+  PresupuestoRapidoTit, NominaNomeclaturaObrasSociales;
 
 {$R *.DFM}
 
@@ -397,10 +400,10 @@ end;
 
 procedure TfmSistemFact.sistDeduccionClick(Sender: TObject);
 begin
-  if not Assigned(fmPresupuestoRapidoTit) then Begin
-    Application.CreateForm(TfmPresupuestoRapidoTit, fmPresupuestoRapidoTit);
-    fmPresupuestoRapidoTit.FormStyle := FsMDIChild;
-    fmPresupuestoRapidoTit.Show;
+  if not Assigned(fmPresupuestoRapido) then Begin
+    Application.CreateForm(TfmPresupuestoRapido, fmPresupuestoRapido);
+    fmPresupuestoRapido.FormStyle := FsMDIChild;
+    fmPresupuestoRapido.Show;
   end;
 end;
 
@@ -886,6 +889,19 @@ procedure TfmSistemFact.ProgramacindeRespaldos1Click(Sender: TObject);
 begin
   Application.CreateForm(TfmParametros, fmParametros);
   fmParametros.ShowModal;
+end;
+
+procedure TfmSistemFact.NomencladorObraSocial1Click(Sender: TObject);
+begin
+   Application.CreateForm(TfmListNomeclaturaObrasSociales, fmListNomeclaturaObrasSociales);
+   fmListNomeclaturaObrasSociales.SpeedButton1.Enabled := false;
+   fmListNomeclaturaObrasSociales.SpeedButton2.Enabled := false;
+   fmListNomeclaturaObrasSociales.SpeedButton3.Enabled := false;
+   fmListNomeclaturaObrasSociales.SpeedButton4.Enabled := false;
+   fmListNomeclaturaObrasSociales.SpeedButton6.Enabled := false;
+   fmListNomeclaturaObrasSociales.ComboBox1.Visible := false;
+   fmListNomeclaturaObrasSociales.Label7.visible := false;
+   fmListNomeclaturaObrasSociales.ShowModal;
 end;
 
 procedure TfmSistemFact.NomencladorUnicoBioquimico1Click(Sender: TObject);

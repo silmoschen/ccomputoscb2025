@@ -4,7 +4,7 @@ object fmSistemFact: TfmSistemFact
   Caption = 
     'shmSOFT - Facturaci'#243'n Obras Sociales Laboratorios de An'#225'lisis Cl' +
     #237'nicos'
-  ClientHeight = 590
+  ClientHeight = 610
   ClientWidth = 720
   Color = clBtnShadow
   ParentFont = True
@@ -161,7 +161,7 @@ object fmSistemFact: TfmSistemFact
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 571
+    Top = 591
     Width = 720
     Height = 19
     Panels = <
@@ -246,6 +246,10 @@ object fmSistemFact: TfmSistemFact
         object NomencladorUnicoBioquimico2: TMenuItem
           Caption = 'Nomenclador Unico Bioquimico'
           OnClick = NomencladorUnicoBioquimico1Click
+        end
+        object NomencladorObraSocial1: TMenuItem
+          Caption = 'Nomenclador Obra Social'
+          OnClick = NomencladorObraSocial1Click
         end
         object ObrasSociales1: TMenuItem
           Caption = 'Obras Sociales'
@@ -475,6 +479,10 @@ object fmSistemFact: TfmSistemFact
     object NomencladorUnicoBioquimico1: TMenuItem
       Caption = 'Nomenclador Unico Bioquimico'
       OnClick = NomencladorUnicoBioquimico1Click
+    end
+    object NomencladorObraSocial2: TMenuItem
+      Caption = 'Nomenclador Obra Social'
+      OnClick = NomencladorObraSocial1Click
     end
     object ObrasSociales2: TMenuItem
       Caption = 'Obras Sociales'

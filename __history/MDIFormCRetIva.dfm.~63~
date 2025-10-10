@@ -4,7 +4,7 @@ object fmSistemFact: TfmSistemFact
   Caption = 
     'shmSOFT - Facturaci'#243'n Obras Sociales Laboratorios de An'#225'lisis Cl' +
     #237'nicos'
-  ClientHeight = 550
+  ClientHeight = 610
   ClientWidth = 720
   Color = clBtnShadow
   ParentFont = True
@@ -161,7 +161,7 @@ object fmSistemFact: TfmSistemFact
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 531
+    Top = 591
     Width = 720
     Height = 19
     Panels = <
@@ -171,6 +171,7 @@ object fmSistemFact: TfmSistemFact
       item
         Width = 50
       end>
+    ExplicitTop = 571
   end
   object MainMenu: TMainMenu
     OnChange = MainMenuChange
@@ -185,10 +186,13 @@ object fmSistemFact: TfmSistemFact
       end
       object FacturacindeOrdenesOnLine1: TMenuItem
         Caption = 'Facturaci'#243'n de Ordenes On Line'
+        Enabled = False
+        Visible = False
         OnClick = FacturacindeOrdenesOnLine1Click
       end
       object ExportarFacturacinSoporteMagntico1: TMenuItem
         Caption = 'Exportar Facturaci'#243'n Soporte Magn'#233'tico'
+        Enabled = False
         OnClick = ExportarFacturacinSoporteMagntico1Click
       end
       object N10: TMenuItem
@@ -196,10 +200,12 @@ object fmSistemFact: TfmSistemFact
       end
       object FacturacinGlobaldeObrasSociales1: TMenuItem
         Caption = 'Facturaci'#243'n Global de Obras Sociales'
+        Enabled = False
         OnClick = FacturacinGlobaldeObrasSociales1Click
       end
       object DistribucindeOrdenesFacturadas1: TMenuItem
         Caption = 'Distribuci'#243'n de Ordenes Facturadas'
+        Enabled = False
         OnClick = DistribucindeOrdenesFacturadas2Click
       end
       object N15: TMenuItem
@@ -214,6 +220,14 @@ object fmSistemFact: TfmSistemFact
         OnClick = sistDeduccionClick
       end
       object N1: TMenuItem
+        Caption = '-'
+      end
+      object ExportacionesSoporteDigital1: TMenuItem
+        Caption = 'Exportaciones Soporte Digital'
+        Enabled = False
+        OnClick = ExportacionesSoporteDigital1Click
+      end
+      object N18: TMenuItem
         Caption = '-'
       end
       object Salir1: TMenuItem
@@ -233,6 +247,10 @@ object fmSistemFact: TfmSistemFact
         object NomencladorUnicoBioquimico2: TMenuItem
           Caption = 'Nomenclador Unico Bioquimico'
           OnClick = NomencladorUnicoBioquimico1Click
+        end
+        object NomencladorObraSocial1: TMenuItem
+          Caption = 'Nomenclador Obra Social'
+          OnClick = NomencladorObraSocial1Click
         end
         object ObrasSociales1: TMenuItem
           Caption = 'Obras Sociales'
@@ -463,6 +481,10 @@ object fmSistemFact: TfmSistemFact
       Caption = 'Nomenclador Unico Bioquimico'
       OnClick = NomencladorUnicoBioquimico1Click
     end
+    object NomencladorObraSocial2: TMenuItem
+      Caption = 'Nomenclador Obra Social'
+      OnClick = NomencladorObraSocial1Click
+    end
     object ObrasSociales2: TMenuItem
       Caption = 'Obras Sociales'
       OnClick = sistObrasSocialesClick
@@ -666,10 +688,13 @@ object fmSistemFact: TfmSistemFact
     end
     object FacturacindeOrdenesOnLine2: TMenuItem
       Caption = 'Facturaci'#243'n de Ordenes On Line'
+      Enabled = False
+      Visible = False
       OnClick = FacturacindeOrdenesOnLine1Click
     end
     object ExportarFacturacinSoporteMagntico2: TMenuItem
       Caption = 'Exportar Facturaci'#243'n Soporte Magn'#233'tico'
+      Enabled = False
       OnClick = ExportarFacturacinSoporteMagntico1Click
     end
     object N16: TMenuItem
@@ -677,10 +702,12 @@ object fmSistemFact: TfmSistemFact
     end
     object FacturacinGlobaldeObrasSociales2: TMenuItem
       Caption = 'Facturaci'#243'n Global de Obras Sociales'
+      Enabled = False
       OnClick = FacturacinGlobaldeObrasSociales1Click
     end
     object DistribucindeOrdenesFacturadas2: TMenuItem
       Caption = 'Distribuci'#243'n de Ordenes Facturadas'
+      Enabled = False
       OnClick = DistribucindeOrdenesFacturadas2Click
     end
   end

@@ -40,6 +40,7 @@ TTNomeclaturaOS = class
 
   procedure   MarcarPracticaDiferencial(xcodos, xcodigo: string);
   procedure   Exportar;
+  procedure   Importar;
 
   procedure   conectar;
   procedure   desconectar;
@@ -98,6 +99,33 @@ Begin
     end;
     tabla.Next;
   End;             
+  datosdb.closeDB(texport);
+End;
+
+procedure TTNomeclaturaOS.Importar;
+// Objetivo...: Importar Datos
+var
+  texport: TTable;
+Begin
+  datosdb.tranSQL(tabla.DatabaseName, 'delete from nomeclados');
+
+  texport := datosdb.openDB('nomeclados', '', '', dbs.DirSistema + '\actualizaciones_online\download\estructu');
+  texport.Open;
+  texport.First;
+  tabla.IndexFieldNames := 'CODOS;CODIGO';
+  while not texport.Eof do Begin
+    tabla.Append;
+    tabla.FieldByName('codos').AsString   := texport.FieldByName('codos').AsString;
+    tabla.FieldByName('codigo').AsString  := texport.FieldByName('codigo').AsString;
+    tabla.FieldByName('descrip').AsString  := texport.FieldByName('descrip').AsString;
+    tabla.FieldByName('unidad').AsFloat  := texport.FieldByName('unidad').AsFloat;
+    try
+      tabla.Post
+    except
+      tabla.Cancel
+    end;
+    texport.Next;
+  End;
   datosdb.closeDB(texport);
 End;
 

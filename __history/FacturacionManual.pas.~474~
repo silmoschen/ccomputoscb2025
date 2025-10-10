@@ -440,6 +440,7 @@ type
     btnRefacturar: TButton;
     btnExportarTotalesRI: TBitBtn;
     RadioButton9: TRadioButton;
+    verPac: TCheckBox;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure periodoKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -656,6 +657,7 @@ type
     procedure btnExportClick(Sender: TObject);
     procedure btnExportarTotalesRIClick(Sender: TObject);
     procedure btnRefacturarClick(Sender: TObject);
+    procedure verPacClick(Sender: TObject);
   private
     { Private declarations }
     FIniFileName: String; tm: Char;
@@ -1511,6 +1513,7 @@ Begin
   btnRegistrar.Enabled := False;
   btnFacturar.Enabled  := False;
   recordenes.Enabled   := False;
+  verpac.Enabled := false;
   FAudit.Row     := 1;
 
   facturacion.PrepararDirectorio(periodoaudit.Text, idprofaudit.Text);
@@ -1546,7 +1549,7 @@ Begin
         FAudit.Cells[2, i] := profesional.nombre;
         FAudit.Cells[3, i] := s.FieldByName('nroauditoria').AsString;
         FAudit.Cells[4, i] := s.FieldByName('facturada').AsString;
-        FAudit.Cells[5, i] := auditoriacb.getPaciente(s.FieldByName('nroauditoria').AsString);
+        if (verpac.Checked) then FAudit.Cells[5, i] := auditoriacb.getPaciente(s.FieldByName('nroauditoria').AsString);
         s.Next;
       end;
       s.Close; s.Free;
@@ -1566,6 +1569,7 @@ Begin
     btnRegistrar.Enabled                 := True;
     btnFacturar.Enabled                  := True;
     recordenes.Enabled                   := True;
+    verpac.Enabled                       := true;
   end else
     Baja.Enabled                         := False;
 
@@ -4328,8 +4332,9 @@ begin
           continua := sigue;
 
         if (continua) then Begin
-          if verificarOrdenInterna(nroauditado) then Begin
-            utiles.msgError('La Orden ya está Registrada ...!');
+          //if (verificarOrdenInterna(nroauditado) or auditonline.verificarOrdenFacturada(nroauditado)) then Begin
+          if (verificarOrdenInterna(nroauditado) or facturacion.verificarOrdenFacturada(periodoaudit.Text, ordenaudit.Text)) then Begin
+            utiles.msgError('La Orden ' + nroauditado + ' ya está Registrada ...!');
             ordenaudit.Text := '';
           end else Begin
             if not modificaaudit then Begin
@@ -4493,10 +4498,12 @@ begin
     audit_modif          := False;
     btnRegistrar.Enabled := False;
     recordenes.Enabled   := True;
+    verpac.Enabled := true;
     modifacturacion      := True;
     if (Panel56.Visible) and (btnFacturar.Visible) then Begin
       btnFacturar.Enabled  := True;
       recordenes.Enabled   := True;
+      verpac.Enabled := true;
       btnFacturar.SetFocus;
     end else
       btnCancelarClick(Self);
@@ -4614,6 +4621,11 @@ begin
   end;
 end;
 
+procedure TfmFactManual.verPacClick(Sender: TObject);
+begin
+  CargarDatosAuditoria;  
+end;
+
 procedure TfmFactManual.DriveComboBox1Change(Sender: TObject);
 begin
   dirimport.Caption := '';
@@ -4725,8 +4737,10 @@ begin
   btnFacturar.Enabled  := False;
   recordenes.Checked   := False;
   recordenes.Enabled   := False;
+  verpac.Enabled := false;
   ordenaudit.Enabled   := False;
   recordenes.Enabled   := False;
+  verpac.Enabled := false;
   if PageControl1.ActivePage = TabSheet8 then
     if idprofaudit.Enabled then idprofaudit.SetFocus;
   audit_modif          := False;

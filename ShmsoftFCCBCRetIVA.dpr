@@ -85,7 +85,6 @@ uses
   PropiedadesEscritorio in '..\..\Interfases\PropiedadesEscritorio.pas' {frmPropiedades},
   MsgEditor in 'MsgEditor.pas' {fmMessageEditor},
   intro04072004 in '..\..\Interfases\intro04072004.pas' {fmIntroForm},
-  PresupuestoRapidoTit in 'PresupuestoRapidoTit.pas' {fmPresupuestoRapidoTit},
   BajarActualizacionesOnLine in 'BajarActualizacionesOnLine.pas' {fmBajarActualizaciones},
   Parametros in '..\..\Interfases\Parametros.pas' {fmParametros},
   AutenticacionSMTP in '..\..\Interfases\AutenticacionSMTP.pas' {fmAutenticacionSMTP},
@@ -126,7 +125,9 @@ uses
   CExportObrasSociales in 'clases\CExportObrasSociales.pas',
   CDatosEmpresa in 'clases\CDatosEmpresa.pas',
   CPresupuestoRapidoFabbrissin in 'clases\CPresupuestoRapidoFabbrissin.pas',
-  CNomeclatura_ObraSocial in 'clases\CNomeclatura_ObraSocial.pas';
+  CNomeclatura_ObraSocial in 'clases\CNomeclatura_ObraSocial.pas',
+  NominaNomeclaturaObrasSociales in 'NominaNomeclaturaObrasSociales.pas' {fmListNomeclaturaObrasSociales},
+  PresupuestoRapido in 'PresupuestoRapido.pas' {fmPresupuestoRapido};
 
 {$R *.RES}
 
@@ -140,5 +141,6 @@ begin
   Application.CreateForm(TfmSistemFact, fmSistemFact);
   fmIntroForm.Hide;
   fmIntroForm.Release; fmIntroForm := Nil;
+  Application.CreateForm(TfmListNomeclaturaObrasSociales, fmListNomeclaturaObrasSociales);
   Application.Run;
 end.

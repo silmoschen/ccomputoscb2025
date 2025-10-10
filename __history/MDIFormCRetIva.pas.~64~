@@ -14,7 +14,7 @@ const
   demo = 'No';          //Si, No
   estilos: array [1..4] of TLMDTileMode = (tmNone, tmCenter, tmStretch, tmTile);
   fexpira = ''; //'30/04/06';
-  factglobal = false;
+  factglobal = true;
   factonline = true;
   factexport = false;
 
@@ -132,6 +132,10 @@ type
     ExportarFacturacinSoporteMagntico1: TMenuItem;
     ExportarFacturacinSoporteMagntico2: TMenuItem;
     ConfiguracinFTP1: TMenuItem;
+    N17: TMenuItem;
+    Pacientes1: TMenuItem;
+    N18: TMenuItem;
+    ExportacionesSoporteDigital1: TMenuItem;
     procedure FormActivate(Sender: TObject);
     procedure sistObrasSocialesClick(Sender: TObject);
     procedure Salir1Click(Sender: TObject);
@@ -182,6 +186,7 @@ type
     procedure ConfigurarAccesoaDatos1Click(Sender: TObject);
     procedure ExportarFacturacinSoporteMagntico1Click(Sender: TObject);
     procedure ConfiguracinFTP1Click(Sender: TObject);
+    procedure ExportacionesSoporteDigital1Click(Sender: TObject);
   private
     { Private declarations }
     FIniFileName : String;
@@ -210,7 +215,8 @@ uses CUtiles, CBDT, ImgForms, NominaPacientes, NominaNomeclador,
   CFacturacionCCB, NominaDeCategoriasLab, ProgBackup, CUtilidadesArchivos, NominaDeProfesionales,  PropiedadesEscritorio,
   PresupuestoRapido, BajarActualizacionesOnLine, Parametros, Nomina_NBU,
   RepararDatosParadox, distribucionOrdenesFacturadas, fmFacturacionOnLine,
-  configaccesoremoto, exportarOrdenesSopMagnetico, fmConfigFTP;
+  configaccesoremoto, exportarOrdenesSopMagnetico, fmConfigFTP, soportedigital,
+  PresupuestoRapidoTit;
 
 {$R *.DFM}
 
@@ -391,11 +397,17 @@ end;
 
 procedure TfmSistemFact.sistDeduccionClick(Sender: TObject);
 begin
-  if not Assigned(fmPresupuestoRapido) then Begin
-    Application.CreateForm(TfmPresupuestoRapido, fmPresupuestoRapido);
-    fmPresupuestoRapido.FormStyle := FsMDIChild;
-    fmPresupuestoRapido.Show;
+  if not Assigned(fmPresupuestoRapidoTit) then Begin
+    Application.CreateForm(TfmPresupuestoRapidoTit, fmPresupuestoRapidoTit);
+    fmPresupuestoRapidoTit.FormStyle := FsMDIChild;
+    fmPresupuestoRapidoTit.Show;
   end;
+end;
+
+procedure TfmSistemFact.ExportacionesSoporteDigital1Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmSoporteDigital, fmSoporteDigital);
+  fmSoporteDigital.ShowModal;
 end;
 
 procedure TfmSistemFact.ExportarFacturacinSoporteMagntico1Click(
@@ -462,6 +474,7 @@ begin
   utilesarchivos.BorrarArchivos(dbs.DirSistema + '\exportar\attach', '*.bck');
 
   // Upgrades
+  {
   actualizaciones.Version('1.0.01');
   actualizaciones.Version('1.10.00');
   actualizaciones.Version('1.50.00');
@@ -520,9 +533,11 @@ begin
   end;
 
   actualizaciones.Version('4.01.001');
+  actualizaciones.Version('4.01.005');
+  }
 
   InformeEstadstico1.Enabled        := True;
-
+         
   usuario.usuario := 'Administrador';
   if usuario.usuario <> 'Administrador' then Begin
     General2.Items[4].Enabled         := False;

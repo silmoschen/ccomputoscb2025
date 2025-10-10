@@ -1173,10 +1173,6 @@ object fmFactManual: TfmFactManual
       Caption = '&Informes'
       ImageIndex = 1
       OnShow = TabSheet2Show
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Panel8: TPanel
         Left = 0
         Top = 0
@@ -2362,10 +2358,6 @@ object fmFactManual: TfmFactManual
       Caption = '&Exportar'
       ImageIndex = 4
       OnShow = TabSheet4Show
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Panel11: TPanel
         Left = 0
         Top = 0
@@ -2826,10 +2818,6 @@ object fmFactManual: TfmFactManual
       Caption = 'I&mportar'
       ImageIndex = 5
       OnShow = TabSheet6Show
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Panel22: TPanel
         Left = 0
         Top = 0
@@ -3736,10 +3724,6 @@ object fmFactManual: TfmFactManual
     object TabSheet3: TTabSheet
       Caption = '&Par'#225'metros'
       ImageIndex = 2
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Panel9: TPanel
         Left = 0
         Top = 0

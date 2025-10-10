@@ -410,7 +410,6 @@ var
   l: TStringList;
   i: Integer;
 begin
-exit;
   if RadioButton1.Checked then Begin  // Transferir a Medio
     if ((Lowercase(Copy(DriveComboBox.Text, 1, 1)) = 'a') or (Lowercase(Copy(DriveComboBox.Text, 1, 1)) = 'b')) then Begin
       if Lowercase(Copy(DriveComboBox.Text, 1, 1)) = 'a' then d := 'a';

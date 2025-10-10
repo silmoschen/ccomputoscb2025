@@ -110,7 +110,7 @@ implementation
 
 uses CObrasSocialesCCB, CNomeclaCCB, CUtiles, CBDT, CUtilidadesArchivos,
   FormAuto, RasDial3, RasDial2, RasDial1, RasDial4, CConfigForms, CNBU,
-  CUtilidadesStringGrid, DBTables, CUnidadesNBU;
+  CUtilidadesStringGrid, DBTables, CUnidadesNBU, CNomeclatura_obraSocial;
 
 {$R *.dfm}
 
@@ -235,6 +235,9 @@ begin
     unidadesNBU.conectar;
     unidadesNBU.importar;
     unidadesNBU.desconectar;
+    nomeclaturaos.conectar;
+    nomeclaturaos.Importar;
+    nomeclaturaos.desconectar;
   end;
   if act7.Checked then Begin
     estado.Lines.Add('Actualizando Montos Fijos NBU');

@@ -54,7 +54,7 @@ uses
   NominaObrasSociales in 'NominaObrasSociales.pas' {fmListObrasSociales},
   EleccionMedicosCabecera in 'EleccionMedicosCabecera.pas' {fmEleMedicosCabecera},
   CObrasSocialesCCB in '..\..\CLASES\CObrasSocialesCCB.pas',
-  NominaDeCategorias in '..\damevin\NominaDeCategorias.pas' {fmListCategorias},
+  NominaDeCategorias in 'NominaDeCategorias.pas' {fmListCategorias},
   tabladecategoriasLab in 'tabladecategoriasLab.pas' {fmTablaCategoriasLab},
   CActualizaciones in '..\..\CLASES\CActualizaciones.pas',
   CActualizacionesCentroComputosCB in '..\..\CLASES\CActualizacionesCentroComputosCB.pas',
@@ -137,9 +137,9 @@ uses
   TRANSLAT in '..\..\Varios\repara_paradox\INTERNAT\TRANSLAT.PAS',
   plctas in '..\asociacion\plctas.pas' {fmPlanDeCuentas},
   Capitul in '..\asociacion\Capitul.pas' {fmCuentas},
-  ParametrosPlanctas in '..\asociacion\ParametrosPlanctas.pas' {fmParametrosPlanctas},
+  ParametrosPlanctas in 'ParametrosPlanctas.pas' {fmParametrosPlanctas},
   InformesContables in '..\asociacion\InformesContables.pas' {fmListarInformesContables},
-  AsientosContables in '..\asociacion\AsientosContables.pas' {fmLibroDiario},
+  AsientosContables in 'AsientosContables.pas' {fmLibroDiario},
   AsientosModelos in '..\asociacion\AsientosModelos.pas' {fmAsientosModelos},
   IngresoAsientosModelos in '..\asociacion\IngresoAsientosModelos.pas' {fmCargaAsientoModelo},
   Periodo_Economico in '..\asociacion\Periodo_Economico.pas' {fmEjercicioEconomico},
@@ -203,7 +203,11 @@ uses
   refacturar in 'refacturar.pas' {fmRF},
   NominaDebCred in 'NominaDebCred.pas' {fmListDebCred},
   os_reglas in 'os_reglas.pas' {fmReglasOs},
-  CUnidadesNBU in 'clases\CUnidadesNBU.pas';
+  CUnidadesNBU in 'clases\CUnidadesNBU.pas',
+  detalleFacturado in 'detalleFacturado.pas' {fmDetalleFacturado},
+  reportUBFacturadas in 'reportUBFacturadas.pas' {fmUBFacturadas},
+  selectObraSocial in 'selectObraSocial.pas' {fmSelObraSocial},
+  CNomeclatura_ObraSocial in 'clases\CNomeclatura_ObraSocial.pas';
 
 {$R *.RES}
 
@@ -217,8 +221,8 @@ begin
   fmIntroForm.Show;
   fmIntroForm.Update;
   Application.Initialize;
-  Application.CreateForm(TfmSistem, fmSistem);
-  fmIntroForm.Hide;
+  AApplication.CreateForm(TfmSistem, fmSistem);
+  mIntroForm.Hide;
   fmIntroForm.Release; fmIntroForm := Nil;
   Application.Run;
 end.

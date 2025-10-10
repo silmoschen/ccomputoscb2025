@@ -81,6 +81,7 @@ type
     procedure DBGridDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure SpeedButton6Click(Sender: TObject);
+    procedure FormResize(Sender: TObject);
   private
     { Private declarations }
     ordenact: string; control: byte;
@@ -117,6 +118,11 @@ begin
     WriteLn(archivo, codos.Caption);
     closeFile(archivo);
   end;                  
+end;
+
+procedure TfmListNomeclaturaObrasSociales.FormResize(Sender: TObject);
+begin
+  StatusBar1.Panels[0].Width := (Width - (Width div 2)) + 150;
 end;
 
 procedure TfmListNomeclaturaObrasSociales.expresionChange(Sender: TObject);
@@ -166,6 +172,7 @@ end;
 
 procedure TfmListNomeclaturaObrasSociales.SpeedButton2Click(Sender: TObject);
 begin
+  if (SpeedButton1.Enabled = false) then exit;
   if obsocial.Buscar(codos.Caption) then Begin
     if nomeclaturaos.Buscar(nomeclaturaos.tabla.FieldByName('codos').AsString, nomeclaturaos.tabla.FieldByName('codigo').AsString) then Begin
       Application.CreateForm(TfmFichaNomeclaturaOS, fmFichaNomeclaturaOS);
@@ -198,6 +205,8 @@ end;
 procedure TfmListNomeclaturaObrasSociales.DBGridKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
+  if (SpeedButton1.Enabled = false) then exit;
+  
   if Key = VK_INSERT then SpeedButton1Click(Sender);
   if Key = VK_DELETE then SpeedButton3Click(Sender);
   if Key = VK_RETURN then

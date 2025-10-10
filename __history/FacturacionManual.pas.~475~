@@ -29,7 +29,7 @@ type
     InsertarItems1: TMenuItem;
     ModificarItems1: TMenuItem;
     N2: TMenuItem;
-    BorrarItems1: TMenuItem;                                 
+    BorrarItems1: TMenuItem;
     ModificarObraSocial1: TMenuItem;
     PopupMenuMod: TPopupMenu;
     MenuItem1: TMenuItem;
@@ -440,6 +440,7 @@ type
     btnRefacturar: TButton;
     btnExportarTotalesRI: TBitBtn;
     RadioButton9: TRadioButton;
+    verPac: TCheckBox;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure periodoKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -656,6 +657,7 @@ type
     procedure btnExportClick(Sender: TObject);
     procedure btnExportarTotalesRIClick(Sender: TObject);
     procedure btnRefacturarClick(Sender: TObject);
+    procedure verPacClick(Sender: TObject);
   private
     { Private declarations }
     FIniFileName: String; tm: Char;
@@ -1511,6 +1513,7 @@ Begin
   btnRegistrar.Enabled := False;
   btnFacturar.Enabled  := False;
   recordenes.Enabled   := False;
+  verpac.Enabled := false;
   FAudit.Row     := 1;
 
   facturacion.PrepararDirectorio(periodoaudit.Text, idprofaudit.Text);
@@ -1546,6 +1549,7 @@ Begin
         FAudit.Cells[2, i] := profesional.nombre;
         FAudit.Cells[3, i] := s.FieldByName('nroauditoria').AsString;
         FAudit.Cells[4, i] := s.FieldByName('facturada').AsString;
+        if (verpac.Checked) then FAudit.Cells[5, i] := auditoriacb.getPaciente(s.FieldByName('nroauditoria').AsString);
         s.Next;
       end;
       s.Close; s.Free;
@@ -1565,6 +1569,7 @@ Begin
     btnRegistrar.Enabled                 := True;
     btnFacturar.Enabled                  := True;
     recordenes.Enabled                   := True;
+    verpac.Enabled                       := true;
   end else
     Baja.Enabled                         := False;
 
@@ -2440,7 +2445,7 @@ begin
   D.cells[0, 0] := 'Código'; D.cells[1, 0] := 'Nombre del Laboratorio'; D.cells[2, 0] := 'Fecha - Hora Importación'; D.cells[3, 0] := 'Directorio Importado'; D.cells[4, 0] := 'Usuario';
   N.cells[0, 0] := 'Código'; N.cells[1, 0] := 'Nombre del Laboratorio'; N.cells[2, 0] := 'S'; N.cells[3, 0] := 'Fecha - Hora Importación'; N.cells[4, 0] := 'Directorio de Trabajo'; N.cells[5, 0] := 'Usuario'; N.cells[6, 0] := 'Tipo Transferencia'; N.cells[7, 0] := 'Transferencia Final';
   P.Cells[0, 0] := 'Código'; P.Cells[1, 0] := 'S'; P.Cells[2, 0] := 'Nombre  de la Obra Social';
-  FAudit.Cells[0, 0] := 'Items'; FAudit.Cells[1, 0] := 'Código'; FAudit.Cells[2, 0] := 'Nombre del Profesional'; FAudit.Cells[3, 0] := 'Nro. de Orden'; FAudit.Cells[4, 0] := 'F';
+  FAudit.Cells[0, 0] := 'Items'; FAudit.Cells[1, 0] := 'Código'; FAudit.Cells[2, 0] := 'Nombre del Profesional'; FAudit.Cells[3, 0] := 'Nro. de Orden'; FAudit.Cells[4, 0] := 'F'; FAudit.Cells[5, 0] := 'Paciente';
   OA.Cells[0, 0] := 'Código'; OA.Cells[1, 0] := 'Nº Auditoría'; OA.Cells[2, 0] := 'F'; OA.Cells[3, 0] := 'Id.Fact.';
   StatusBar1.Panels[1].Text := 'Proc.: Individual';
   if atrazo.Text = '0' then periodo.Text := utiles.setPeriodoActual else periodo.Text := utiles.RestarPeriodo(utiles.setPeriodoActual, atrazo.Text);
@@ -4327,8 +4332,9 @@ begin
           continua := sigue;
 
         if (continua) then Begin
-          if verificarOrdenInterna(nroauditado) then Begin
-            utiles.msgError('La Orden ya está Registrada ...!');
+          //if (verificarOrdenInterna(nroauditado) or auditonline.verificarOrdenFacturada(nroauditado)) then Begin
+          if (verificarOrdenInterna(nroauditado) or facturacion.verificarOrdenFacturada(periodoaudit.Text, ordenaudit.Text)) then Begin
+            utiles.msgError('La Orden ' + nroauditado + ' ya está Registrada ...!');
             ordenaudit.Text := '';
           end else Begin
             if not modificaaudit then Begin
@@ -4492,10 +4498,12 @@ begin
     audit_modif          := False;
     btnRegistrar.Enabled := False;
     recordenes.Enabled   := True;
+    verpac.Enabled := true;
     modifacturacion      := True;
     if (Panel56.Visible) and (btnFacturar.Visible) then Begin
       btnFacturar.Enabled  := True;
       recordenes.Enabled   := True;
+      verpac.Enabled := true;
       btnFacturar.SetFocus;
     end else
       btnCancelarClick(Self);
@@ -4613,6 +4621,11 @@ begin
   end;
 end;
 
+procedure TfmFactManual.verPacClick(Sender: TObject);
+begin
+  CargarDatosAuditoria;  
+end;
+
 procedure TfmFactManual.DriveComboBox1Change(Sender: TObject);
 begin
   dirimport.Caption := '';
@@ -4724,8 +4737,10 @@ begin
   btnFacturar.Enabled  := False;
   recordenes.Checked   := False;
   recordenes.Enabled   := False;
+  verpac.Enabled := false;
   ordenaudit.Enabled   := False;
   recordenes.Enabled   := False;
+  verpac.Enabled := false;
   if PageControl1.ActivePage = TabSheet8 then
     if idprofaudit.Enabled then idprofaudit.SetFocus;
   audit_modif          := False;
@@ -5400,7 +5415,7 @@ end;
 
 procedure TfmFactManual.FormResize(Sender: TObject);
 begin
-  StatusBar1.Panels[0].Width := (Width - (Width div 2)) + 50;
+  StatusBar1.Panels[0].Width := (Width - (Width div 2)) + 150;
 end;
 
 end.

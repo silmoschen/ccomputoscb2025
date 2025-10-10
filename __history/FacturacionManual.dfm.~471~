@@ -147,7 +147,7 @@ object fmFactManual: TfmFactManual
     Top = 22
     Width = 512
     Height = 387
-    ActivePage = TabSheet8
+    ActivePage = TabSheet1
     Align = alClient
     TabOrder = 2
     object TabSheet1: TTabSheet
@@ -1112,6 +1112,16 @@ object fmFactManual: TfmFactManual
                   FFFFFFFF00F0BB00FFFFFFF0B00F0BB00FFFFFF0B00FF0B00FFFFFF0BB000BB0
                   0FFFFFFF0BBBBB00FFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFF}
               end
+              object verPac: TCheckBox
+                Left = 305
+                Top = 3
+                Width = 120
+                Height = 17
+                Caption = 'Mostrar Paciente'
+                Enabled = False
+                TabOrder = 5
+                OnClick = verPacClick
+              end
             end
           end
           object Panel58: TPanel
@@ -1147,8 +1157,6 @@ object fmFactManual: TfmFactManual
               TabOrder = 0
               OnDblClick = ModificarItems2Click
               OnKeyDown = FAuditKeyDown
-              ExplicitLeft = 55
-              ExplicitTop = 13
               ColWidths = (
                 43
                 57
@@ -1165,6 +1173,10 @@ object fmFactManual: TfmFactManual
       Caption = '&Informes'
       ImageIndex = 1
       OnShow = TabSheet2Show
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Panel8: TPanel
         Left = 0
         Top = 0
@@ -2350,6 +2362,10 @@ object fmFactManual: TfmFactManual
       Caption = '&Exportar'
       ImageIndex = 4
       OnShow = TabSheet4Show
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Panel11: TPanel
         Left = 0
         Top = 0
@@ -2810,6 +2826,10 @@ object fmFactManual: TfmFactManual
       Caption = 'I&mportar'
       ImageIndex = 5
       OnShow = TabSheet6Show
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Panel22: TPanel
         Left = 0
         Top = 0
@@ -3716,6 +3736,10 @@ object fmFactManual: TfmFactManual
     object TabSheet3: TTabSheet
       Caption = '&Par'#225'metros'
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Panel9: TPanel
         Left = 0
         Top = 0
@@ -4243,7 +4267,7 @@ object fmFactManual: TfmFactManual
     Filter = 
       'Archivos de Actualizaci'#243'n (*.bck)|*.bck|Todos los Archivos (*.*)' +
       '|*.*'
-    Left = 304
-    Top = 88
+    Left = 256
+    Top = 80
   end
 end

@@ -4,7 +4,7 @@ object fmBajarActualizaciones: TfmBajarActualizaciones
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Actualizaci'#243'n de Datos del Sistema'
   ClientHeight = 364
-  ClientWidth = 421
+  ClientWidth = 431
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,7 +19,7 @@ object fmBajarActualizaciones: TfmBajarActualizaciones
   object StatusBar1: TStatusBar
     Left = 0
     Top = 345
-    Width = 421
+    Width = 431
     Height = 19
     Panels = <
       item
@@ -32,7 +32,7 @@ object fmBajarActualizaciones: TfmBajarActualizaciones
   object PageControl1: TPageControl
     Left = 0
     Top = 0
-    Width = 421
+    Width = 431
     Height = 345
     ActivePage = TabSheet1
     Align = alClient
@@ -42,7 +42,7 @@ object fmBajarActualizaciones: TfmBajarActualizaciones
       object Panel1: TPanel
         Left = 0
         Top = 0
-        Width = 413
+        Width = 423
         Height = 317
         Align = alClient
         BevelInner = bvLowered
@@ -52,7 +52,7 @@ object fmBajarActualizaciones: TfmBajarActualizaciones
         object Panel3: TPanel
           Left = 6
           Top = 6
-          Width = 401
+          Width = 411
           Height = 305
           Align = alClient
           BevelOuter = bvNone
@@ -60,7 +60,7 @@ object fmBajarActualizaciones: TfmBajarActualizaciones
           object Panel4: TPanel
             Left = 0
             Top = 256
-            Width = 401
+            Width = 411
             Height = 49
             Align = alBottom
             BevelInner = bvLowered
@@ -68,7 +68,7 @@ object fmBajarActualizaciones: TfmBajarActualizaciones
             object estado: TMemo
               Left = 2
               Top = 2
-              Width = 397
+              Width = 407
               Height = 45
               Align = alClient
               BorderStyle = bsNone
@@ -85,7 +85,7 @@ object fmBajarActualizaciones: TfmBajarActualizaciones
           object Panel2: TPanel
             Left = 0
             Top = 0
-            Width = 401
+            Width = 411
             Height = 126
             Align = alTop
             BevelOuter = bvNone
@@ -99,7 +99,7 @@ object fmBajarActualizaciones: TfmBajarActualizaciones
               Caption = 'Unidad a Exportar:'
             end
             object Panel7: TPanel
-              Left = 327
+              Left = 337
               Top = 0
               Width = 74
               Height = 97
@@ -146,7 +146,7 @@ object fmBajarActualizaciones: TfmBajarActualizaciones
             object Panel9: TPanel
               Left = 0
               Top = 97
-              Width = 401
+              Width = 411
               Height = 29
               Align = alBottom
               BevelOuter = bvNone
@@ -188,7 +188,7 @@ object fmBajarActualizaciones: TfmBajarActualizaciones
                 OnClick = TodosClick
               end
               object Panel10: TPanel
-                Left = 272
+                Left = 282
                 Top = 0
                 Width = 129
                 Height = 29
@@ -229,7 +229,7 @@ object fmBajarActualizaciones: TfmBajarActualizaciones
           object Panel8: TPanel
             Left = 0
             Top = 126
-            Width = 401
+            Width = 411
             Height = 130
             Align = alClient
             BevelInner = bvLowered
@@ -237,7 +237,7 @@ object fmBajarActualizaciones: TfmBajarActualizaciones
             object S: TStringGrid
               Left = 2
               Top = 2
-              Width = 397
+              Width = 407
               Height = 126
               Align = alClient
               BorderStyle = bsNone
@@ -263,14 +263,14 @@ object fmBajarActualizaciones: TfmBajarActualizaciones
       object Panel5: TPanel
         Left = 0
         Top = 0
-        Width = 413
+        Width = 423
         Height = 317
         Align = alClient
         BevelInner = bvLowered
         BorderWidth = 4
         TabOrder = 0
         object Panel6: TPanel
-          Left = 285
+          Left = 295
           Top = 6
           Width = 122
           Height = 305
@@ -419,7 +419,7 @@ object fmBajarActualizaciones: TfmBajarActualizaciones
         object GroupBox1: TGroupBox
           Left = 12
           Top = 6
-          Width = 229
+          Width = 287
           Height = 107
           Caption = ' Conexi'#243'n '
           TabOrder = 2
@@ -458,14 +458,14 @@ object fmBajarActualizaciones: TfmBajarActualizaciones
           object ftphost: TMaskEdit
             Left = 80
             Top = 12
-            Width = 143
+            Width = 200
             Height = 21
             TabOrder = 0
           end
           object usuario: TMaskEdit
             Left = 80
             Top = 58
-            Width = 143
+            Width = 200
             Height = 21
             TabOrder = 1
           end

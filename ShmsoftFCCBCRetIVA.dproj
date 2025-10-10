@@ -287,6 +287,9 @@
     <DCCReference Include="NominaNomeclador.pas">
       <Form>fmListNomeclador</Form>
     </DCCReference>
+    <DCCReference Include="NominaNomeclaturaObrasSociales.pas">
+      <Form>fmListNomeclaturaObrasSociales</Form>
+    </DCCReference>
     <DCCReference Include="NominaObrasSociales.pas">
       <Form>fmListObrasSociales</Form>
     </DCCReference>
@@ -296,8 +299,8 @@
     <DCCReference Include="obrasocial.pas">
       <Form>fmObsociales</Form>
     </DCCReference>
-    <DCCReference Include="PresupuestoRapidoTit.pas">
-      <Form>fmPresupuestoRapidoTit</Form>
+    <DCCReference Include="PresupuestoRapido.pas">
+      <Form>fmPresupuestoRapido</Form>
     </DCCReference>
     <DCCReference Include="RepararDatosParadox.pas">
       <Form>fmRepararDatosPdx</Form>

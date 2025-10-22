@@ -163,7 +163,16 @@ uses
   CPadronOSCCB in 'clases\CPadronOSCCB.pas',
   obrasocial in 'obrasocial.pas' {fmObsociales},
   CLiquidacionObrasSocCCB in 'clases\CLiquidacionObrasSocCCB.pas',
-  fmFacturacionOnLine in 'fmFacturacionOnLine.pas' {fmFactOnLine};
+  fmFacturacionOnLine in 'fmFacturacionOnLine.pas' {fmFactOnLine},
+  CAuditoriaFacturacion in 'clases\CAuditoriaFacturacion.pas',
+  exportarOrdenesSopMagnetico in 'exportarOrdenesSopMagnetico.pas' {fmExportarOrdenesSoporteMagnetico},
+  buscarosonline in 'buscarosonline.pas' {fmBuscarOrdenesOnLine},
+  uLkJSON in '..\..\jsondelphi\json\uLkJSON.pas',
+  CExportObrasSociales in 'clases\CExportObrasSociales.pas',
+  os_reglas in 'os_reglas.pas' {fmReglasOs},
+  fmConfigFTP in 'fmConfigFTP.pas' {fmConfigurarFTP},
+  CDatosEmpresa in 'clases\CDatosEmpresa.pas',
+  reportUBFacturadas in 'reportUBFacturadas.pas' {fmUBFacturadas};
 
 {$R *.RES}
 

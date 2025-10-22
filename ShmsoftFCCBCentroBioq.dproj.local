@@ -20,5 +20,11 @@
     <Transaction>2014/08/01 11:17:03.163.pas,C:\sidelphi32\CLASES\CLiquidacionObrasSocCCB.pas=</Transaction>
     <Transaction>2018/07/23 13:08:10.068.pas,C:\sidelphi32\SGen\ccomputoscb\Unit2.pas=C:\sidelphi32\SGen\ccomputoscb\buscarosonline.pas</Transaction>
     <Transaction>2018/07/23 13:08:10.077.dfm,C:\sidelphi32\SGen\ccomputoscb\Unit2.dfm=C:\sidelphi32\SGen\ccomputoscb\buscarosonline.dfm</Transaction>
+    <Transaction>2025/10/22 10:27:06.460.pas,C:\sidelphi32\SGen\ccomputoscb\PresupuestoRapidoTit.pas=</Transaction>
+    <Transaction>2025/10/22 10:27:06.460.dfm,C:\sidelphi32\SGen\ccomputoscb\PresupuestoRapidoTit.dfm=</Transaction>
+    <Transaction>2025/10/22 10:27:11.714.pas,C:\sidelphi32\SGen\ccomputoscb\PresupuestoRapido.pas=</Transaction>
+    <Transaction>2025/10/22 10:27:11.715.dfm,C:\sidelphi32\SGen\ccomputoscb\PresupuestoRapido.dfm=</Transaction>
+    <Transaction>2025/10/22 10:27:43.408.pas,C:\sidelphi32\SGen\ccomputoscb\PresupuestoRapidoTit.pas=</Transaction>
+    <Transaction>2025/10/22 10:27:43.408.dfm,C:\sidelphi32\SGen\ccomputoscb\PresupuestoRapidoTit.dfm=</Transaction>
   </Transactions>
 </BorlandProject>

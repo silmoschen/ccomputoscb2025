@@ -111,7 +111,6 @@ uses
   NominaDeBancos in '..\asociacion\NominaDeBancos.pas' {fmListBancos},
   entbancarias in '..\asociacion\entbancarias.pas' {fmBancos},
   CBackup in '..\..\CLASES\CBackup.pas',
-  PresupuestoRapido in 'PresupuestoRapido.pas' {fmPresupuestoRapido},
   NominaProveedores in 'NominaProveedores.pas' {fmListProveedores},
   provedor in 'provedor.pas' {fmMRProveedores},
   FactCompras in 'FactCompras.pas' {fmFacturacionCompras},
@@ -172,7 +171,9 @@ uses
   os_reglas in 'os_reglas.pas' {fmReglasOs},
   fmConfigFTP in 'fmConfigFTP.pas' {fmConfigurarFTP},
   CDatosEmpresa in 'clases\CDatosEmpresa.pas',
-  reportUBFacturadas in 'reportUBFacturadas.pas' {fmUBFacturadas};
+  reportUBFacturadas in 'reportUBFacturadas.pas' {fmUBFacturadas},
+  PresupuestoRapido in 'PresupuestoRapido.pas' {fmPresupuestoRapido},
+  CNomeclatura_ObraSocial in 'clases\CNomeclatura_ObraSocial.pas';
 
 {$R *.RES}
 

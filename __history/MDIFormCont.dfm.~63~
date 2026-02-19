@@ -276,6 +276,24 @@ object fmSistem: TfmSistem
           OnClick = ImportacindeAsientos1Click
         end
       end
+      object N36: TMenuItem
+        Caption = '-'
+      end
+      object FacturacinAFIP1: TMenuItem
+        Caption = 'Facturaci'#243'n Electr'#243'nica A.F.I.P.'
+        OnClick = FacturacinAFIP1Click
+      end
+      object ApplicationCreateFormTfmExportarOrdenesSoporteMagneticofmExportarOrdenesSoporteMagnetico1: TMenuItem
+        Caption = 'Exportar Ordenes Soporte Digital'
+        OnClick = ApplicationCreateFormTfmExportarOrdenesSoporteMagneticofmExportarOrdenesSoporteMagnetico1Click
+      end
+      object N35: TMenuItem
+        Caption = '-'
+      end
+      object ExportarDetalleFacturacin1: TMenuItem
+        Caption = 'Exportar Detalle Facturaci'#243'n'
+        OnClick = ExportarDetalleFacturacin1Click
+      end
       object N1: TMenuItem
         Caption = '-'
       end
@@ -457,6 +475,10 @@ object fmSistem: TfmSistem
     end
     object Emisin1: TMenuItem
       Caption = 'I&nformes'
+      object UBFacturadas1: TMenuItem
+        Caption = 'UB Facturadas'
+        OnClick = UBFacturadas1Click
+      end
       object InformesDiarios1: TMenuItem
         Caption = '&Informes Adicionales Auditor'#237'a'
       end
@@ -479,6 +501,10 @@ object fmSistem: TfmSistem
       object GeneracinEstadsticasIAPOS1: TMenuItem
         Caption = '&Generaci'#243'n Estad'#237'sticas I.A.P.O.S.'
         OnClick = GeneracinEstadsticasIAPOS1Click
+      end
+      object PrcticasRealizadas1: TMenuItem
+        Caption = 'Pr'#225'cticas Realizadas'
+        OnClick = PrcticasRealizadas1Click
       end
       object N5: TMenuItem
         Caption = '-'
@@ -546,8 +572,16 @@ object fmSistem: TfmSistem
         OnClick = ConfiguracinAccesosRemotos1Click
       end
       object ConfigurarAccesoFTP1: TMenuItem
-        Caption = 'Configuraci'#243'n FTP'
+        Caption = 'Configuraci'#243'n FTP, HTTP, WS'
         OnClick = ConfigurarAccesoFTP1Click
+      end
+      object ReglasExportacinObrasSociales1: TMenuItem
+        Caption = 'Reglas Exportaci'#243'n Obras Sociales'
+        OnClick = ReglasExportacinObrasSociales1Click
+      end
+      object DatosdelaEmpresa1: TMenuItem
+        Caption = 'Datos de la Empresa'
+        OnClick = DatosdelaEmpresa1Click
       end
       object N2: TMenuItem
         Caption = '-'

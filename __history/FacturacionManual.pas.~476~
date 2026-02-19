@@ -1569,7 +1569,7 @@ Begin
     btnRegistrar.Enabled                 := True;
     btnFacturar.Enabled                  := True;
     recordenes.Enabled                   := True;
-    verpac.Enabled := false;
+    verpac.Enabled                       := true;
   end else
     Baja.Enabled                         := False;
 
@@ -4332,8 +4332,9 @@ begin
           continua := sigue;
 
         if (continua) then Begin
-          if verificarOrdenInterna(nroauditado) then Begin
-            utiles.msgError('La Orden ya está Registrada ...!');
+          //if (verificarOrdenInterna(nroauditado) or auditonline.verificarOrdenFacturada(nroauditado)) then Begin
+          if (verificarOrdenInterna(nroauditado) or facturacion.verificarOrdenFacturada(periodoaudit.Text, ordenaudit.Text)) then Begin
+            utiles.msgError('La Orden ' + nroauditado + ' ya está Registrada ...!');
             ordenaudit.Text := '';
           end else Begin
             if not modificaaudit then Begin

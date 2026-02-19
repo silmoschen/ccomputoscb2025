@@ -1541,18 +1541,27 @@ Begin
 
     if s <> nil then Begin
       s.Open; i := 0;
+
+      auditoriacb.conectar;
+
       profesional.getDatos(s.FieldByName('idprof').AsString);
+
       while not s.Eof do Begin
+        auditoriacb.getDatos(s.FieldByName('nroauditoria').AsString);
+         
         Inc(i);
         FAudit.Cells[0, i] := utiles.sLlenarIzquierda(IntToStr(i), 3, '0');
         FAudit.Cells[1, i] := s.FieldByName('idprof').AsString;
         FAudit.Cells[2, i] := profesional.nombre;
         FAudit.Cells[3, i] := s.FieldByName('nroauditoria').AsString;
         FAudit.Cells[4, i] := s.FieldByName('facturada').AsString;
+        FAudit.Cells[5, i] := auditoriacb.Nompac;
         if (verpac.Checked) then FAudit.Cells[5, i] := auditoriacb.getPaciente(s.FieldByName('nroauditoria').AsString);
         s.Next;
       end;
       s.Close; s.Free;
+
+      auditoriacb.desconectar;
     End;
   end;
 

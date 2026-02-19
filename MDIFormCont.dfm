@@ -289,9 +289,11 @@ object fmSistem: TfmSistem
       end
       object N35: TMenuItem
         Caption = '-'
+        Visible = False
       end
       object ExportarDetalleFacturacin1: TMenuItem
         Caption = 'Exportar Detalle Facturaci'#243'n'
+        Visible = False
         OnClick = ExportarDetalleFacturacin1Click
       end
       object N1: TMenuItem

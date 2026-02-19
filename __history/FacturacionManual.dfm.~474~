@@ -1118,6 +1118,7 @@ object fmFactManual: TfmFactManual
                 Width = 120
                 Height = 17
                 Caption = 'Mostrar Paciente'
+                Enabled = False
                 TabOrder = 5
                 OnClick = verPacClick
               end

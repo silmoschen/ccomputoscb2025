@@ -1513,6 +1513,7 @@ Begin
   btnRegistrar.Enabled := False;
   btnFacturar.Enabled  := False;
   recordenes.Enabled   := False;
+  verpac.Enabled := false;
   FAudit.Row     := 1;
 
   facturacion.PrepararDirectorio(periodoaudit.Text, idprofaudit.Text);
@@ -1540,7 +1541,12 @@ Begin
 
     if s <> nil then Begin
       s.Open; i := 0;
+
+      auditoriacb.conectar;
+
       profesional.getDatos(s.FieldByName('idprof').AsString);
+      auditoriacb.getDatos(s.FieldByName('nroauditoria').AsString);
+      FAudit.Cells[5, i] := auditoriacb.Nompac;
       while not s.Eof do Begin
         Inc(i);
         FAudit.Cells[0, i] := utiles.sLlenarIzquierda(IntToStr(i), 3, '0');
@@ -1552,6 +1558,8 @@ Begin
         s.Next;
       end;
       s.Close; s.Free;
+
+      auditoriacb.desconectar;
     End;
   end;
 
@@ -1568,6 +1576,7 @@ Begin
     btnRegistrar.Enabled                 := True;
     btnFacturar.Enabled                  := True;
     recordenes.Enabled                   := True;
+    verpac.Enabled                       := true;
   end else
     Baja.Enabled                         := False;
 
@@ -4330,8 +4339,9 @@ begin
           continua := sigue;
 
         if (continua) then Begin
-          if verificarOrdenInterna(nroauditado) then Begin
-            utiles.msgError('La Orden ya está Registrada ...!');
+          //if (verificarOrdenInterna(nroauditado) or auditonline.verificarOrdenFacturada(nroauditado)) then Begin
+          if (verificarOrdenInterna(nroauditado) or facturacion.verificarOrdenFacturada(periodoaudit.Text, ordenaudit.Text)) then Begin
+            utiles.msgError('La Orden ' + nroauditado + ' ya está Registrada ...!');
             ordenaudit.Text := '';
           end else Begin
             if not modificaaudit then Begin
@@ -4495,10 +4505,12 @@ begin
     audit_modif          := False;
     btnRegistrar.Enabled := False;
     recordenes.Enabled   := True;
+    verpac.Enabled := true;
     modifacturacion      := True;
     if (Panel56.Visible) and (btnFacturar.Visible) then Begin
       btnFacturar.Enabled  := True;
       recordenes.Enabled   := True;
+      verpac.Enabled := true;
       btnFacturar.SetFocus;
     end else
       btnCancelarClick(Self);
@@ -4732,8 +4744,10 @@ begin
   btnFacturar.Enabled  := False;
   recordenes.Checked   := False;
   recordenes.Enabled   := False;
+  verpac.Enabled := false;
   ordenaudit.Enabled   := False;
   recordenes.Enabled   := False;
+  verpac.Enabled := false;
   if PageControl1.ActivePage = TabSheet8 then
     if idprofaudit.Enabled then idprofaudit.SetFocus;
   audit_modif          := False;

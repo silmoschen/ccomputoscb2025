@@ -154,15 +154,23 @@ begin
     obsocial.SincronizarArancelNBU(codos.Text, Copy(utiles.sExprFecha2000(utiles.setFechaActual), 5, 2) + '/' + Copy(utiles.sExprFecha2000(utiles.setFechaActual), 1, 4));
     nbu.getDatos(codanalisis.Text);
     des.Caption := nbu.descrip;
-    Unnbu.Caption := utiles.FormatearNumero(floattostr(unidadesNBU.getUnidad(codanalisis.Text, Copy(utiles.sExprFecha2000(utiles.setFechaActual), 5, 2) + '/' + Copy(utiles.sExprFecha2000(utiles.setFechaActual), 1, 4))));
+    //Unnbu.Caption := utiles.FormatearNumero(floattostr(unidadesNBU.getUnidad(codanalisis.Text, Copy(utiles.sExprFecha2000(utiles.setFechaActual), 5, 2) + '/' + Copy(utiles.sExprFecha2000(utiles.setFechaActual), 1, 4))));
+
+    //Unnbu.Caption := utiles.FormatearNumero(floattostr(facturacion.unidadNBUFinal));
+
     //Unnbu.Caption := utiles.FormatearNumero(floattostr(unidadesNBU.Unidades));
     precio.Text := utiles.FormatearNumero(FloatToStr(facturacion.setImporteAnalisis(codos.Text, codanalisis.Text, Copy(utiles.setFechaActual, 4, 2) + '/' + Copy(utiles.sExprFecha2000(utiles.setFechaActual), 1, 4))));
     p := precio.Text;
+
+    Unnbu.Caption := utiles.FormatearNumero(floattostr(facturacion.unidadNBUFinal));
+
     //caption := Copy(utiles.setFechaActual, 4, 2) + '/' + Copy(utiles.sExprFecha2000(utiles.setFechaActual), 1, 4);
 
     // Para NBU con unidades propias en obras sociales // 26/09/2025
+    {
     r := facturacion.setNbuNomencladorObraSocial(codos.Text, codanalisis.Text);
     if (r > 0) then Unnbu.Caption := utiles.FormatearNumero(floattostr(r));
+    }
 
   end;
   ActiveControl := precio;

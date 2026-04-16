@@ -1,0 +1,271 @@
+unit FichaNomecladorOS;
+
+interface
+
+uses
+  SysUtils, Windows, Messages, Classes, Graphics, Controls,
+  StdCtrls, Forms, DBCtrls, DB, ComCtrls, Mask, ExtCtrls, ToolWin, Buttons,
+  Editv, Grids, DBTables;
+
+type
+  TfmFichaNomeclaturaOS = class(TForm)
+    StatusBar1: TStatusBar;
+    DTS: TDataSource;
+    Panel2: TPanel;
+    ScrollBox: TScrollBox;
+    Label1: TLabel;
+    Label2: TLabel;
+    codigo: TMaskEdit;
+    descrip: TMaskEdit;
+    Label7: TLabel;
+    codos: TLabel;
+    des: TLabel;
+    Panel1: TPanel;
+    ToolBar1: TToolBar;
+    DBNavigator: TDBNavigator;
+    Alta: TToolButton;
+    Baja: TToolButton;
+    Modificar: TToolButton;
+    Buscar: TToolButton;
+    Deshacer: TToolButton;
+    Salir: TToolButton;
+    Label5: TLabel;
+    Label6: TLabel;
+    codref: TMaskEdit;
+    Label3: TLabel;
+    Label4: TLabel;
+    nroaut: TEditValid;
+    BuscarRef: TBitBtn;
+    ref: TLabel;
+    Label8: TLabel;
+    unidad: TEditValid;
+    Label9: TLabel;
+    unidades: TEditValid;
+    Label10: TLabel;
+    MaskEdit1: TMaskEdit;
+    Panel3: TPanel;
+    U: TStringGrid;
+    procedure codigoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure descripKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure BajaC(Sender: TObject);
+    procedure ModificarClick(Sender: TObject);
+    procedure SalirClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure DBNavigatorClick(Sender: TObject; Button: TNavigateBtn);
+    procedure FormShow(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure Panel2Resize(Sender: TObject);
+    procedure nroautKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure codrefKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure BuscarRefClick(Sender: TObject);
+    procedure unidadKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure unidadesKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+  private
+    { private declarations }
+    redim: Boolean;
+    procedure CargarDatos;
+    procedure Guardar;
+    procedure CargarDatosRef;
+  public
+    { public declarations }
+    NoCerrarFinal: boolean;
+    ivaret: Real;
+  end;
+
+var
+  fmFichaNomeclaturaOS: TfmFichaNomeclaturaOS;
+
+implementation
+
+uses CUtiles, CConfigForms, CNomeclaCCB, CNomeclatura_ObraSocial, CObrasSocialesCCB,
+     NominaNomeclador;
+
+{$R *.DFM}
+
+procedure TfmFichaNomeclaturaOS.CargarDatos;
+begin
+  nomeclaturaos.getDatos(codos.Caption, codigo.Text);
+  descrip.Text     := nomeclaturaos.descrip;
+  codref.Text      := nomeclaturaos.Codref;
+  nroaut.Text      := IntToStr(nomeclaturaos.Nroaut);
+  unidad.Text      := utiles.FormatearNumero(FloatToStr(nomeclaturaos.Unidad));
+  unidades.Text    := utiles.FormatearNumero(FloatToStr(nomeclaturaos.Unidades));
+  CargarDatosRef;
+end;
+
+procedure TfmFichaNomeclaturaOS.CargarDatosRef;
+begin
+  nomeclatura.getDatos(codref.Text);
+  ref.Caption := nomeclatura.descrip;
+  unidad.SetFocus;
+end;
+
+procedure TfmFichaNomeclaturaOS.BajaC(Sender: TObject);
+begin
+  if nomeclaturaos.Buscar(codos.Caption, codigo.Text) then
+   if utiles.BajaRegistro('Seguro que desea Eliminar Nomeclatura ' + codigo.Text) then
+    begin
+      nomeclaturaos.Borrar(codos.Caption, codigo.Text);
+      codigo.Text := nomeclaturaos.tabla.FieldByName('codigo').AsString;
+      CargarDatos;
+    end;
+  ActiveControl := codigo;
+end;
+
+//FIN PROCEDIMIENTOS PERSONALIZADOS
+procedure TfmFichaNomeclaturaOS.codigoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    begin
+      utiles.LlenarIzquierda(codigo, 6, '0');
+      if nomeclaturaos.Buscar(codos.Caption, codigo.Text) then
+        begin
+          CargarDatos;      // Edito
+          ActiveControl := descrip;
+          StatusBar1.Panels[0].Text := '';
+        end
+      else
+        if utiles.DarDeAlta('Seguro para Dar de Alta Nomeclatura ' + codigo.Text) then
+          begin
+            CargarDatos;  // Inicio - si no existe
+            ActiveControl := descrip;
+            StatusBar1.Panels[0].Text := '';
+          end;
+    end;
+end;
+
+procedure TfmFichaNomeclaturaOS.descripKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+  if Key = VK_UP then ActiveControl := codigo;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(descrip.Text)) > 0 then codref.SetFocus;
+end;
+
+procedure TfmFichaNomeclaturaOS.ModificarClick(Sender: TObject);
+begin
+  ActiveControl := codigo;
+end;
+
+procedure TfmFichaNomeclaturaOS.SalirClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfmFichaNomeclaturaOS.unidadesKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then unidad.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    unidades.Text := utiles.FormatearNumero(unidades.Text);
+    nroaut.setFocus;
+  End;
+end;
+
+procedure TfmFichaNomeclaturaOS.unidadKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then codref.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    unidad.Text := utiles.FormatearNumero(unidad.Text);
+    unidades.setFocus;
+  End;
+end;
+
+procedure TfmFichaNomeclaturaOS.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  configform.Guardar(fmFichaNomeclaturaOS, redim);
+  nomeclaturaos.BuscarPorDescrip(descrip.Text);
+  DBNavigator.DataSource := nil;
+end;
+
+procedure TfmFichaNomeclaturaOS.DBNavigatorClick(
+  Sender: TObject; Button: TNavigateBtn);
+begin
+  codigo.Text := nomeclaturaos.tabla.FieldByName('codigo').AsString;
+  CargarDatos;
+end;
+
+procedure TfmFichaNomeclaturaOS.Guardar;
+var
+  l: boolean;
+begin
+  unidad.Text   := utiles.FormatearNumero(unidad.Text);
+  unidades.Text := utiles.FormatearNumero(unidades.Text);
+
+  l := false;
+  if (length(trim(codref.Text)) = 0) then l := true else
+    l := nomeclatura.Buscar(codref.Text);
+
+  if (obsocial.Buscar(codos.Caption)) and (Length(Trim(codigo.Text)) = 6) and (Length(Trim(descrip.Text)) > 0) and (l) and (Length(Trim(nroaut.Text)) > 0) then Begin
+    nomeclaturaos.Registrar(codos.Caption, codigo.Text, descrip.Text, codref.Text, StrToInt(nroaut.Text), StrToFloat(unidad.Text), StrToFloat(unidades.Text));
+    Close;
+  end else utiles.msgError('No se Suministraron Suficientes Datos ...!');
+end;
+
+procedure TfmFichaNomeclaturaOS.FormShow(Sender: TObject);
+begin
+  configform.Setear(fmFichaNomeclaturaOS);
+  DTS.DataSet := nomeclatura.tabla;
+  if Length(Trim(codos.Caption)) > 0 then Begin
+    CargarDatos;
+    obsocial.getDatos(codos.Caption);
+    des.Caption  := obsocial.Nombre;
+  end;
+  codigo.SetFocus;
+  redim := False;
+end;
+
+procedure TfmFichaNomeclaturaOS.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+end;
+
+procedure TfmFichaNomeclaturaOS.Panel2Resize(Sender: TObject);
+begin
+  redim := True;
+end;
+
+procedure TfmFichaNomeclaturaOS.nroautKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := codref;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(nroaut.Text)) > 0 then Guardar;
+end;
+
+procedure TfmFichaNomeclaturaOS.codrefKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_UP then descrip.SetFocus;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if Length(Trim(codref.Text)) = 0 then unidad.setFocus else begin
+      codref.Text := utiles.sLlenarIzquierda(codref.Text, 4, '0');
+      if not nomeclatura.Buscar(codref.Text) then BuscarRefClick(Self) else CargarDatosRef;
+    end;
+  end;
+end;
+
+procedure TfmFichaNomeclaturaOS.BuscarRefClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmListNomeclador, fmListNomeclador);
+  fmListNomeclador.introSalir := True;
+  fmListNomeclador.ShowModal;
+  if fmListNomeclador.seleccionOK then Begin
+    codref.Text := nomeclatura.tabla.FieldByName('codigo').AsString;
+    CargarDatosRef;
+  end;
+  fmListNomeclador.Release; fmListNomeclador := Nil;
+end;
+
+end.

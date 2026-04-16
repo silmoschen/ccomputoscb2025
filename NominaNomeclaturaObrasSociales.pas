@@ -98,8 +98,8 @@ var
 implementation
 
 uses CNomeclatura_ObraSocial, CUtiles, FichaPaciente, CConfigForms,
-  NominaDeProfesionales, FichaNomecladorOS, NominaObrasSociales,
-  CObrasSocialesCCB, CBDT, selectObraSocial;
+  FichaNomecladorOS, NominaObrasSociales,
+  CObrasSocialesCCB, CBDT, selectObraSocial, CFacturacionCCB;
 
 {$R *.DFM}
 

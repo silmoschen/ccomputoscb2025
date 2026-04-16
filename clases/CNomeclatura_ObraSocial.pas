@@ -10,7 +10,7 @@ type
 TTNomeclaturaOS = class
   Codos, Codigo, Descrip, Codref, Especial: String; Nroaut: Integer;
   Unidad, Unidades: Real;
-  tabla, texport: TTable;
+  tabla, tablaun, texport, texportun: TTable;
  public
   { Declaraciones Públicas }
   constructor Create;
@@ -20,6 +20,7 @@ TTNomeclaturaOS = class
   procedure   Registrar(xcodos, xcodigo, xdescrip, xcodref: String; xnroaut: Integer; xunidad, xunidades: Real);
   procedure   Borrar(xcodos, xcodigo: String);
   procedure   getDatos(xcodos, xcodigo: String);
+  procedure   getDatosUnidades(xcodos, xcodigo, xperiodo: String);
 
   procedure   BuscarPorCodigo(xcodos, xcodigo: String);
   procedure   BuscarPorDescrip(xdescrip: String);
@@ -42,10 +43,15 @@ TTNomeclaturaOS = class
   procedure   Exportar;
   procedure   Importar;
 
+  procedure   RegistrarUnidad(xcodos, xcodigo, xperiodo: string; xunidad: real);
+  procedure   BorrarUnidad(xcodos, xcodigo, xperiodo: string);
+  function    getUnidades(xcodos: string): TQuery;
+
   procedure   conectar;
   procedure   desconectar;
  private
   { Declaraciones Privadas }
+  rs: TQuery;
   conexiones: shortint;
   procedure   ListLinea(salida: char);
 end;
@@ -67,10 +73,13 @@ begin
        (LowerCase(ExtractFileName(Application.ExeName)) = 'shmsoftfccbcretivac.exe') or
        (LowerCase(ExtractFileName(Application.ExeName)) = 'shmsoftlabinter.exe') or
        (LowerCase(ExtractFileName(Application.ExeName)) = 'shmsoftfccbcretiva.exe') then Begin   // Motor de Persitencia para las versiones de Laboratorios
-         tabla := datosdb.openDB('nomeclados', '', '', dbs.TDB1.DatabaseName)
+         tabla := datosdb.openDB('nomeclados', '', '', dbs.TDB1.DatabaseName);
+         tablaun := datosdb.openDB('nomecladosun', '', '', dbs.TDB1.DatabaseName)
        End
-    else
+    else begin
       tabla := datosdb.openDB('nomeclados', '');
+      tablaun := datosdb.openDB('nomecladosun', '');
+    end;
   end else
     tabla := datosdb.openDB('nomeclados', '', '', dbs.BaseDat);
 end;
@@ -98,7 +107,7 @@ Begin
       texport.Cancel
     end;
     tabla.Next;
-  End;             
+  End;
   datosdb.closeDB(texport);
 End;
 
@@ -179,6 +188,31 @@ begin
     codos := ''; codigo := ''; descrip := ''; codref := ''; nroaut := 0; unidad := 0; unidades := 0; especial := '';
   end;
 end;
+
+procedure TTNomeclaturaOS.getDatosUnidades(xcodos, xcodigo, xperiodo: String);
+// Objetivo...: recuperar una instancia
+begin
+  if Buscar(xcodos, xcodigo) then Begin
+    codos    := tabla.FieldByName('codos').AsString;
+    codigo   := tabla.FieldByName('codigo').AsString;
+    descrip  := tabla.FieldByName('descrip').AsString;
+    codref   := tabla.FieldByName('codref').AsString;
+    especial := tabla.FieldByName('especial').AsString;
+    nroaut   := tabla.FieldByName('nroaut').AsInteger;
+    unidad   := tabla.FieldByName('unidad').AsFloat;
+    unidades := tabla.FieldByName('unidades').AsFloat;
+
+    // Sincronizamos Unidades por Período
+    rs := datosdb.tranSQL('select first 1 unidad from nomecladosun where periodo1 <= ' + '''' + copy(xperiodo, 4, 4) + copy(xperiodo, 1, 2) + '''' + ' order by codos, codigo, periodo1 desc');
+    rs.open;
+    if (rs.RecordCount > 0) then unidad := rs.FieldByName('unidad').AsFloat;
+    rs.close;
+    rs.free;
+  end else Begin
+    codos := ''; codigo := ''; descrip := ''; codref := ''; nroaut := 0; unidad := 0; unidades := 0; especial := '';
+  end;
+end;
+
 
 procedure TTNomeclaturaOS.BuscarPorCodigo(xcodos, xcodigo: String);
 // Objetivo...: busqueda blanda por codigo
@@ -370,11 +404,36 @@ begin
   datosdb.closeDB(tabla); tabla.Open;  
 end;
 
+procedure TTNomeclaturaOS.RegistrarUnidad(xcodos, xcodigo, xperiodo: string; xunidad: real);
+begin
+  if (datosdb.Buscar(tablaun, 'codos', 'codigo', 'periodo1', xcodos, xcodigo, copy(xperiodo, 4, 4) + copy(xperiodo, 1, 2))) then tablaun.Edit else tablaun.Append;
+  tablaun.FieldByName('codos').AsString := xcodos;
+  tablaun.FieldByName('codigo').AsString := xcodigo;
+  tablaun.FieldByName('periodo').AsString := xperiodo;
+  tablaun.FieldByName('periodo1').AsString := copy(xperiodo, 4, 4) + copy(xperiodo, 1, 2);
+  tablaun.FieldByName('unidad').AsFloat := xunidad;
+  tablaun.Post;
+  tablaun.Refresh;
+end;
+
+procedure TTNomeclaturaOS.BorrarUnidad(xcodos, xcodigo, xperiodo: string);
+begin
+  if (datosdb.Buscar(tablaun, 'codos', 'codigo', 'periodo1', xcodos, xcodigo, copy(xperiodo, 4, 4) + copy(xperiodo, 1, 2))) then tablaun.Delete;
+end;
+
+function TTNomeclaturaOS.getUnidades(xcodos: string): TQuery;
+begin
+  result := datosdb.tranSQL('select * from nomecladosun where codos = ' + '''' + xcodos + '''' + ' order by periodo1 desc');
+end;
+
+
 procedure TTNomeclaturaOS.conectar;
 // Objetivo...: cerrar tablas de persistencia
 begin
   if conexiones = 0 then Begin
     if not tabla.Active then tabla.Open;
+    if not tablaun.Active then tablaun.Open;
+    
   end;
   if (tabla.Active) then begin
     tabla.FieldByName('codos').Visible := False;
@@ -393,6 +452,7 @@ begin
   Dec(conexiones);
   if conexiones = 0 then Begin
     datosdb.closeDB(tabla);
+    datosdb.closeDB(tablaun);
   end;
   nomeclatura.desconectar;
   obsocial.desconectar;

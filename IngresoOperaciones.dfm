@@ -4,7 +4,7 @@ object fmIngreso: TfmIngreso
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Ingreso de Operaciones'
   ClientHeight = 337
-  ClientWidth = 532
+  ClientWidth = 797
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,7 +20,7 @@ object fmIngreso: TfmIngreso
   object StatusBar1: TStatusBar
     Left = 0
     Top = 318
-    Width = 532
+    Width = 797
     Height = 19
     Panels = <
       item
@@ -32,23 +32,26 @@ object fmIngreso: TfmIngreso
       item
         Width = 50
       end>
+    ExplicitWidth = 532
   end
   object Panel3: TPanel
     Left = 0
     Top = 289
-    Width = 532
+    Width = 797
     Height = 29
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitWidth = 532
     object Panel5: TPanel
-      Left = 336
+      Left = 601
       Top = 0
       Width = 196
       Height = 29
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 0
+      ExplicitLeft = 336
       object Label5: TLabel
         Left = 0
         Top = 1
@@ -92,8 +95,8 @@ object fmIngreso: TfmIngreso
         ParentFont = False
       end
       object Guardar: TBitBtn
-        Left = 52
-        Top = 16
+        Left = 71
+        Top = -2
         Width = 84
         Height = 13
         Caption = '&Guardar'
@@ -192,11 +195,12 @@ object fmIngreso: TfmIngreso
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 532
+    Width = 797
     Height = 22
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 2
+    ExplicitWidth = 532
     object SpeedButton1: TSpeedButton
       Left = 0
       Top = 0
@@ -262,11 +266,45 @@ object fmIngreso: TfmIngreso
       Height = 13
       Caption = 'Items:'
     end
+    object Panel8: TPanel
+      Left = 612
+      Top = 0
+      Width = 185
+      Height = 22
+      Align = alRight
+      BevelOuter = bvNone
+      TabOrder = 0
+      ExplicitLeft = 488
+      ExplicitTop = 8
+      ExplicitHeight = 41
+      object Label8: TLabel
+        Left = 10
+        Top = 4
+        Width = 55
+        Height = 13
+        Alignment = taRightJustify
+        Caption = 'Total Items:'
+      end
+      object totitems: TLabel
+        Left = 126
+        Top = 4
+        Width = 51
+        Height = 13
+        Alignment = taRightJustify
+        Caption = '              '
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clNavy
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        ParentFont = False
+      end
+    end
   end
   object Panel19: TPanel
     Left = 0
     Top = 22
-    Width = 532
+    Width = 797
     Height = 267
     Align = alClient
     BevelInner = bvLowered
@@ -274,10 +312,11 @@ object fmIngreso: TfmIngreso
     Caption = 'Panel2'
     TabOrder = 3
     OnResize = Panel19Resize
+    ExplicitWidth = 532
     object ScrollBox3: TScrollBox
       Left = 6
       Top = 6
-      Width = 520
+      Width = 785
       Height = 255
       HorzScrollBar.Increment = 1
       HorzScrollBar.Margin = 1
@@ -294,14 +333,16 @@ object fmIngreso: TfmIngreso
       Font.Style = []
       ParentFont = False
       TabOrder = 0
+      ExplicitWidth = 520
       object Panel2: TPanel
         Left = 0
         Top = 0
-        Width = 520
+        Width = 785
         Height = 255
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 0
+        ExplicitWidth = 520
         object Ir: TStringGrid
           Left = 16
           Top = 136
@@ -317,7 +358,7 @@ object fmIngreso: TfmIngreso
         object A: TStringGrid
           Left = 0
           Top = 0
-          Width = 520
+          Width = 785
           Height = 255
           Align = alClient
           BorderStyle = bsNone
@@ -331,6 +372,7 @@ object fmIngreso: TfmIngreso
           OnClick = DClick
           OnDrawCell = DDrawCell
           OnKeyDown = AKeyDown
+          ExplicitWidth = 520
         end
         object Id: TStringGrid
           Left = 16
@@ -349,16 +391,17 @@ object fmIngreso: TfmIngreso
     object PG: TPanel
       Left = 6
       Top = 6
-      Width = 520
+      Width = 785
       Height = 255
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 1
       Visible = False
+      ExplicitWidth = 520
       object S1: TSplitter
         Left = 0
         Top = 145
-        Width = 520
+        Width = 785
         Height = 3
         Cursor = crVSplit
         Align = alTop
@@ -367,15 +410,16 @@ object fmIngreso: TfmIngreso
       object P3: TPanel
         Left = 0
         Top = 0
-        Width = 520
+        Width = 785
         Height = 145
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 0
+        ExplicitWidth = 520
         object P4: TPanel
           Left = 0
           Top = 0
-          Width = 520
+          Width = 785
           Height = 17
           Align = alTop
           Alignment = taLeftJustify
@@ -383,19 +427,21 @@ object fmIngreso: TfmIngreso
           BevelOuter = bvNone
           Caption = '  Items Fijos Predeterminados'
           TabOrder = 0
+          ExplicitWidth = 520
         end
         object Panel4: TPanel
           Left = 0
           Top = 17
-          Width = 520
+          Width = 785
           Height = 128
           Align = alClient
           BevelInner = bvLowered
           TabOrder = 1
+          ExplicitWidth = 520
           object D: TStringGrid
             Left = 2
             Top = 2
-            Width = 516
+            Width = 781
             Height = 124
             Align = alClient
             BorderStyle = bsNone
@@ -408,6 +454,7 @@ object fmIngreso: TfmIngreso
             OnClick = DClick
             OnDrawCell = DDrawCell
             OnKeyDown = DKeyDown
+            ExplicitWidth = 516
             ColWidths = (
               64
               64
@@ -420,15 +467,16 @@ object fmIngreso: TfmIngreso
       object P1: TPanel
         Left = 0
         Top = 148
-        Width = 520
+        Width = 785
         Height = 107
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 1
+        ExplicitWidth = 520
         object P2: TPanel
           Left = 0
           Top = 0
-          Width = 520
+          Width = 785
           Height = 18
           Align = alTop
           Alignment = taLeftJustify
@@ -436,6 +484,7 @@ object fmIngreso: TfmIngreso
           BevelOuter = bvNone
           Caption = '  Ajustes Manuales'
           TabOrder = 0
+          ExplicitWidth = 520
           object Label4: TLabel
             Left = 132
             Top = 2
@@ -461,16 +510,17 @@ object fmIngreso: TfmIngreso
         object Panel6: TPanel
           Left = 0
           Top = 18
-          Width = 520
+          Width = 785
           Height = 89
           Align = alClient
           BevelInner = bvLowered
           Caption = 'Panel6'
           TabOrder = 1
+          ExplicitWidth = 520
           object M: TStringGrid
             Left = 2
             Top = 2
-            Width = 516
+            Width = 781
             Height = 85
             Align = alClient
             BorderStyle = bsNone
@@ -483,6 +533,7 @@ object fmIngreso: TfmIngreso
             OnClick = DClick
             OnDrawCell = DDrawCell
             OnKeyDown = MKeyDown
+            ExplicitWidth = 516
           end
         end
       end

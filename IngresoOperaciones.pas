@@ -57,6 +57,9 @@ type
     nrodist: TLabel;
     It: TLabel;
     Label7: TLabel;
+    Panel8: TPanel;
+    Label8: TLabel;
+    totitems: TLabel;
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure AKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -169,11 +172,23 @@ end;
 
 procedure TfmIngreso.DrawCell(SG: TStringGrid; ACol, ARow: Integer;
   Rect: TRect; State: TGridDrawState);
+var
+  __t: real;
+  k: integer;
 begin
   Fila := SG.Row; Columna := SG.Col;
   StatusBar1.Panels[1].Text := 'F ' + IntToStr(SG.Row) + ', C ' + IntToStr(SG.Col);
   if Length(Trim(SG.Cells[0, SG.Row])) > 0 then descrip.Caption := SG.Cells[0, SG.Row];
   if tipomov = 'Ajustes Individuales' then it.Caption := SG.Cells[0, SG.Row];
+
+   __t := 0;
+    For k := 1 to SG.ColCount - 1 do Begin
+      if (SG.Cells[k, SG.Row] <> '') then __t := __t + strtofloat(SG.Cells[k, SG.Row]);
+    End;
+
+    totitems.Caption := utiles.FormatearNumero(floattostr(__t));
+
+
 end;
 
 function  TfmIngreso.CantidadDeItemsIngresados(STG: TStringGrid): Integer;
@@ -218,7 +233,8 @@ begin
   SG.DefaultColWidth := anchocol;
   SG.ColWidths[0]    := 200;
   SG.Cells[0, 0]     := 'Profesional/Items';
-  r := profesional.setProfesionalesAlf;
+  //r := profesional.setProfesionalesAlf;
+  r := profesional.getProfesionalesActivos;
   r.Open;
   SG.ColCount := r.RecordCount + 1 + (ColInicio - 1); i := 0;
   Id.ColCount := SG.ColCount; Ir.ColCount := SG.ColCount;

@@ -1,0 +1,186 @@
+unit CExportObrasSociales;
+
+interface
+
+uses SysUtils, CListar, CUtiles, DBTables, Contnrs, CIDBFM, Forms, CBDT, DB;
+
+type
+
+TTExportObrasSociales = class
+  Periodo, Idprof, Codos, Fecha, Tipo, Sucursal, Numero: string;
+  tabla, detalle: TTable;
+ public
+  { Declaraciones Públicas }
+  constructor Create;
+
+  procedure   Registrar(xperiodo, xidprof, xcodos, xfecha, xtipo, xsucursal, xnumero: string);
+  procedure   Borrar(xperiodo, xidprof, xcodos: string);
+  function    Buscar(xperiodo, xidprof, xcodos: string): boolean;
+  procedure   getDatos(xperiodo, xidprof, xcodos: string);
+
+  procedure   iniciarItems;
+  procedure   finalizarItems;
+  function    getItems: TQuery;
+  procedure   addItem(xid, xtipodoc, xnrodoc, xcodrub, xcodigo, xfecha, xdescrip,
+                      xprofesional, xestado, xnrobono, xiddiag, xtipo, xsucursal,
+                      xnumero, xcodos, xidprof: string; xcantidad, ximporte: double);
+
+  procedure   conectar;
+  procedure   desconectar;
+
+  destructor  Destroy; override;
+ private
+  { Declaraciones Privadas }
+  u, ud: real;
+  per: string;
+  conexiones: shortint;
+end;
+
+function ExportObrasSociales: TTExportObrasSociales;
+
+implementation
+
+var
+  xExportObrasSociales: TTExportObrasSociales = nil;
+
+constructor TTExportObrasSociales.Create;
+var
+  dbconexion: string;
+begin
+  inherited Create;
+  tabla := datosdb.openDB('OBSOCIAL_EXPORT_SOPMAG', ''); //, '', dbconexion);
+  detalle := datosdb.openDB('OBSOCIAL_EXPORT_TEMP_1', '');
+end;
+
+destructor TTExportObrasSociales.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TTExportObrasSociales.iniciarItems;
+begin
+  datosdb.tranSQL(detalle.DatabaseName, 'delete from OBSOCIAL_EXPORT_TEMP_1');
+  detalle.Open;
+end;
+
+procedure TTExportObrasSociales.finalizarItems;
+begin
+  detalle.Close;
+end;
+
+function TTExportObrasSociales.getItems;
+begin
+  result := datosdb.tranSQL(detalle.DatabaseName, 'select * from OBSOCIAL_EXPORT_TEMP_1 order by tipo, sucursal, numero');
+end;
+
+procedure TTExportObrasSociales.addItem(xid, xtipodoc, xnrodoc, xcodrub, xcodigo, xfecha, xdescrip,
+                    xprofesional, xestado, xnrobono, xiddiag, xtipo, xsucursal,
+                    xnumero, xcodos, xidprof: string; xcantidad, ximporte: double);
+begin
+  detalle.Append;
+  detalle.FieldByName('id').asstring := xid;
+  detalle.FieldByName('tipodoc').asstring := xtipodoc;
+  detalle.FieldByName('nrodoc').asstring := xnrodoc;
+  detalle.FieldByName('codrub').asstring := xcodrub;
+  detalle.FieldByName('codigo').asstring := xcodigo;
+  detalle.FieldByName('fecha').asstring := xfecha;
+  detalle.FieldByName('descrip').asstring := xdescrip;
+  detalle.FieldByName('profesional').asstring := xprofesional;
+  detalle.FieldByName('estado').asstring := xestado;
+  detalle.FieldByName('nrobono').asstring := xnrobono;
+  detalle.FieldByName('iddiag').asstring := xiddiag;
+  detalle.FieldByName('tipo').asstring := xtipo;
+  detalle.FieldByName('sucursal').asstring := xsucursal;
+  detalle.FieldByName('numero').asstring := xnumero;
+  detalle.FieldByName('codos').asstring := xcodos;
+  detalle.FieldByName('idprof').asstring := xidprof;
+  detalle.FieldByName('cantidad').asfloat := xcantidad;
+  detalle.FieldByName('importe').asfloat := ximporte;
+  detalle.Post;
+end;         
+
+procedure TTExportObrasSociales.Registrar(xperiodo, xidprof, xcodos, xfecha, xtipo, xsucursal, xnumero: string);
+// Objetivo...: Grabar Atributos del Objeto
+begin
+  if Buscar(xperiodo, xidprof, xcodos) then tabla.Edit else tabla.Append;
+  tabla.FieldByName('periodo').AsString  := xperiodo;
+  tabla.FieldByName('idprof').AsString   := xidprof;
+  tabla.FieldByName('codos').AsString    := xcodos;
+  tabla.FieldByName('fecha').AsString    := xfecha;
+  tabla.FieldByName('tipo').AsString     := xtipo;
+  tabla.FieldByName('sucursal').AsString := xsucursal;
+  tabla.FieldByName('numero').AsString   := xnumero;
+  try
+    tabla.Post;
+  except
+    tabla.Cancel;
+  end;
+  datosdb.closeDB(tabla); tabla.Open;
+end;
+
+procedure TTExportObrasSociales.Borrar(xperiodo, xidprof, xcodos: string);
+// Objetivo...: Eliminar un Objeto
+begin
+  if Buscar(xperiodo, xidprof, xcodos) then
+    begin
+      tabla.Delete;
+      datosdb.closeDB(tabla); tabla.Open;
+    end;
+end;
+
+function TTExportObrasSociales.Buscar(xperiodo, xidprof, xcodos: string): boolean;
+// Objetivo...: Buscar el Objeto solicitado
+begin
+  result := datosdb.Buscar(tabla, 'periodo', 'idprof', 'codos', xperiodo, xidprof, xcodos);
+end;
+
+procedure TTExportObrasSociales.getDatos(xperiodo, xidprof, xcodos: string);
+// Objetivo...: Retornar/Iniciar Atributos
+begin
+  if Buscar(xperiodo, xidprof, xcodos) then begin
+    periodo   := tabla.FieldByName('periodo').AsString;
+    idprof    := tabla.FieldByName('idprof').AsString;
+    codos     := tabla.FieldByName('codos').AsString;
+    tipo      := tabla.FieldByName('tipo').AsString;
+    sucursal  := tabla.FieldByName('sucursal').AsString;
+    numero    := tabla.FieldByName('numero').AsString;
+    fecha     := tabla.FieldByName('fecha').AsString;
+  end else   begin
+    periodo := ''; idprof := ''; sucursal := ''; codos := ''; numero := ''; fecha := '';
+  end;
+end;
+
+procedure TTExportObrasSociales.conectar;
+// Objetivo...: Abrir tablas de persistencia
+begin
+  if conexiones = 0 then Begin
+    if not tabla.Active then tabla.Open;
+  end;
+  Inc(conexiones);
+end;
+
+procedure TTExportObrasSociales.desconectar;
+// Objetivo...: cerrar tablas de persistencia
+begin
+  if conexiones > 0 then Dec(conexiones);
+  if conexiones = 0 then datosdb.closeDB(tabla);
+end;
+
+{===============================================================================}
+
+function ExportObrasSociales: TTExportObrasSociales;
+begin
+  if xExportObrasSociales = nil then
+    xExportObrasSociales := TTExportObrasSociales.Create;
+  Result := xExportObrasSociales;
+end;
+
+{===============================================================================}
+
+initialization
+
+finalization
+  xExportObrasSociales.Free;
+
+
+end.

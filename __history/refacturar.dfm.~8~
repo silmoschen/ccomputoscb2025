@@ -1,0 +1,153 @@
+object fmRF: TfmRF
+  Left = 0
+  Top = 0
+  Caption = 'RF'
+  ClientHeight = 395
+  ClientWidth = 143
+  Color = clBtnFace
+  Font.Charset = ANSI_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poMainFormCenter
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel2: TPanel
+    Left = 0
+    Top = 0
+    Width = 143
+    Height = 395
+    Align = alClient
+    BevelInner = bvLowered
+    BorderWidth = 4
+    Caption = 'Panel2'
+    TabOrder = 0
+    ExplicitWidth = 120
+    ExplicitHeight = 374
+    object ScrollBox: TScrollBox
+      Left = 6
+      Top = 6
+      Width = 131
+      Height = 383
+      HorzScrollBar.Increment = 1
+      HorzScrollBar.Margin = 1
+      HorzScrollBar.Range = 10
+      VertScrollBar.Margin = 6
+      VertScrollBar.Range = 10
+      Align = alClient
+      AutoScroll = False
+      BorderStyle = bsNone
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 0
+      ExplicitWidth = 108
+      ExplicitHeight = 362
+      object Panel3: TPanel
+        Left = 0
+        Top = 0
+        Width = 131
+        Height = 299
+        Align = alClient
+        BevelInner = bvLowered
+        TabOrder = 0
+        ExplicitWidth = 108
+        ExplicitHeight = 294
+        object F: TStringGrid
+          Left = 2
+          Top = 2
+          Width = 127
+          Height = 295
+          Align = alClient
+          BorderStyle = bsNone
+          ColCount = 2
+          DefaultRowHeight = 15
+          FixedCols = 0
+          RowCount = 10000
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect]
+          ParentFont = False
+          TabOrder = 0
+          OnKeyDown = FKeyDown
+          ExplicitHeight = 311
+          ColWidths = (
+            77
+            23)
+        end
+      end
+      object Panel1: TPanel
+        Left = 0
+        Top = 299
+        Width = 131
+        Height = 84
+        Align = alBottom
+        BevelOuter = bvNone
+        TabOrder = 1
+        object Si: TSpeedButton
+          Left = 72
+          Top = 6
+          Width = 18
+          Height = 25
+          Hint = 'S'#237'/No Selecci'#243'n'
+          Caption = '&S'
+          Flat = True
+          ParentShowHint = False
+          ShowHint = True
+          OnClick = SiClick
+        end
+        object Ninguno: TSpeedButton
+          Left = 90
+          Top = 6
+          Width = 18
+          Height = 25
+          Hint = 'Quitar Todos'
+          Caption = '&N'
+          Flat = True
+          ParentShowHint = False
+          ShowHint = True
+          OnClick = NingunoClick
+        end
+        object Todos: TSpeedButton
+          Left = 108
+          Top = 6
+          Width = 18
+          Height = 25
+          Hint = 'Seleccionar Todos'
+          Caption = '&T'
+          Flat = True
+          ParentShowHint = False
+          ShowHint = True
+          OnClick = TodosClick
+        end
+        object btnRefacturar: TButton
+          Left = 24
+          Top = 52
+          Width = 67
+          Height = 25
+          Caption = 'Refacturar'
+          TabOrder = 0
+          OnClick = btnRefacturarClick
+        end
+        object btnAll: TCheckBox
+          Left = 5
+          Top = 10
+          Width = 55
+          Height = 17
+          Caption = 'Todos'
+          TabOrder = 1
+          OnClick = btnAllClick
+        end
+      end
+    end
+  end
+end

@@ -113,7 +113,7 @@ end;
 
 procedure TfmRF.FormShow(Sender: TObject);
 begin
-  F.Cells[0, 0] := 'Profesional';
+  F.Cells[0, 0] := 'Profesional'; F.Cells[1, 0] := 'Sel';
 
   load;
 end;

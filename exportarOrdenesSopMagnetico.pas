@@ -116,13 +116,126 @@ uses detalleFacturado;
 
 procedure TfmExportarOrdenesSoporteMagnetico.generarArchivoR13;
 var
-  importe, archivo, nroafiliado, convenio, sepa: string;
+  importe, archivo, nroafiliado, convenio, sepa, id, tt, ss, nn: string;
   arch: TextFile;
   i: integer;
   total, monto1, total2: real;
   r: TIBQuery;
+  s: TQuery;
 begin
+
+  StatusBar1.Panels[0].Text := 'Procesando ...!'; StatusBar1.Refresh;
+
+  obsocial.getRegla(idos.Text);
+  convenio := obsocial.Convenio;
+
+  obsocial.SincronizarPosicionFiscal(idos.Text, periodo.Text);
+
+  id := utiles.StringRemplazarCaracteres(periodo.Text, '/', '');;
+
+  r := facturacion.getListItemsFacturados(periodo.Text, idos.Text);
+  r.open; i := 0; total := 0;
+
+  sepa := '';
+
+  exportObrasSociales.iniciarItems;
+
+  while not r.eof do begin
+
+    auditoriacb.getDatos(r.FieldByName('nroauditoria').AsString);
+
+    nbu.getDatos(r.FieldByName('codanalisis').asString);
+    profesional.getDatos(r.FieldByName('idprof').asString);
+
+    // Prorrateamos comprobante
+    exportObrasSociales.getDatos(periodo.Text, r.FieldByName('idprof').asstring, idos.Text);
+
+    monto1 := r.FieldByName('iva').AsFloat * (obsocial.retencioniva * 0.01);
+    total  := total + (r.FieldByName('monto').asfloat + monto1);
+    total2 := r.FieldByName('monto').asfloat + monto1;
+
+    nroafiliado := r.FieldByName('nroafiliado').AsString;
+
+    inc(i);
+
+    facturacion.setImporteAnalisis(idos.Text, r.FieldByName('codanalisis').AsString, r.FieldByName('ref1').AsString);
+
+    exportObrasSociales.addItem(id + utiles.sLlenarIzquierda(inttostr(i), 5, '0'), 'DU', nroafiliado, '001',
+                                r.FieldByName('codanalisis').AsString, r.FieldByName('items').AsString, r.FieldByName('orden').AsString,
+                                utiles.sFormatoFechaDDMMAAAA(r.FieldByName('fecha').AsString),
+                                copy(nbu.Descrip, 1, 30), profesional.nombre, '', '',
+                                auditoriacb.Iddiag, exportObrasSociales.Tipo, exportObrasSociales.Sucursal, exportObrasSociales.Numero,
+                                idos.Text, r.FieldByName('idprof').asstring,
+                                strtofloat('1'), r.FieldByName('monto').asfloat, facturacion.unidadNBUFinal);
+    r.next;
+  end;
+
+  exportObrasSociales.finalizarItems;
+
+  montoexport.Caption := utiles.FormatearNumero(FloatToStr(total));
+
+  StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+
+  r.Close; r.Free;
+
   if not (DirectoryExists(dbs.DirSistema + '\work\exportsopmag')) then utilesarchivos.CrearDirectorio(dbs.DirSistema + '\work\exportsopmag');
+
+  s := exportObrasSociales.getItems;
+  s.Open; i := 0; tt := ''; ss := ''; nn := ''; total := 0;
+
+  while not s.eof do begin
+
+    if ((tt <> s.FieldByName('tipo').AsString) or (ss <> s.FieldByName('sucursal').AsString) or (nn <> s.FieldByName('numero').AsString) ) then begin
+
+      if (i > 0) then closeFile(arch);
+
+      tt := s.FieldByName('tipo').AsString;
+      ss := s.FieldByName('sucursal').AsString;
+      nn := s.FieldByName('numero').AsString;
+
+      StatusBar1.Panels[0].Text := 'Generando Archivo ' + tt + ' ' + ss + ' ' + nn + ' ...' ; StatusBar1.Refresh;
+
+      archivo := dbs.DirSistema + '\work\exportsopmag\' + s.fieldbyname('idprof').AsString + '_' + tt + '_' + ss + '_' + nn + '.txt';
+      AssignFile(arch, archivo);
+      rewrite(arch);
+
+    end;
+
+    total  := total + (s.FieldByName('importe').asfloat);
+
+    write(arch, s.FieldByName('tipodoc').AsString + sepa);
+    write(arch, utiles.sLlenarDerecha(s.FieldByName('nrodoc').AsString, 10, ' ') + sepa);
+    write(arch, s.FieldByName('codrub').AsString + sepa);
+    write(arch, utiles.sLlenarDerecha(s.FieldByName('codigo').AsString, 9, ' ') + sepa);
+    write(arch, utiles.FechaCompleta(s.FieldByName('fecha').AsString) + sepa);
+    write(arch, utiles.sLlenarDerecha(s.FieldByName('descrip').AsString, 30, ' ') + sepa);
+    write(arch, utiles.sLlenarDerecha(floattostr(facturacion.unidadNBUFinal), 3, ' ') + sepa);
+    importe :=  utiles.FormatearNumero(FloatToStr(s.FieldByName('importe').AsFloat));
+    write(arch, utiles.sLlenarDerecha(utiles.StringRemplazarCaracteres(importe, ',', '.'), 12, ' ') + sepa);
+    write(arch, utiles.sLlenarDerecha(s.FieldByName('profesional').AsString, 30, ' ') + sepa);
+    write(arch, '  ');
+    write(arch, '     ');
+    write(arch, '1  ');  // 1. Plan General
+    importe :=  utiles.FormatearNumero(FloatToStr(0)); // coseguro
+    write(arch, utiles.sLlenarDerecha(utiles.StringRemplazarCaracteres('0', ',', '.'), 12, ' ') + sepa);
+    write(arch, 'A');  // 1. Ambulatorio
+    write(arch, '          ');
+    writeLn(arch, s.FieldByName('iddiag').AsString);
+
+    inc (i);
+
+   r.next;
+  end;
+
+
+  if (i > 0) then closeFile(arch);
+
+  //montoexport.Caption := utiles.FormatearNumero(FloatToStr(total));
+
+  StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+
+
+  {if not (DirectoryExists(dbs.DirSistema + '\work\exportsopmag')) then utilesarchivos.CrearDirectorio(dbs.DirSistema + '\work\exportsopmag');
   archivo := dbs.DirSistema + '\work\exportsopmag\' + idos.Text + '_' + utiles.StringRemplazarCaracteres(periodo.Text, '/', '_') + '.txt';
   AssignFile(arch, archivo);
   rewrite(arch);
@@ -135,7 +248,7 @@ begin
   r := facturacion.getListItemsFacturados(periodo.Text, idos.Text);
   r.open; i := 1; total := 0;
 
-  sepa := ';';
+  sepa := '';
 
   while not r.eof do begin
 
@@ -154,23 +267,30 @@ begin
     nroafiliado := r.FieldByName('nroafiliado').AsString;
 
     write(arch, 'DU' + sepa);
-    write(arch, nroafiliado + sepa);
-    write(arch, '2' + sepa);
-    write(arch, r.FieldByName('codanalisis').AsString + sepa);
-    write(arch, r.FieldByName('fecha').AsString + sepa);
-    write(arch, 'Práctica Bioquímica' + sepa);
-    write(arch, '1' + sepa);
+    write(arch, utiles.sLlenarDerecha(nroafiliado, 10, ' ') + sepa);
+    write(arch, '001' + sepa);
+    write(arch, utiles.sLlenarDerecha(r.FieldByName('codanalisis').AsString, 9, ' ') + sepa);
+    write(arch, utiles.FechaCompleta(r.FieldByName('fecha').AsString) + sepa);
+    write(arch, utiles.sLlenarDerecha(copy(nbu.Descrip, 1, 30), 10, '0') + sepa);
+    write(arch, utiles.sLlenarDerecha(floattostr(facturacion.unidadNBUFinal), 3, ' ') + sepa);
     importe :=  utiles.FormatearNumero(FloatToStr(total2));
-    write(arch,  utiles.StringRemplazarCaracteres(importe, ',', '.') + sepa);
-    write(arch, profesional.nombre + sepa);
-    writeLn(arch, '000000');
+    write(arch, utiles.sLlenarDerecha(utiles.StringRemplazarCaracteres(importe, ',', '.'), 12, ' ') + sepa);
+    write(arch, utiles.sLlenarDerecha(profesional.nombre, 30, ' ') + sepa);
+    write(arch, '  ');
+    write(arch, '     ');
+    write(arch, '1  ');  // 1. Plan General
+    importe :=  utiles.FormatearNumero(FloatToStr(0)); // coseguro
+    write(arch, utiles.sLlenarDerecha(utiles.StringRemplazarCaracteres(importe, ',', '.'), 12, ' ') + sepa);
+    write(arch, 'A');  // 1. Ambulatorio
+    write(arch, '          ');
+    writeLn(arch, auditoriacb.Iddiag);
 
     r.next;
   end;
 
   closeFile(arch);
 
-  montoexport.Caption := utiles.FormatearNumero(FloatToStr(total));
+  montoexport.Caption := utiles.FormatearNumero(FloatToStr(total));}
 end;
 
 
@@ -818,6 +938,14 @@ begin
         StrToFloat(A.Cells[12,i]));
 
     A.Cells[13,i] := profesional.Retieneiva;
+
+    // Ajustamos si la Obra Social no retiene Iva - 22/04/2026
+    if (obsocial.Retieneiva = 'N') then begin
+       A.Cells[4, i] := utiles.FormatearNumero('0');
+       A.Cells[5, i] := utiles.FormatearNumero('0');
+       A.Cells[6, i] := A.Cells[3, i];
+    end;
+
 
     total := total + strtofloat( A.Cells[6, i] );
 

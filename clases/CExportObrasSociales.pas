@@ -8,7 +8,7 @@ type
 
 TTExportObrasSociales = class
   Periodo, Idprof, Codos, Fecha, Tipo, Sucursal, Numero: string;
-  tabla: TTable;
+  tabla, detalle: TTable;
  public
   { Declaraciones Públicas }
   constructor Create;
@@ -17,6 +17,13 @@ TTExportObrasSociales = class
   procedure   Borrar(xperiodo, xidprof, xcodos: string);
   function    Buscar(xperiodo, xidprof, xcodos: string): boolean;
   procedure   getDatos(xperiodo, xidprof, xcodos: string);
+
+  procedure   iniciarItems;
+  procedure   finalizarItems;
+  function    getItems: TQuery;
+  procedure   addItem(xid, xtipodoc, xnrodoc, xcodrub, xcodigo, xitems, xorden, xfecha, xdescrip,
+                      xprofesional, xestado, xnrobono, xiddiag, xtipo, xsucursal,
+                      xnumero, xcodos, xidprof: string; xcantidad, ximporte, xunidades: double);
 
   procedure   conectar;
   procedure   desconectar;
@@ -42,12 +49,58 @@ var
 begin
   inherited Create;
   tabla := datosdb.openDB('OBSOCIAL_EXPORT_SOPMAG', ''); //, '', dbconexion);
+  detalle := datosdb.openDB('OBSOCIAL_EXPORT_TEMP_1', '');
 end;
 
 destructor TTExportObrasSociales.Destroy;
 begin
   inherited Destroy;
 end;
+
+procedure TTExportObrasSociales.iniciarItems;
+begin
+  datosdb.tranSQL(detalle.DatabaseName, 'delete from OBSOCIAL_EXPORT_TEMP_1');
+  detalle.Open;
+end;
+
+procedure TTExportObrasSociales.finalizarItems;
+begin
+  detalle.Close;
+end;
+
+function TTExportObrasSociales.getItems;
+begin
+  result := datosdb.tranSQL(detalle.DatabaseName, 'select * from OBSOCIAL_EXPORT_TEMP_1 order by tipo, sucursal, numero');
+end;
+
+procedure TTExportObrasSociales.addItem(xid, xtipodoc, xnrodoc, xcodrub, xcodigo, xitems, xorden, xfecha, xdescrip,
+                    xprofesional, xestado, xnrobono, xiddiag, xtipo, xsucursal,
+                    xnumero, xcodos, xidprof: string; xcantidad, ximporte, xunidades: double);
+begin
+  detalle.Append;
+  detalle.FieldByName('id').asstring := xid;
+  detalle.FieldByName('tipodoc').asstring := xtipodoc;
+  detalle.FieldByName('nrodoc').asstring := xnrodoc;
+  detalle.FieldByName('codrub').asstring := xcodrub;
+  detalle.FieldByName('codigo').asstring := xcodigo;
+  detalle.FieldByName('items').asstring := xitems;
+  detalle.FieldByName('orden').asstring := xorden;
+  detalle.FieldByName('fecha').asstring := xfecha;
+  detalle.FieldByName('descrip').asstring := xdescrip;
+  detalle.FieldByName('profesional').asstring := xprofesional;
+  detalle.FieldByName('estado').asstring := xestado;
+  detalle.FieldByName('nrobono').asstring := xnrobono;
+  detalle.FieldByName('iddiag').asstring := xiddiag;
+  detalle.FieldByName('tipo').asstring := xtipo;
+  detalle.FieldByName('sucursal').asstring := xsucursal;
+  detalle.FieldByName('numero').asstring := xnumero;
+  detalle.FieldByName('codos').asstring := xcodos;
+  detalle.FieldByName('idprof').asstring := xidprof;
+  detalle.FieldByName('cantidad').asfloat := xcantidad;
+  detalle.FieldByName('importe').asfloat := ximporte;
+  detalle.FieldByName('unidades').asfloat := xunidades;
+  detalle.Post;
+end;         
 
 procedure TTExportObrasSociales.Registrar(xperiodo, xidprof, xcodos, xfecha, xtipo, xsucursal, xnumero: string);
 // Objetivo...: Grabar Atributos del Objeto

@@ -25,8 +25,6 @@ object fmRF: TfmRF
     BorderWidth = 4
     Caption = 'Panel2'
     TabOrder = 0
-    ExplicitWidth = 120
-    ExplicitHeight = 374
     object ScrollBox: TScrollBox
       Left = 6
       Top = 6
@@ -47,8 +45,6 @@ object fmRF: TfmRF
       Font.Style = []
       ParentFont = False
       TabOrder = 0
-      ExplicitWidth = 108
-      ExplicitHeight = 362
       object Panel3: TPanel
         Left = 0
         Top = 0
@@ -57,8 +53,6 @@ object fmRF: TfmRF
         Align = alClient
         BevelInner = bvLowered
         TabOrder = 0
-        ExplicitWidth = 108
-        ExplicitHeight = 294
         object F: TStringGrid
           Left = 2
           Top = 2
@@ -79,7 +73,6 @@ object fmRF: TfmRF
           ParentFont = False
           TabOrder = 0
           OnKeyDown = FKeyDown
-          ExplicitHeight = 311
           ColWidths = (
             77
             23)

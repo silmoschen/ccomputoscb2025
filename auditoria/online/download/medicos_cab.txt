@@ -1,36 +1,8 @@
 121069 08639                                                      LOPEZ JOSE LUIS                                                                                      246                 
 121069 05791                                                      LOCATELLI, OSCAR                                                                                     455                 
-121069 08888                                                      MONTYN RICARDO LEON                                                                                  349                 
-121069 01013                                                      ALEGRE ANA MARIA                                                                                     221                 
-121069 09915                                                      PEROZZI OSCAR C.                                                                                     750             N   
-121069 08530                                                      PIAZZA AGUEDA NOEMI DE                                                                               377                 
-121069 09957                0          0          6472            FRANCO MELINA                                                                                        0               N   
-121069 09951                3          106        5136            ESQUENAZI PABLO ALBERTO                                                                              0               N   
-121069 09947                3          129        5597            DELSSIN  MAXIMILIANO                                                                                 0               N   
-121069 09956                0          0          1597            MASSARO MIGUEL                                                                                       0               N   
-121069 09918                0          0          0               IBAÑEZ INES BLANCA                                                                                   783             N   
-121069 09914                                                      MARTELLI CARLOS                                                                                      0                   
-121069 08000                                                      FIANT MARCELO ALEJANDRO                                                                              160                 
-121069 06633                                                      YERMANOS, HUGO                                                                                       219                 
-121069 09955                3          33         3668            CHACON MARCELO ALEJANDRO                                                                             144             N   
-121069 00001                                                      FIRPO IVAN M.                                                                                        138                 
 121069 09952                130        3          5611            ALONSO JORGE SEBASTIAN                                                                               100             N   
-121069 09937                03         064        4291            ARMANDO MARISEL SOLEDAD                                                                              0               N   
-121069 908000518209         0          0          0               FANTIN MARIA LIS                                                                                     0               N   
-121069 07888                                                      NU?EZ AVENDA?O JULIO CESAR                                                                           324                 
-121069 09236                                                      CHAPERO, SUSANA                                                                                      266                 
+121069 09920                68         0          3               SILVA LILIANA CAROLINA                                                                               146             N   
+121069 06152                                                      PUYOL, DANIEL                                                                                        405                 
+121069 09947                3          129        5597            DELSSIN  MAXIMILIANO                                                                                 0               N   
+121069 00001                                                      FIRPO IVAN M.                                                                                        138                 
 121069 06145                                                      PREZ JORGE                                                                                           654                 
-121069 06657                0          0          0               ZANUTTINI JUAN CARLOS                                                                                752                 
-121069 09007                                                      ITURRIZ IGNACIO                                                                                      681                 
-121069 00000                                                      NIEWIAK CRISTINA                                                                                     445                 
-121069 09933                3          85         4715            CENTIS  DIEGO  RODRIGO                                                                               100             N   
-121069 09953                3          75         4446            VALLEJOS GUSTAVO                                                                                     0               N   
-121069 06589                                                      VILLA NORMA                                                                                          20              N   
-121069 07926                                                      PODESTA MIGUEL ANGEL                                                                                 208                 
-121069 908000518191         0          0          5095            CESPEDES MARIA SOLEDAD                                                                               100             N   
-121069 09267                                                      PEREYRA MANUEL                                                                                       430                 
-121069 09959                0          0          6594            CHAZARRETA LEANDRO                                                                                   10              N   
-121069 05340                                                      FAES SILVIA GRACIELA                                                                                 388                 
-121069 01827                                                      BIERI LAURA                                                                                          150                 
-121069 09890                                                      FERNANDEZ DANIEL ALBERTO                                                                             717                 
-121069 09893                                                      RESCALA OSVALDO                                                                                      100             N   

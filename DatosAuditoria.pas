@@ -1785,7 +1785,7 @@ begin
     if (ControlarDatosIngresados) and (items1 + items2 > 0) then Begin
       if not (auditoriacb.Existe) then nroauditoria.Text := utiles.sLlenarIzquierda(auditoriacb.setNuevoNroAuditoria, 10, '0');
       StatusBar1.Panels[0].Text := 'Registrando Orden ' + nroauditoria.Text + ' ...!'; StatusBar1.Refresh;
-      auditoriacb.Registrar(nroauditoria.Text, fecha.Text, codos.Text, idzona.Text, nrodoc.Text, nombre.Text, idprof.Caption, obsdiagnostico.Text, fechaderivacion.Text, nroderivacion.Text, observacion.Text, codosfact.Text, fepedido.Text, idprofcab, iddiag.Text, obsfinal.Caption, r_log, auditoriacb.Online, 'N', '', '');
+      auditoriacb.Registrar(nroauditoria.Text, fecha.Text, codos.Text, idzona.Text, nrodoc.Text, nombre.Text, idprof.Caption, obsdiagnostico.Text, fechaderivacion.Text, nroderivacion.Text, observacion.Text, codosfact.Text, fepedido.Text, idprofcab, iddiag.Text, obsfinal.Caption, r_log, auditoriacb.Online, 'N', '', '', '__nn', '__nn');
       For i := 1 to items1 do auditoriacb.RegistrarItems(nroauditoria.Text, utiles.sLlenarIzquierda(IntToStr(i), 3, '0'), CA.Cells[0, i], CA.Cells[1, i], 'A', StrToFloat(CA.Cells[2, i]), StrToFloat(CA.Cells[3, i]), items1 + items2, r_log, 'N', 'N', StrToFloat(CA.Cells[3, i]), StrToFloat(CA.Cells[4, i]));
       j := items1;
       For i := 1 to items2 do Begin

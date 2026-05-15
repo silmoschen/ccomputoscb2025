@@ -342,6 +342,7 @@ type
     idprof: TLabel;
     GroupBox12: TGroupBox;
     btnSeleccionOS: TButton;
+    btnOrdenOnLine: TSpeedButton;
     procedure FormResize(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -525,6 +526,7 @@ type
     procedure btnAplicarCambiosGeneralesClick(Sender: TObject);
     procedure Panel2Resize(Sender: TObject);
     procedure btnSeleccionOSClick(Sender: TObject);
+    procedure btnOrdenOnLineClick(Sender: TObject);
   private
     { Private declarations }
     Items1, Items2, lh: Integer;
@@ -571,7 +573,7 @@ uses CAuditoriaCCB, CObrasSocialesCCB, CZonasCCB, CPadronOSCCB, CMedicosCCB, CNo
      EleccionMedicos, CNomeclatura_ObraSocial, NominaDeDiagnosticos, CDiagnosticosCCB, CDiagnosticosCCBOMS,
      BuscarMedicoCab, NominaDeDiagnosticosOMS, FormAuto, RasDial3, RasDial2,
      RasDial1, RasDial4, HTTPCliente, Nomina_NBU, CNBU, CMedicosCabCCB, CMedicosCCBOS,
-     NominaDeMedicosAuditoria, BuscarMedicoCabOL, CMedicosCabAO;
+     NominaDeMedicosAuditoria, BuscarMedicoCabOL, CMedicosCabAO, buscarosonline;
 
 {$R *.dfm}
 
@@ -597,7 +599,7 @@ Begin
   { Total Facturado en el mes }
   Refresh;
   StatusBar1.Panels[0].Text := 'Espere ->Recalculando Total Mensual Obra Social ...!'; StatusBar1.Refresh;
-  totmes.Caption := utiles.FormatearNumero(FloatToStr(auditoriacb.setTotalAnalisisMensual(fecha.Text, codos.Text, recalcularMontos.Checked)));
+  //totmes.Caption := utiles.FormatearNumero(FloatToStr(auditoriacb.setTotalAnalisisMensual(fecha.Text, codos.Text, recalcularMontos.Checked)));
   if Length(Trim(codosfact.Text)) = 0 then Begin
     codosfact.Text := codos.Text;
     osf.Caption    := Copy(obsocial.Nombre, 1, 25);
@@ -709,6 +711,13 @@ Begin
   if (auditoriacb.Online <> 'S') then begin
     if (medico.Buscar(idprof.Caption)) then begin
       medico.getDatos(idprof.Caption);
+
+      if (medico.Inactivo) then begin
+        utiles.msgError('Médico Inactivo ...!');
+        idprof.Caption := '';
+        exit;
+      end;
+
       nprofesional.Text := medico.Nombre;
     end;
   end;
@@ -1003,7 +1012,7 @@ Begin
          end;
          CA.Cells[2, items1] := utiles.FormatearNumero(FloatToStr(objeto.monto));
          CA.Cells[3, items1] := utiles.FormatearNumero(FloatToStr(objeto.monto_dif));
-         CA.Cells[4, items1] := utiles.FormatearNumero(FloatToStr(objeto.coseguro));
+         CA.Cells[4, items1] := utiles.FormatearNumero(FloatToStr(objeto.montocoseguro));
        end;
        if objeto.Estado = 'R' then Begin
          Inc(items2);
@@ -1279,8 +1288,8 @@ var
   l1: Integer; en, ld, ett, lc1, lc2, upi, ls, ing, fb, shc, lp5, dcb, itexto, lsp, lstxt, ep, acsalto, rd, altop, nn, coms: String;
   vhost, vftp, vusuario, vpassword, cd, url: String;
 begin
-  AddFontResource(PChar(dbs.DirSistema + '\fuentes\IDAutomationCode39.ttf'));
-  SendMessage(HWND_BROADCAST, WM_FONTCHANGE, 0, 0);
+  //AddFontResource(PChar(dbs.DirSistema + '\fuentes\IDAutomationCode39.ttf'));
+  //SendMessage(HWND_BROADCAST, WM_FONTCHANGE, 0, 0);
   StatusBar1.Panels[1].Text := 'F9 Sí/No Obs.';
   StatusBar1.Panels[0].Text := 'Conectando'; StatusBar1.Refresh;
   CA.Cells[0, 0] := 'Cód.'; CA.Cells[1, 0] := 'Determinaciones Aceptadas'; CA.Cells[2, 0] := 'Monto'; CA.Cells[3, 0] := 'Monto Dif.'; CA.Cells[4, 0] := 'Coseguro';
@@ -1397,8 +1406,8 @@ procedure TfmAuditoria.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
   StatusBar1.Panels[0].Text := 'Desonectando'; StatusBar1.Refresh;
-  RemoveFontResource(PChar(dbs.DirSistema + '\fuentes\IDAutomationCode39.ttf'));
-  SendMessage(HWND_BROADCAST, WM_FONTCHANGE, 0, 0);
+  //RemoveFontResource(PChar(dbs.DirSistema + '\fuentes\IDAutomationCode39.ttf'));
+  //SendMessage(HWND_BROADCAST, WM_FONTCHANGE, 0, 0);
   //if FormStyle = fsMDIChild then configform.Guardar(fmAuditoria, redim);
   
   configform.Guardar(fmAuditoria, redim);
@@ -1561,6 +1570,7 @@ end;
 procedure TfmAuditoria.BuscarMedicoClick(Sender: TObject);
 begin
   if (auditoriacb.Online <> 'S') then begin
+    medico.FiltrarActivos;
     Application.CreateForm(TfmListMedicos, fmListMedicos);
     fmListMedicos.introSalir := True;
     fmListMedicos.expresion.Text := nprofesional.Text;
@@ -1775,7 +1785,7 @@ begin
     if (ControlarDatosIngresados) and (items1 + items2 > 0) then Begin
       if not (auditoriacb.Existe) then nroauditoria.Text := utiles.sLlenarIzquierda(auditoriacb.setNuevoNroAuditoria, 10, '0');
       StatusBar1.Panels[0].Text := 'Registrando Orden ' + nroauditoria.Text + ' ...!'; StatusBar1.Refresh;
-      auditoriacb.Registrar(nroauditoria.Text, fecha.Text, codos.Text, idzona.Text, nrodoc.Text, nombre.Text, idprof.Caption, obsdiagnostico.Text, fechaderivacion.Text, nroderivacion.Text, observacion.Text, codosfact.Text, fepedido.Text, idprofcab, iddiag.Text, obsfinal.Caption, r_log, auditoriacb.Online, 'N');
+      auditoriacb.Registrar(nroauditoria.Text, fecha.Text, codos.Text, idzona.Text, nrodoc.Text, nombre.Text, idprof.Caption, obsdiagnostico.Text, fechaderivacion.Text, nroderivacion.Text, observacion.Text, codosfact.Text, fepedido.Text, idprofcab, iddiag.Text, obsfinal.Caption, r_log, auditoriacb.Online, 'N', '', '');
       For i := 1 to items1 do auditoriacb.RegistrarItems(nroauditoria.Text, utiles.sLlenarIzquierda(IntToStr(i), 3, '0'), CA.Cells[0, i], CA.Cells[1, i], 'A', StrToFloat(CA.Cells[2, i]), StrToFloat(CA.Cells[3, i]), items1 + items2, r_log, 'N', 'N', StrToFloat(CA.Cells[3, i]), StrToFloat(CA.Cells[4, i]));
       j := items1;
       For i := 1 to items2 do Begin
@@ -2469,6 +2479,17 @@ begin
   fechaLog.SetFocus;
 end;
 
+procedure TfmAuditoria.btnOrdenOnLineClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmBuscarOrdenesOnLine, fmBuscarOrdenesOnLine);
+  fmBuscarOrdenesOnLine.ShowModal;
+  if (length(trim(fmBuscarOrdenesOnLine.E.Cells[0, fmBuscarOrdenesOnLine.E.Row])) > 0) then begin
+     nroauditoria.Text := fmBuscarOrdenesOnLine.E.Cells[0, fmBuscarOrdenesOnLine.E.Row];
+     CargarDatos;
+  end;
+  fmBuscarOrdenesOnLine.Release; fmBuscarOrdenesOnLine := nil;
+end;
+
 procedure TfmAuditoria.InfDetAutorizadasKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
@@ -2863,6 +2884,7 @@ end;
 procedure TfmAuditoria.btnBuscarMedicoCabeceraClick(Sender: TObject);
 begin
   if (auditoriacb.Online <> 'S') then begin
+    medico.FiltrarActivos;
     Application.CreateForm(TfmBuscarMedicoCabecera, fmBuscarMedicoCabecera);
     fmBuscarMedicoCabecera.codos       := codos.Text;
     fmBuscarMedicoCabecera.buscar.Text := profcab.Text;

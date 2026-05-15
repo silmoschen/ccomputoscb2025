@@ -475,7 +475,7 @@ begin
   //r := facturacion.getListItemsFacturadosProfesional(periodo.Text, idos.Text, '211081');
   r.open; i := 1; total := 0;
 
-  //sepa := ';';
+  sepa := ';';
   sepa := '';
            
   while not r.eof do begin

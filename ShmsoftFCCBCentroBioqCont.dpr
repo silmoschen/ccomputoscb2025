@@ -160,7 +160,7 @@ uses
   DebitosCreditosEstadisticaIAPOS in 'DebitosCreditosEstadisticaIAPOS.pas' {fmAjustesDepositosRetiros},
   CUBReferentes in 'clases\CUBReferentes.pas',
   DetalleDeterminacionesOnLine in 'DetalleDeterminacionesOnLine.pas' {fmEdicionDeterminaciones},
-  CAuditoriaOnLine in '..\..\CLASES\CAuditoriaOnLine.pas',
+  CAuditoriaOnLine in 'clases\CAuditoriaOnLine.pas',
   AgregarQuitarDetOnLine in 'AgregarQuitarDetOnLine.pas' {fmDeterminacionOnLine},
   AgruparObrasSociales in 'AgruparObrasSociales.pas' {fmAgruparObrasSociales},
   CAgrupacionOSFact in 'clases\CAgrupacionOSFact.pas',

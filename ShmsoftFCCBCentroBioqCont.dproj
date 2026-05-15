@@ -47,7 +47,6 @@
     <DCCReference Include="..\..\CLASES\CActualizaciones.pas" />
     <DCCReference Include="..\..\CLASES\CActualizacionesCentroComputosCB.pas" />
     <DCCReference Include="..\..\CLASES\CAdmNumCompr.pas" />
-    <DCCReference Include="..\..\CLASES\CAuditoriaOnLine.pas" />
     <DCCReference Include="..\..\CLASES\CBackup.pas" />
     <DCCReference Include="..\..\clases\CBDT.pas" />
     <DCCReference Include="..\..\clases\CConfigImpresora.pas" />
@@ -266,6 +265,7 @@
       <Form>fmBuscarMedicoCabeceraOL</Form>
     </DCCReference>
     <DCCReference Include="clases\CAgrupacionOSFact.pas" />
+    <DCCReference Include="clases\CAuditoriaOnLine.pas" />
     <DCCReference Include="clases\CCoseguros.pas" />
     <DCCReference Include="clases\CDatosEmpresa.pas" />
     <DCCReference Include="clases\CDebitosCreditosIAPOS.pas" />

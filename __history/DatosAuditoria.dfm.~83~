@@ -1235,6 +1235,10 @@ object fmAuditoria: TfmAuditoria
       Caption = 'I&nformes'
       ImageIndex = 1
       OnShow = TabSheet2Show
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Panel15: TPanel
         Left = 0
         Top = 0
@@ -1633,6 +1637,10 @@ object fmAuditoria: TfmAuditoria
       ImageIndex = 4
       OnHide = TabSheet5Hide
       OnShow = TabSheet5Show
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Panel23: TPanel
         Left = 0
         Top = 0
@@ -1986,6 +1994,10 @@ object fmAuditoria: TfmAuditoria
       ImageIndex = 2
       OnHide = TabSheet3Hide
       OnShow = TabSheet3Show
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Panel14: TPanel
         Left = 0
         Top = 0
@@ -2430,7 +2442,7 @@ object fmAuditoria: TfmAuditoria
           Top = 300
           Width = 225
           Height = 21
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 9
           OnChange = faxChange
         end
@@ -2439,7 +2451,7 @@ object fmAuditoria: TfmAuditoria
           Top = 277
           Width = 225
           Height = 21
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 10
           OnChange = imprOrdenesChange
         end
@@ -2710,6 +2722,10 @@ object fmAuditoria: TfmAuditoria
     object TabSheet7: TTabSheet
       Caption = '&Ajustes y Controles'
       ImageIndex = 6
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Panel47: TPanel
         Left = 0
         Top = 0
@@ -2919,6 +2935,10 @@ object fmAuditoria: TfmAuditoria
       ImageIndex = 4
       OnHide = TabSheet4Hide
       OnShow = TabSheet4Show
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Panel35: TPanel
         Left = 0
         Top = 0
@@ -3249,6 +3269,18 @@ object fmAuditoria: TfmAuditoria
         Font.Style = []
         ParentFont = False
         Visible = False
+      end
+      object btnOrdenOnLine: TSpeedButton
+        Left = 12
+        Top = 0
+        Width = 103
+        Height = 23
+        Hint = 'Prorratear Orden On Line'
+        Caption = '&Ordenes On Line'
+        Flat = True
+        ParentShowHint = False
+        ShowHint = True
+        OnClick = btnOrdenOnLineClick
       end
     end
     object Panel19: TPanel

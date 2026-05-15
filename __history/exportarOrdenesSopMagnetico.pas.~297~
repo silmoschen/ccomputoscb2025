@@ -161,7 +161,8 @@ begin
     facturacion.setImporteAnalisis(idos.Text, r.FieldByName('codanalisis').AsString, r.FieldByName('ref1').AsString);
 
     exportObrasSociales.addItem(id + utiles.sLlenarIzquierda(inttostr(i), 5, '0'), 'DU', nroafiliado, '001',
-                                r.FieldByName('codanalisis').AsString, utiles.sFormatoFechaDDMMAAAA(r.FieldByName('fecha').AsString),
+                                r.FieldByName('codanalisis').AsString, r.FieldByName('items').AsString, r.FieldByName('orden').AsString,
+                                utiles.sFormatoFechaDDMMAAAA(r.FieldByName('fecha').AsString),
                                 copy(nbu.Descrip, 1, 30), profesional.nombre, '', '',
                                 auditoriacb.Iddiag, exportObrasSociales.Tipo, exportObrasSociales.Sucursal, exportObrasSociales.Numero,
                                 idos.Text, r.FieldByName('idprof').asstring,
@@ -207,7 +208,7 @@ begin
     write(arch, s.FieldByName('codrub').AsString + sepa);
     write(arch, utiles.sLlenarDerecha(s.FieldByName('codigo').AsString, 9, ' ') + sepa);
     write(arch, utiles.FechaCompleta(s.FieldByName('fecha').AsString) + sepa);
-    write(arch, utiles.sLlenarDerecha(copy(s.FieldByName('descrip').AsString, 1, 30), 10, '0') + sepa);
+    write(arch, utiles.sLlenarDerecha(s.FieldByName('descrip').AsString, 30, ' ') + sepa);
     write(arch, utiles.sLlenarDerecha(floattostr(facturacion.unidadNBUFinal), 3, ' ') + sepa);
     importe :=  utiles.FormatearNumero(FloatToStr(s.FieldByName('importe').AsFloat));
     write(arch, utiles.sLlenarDerecha(utiles.StringRemplazarCaracteres(importe, ',', '.'), 12, ' ') + sepa);
@@ -474,7 +475,7 @@ begin
   //r := facturacion.getListItemsFacturadosProfesional(periodo.Text, idos.Text, '211081');
   r.open; i := 1; total := 0;
 
-  //sepa := ';';
+  sepa := ';';
   sepa := '';
            
   while not r.eof do begin
@@ -937,6 +938,14 @@ begin
         StrToFloat(A.Cells[12,i]));
 
     A.Cells[13,i] := profesional.Retieneiva;
+
+    // Ajustamos si la Obra Social no retiene Iva - 22/04/2026
+    if (obsocial.Retieneiva = 'N') then begin
+       A.Cells[4, i] := utiles.FormatearNumero('0');
+       A.Cells[5, i] := utiles.FormatearNumero('0');
+       A.Cells[6, i] := A.Cells[3, i];
+    end;
+
 
     total := total + strtofloat( A.Cells[6, i] );
 

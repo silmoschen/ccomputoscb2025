@@ -15,7 +15,7 @@ type
 TTAuditoriaCCB = class
   Nroauditoria, Fecha, Codos, Idzona, Nrodoc, Idprof, Obsdiagnostico, Federivacion, Nroderivacion, Observacion, Entidad,
   IdFact, UltimaOrdenImpresa, Laboratorio, Codosfact, Fepedido, Profcab, Iddiag, Observacfinal, Periodo, Aplica, Codigo,
-  Estado, Nompac, Items, Online, Nroautorizacion, Transaccion: String;
+  Estado, Nompac, Items, Online, Nroautorizacion, Transaccion, Token, Numerodoc: String;
   ItemsPorDeterminacion, EtiquetasPorPagina, LineasSeparacionEtiquetas, LineasTxt, SeparacionPaginas: Integer;
   Tope, UB, UG, RIEUB, RIEUG, monto, monto_dif, monto_diferencial, Porcent, montoCoseguro, Nbudif: Real;
   cabauditoria, detauditoria, topes, totalOS, detrec, obsfinal, obsauditoria, porcentaje, montos_dif, apfijos, codigosrech: TTable;
@@ -26,7 +26,8 @@ TTAuditoriaCCB = class
   destructor  Destroy; override;
 
   function    Buscar(xnroauditoria: String): Boolean;
-  procedure   Registrar(xnroauditoria, xfecha, xcodos, xidzona, xnrodoc, xpaciente, xidprof, xdiagnostico, xfederivacion, xnroderivacion, xobservacion, xcodosfact, xfepedido, xprofcab, xiddiag, xobservacfinal: String; r_log: Boolean; xonline, xanulada, xnroautorizacion, xnrotransaccion: string);
+  procedure   Registrar(xnroauditoria, xfecha, xcodos, xidzona, xnrodoc, xpaciente, xidprof, xdiagnostico, xfederivacion, xnroderivacion, xobservacion, xcodosfact, xfepedido, xprofcab, xiddiag, xobservacfinal: String; r_log: Boolean;
+                        xonline, xanulada, xnroautorizacion, xnrotransaccion, xtoken, xnumerodoc: string);
   procedure   RegistrarItems(xnroauditoria, xitems, xcodigo, xdeterminacion, xestado: String; xmonto, xmontodif: Real; xCantidad: Integer; r_log: Boolean; xonline, xanulada: string; xmontoonline, xcoseguro: real);
   procedure   SincronizarItems(xnroauditoria, xitems, xcodigo, xdeterminacion, xestado: String; xmonto, xmontodif: Real; r_log: Boolean; xonline, xanulada: string; xmontoonline: real);
   procedure   getDatos(xnroauditoria: String);
@@ -129,7 +130,8 @@ TTAuditoriaCCB = class
 
   procedure   QuitarMarcaDePendiente;
   procedure   MarcarComoPendiente(xnroauditoria: string);
-  function    getListCoseguros(xperiodo: string; xcodos: string): TQuery;
+
+  function    getPaciente(xnroauditoria: string): string;
 
   //procedure   vaciarBuffer;
 
@@ -236,7 +238,8 @@ Begin
   Result := Existe;
 end;
 
-procedure TTAuditoriaCCB.Registrar(xnroauditoria, xfecha, xcodos, xidzona, xnrodoc, xpaciente, xidprof, xdiagnostico, xfederivacion, xnroderivacion, xobservacion, xcodosfact, xfepedido, xprofcab, xiddiag, xobservacfinal: String; r_log: Boolean; xonline, xanulada, xnroautorizacion, xnrotransaccion: string);
+procedure TTAuditoriaCCB.Registrar(xnroauditoria, xfecha, xcodos, xidzona, xnrodoc, xpaciente, xidprof, xdiagnostico, xfederivacion, xnroderivacion, xobservacion, xcodosfact, xfepedido, xprofcab, xiddiag, xobservacfinal: String; r_log: Boolean;
+                                   xonline, xanulada, xnroautorizacion, xnrotransaccion, xtoken, xnumerodoc: string);
 // Objetivo...: Registrar una Instancia
 var
  fd: string;
@@ -294,6 +297,8 @@ Begin
   cabauditoria.FieldByName('anulada').AsString       := xanulada;
   cabauditoria.FieldByName('nroautorizacion').AsString := xnroautorizacion;
   cabauditoria.FieldByName('transaccion').AsString     := xnrotransaccion;
+  if (xtoken <> '__nn') then cabauditoria.FieldByName('token').AsString := xtoken;
+  if (xnumerodoc <> '__nn') then cabauditoria.FieldByName('numerodoc').AsString := xnumerodoc;
   try
     cabauditoria.Post
    except
@@ -450,9 +455,11 @@ Begin
     Nompac         := cabauditoria.FieldByName('nombre').AsString;
     Online         := cabauditoria.FieldByName('online').AsString;
     Transaccion    := cabauditoria.FieldByName('transaccion').AsString;
+    Token          := cabauditoria.FieldByName('token').AsString;
+    Numerodoc      := cabauditoria.FieldByName('numerodoc').AsString;
   end else Begin
     Nroauditoria := ''; Fecha := ''; Codos := ''; Idzona := ''; Nrodoc := ''; Idprof := ''; obsdiagnostico := ''; Federivacion := ''; Nroderivacion := ''; Observacion := '';
-    IdFact := ''; Laboratorio := ''; Codosfact := ''; Fepedido := ''; Profcab := ''; Iddiag := ''; Nompac := ''; Online := ''; Transaccion := '';
+    IdFact := ''; Laboratorio := ''; Codosfact := ''; Fepedido := ''; Profcab := ''; Iddiag := ''; Nompac := ''; Online := ''; Transaccion := ''; Token := ''; Numerodoc := null;
   end;
 
   if BuscarObsFinal(xnroauditoria) then observacfinal := obsauditoria.FieldByName('observacion').AsString else observacfinal := '';
@@ -579,6 +586,7 @@ var
   objeto: TTAuditoriaCCB;
   det_hist: TTable;
   _nrodoc, _nroaut, _fecha: string;
+  rs: TQuery;
 Begin
   l := TObjectList.Create;
 
@@ -622,6 +630,7 @@ Begin
     _fecha := cabauditoria.FieldByName('fecha').AsString;
   end;
 
+  {
   if datosdb.Buscar(detauditoria, 'nroauditoria', 'items', xnroauditoria, '001') then Begin
     while not detauditoria.Eof do Begin
       if detauditoria.FieldByName('nroauditoria').AsString <> xnroauditoria then Break;
@@ -638,6 +647,24 @@ Begin
       detauditoria.Next;
     end;
   end;
+  }
+
+  rs := datosdb.tranSQL(detauditoria.DatabaseName, 'select codigo, estado, coseguro from det_auditoria where nroauditoria = ' + '''' + xnroauditoria + '''' + ' order by items');
+  rs.open; rs.first;
+  while not rs.Eof do Begin
+    objeto := TTAuditoriaCCB.Create;
+    objeto.Codigo := rs.FieldByName('codigo').AsString;
+    objeto.Estado := rs.FieldByName('estado').AsString;
+    objeto.montoCoseguro := rs.FieldByName('coseguro').AsFloat;
+    objeto.Nrodoc := _nrodoc;
+    objeto.Nroautorizacion := _nroaut;
+    objeto.Fecha := _fecha;
+    l.Add(objeto);
+    if aplica = 'S' then monto_diferencial := monto_diferencial + (rs.FieldByName('montodif').AsFloat - rs.FieldByName('monto').AsFloat);
+    rs.Next;
+  end;
+  rs.close; rs.free;
+
   Result := l;
 end;
 
@@ -2526,7 +2553,7 @@ var
     end;
 
     tc := 0;
-  end;          
+  end;
 
 begin
   if (salida <> 'R') then begin
@@ -3592,6 +3619,14 @@ begin
   datosdb.refrescar(cabauditoria);
 end;
 
+function  TTAuditoriaCCB.getPaciente(xnroauditoria: string): string;
+begin
+  rsql := datosdb.tranSQL(cabauditoria.DatabaseName, 'select bioqafil.nombre from cab_ref, bioqafil where cab_ref.codos = bioqafil.codos and cab_ref.nrodoc = bioqafil.nrodoc and cab_ref.nroauditoria = ' + '''' + xnroauditoria + '''');
+  rsql.open;
+  result := rsql.Fields[0].asstring;
+  rsql.Close; rsql.free;
+end;
+
 procedure TTAuditoriaCCB.conectar;
 // Objetivo...: cerrar tablas de persistencia
 begin
@@ -3623,12 +3658,6 @@ begin
   //firebird.getModulo('auditoria');
 
   //ffirebird.Conectar(firebird.Host + 'auditoria.gdb', firebird.Usuario, firebird.Password);
-end;
-
-function  TTAuditoriaCCB.getListCoseguros(xperiodo: string; xcodos: string): TQuery;
-begin
-  result := datosdb.tranSQL(cabauditoria.Database, 'select c.codos, sum(d.coseguro) from cab_auditoria c, det_auditoria d where  c.nroauditoria = d.nroauditoria and substring(c.fecha from 1 for 6) = ' +
-    '''' + copy(xperiodo, 4, 4) + copy(xperiodo, 1, 2) + '''' + ' and d.coseguro > 0 and codos in (' + '''' + xcodos + '''' + ') group by c.codos');
 end;
 
 procedure TTAuditoriaCCB.desconectar;

@@ -237,7 +237,7 @@ object fmAuditoriaOnLine: TfmAuditoriaOnLine
             BevelOuter = bvNone
             TabOrder = 2
             object btnDescargar: TButton
-              Left = 4
+              Left = 151
               Top = 2
               Width = 145
               Height = 25
@@ -247,13 +247,13 @@ object fmAuditoriaOnLine: TfmAuditoriaOnLine
               OnClick = btnDescargarClick
             end
             object btnSubir: TButton
-              Left = 153
-              Top = 2
-              Width = 145
+              Left = 135
+              Top = 3
+              Width = 11
               Height = 25
               Caption = '&Transferir Datos al Servidor'
-              Enabled = False
               TabOrder = 1
+              Visible = False
               OnClick = btnSubirClick
             end
           end
@@ -335,10 +335,6 @@ object fmAuditoriaOnLine: TfmAuditoriaOnLine
     object TabSheet3: TTabSheet
       Caption = '&Informes de Control'
       ImageIndex = 2
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Panel8: TPanel
         Left = 0
         Top = 0
@@ -462,10 +458,6 @@ object fmAuditoriaOnLine: TfmAuditoriaOnLine
     object TabSheet2: TTabSheet
       Caption = '&Par'#225'metros Generales'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Panel2: TPanel
         Left = 0
         Top = 0

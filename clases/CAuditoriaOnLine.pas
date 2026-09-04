@@ -211,7 +211,8 @@ begin
         iidzona      := copy(linea1, 55, 2);
         inrodoc      := UpperCase(trim(copy(linea1, 59, 15)));
 
-        iidprof      := copy(linea1, 76, 5);
+        //iidprof      := copy(linea1, 76, 5);
+        iidprof      := copy(linea1, 76, 15);
         ifepedido    := ifecha; // copy(linea1, 102, 8);
         iiddiag      := copy(linea1, 120, 7);
         idiferida    := copy(linea1, 130, 1);

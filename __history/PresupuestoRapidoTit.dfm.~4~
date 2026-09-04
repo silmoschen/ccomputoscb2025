@@ -1,0 +1,676 @@
+object fmPresupuestoRapidoTit: TfmPresupuestoRapidoTit
+  Left = 181
+  Top = 150
+  BorderIcons = [biSystemMenu, biMinimize]
+  Caption = 'Presupuesto R'#225'pido'
+  ClientHeight = 464
+  ClientWidth = 487
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  KeyPreview = True
+  OldCreateOrder = False
+  OnClose = FormClose
+  OnKeyDown = FormKeyDown
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel2: TPanel
+    Left = 0
+    Top = 0
+    Width = 487
+    Height = 464
+    Align = alClient
+    BevelInner = bvLowered
+    BorderWidth = 4
+    Caption = 'Panel2'
+    TabOrder = 0
+    ExplicitHeight = 440
+    object ScrollBox: TScrollBox
+      Left = 6
+      Top = 6
+      Width = 475
+      Height = 452
+      HorzScrollBar.Margin = 6
+      HorzScrollBar.Range = 300
+      VertScrollBar.Margin = 6
+      VertScrollBar.Range = 163
+      VertScrollBar.Visible = False
+      Align = alClient
+      AutoScroll = False
+      BorderStyle = bsNone
+      TabOrder = 0
+      ExplicitHeight = 428
+      object Panel9: TPanel
+        Left = 0
+        Top = 36
+        Width = 475
+        Height = 77
+        Align = alTop
+        BevelOuter = bvNone
+        BorderWidth = 2
+        TabOrder = 1
+        object GroupBox3: TGroupBox
+          Left = 2
+          Top = 2
+          Width = 471
+          Height = 73
+          Align = alClient
+          Caption = ' Determinaciones '
+          Enabled = False
+          TabOrder = 0
+          object Label10: TLabel
+            Left = 4
+            Top = 16
+            Width = 38
+            Height = 13
+            Alignment = taRightJustify
+            AutoSize = False
+            Caption = 'C'#243'd.'
+          end
+          object Label39: TLabel
+            Left = 4
+            Top = 27
+            Width = 38
+            Height = 13
+            Alignment = taRightJustify
+            AutoSize = False
+            Caption = 'An'#225'lisis:'
+          end
+          object des: TLabel
+            Left = 117
+            Top = 22
+            Width = 78
+            Height = 13
+            Caption = '                          '
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clNavy
+            Font.Height = -11
+            Font.Name = 'MS Sans Serif'
+            Font.Style = []
+            ParentFont = False
+          end
+          object Label11: TLabel
+            Left = 8
+            Top = 49
+            Width = 33
+            Height = 13
+            Caption = 'Precio:'
+          end
+          object Label9: TLabel
+            Left = 153
+            Top = 49
+            Width = 48
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Unidades:'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -11
+            Font.Name = 'MS Sans Serif'
+            Font.Style = []
+            ParentFont = False
+          end
+          object Unnbu: TLabel
+            Left = 207
+            Top = 49
+            Width = 15
+            Height = 13
+            Caption = '     '
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clNavy
+            Font.Height = -11
+            Font.Name = 'MS Sans Serif'
+            Font.Style = []
+            ParentFont = False
+          end
+          object codanalisis: TMaskEdit
+            Left = 44
+            Top = 18
+            Width = 47
+            Height = 21
+            TabOrder = 0
+            OnKeyDown = codanalisisKeyDown
+          end
+          object buscarAnalisis: TBitBtn
+            Left = 94
+            Top = 18
+            Width = 20
+            Height = 22
+            Hint = 'Buscar C'#243'd. de An'#225'lisis'
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 1
+            OnClick = buscarAnalisisClick
+            Glyph.Data = {
+              F6000000424DF600000000000000760000002800000010000000100000000100
+              0400000000008000000000000000000000001000000010000000000000000000
+              8000008000000080800080000000800080008080000080808000C0C0C0000000
+              FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+              FFFFFFFFFFF000FFFFFFFFFFFF0BB00FFFFFFFFFFF0BB00FFFFFFFFFFFF00FFF
+              FFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0BB00F
+              FFFFFFFF00F0BB00FFFFFFF0B00F0BB00FFFFFF0B00FF0B00FFFFFF0BB000BB0
+              0FFFFFFF0BBBBB00FFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFF}
+          end
+          object precio: TEditValid
+            Left = 44
+            Top = 46
+            Width = 58
+            Height = 21
+            TabOrder = 2
+            OnKeyDown = precioKeyDown
+            Valid = tvDecimal
+          end
+        end
+      end
+      object Panel6: TPanel
+        Left = 0
+        Top = 0
+        Width = 475
+        Height = 36
+        Align = alTop
+        BevelOuter = bvNone
+        BorderWidth = 2
+        TabOrder = 0
+        object Label2: TLabel
+          Left = 4
+          Top = 4
+          Width = 46
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'Arancel'
+        end
+        object Label3: TLabel
+          Left = 4
+          Top = 15
+          Width = 46
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = 'a Aplicar:'
+        end
+        object nos: TLabel
+          Left = 125
+          Top = 5
+          Width = 78
+          Height = 13
+          Caption = '                          '
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clNavy
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+        end
+        object Label67: TLabel
+          Left = 123
+          Top = 21
+          Width = 24
+          Height = 13
+          Caption = 'U.B.:'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+          Visible = False
+        end
+        object UB: TLabel
+          Left = 167
+          Top = 21
+          Width = 18
+          Height = 13
+          Alignment = taRightJustify
+          Caption = '      '
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clNavy
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+          Visible = False
+        end
+        object Label68: TLabel
+          Left = 175
+          Top = 21
+          Width = 25
+          Height = 13
+          Caption = 'U.G.:'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+          Visible = False
+        end
+        object UG: TLabel
+          Left = 211
+          Top = 21
+          Width = 12
+          Height = 13
+          Alignment = taRightJustify
+          Caption = '    '
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clNavy
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+          Visible = False
+        end
+        object RIEUG: TLabel
+          Left = 340
+          Top = 21
+          Width = 15
+          Height = 13
+          Alignment = taRightJustify
+          Caption = '     '
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clNavy
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+          Visible = False
+        end
+        object Label70: TLabel
+          Left = 292
+          Top = 21
+          Width = 39
+          Height = 13
+          Alignment = taRightJustify
+          Caption = ' R.U.G.:'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+          Visible = False
+        end
+        object Label71: TLabel
+          Left = 232
+          Top = 21
+          Width = 35
+          Height = 13
+          Alignment = taRightJustify
+          Caption = 'R.U.B.:'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+          Visible = False
+        end
+        object RIEUB: TLabel
+          Left = 275
+          Top = 21
+          Width = 15
+          Height = 13
+          Alignment = taRightJustify
+          Caption = '     '
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clNavy
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+          Visible = False
+        end
+        object Label7: TLabel
+          Left = 380
+          Top = 21
+          Width = 35
+          Height = 13
+          Alignment = taRightJustify
+          Caption = 'N.B.U.:'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+          Visible = False
+        end
+        object NNBU: TLabel
+          Left = 418
+          Top = 21
+          Width = 15
+          Height = 13
+          Caption = '     '
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clNavy
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+        end
+        object codos: TMaskEdit
+          Left = 55
+          Top = 6
+          Width = 44
+          Height = 21
+          EditMask = '######;1; '
+          MaxLength = 6
+          TabOrder = 0
+          Text = '      '
+          OnKeyDown = codosKeyDown
+        end
+        object BuscarOS: TBitBtn
+          Left = 101
+          Top = 6
+          Width = 20
+          Height = 22
+          Hint = 'Buscar Paciente'
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 1
+          OnClick = BuscarOSClick
+          Glyph.Data = {
+            F6000000424DF600000000000000760000002800000010000000100000000100
+            0400000000008000000000000000000000001000000010000000000000000000
+            8000008000000080800080000000800080008080000080808000C0C0C0000000
+            FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+            FFFFFFFFFFF000FFFFFFFFFFFF0BB00FFFFFFFFFFF0BB00FFFFFFFFFFFF00FFF
+            FFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0BB00F
+            FFFFFFFF00F0BB00FFFFFFF0B00F0BB00FFFFFF0B00FF0B00FFFFFF0BB000BB0
+            0FFFFFFF0BBBBB00FFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFF}
+        end
+      end
+      object Panel3: TPanel
+        Left = 0
+        Top = 113
+        Width = 475
+        Height = 215
+        Align = alClient
+        BevelOuter = bvNone
+        TabOrder = 2
+        ExplicitHeight = 191
+        object Panel10: TPanel
+          Left = 0
+          Top = 0
+          Width = 475
+          Height = 215
+          Align = alClient
+          BevelInner = bvLowered
+          BevelOuter = bvSpace
+          TabOrder = 0
+          OnResize = Panel10Resize
+          ExplicitHeight = 191
+          object F: TStringGrid
+            Left = 2
+            Top = 2
+            Width = 471
+            Height = 211
+            Align = alClient
+            BorderStyle = bsNone
+            ColCount = 8
+            DefaultRowHeight = 15
+            FixedCols = 0
+            RowCount = 500
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -11
+            Font.Name = 'MS Sans Serif'
+            Font.Style = []
+            Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowSelect]
+            ParentFont = False
+            PopupMenu = PopupMenu
+            TabOrder = 0
+            OnDblClick = FDblClick
+            OnKeyDown = FKeyDown
+            ExplicitHeight = 187
+            ColWidths = (
+              18
+              35
+              209
+              65
+              62
+              64
+              64
+              64)
+          end
+        end
+      end
+      object Panel1: TPanel
+        Left = 0
+        Top = 328
+        Width = 475
+        Height = 124
+        Align = alBottom
+        BevelOuter = bvNone
+        TabOrder = 3
+        ExplicitTop = 304
+        object Label15: TLabel
+          Left = 23
+          Top = 2
+          Width = 50
+          Height = 13
+          Alignment = taRightJustify
+          Caption = 'Total Det.:'
+        end
+        object total: TLabel
+          Left = 75
+          Top = 2
+          Width = 80
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = '   '
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clNavy
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+        end
+        object Label1: TLabel
+          Left = 3
+          Top = 17
+          Width = 70
+          Height = 13
+          Alignment = taRightJustify
+          Caption = 'CF Rec./toma:'
+        end
+        object tot9984: TLabel
+          Left = 75
+          Top = 17
+          Width = 80
+          Height = 13
+          Alignment = taRightJustify
+          AutoSize = False
+          Caption = '   '
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clNavy
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+        end
+        object Panel4: TPanel
+          Left = 173
+          Top = 0
+          Width = 302
+          Height = 51
+          Align = alRight
+          BevelOuter = bvNone
+          TabOrder = 0
+          object Label4: TLabel
+            Left = 1
+            Top = 2
+            Width = 58
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Precio Final:'
+          end
+          object preciofinal: TLabel
+            Left = 63
+            Top = 2
+            Width = 106
+            Height = 13
+            Alignment = taRightJustify
+            AutoSize = False
+            Caption = '   '
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clNavy
+            Font.Height = -11
+            Font.Name = 'MS Sans Serif'
+            Font.Style = []
+            ParentFont = False
+          end
+          object Label5: TLabel
+            Left = 7
+            Top = 18
+            Width = 52
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Ret. I.V.A.:'
+          end
+          object retiva: TLabel
+            Left = 63
+            Top = 18
+            Width = 106
+            Height = 13
+            Alignment = taRightJustify
+            AutoSize = False
+            Caption = '   '
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clNavy
+            Font.Height = -11
+            Font.Name = 'MS Sans Serif'
+            Font.Style = []
+            ParentFont = False
+          end
+          object Label6: TLabel
+            Left = 5
+            Top = 33
+            Width = 54
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Total Fact.:'
+          end
+          object totalf: TLabel
+            Left = 63
+            Top = 33
+            Width = 106
+            Height = 13
+            Alignment = taRightJustify
+            AutoSize = False
+            Caption = '   '
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clNavy
+            Font.Height = -11
+            Font.Name = 'MS Sans Serif'
+            Font.Style = [fsBold]
+            ParentFont = False
+          end
+        end
+        object Panel7: TPanel
+          Left = 0
+          Top = 51
+          Width = 475
+          Height = 73
+          Align = alBottom
+          BevelOuter = bvNone
+          TabOrder = 1
+          object Label8: TLabel
+            Left = 4
+            Top = 6
+            Width = 40
+            Height = 13
+            Caption = 'T'#237'tulo 1:'
+          end
+          object Label12: TLabel
+            Left = 3
+            Top = 28
+            Width = 40
+            Height = 13
+            Caption = 'T'#237'tulo 2:'
+          end
+          object Label13: TLabel
+            Left = 3
+            Top = 49
+            Width = 40
+            Height = 13
+            Caption = 'T'#237'tulo 3:'
+          end
+          object t1: TEdit
+            Left = 47
+            Top = 1
+            Width = 350
+            Height = 21
+            TabOrder = 0
+          end
+          object t2: TEdit
+            Left = 47
+            Top = 24
+            Width = 350
+            Height = 21
+            TabOrder = 1
+          end
+          object t3: TEdit
+            Left = 46
+            Top = 47
+            Width = 350
+            Height = 21
+            TabOrder = 2
+          end
+          object Panel8: TPanel
+            Left = 403
+            Top = 0
+            Width = 72
+            Height = 73
+            Align = alRight
+            BevelOuter = bvNone
+            TabOrder = 3
+            ExplicitHeight = 77
+            object btnCerrar: TButton
+              Left = 4
+              Top = 35
+              Width = 64
+              Height = 23
+              Caption = '&Cerrar'
+              TabOrder = 0
+              OnClick = btnCerrarClick
+            end
+            object btnImprimir: TButton
+              Left = 4
+              Top = 2
+              Width = 63
+              Height = 23
+              Caption = '&Imprimir'
+              TabOrder = 1
+              OnClick = btnImprimirClick
+            end
+          end
+        end
+      end
+    end
+  end
+  object PopupMenu: TPopupMenu
+    Left = 312
+    Top = 288
+    object InsertarItems1: TMenuItem
+      Caption = 'Insertar Items'
+      OnClick = InsertarItems1Click
+    end
+    object ModificarItems1: TMenuItem
+      Caption = 'Modificar Items'
+      OnClick = FDblClick
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object BorrarItems1: TMenuItem
+      Caption = 'Borrar Items'
+      OnClick = BorrarItems1Click
+    end
+  end
+end

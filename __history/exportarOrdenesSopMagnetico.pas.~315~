@@ -1,0 +1,1424 @@
+unit exportarOrdenesSopMagnetico;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ComCtrls, ExtCtrls, CFacturacionCCB, CProfesionalCCB, CObrasSocialesCCB,
+  StdCtrls, Mask, DBTables, CUtiles, Grids, CConfigForms, CUtilidadesStringgrid,
+  CUtilidadesArchivos, CBDT, IBQuery, CNbu, CAuditoriaCCB, CDiagnosticosCCBOMS,
+  CMedicosCCBOS, CExportObrasSociales, CDatosEmpresa, CIDBFM, CMedicosCCB;
+
+type
+  TfmExportarOrdenesSoporteMagnetico = class(TForm)
+    StatusBar1: TStatusBar;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
+    Panel1: TPanel;
+    Label1: TLabel;
+    listaOS: TComboBox;
+    idos: TComboBox;
+    Panel2: TPanel;
+    btnMontos: TButton;
+    periodo: TMaskEdit;
+    Label28: TLabel;
+    Panel3: TPanel;
+    Panel5: TPanel;
+    Panel6: TPanel;
+    A: TStringGrid;
+    Label2: TLabel;
+    Label3: TLabel;
+    sucursal: TMaskEdit;
+    numero: TMaskEdit;
+    Panel7: TPanel;
+    btnEnviar: TButton;
+    idregla: TComboBox;
+    tipo: TMaskEdit;
+    Label4: TLabel;
+    fecha: TMaskEdit;
+    Label5: TLabel;
+    totalfact: TLabel;
+    Label6: TLabel;
+    Label7: TLabel;
+    listProfesionales: TComboBox;
+    listprof: TComboBox;
+    btnAll: TButton;
+    reglasExport: TComboBox;
+    reglaNumero: TComboBox;
+    Panel4: TPanel;
+    btnProcesarExportacion: TButton;
+    btnMostrarDatos: TButton;
+    btnGenerarArch: TButton;
+    Label8: TLabel;
+    montoexport: TLabel;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormResize(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+    procedure listaOSChange(Sender: TObject);
+    procedure periodoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure btnEnviarClick(Sender: TObject);
+    procedure ADblClick(Sender: TObject);
+    procedure sucursalKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure numeroKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure btnRegistrarKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure tipoKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure fechaKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure btnAllClick(Sender: TObject);
+    procedure btnMontosClick(Sender: TObject);
+    procedure listProfesionalesChange(Sender: TObject);
+    procedure reglasExportChange(Sender: TObject);
+    procedure btnProcesarExportacionClick(Sender: TObject);
+    procedure btnGenerarArchClick(Sender: TObject);
+    procedure btnMostrarDatosClick(Sender: TObject);
+  private
+    { Private declarations }
+    const
+      ComprobanteR1: array[1..10] of string = ('FACA', 'FACB', 'FACC', 'FACM', 'NCA', 'NCB', 'NCC', 'RECC', 'RECB', 'LIQ');
+      ConceptosPieR1: array[1..8] of string = ('GRAV105', 'GRAV21', 'EXENTO', 'MONOT', 'PERCIB', 'PERCIV', 'IVA105', 'IVA21');
+      ProfesionalR1: array[1..1] of string = ('02');
+      HonorariosR1: array[1..8] of string = ('0', '1', '2', '3', '4', '5', '6', '7');
+      GastosR1: array[1..2] of string = ('0', '1');
+      ProvinciasR1: array[1..1] of string = ('S');
+
+    var
+    redim, retiva, recalcular: boolean;
+
+    procedure cargarObrasSociales;
+    procedure generarArchivoR1;
+    procedure generarArchivoR2;
+    procedure generarArchivoR3;
+    procedure generarArchivoR6;
+    procedure generarArchivoR10;
+    procedure generarArchivoR13;
+    procedure generarArchivoR1v2;
+
+  public
+    { Public declarations }
+    tot_asociacion: boolean;
+  end;
+
+var
+  fmExportarOrdenesSoporteMagnetico: TfmExportarOrdenesSoporteMagnetico;
+
+implementation
+
+uses detalleFacturado;
+
+{$R *.dfm}
+
+//==============================================================================
+// JERARQUICO V2
+
+procedure TfmExportarOrdenesSoporteMagnetico.generarArchivoR1v2;
+var
+  importe, archivo, nroafiliado, convenio, tipo, sucursal, numero: string;
+  arch: TextFile;
+  i, j: integer;
+  monto1, monto2: double;
+  r: TIBQuery;
+begin
+  if not (DirectoryExists(dbs.DirSistema + '\work\exportsopmag')) then utilesarchivos.CrearDirectorio(dbs.DirSistema + '\work\exportsopmag');
+  archivo := dbs.DirSistema + '\work\exportsopmag\' + idos.Text + '_' + utiles.StringRemplazarCaracteres(periodo.Text, '/', '_') + '_v2' + '.txt';
+  AssignFile(arch, archivo);
+  rewrite(arch);
+
+  obsocial.getRegla(idos.Text);
+  convenio := obsocial.Convenio;
+
+  obsocial.SincronizarPosicionFiscal(idos.Text, periodo.Text);
+
+  r := facturacion.getListItemsFacturados(periodo.Text, idos.Text);
+  r.open; i := 1; monto1 := 0; monto2 := 0;
+  while not r.eof do begin
+
+    nbu.getDatos(r.FieldByName('codanalisis').asString);
+    profesional.getDatos(r.FieldByName('idprof').asString);
+    auditoriacb.getDatos(r.FieldByName('nroauditoria').AsString);
+    medicoos.getDatos(auditoriacb.Codos,  auditoriacb.Idprof);
+
+    // Agregamos el comprobante
+    j := 0;
+    for j := 1 to A.RowCount do begin
+      if (length(trim(A.Cells[0, j])) = 0) then break;
+      if (A.Cells[1, j] = r.FieldByName('idprof').asString) then begin
+        tipo :=  A.Cells[8, j];
+        sucursal := A.Cells[9, j];
+        numero := A.Cells[10,j];
+        break;
+      end;
+    end;
+
+    write(arch, utiles.sLlenarIzquierda(convenio, 10, '0'));   // 1
+    write(arch, tipo);
+    write(arch, sucursal);
+    write(arch, numero);
+    write(arch, utiles.sLlenarIzquierda('', 10, ' '));              // 4
+    write(arch, utiles.sLlenarIzquierda('', 10, ' '));              // 5
+    write(arch, utiles.sLlenarIzquierda('', 3, ' '));               // 6
+    write(arch, utiles.sLlenarDerecha(copy(medicoos.Nombre, 1, 40), 40, ' ')); // 7
+    write(arch, utiles.sLlenarIzquierda(copy(medicoos.Nombre, 1, 40), 50, ' '));               // 8
+    write(arch, '             ');              // 9
+    write(arch, utiles.sLlenarIzquierda('', 2, '0'));               // 10
+    write(arch, utiles.sLlenarIzquierda('', 2, '0'));                   // 11
+    write(arch, utiles.sLlenarIzquierda('', 10, ' '));  // 12 consultar
+    write(arch, utiles.sLlenarIzquierda('', 10, ' '));  // 13 consultar
+    write(arch, '044');  // 14
+    write(arch, utiles.sLlenarDerecha(copy(profesional.nombre, 1, 40), 40, ' '));  // 15
+    write(arch, utiles.sLlenarDerecha('', 50, ' '));  // 16
+    write(arch, utiles.sLlenarIzquierda(profesional.Nrocuit, 13, '0'));  // 17
+    write(arch, utiles.sLlenarDerecha('', 2, '0'));  // 18
+    write(arch, utiles.sLlenarDerecha('', 2, '0'));  // 19
+    write(arch, '01');  // 20
+    write(arch, utiles.sLlenarIzquierda('', 10, '0'));  // 21
+    write(arch, utiles.sLlenarIzquierda(r.FieldByName('nroautorizacion').asString, 10, '0'));  // 22
+    //write(arch, utiles.sLlenarDerecha('', 8, '0'));  // 23
+    write(arch, '        ');  // 23
+    write(arch, r.FieldByName('fecha').asString);  // 24
+    nroafiliado := trim(r.FieldByName('nroafiliado').asString);
+    nroafiliado := utiles.StringRemplazarCaracteres(nroafiliado, '.', '');
+    nroafiliado := utiles.sLlenarIzquierda(nroafiliado, 12, '0');
+    nroafiliado := utiles.StringRemplazarCaracteres(nroafiliado, ' ', '0');
+    nroafiliado := utiles.StringRemplazarCaracteres(nroafiliado, 'O', '0');
+    write(arch, copy(nroafiliado, 1, 10));  // 25
+    write(arch, copy(nroafiliado, 11, 2));  // 26        ??
+    //utiles.msgError(copy(nroafiliado, 1, 10) + '-' + copy(nroafiliado, 11, 2));
+    write(arch, '01');  // 27        ??
+    write(arch, utiles.sLlenarIzquierda(r.FieldByName('codanalisis').asString, 10, '0'));  // 28
+    write(arch, utiles.sLlenarDerecha(copy(nbu.Descrip,1, 100), 100, ' '));  // 29
+    write(arch, '001');  // 30
+    write(arch, utiles.sLlenarIzquierda('', 10, '0'));   // 31
+    write(arch, utiles.sLlenarIzquierda('', 10, '0'));   // 32
+    write(arch, utiles.sLlenarIzquierda('', 10, '0'));   // 33
+    importe := utiles.FormatearNumero(FloatToStr( utiles.setNro2Dec( r.FieldByName('iva').AsFloat * (obsocial.retencioniva * 0.01) ) ));
+    monto2 := monto2 + strtofloat(importe);
+    write(arch, utiles.sLlenarIzquierda(utiles.StringRemplazarCaracteres(importe, ',', ''), 10, '0'));   // 34
+    importe := utiles.FormatearNumero(FloatToStr (utiles.setNro2Dec( r.FieldByName('monto').asfloat )));
+    monto1 := monto1 + r.FieldByName('monto').asFloat;
+    write(arch, utiles.sLlenarIzquierda(utiles.StringRemplazarCaracteres(importe, ',', ''), 10, '0'));   // 35
+    write(arch, utiles.sLlenarDerecha('', 10, ' '));  // 36
+    write(arch, utiles.sLlenarDerecha('', 10, '0'));  // 37
+    write(arch, utiles.sLlenarDerecha('', 3, '0'));  // 38
+    write(arch, utiles.sLlenarDerecha('', 50, ' '));  // 39
+    write(arch, utiles.sLlenarDerecha('', 10, '0'));  // 40
+    //writeLn(arch, utiles.sLlenarDerecha('', 100, '0'));  // 41
+    write(arch, '1');  // 41 DU
+    write(arch, utiles.sLlenarIzquierda(auditoriacb.Numerodoc, 9, ' '));  // 42
+    write(arch, utiles.sLlenarDerecha('', 150, ' '));  // 43
+    writeLn(arch, utiles.sLlenarIzquierda(auditoriacb.Token, 10, '0'));  // 44
+
+    r.next;
+  end;
+
+  closeFile(arch);
+
+  montoexport.Caption := utiles.FormatearNumero(FloatToStr(monto1 + monto2));
+end;
+
+
+
+//==============================================================================
+// DASUTEN
+
+procedure TfmExportarOrdenesSoporteMagnetico.generarArchivoR13;
+var
+  importe, archivo, nroafiliado, convenio, sepa, id, tt, ss, nn: string;
+  arch: TextFile;
+  i: integer;
+  total, monto1, total2: real;
+  r: TIBQuery;
+  s: TQuery;
+begin
+
+  StatusBar1.Panels[0].Text := 'Procesando ...!'; StatusBar1.Refresh;
+
+  obsocial.getRegla(idos.Text);
+  convenio := obsocial.Convenio;
+
+  obsocial.SincronizarPosicionFiscal(idos.Text, periodo.Text);
+
+  id := utiles.StringRemplazarCaracteres(periodo.Text, '/', '');;
+
+  r := facturacion.getListItemsFacturados(periodo.Text, idos.Text);
+  r.open; i := 0; total := 0;
+
+  sepa := '';
+
+  exportObrasSociales.iniciarItems;
+
+  while not r.eof do begin
+
+    auditoriacb.getDatos(r.FieldByName('nroauditoria').AsString);
+
+    nbu.getDatos(r.FieldByName('codanalisis').asString);
+    profesional.getDatos(r.FieldByName('idprof').asString);
+
+    // Prorrateamos comprobante
+    exportObrasSociales.getDatos(periodo.Text, r.FieldByName('idprof').asstring, idos.Text);
+
+    monto1 := r.FieldByName('iva').AsFloat * (obsocial.retencioniva * 0.01);
+    total  := total + (r.FieldByName('monto').asfloat + monto1);
+    total2 := r.FieldByName('monto').asfloat + monto1;
+
+    nroafiliado := r.FieldByName('nroafiliado').AsString;
+
+    inc(i);
+
+    facturacion.setImporteAnalisis(idos.Text, r.FieldByName('codanalisis').AsString, r.FieldByName('ref1').AsString);
+
+    exportObrasSociales.addItem(id + utiles.sLlenarIzquierda(inttostr(i), 5, '0'), 'DU', nroafiliado, '001',
+                                r.FieldByName('codanalisis').AsString, r.FieldByName('items').AsString, r.FieldByName('orden').AsString,
+                                utiles.sFormatoFechaDDMMAAAA(r.FieldByName('fecha').AsString),
+                                copy(nbu.Descrip, 1, 30), profesional.nombre, '', '',
+                                auditoriacb.Iddiag, exportObrasSociales.Tipo, exportObrasSociales.Sucursal, exportObrasSociales.Numero,
+                                idos.Text, r.FieldByName('idprof').asstring,
+                                strtofloat('1'), r.FieldByName('monto').asfloat, facturacion.unidadNBUFinal);
+    r.next;
+  end;
+
+  exportObrasSociales.finalizarItems;
+
+  montoexport.Caption := utiles.FormatearNumero(FloatToStr(total));
+
+  StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+
+  r.Close; r.Free;
+
+  if not (DirectoryExists(dbs.DirSistema + '\work\exportsopmag')) then utilesarchivos.CrearDirectorio(dbs.DirSistema + '\work\exportsopmag');
+
+  s := exportObrasSociales.getItems;
+  s.Open; i := 0; tt := ''; ss := ''; nn := ''; total := 0;
+
+  while not s.eof do begin
+
+    if ((tt <> s.FieldByName('tipo').AsString) or (ss <> s.FieldByName('sucursal').AsString) or (nn <> s.FieldByName('numero').AsString) ) then begin
+
+      if (i > 0) then closeFile(arch);
+
+      tt := s.FieldByName('tipo').AsString;
+      ss := s.FieldByName('sucursal').AsString;
+      nn := s.FieldByName('numero').AsString;
+
+      StatusBar1.Panels[0].Text := 'Generando Archivo ' + tt + ' ' + ss + ' ' + nn + ' ...' ; StatusBar1.Refresh;
+
+      archivo := dbs.DirSistema + '\work\exportsopmag\' + s.fieldbyname('idprof').AsString + '_' + tt + '_' + ss + '_' + nn + '.txt';
+      AssignFile(arch, archivo);
+      rewrite(arch);
+
+    end;
+
+    total  := total + (s.FieldByName('importe').asfloat);
+
+    write(arch, s.FieldByName('tipodoc').AsString + sepa);
+    write(arch, utiles.sLlenarDerecha(s.FieldByName('nrodoc').AsString, 10, ' ') + sepa);
+    write(arch, s.FieldByName('codrub').AsString + sepa);
+    write(arch, utiles.sLlenarDerecha(s.FieldByName('codigo').AsString, 9, ' ') + sepa);
+    write(arch, utiles.FechaCompleta(s.FieldByName('fecha').AsString) + sepa);
+    write(arch, utiles.sLlenarDerecha(s.FieldByName('descrip').AsString, 30, ' ') + sepa);
+    write(arch, utiles.sLlenarDerecha(floattostr(facturacion.unidadNBUFinal), 3, ' ') + sepa);
+    importe :=  utiles.FormatearNumero(FloatToStr(s.FieldByName('importe').AsFloat));
+    write(arch, utiles.sLlenarDerecha(utiles.StringRemplazarCaracteres(importe, ',', '.'), 12, ' ') + sepa);
+    write(arch, utiles.sLlenarDerecha(s.FieldByName('profesional').AsString, 30, ' ') + sepa);
+    write(arch, '  ');
+    write(arch, '     ');
+    write(arch, '1  ');  // 1. Plan General
+    importe :=  utiles.FormatearNumero(FloatToStr(0)); // coseguro
+    write(arch, utiles.sLlenarDerecha(utiles.StringRemplazarCaracteres('0', ',', '.'), 12, ' ') + sepa);
+    write(arch, 'A');  // 1. Ambulatorio
+    write(arch, '          ');
+    writeLn(arch, s.FieldByName('iddiag').AsString);
+
+    inc (i);
+
+   r.next;
+  end;
+
+
+  if (i > 0) then closeFile(arch);
+
+  //montoexport.Caption := utiles.FormatearNumero(FloatToStr(total));
+
+  StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+
+
+  {if not (DirectoryExists(dbs.DirSistema + '\work\exportsopmag')) then utilesarchivos.CrearDirectorio(dbs.DirSistema + '\work\exportsopmag');
+  archivo := dbs.DirSistema + '\work\exportsopmag\' + idos.Text + '_' + utiles.StringRemplazarCaracteres(periodo.Text, '/', '_') + '.txt';
+  AssignFile(arch, archivo);
+  rewrite(arch);
+
+  obsocial.getRegla(idos.Text);
+  convenio := obsocial.Convenio;
+
+  obsocial.SincronizarPosicionFiscal(idos.Text, periodo.Text);
+
+  r := facturacion.getListItemsFacturados(periodo.Text, idos.Text);
+  r.open; i := 1; total := 0;
+
+  sepa := '';
+
+  while not r.eof do begin
+
+    auditoriacb.getDatos(r.FieldByName('nroauditoria').AsString);
+
+    nbu.getDatos(r.FieldByName('codanalisis').asString);
+    profesional.getDatos(r.FieldByName('idprof').asString);
+
+    // Prorrateamos comprobante
+    exportObrasSociales.getDatos(periodo.Text, r.FieldByName('idprof').asstring, idos.Text);
+
+    monto1 := r.FieldByName('iva').AsFloat * (obsocial.retencioniva * 0.01);
+    total  := total + (r.FieldByName('monto').asfloat + monto1);
+    total2 := r.FieldByName('monto').asfloat + monto1;
+
+    nroafiliado := r.FieldByName('nroafiliado').AsString;
+
+    write(arch, 'DU' + sepa);
+    write(arch, utiles.sLlenarDerecha(nroafiliado, 10, ' ') + sepa);
+    write(arch, '001' + sepa);
+    write(arch, utiles.sLlenarDerecha(r.FieldByName('codanalisis').AsString, 9, ' ') + sepa);
+    write(arch, utiles.FechaCompleta(r.FieldByName('fecha').AsString) + sepa);
+    write(arch, utiles.sLlenarDerecha(copy(nbu.Descrip, 1, 30), 10, '0') + sepa);
+    write(arch, utiles.sLlenarDerecha(floattostr(facturacion.unidadNBUFinal), 3, ' ') + sepa);
+    importe :=  utiles.FormatearNumero(FloatToStr(total2));
+    write(arch, utiles.sLlenarDerecha(utiles.StringRemplazarCaracteres(importe, ',', '.'), 12, ' ') + sepa);
+    write(arch, utiles.sLlenarDerecha(profesional.nombre, 30, ' ') + sepa);
+    write(arch, '  ');
+    write(arch, '     ');
+    write(arch, '1  ');  // 1. Plan General
+    importe :=  utiles.FormatearNumero(FloatToStr(0)); // coseguro
+    write(arch, utiles.sLlenarDerecha(utiles.StringRemplazarCaracteres(importe, ',', '.'), 12, ' ') + sepa);
+    write(arch, 'A');  // 1. Ambulatorio
+    write(arch, '          ');
+    writeLn(arch, auditoriacb.Iddiag);
+
+    r.next;
+  end;
+
+  closeFile(arch);
+
+  montoexport.Caption := utiles.FormatearNumero(FloatToStr(total));}
+end;
+
+
+// FE SALUD
+procedure TfmExportarOrdenesSoporteMagnetico.generarArchivoR10;
+var
+  importe, archivo, tipo, sucursal, numero, nrocuit, idprof: string;
+  arch: TextFile;
+  i: integer;
+  total, monto1, monto2: real;
+  init: boolean;
+  r: TQuery;
+begin
+
+  if not (DirectoryExists(dbs.DirSistema + '\work\exportsopmag')) then utilesarchivos.CrearDirectorio(dbs.DirSistema + '\work\exportsopmag');
+
+  empresa.conectar;
+  empresa.getDatos;
+
+  r := facturacion.exportarReglaFacturasDetalle(periodo.Text);
+
+  //============================================================================
+  // Tratamiento Responsables Inscriptos
+
+  r.Open; r.first;
+
+  r := datosdb.Filtrar(r, 'tipo <> ' + '''' + 'C' + '''');
+
+  while not r.Eof do begin
+    if ( (r.FieldByName('tipo').asstring <> tipo) or (r.FieldByName('sucursal').asstring <> sucursal) or (r.FieldByName('numero').asstring <> numero) or (r.FieldByName('idprof').asstring <> idprof) ) then begin  // La primera vez
+
+      if (init) then closeFile(arch);
+
+      archivo := dbs.DirSistema + '\work\exportsopmag\' + idos.Text + '_' + '_' + utiles.StringRemplazarCaracteres(periodo.Text, '/', '_') + '_' +
+      r.FieldByName('idprof').asstring + '_' + r.FieldByName('tipo').asstring + '_' + r.FieldByName('sucursal').asstring + '_' + r.FieldByName('numero').asstring + '.txt';
+      AssignFile(arch, archivo);
+      rewrite(arch);
+      init := true;
+
+      tipo := r.FieldByName('tipo').asstring;
+      sucursal := r.FieldByName('sucursal').asstring;
+      numero := r.FieldByName('numero').asstring;
+      idprof := r.FieldByName('idprof').asstring;
+
+    end;
+
+    StatusBar1.Panels[0].Text := 'Procesando ' + tipo + ' ' + sucursal + '-' + numero; StatusBar1.Refresh;
+
+    nrocuit := empresa.cuit;
+
+    //monto1 := 0;
+    if (r.FieldByName('tipo').asstring <> 'C') then begin
+      profesional.getDatos(r.FieldByName('idprof').asString);
+      nrocuit := profesional.Nrocuit;
+      //monto1 := r.FieldByName('iva').AsFloat * (obsocial.retencioniva * 0.01);
+    end;
+
+    //monto1 := r.FieldByName('iva').AsFloat * (obsocial.retencioniva * 0.01);
+    //monto2 := monto1 + r.FieldByName('monto').asfloat;
+    monto2 := r.FieldByName('montofinal').asfloat;
+
+    write(arch, utiles.StringRemplazarCaracteres(nrocuit, '-', '') + ';'); // nro. de cuit
+    write(arch, r.FieldByName('op2').asstring + ';'); // nro de afiliado
+    write(arch, utiles.sExprFecha2000(r.FieldByName('op1').asstring) + ';'); // fecha de prestación
+    write(arch, '0' + ';'); // nro de bono
+    write(arch, r.FieldByName('codigo').asstring + ';'); // codigo de práctica
+    write(arch, '4' + ';'); // componente
+    write(arch, '1' + ';'); // cantidad
+    write(arch, utiles.StringRemplazarCaracteres(r.FieldByName('op3').asstring, '-', '') + ';'); // nro de afiliado
+    importe := utiles.FormatearNumero(floattostr(monto2));
+    write(arch, utiles.StringRemplazarCaracteres(importe, ',', '.') + ';');  // arancel total
+    write(arch, utiles.StringRemplazarCaracteres(importe, ',', '.') + ';');  // arancel total
+    write(arch, '4' + ';'); // valor fijo 4
+    write(arch, '3' + ';'); // valor fijo 3
+    writeLn(arch, '0'); // ambulatorio
+
+    r.next;
+
+  end;
+
+  if (init) then closeFile(arch);
+
+  //============================================================================
+
+  // Tratamiento Responsables Monotributo
+
+  r.Close; r.free;
+  init := false;
+
+  r := facturacion.exportarReglaFacturasDetalleRM(periodo.Text);
+  r.Open;
+  r := datosdb.Filtrar(r, 'tipo = ' + '''' + 'C' + '''');
+  r.first;
+
+  while not r.Eof do begin
+    if ( (r.FieldByName('tipo').asstring <> tipo) or (r.FieldByName('sucursal').asstring <> sucursal) or (r.FieldByName('numero').asstring <> numero) ) then begin  // La primera vez
+
+      if (init) then closeFile(arch);
+
+      archivo := dbs.DirSistema + '\work\exportsopmag\' + idos.Text + '_' + '_' + utiles.StringRemplazarCaracteres(periodo.Text, '/', '_') + '_' +
+      '000000' + '_' + r.FieldByName('tipo').asstring + '_' + r.FieldByName('sucursal').asstring + '_' + r.FieldByName('numero').asstring + '.txt';
+      AssignFile(arch, archivo);
+      rewrite(arch);
+      init := true;
+
+      tipo := r.FieldByName('tipo').asstring;
+      sucursal := r.FieldByName('sucursal').asstring;
+      numero := r.FieldByName('numero').asstring;
+      idprof := r.FieldByName('idprof').asstring;
+
+    end;
+
+    StatusBar1.Panels[0].Text := 'Procesando ' + tipo + ' ' + sucursal + '-' + numero; StatusBar1.Refresh;
+
+    nrocuit := empresa.cuit;
+
+    //monto1 := 0;
+    if (r.FieldByName('tipo').asstring <> 'C') then begin
+      profesional.getDatos(r.FieldByName('idprof').asString);
+      nrocuit := profesional.Nrocuit;
+      //monto1 := r.FieldByName('iva').AsFloat * (obsocial.retencioniva * 0.01);
+    end;
+
+    //monto1 := r.FieldByName('iva').AsFloat * (obsocial.retencioniva * 0.01);
+    //monto2 := monto1 + r.FieldByName('monto').asfloat;
+    monto2 := r.FieldByName('montofinal').asfloat;
+
+    write(arch, utiles.StringRemplazarCaracteres(nrocuit, '-', '') + ';'); // nro. de cuit
+    write(arch, r.FieldByName('op2').asstring + ';'); // nro de afiliado
+    write(arch, utiles.sExprFecha2000(r.FieldByName('op1').asstring) + ';'); // fecha de prestación
+    write(arch, '0' + ';'); // nro de bono
+    write(arch, r.FieldByName('codigo').asstring + ';'); // codigo de práctica
+    write(arch, '4' + ';'); // componente
+    write(arch, '1' + ';'); // cantidad
+    write(arch, utiles.StringRemplazarCaracteres(r.FieldByName('op3').asstring, '-', '') + ';'); // nro de afiliado
+    importe := utiles.FormatearNumero(floattostr(monto2));
+    write(arch, utiles.StringRemplazarCaracteres(importe, ',', '.') + ';');  // arancel total
+    write(arch, utiles.StringRemplazarCaracteres(importe, ',', '.') + ';');  // arancel total
+    write(arch, '4' + ';'); // valor fijo 4
+    write(arch, '3' + ';'); // valor fijo 3
+    writeLn(arch, '0'); // ambulatorio
+
+    r.next;
+
+  end;
+
+  if (init) then closeFile(arch);
+
+
+  //============================================================================
+
+  r.close; r.free;
+
+  empresa.desconectar;
+
+  StatusBar1.Panels[0].Text := '';
+
+end;
+
+//==============================================================================
+// ACA SALUD
+
+procedure TfmExportarOrdenesSoporteMagnetico.generarArchivoR2;
+var
+  importe, archivo, nroafiliado, convenio, sepa: string;
+  arch: TextFile;
+  i: integer;
+  total, monto1, total2: real;
+  r: TIBQuery;
+begin
+  if not (DirectoryExists(dbs.DirSistema + '\work\exportsopmag')) then utilesarchivos.CrearDirectorio(dbs.DirSistema + '\work\exportsopmag');
+  archivo := dbs.DirSistema + '\work\exportsopmag\' + idos.Text + '_' + utiles.StringRemplazarCaracteres(periodo.Text, '/', '_') + '.txt';
+  AssignFile(arch, archivo);
+  rewrite(arch);
+
+  obsocial.getRegla(idos.Text);
+  convenio := obsocial.Convenio;
+
+  obsocial.SincronizarPosicionFiscal(idos.Text, periodo.Text);
+
+  r := facturacion.getListItemsFacturados(periodo.Text, idos.Text);
+  //r := facturacion.getListItemsFacturadosProfesional(periodo.Text, idos.Text, '211081');
+  r.open; i := 1; total := 0;
+
+  sepa := ';';
+  sepa := '';
+           
+  while not r.eof do begin
+
+    auditoriacb.getDatos(r.FieldByName('nroauditoria').AsString);
+
+    nbu.getDatos(r.FieldByName('codanalisis').asString);
+    profesional.getDatos(r.FieldByName('idprof').asString);
+
+    // Prorrateamos comprobante
+    exportObrasSociales.getDatos(periodo.Text, r.FieldByName('idprof').asstring, idos.Text);
+
+    monto1 := r.FieldByName('iva').AsFloat * (obsocial.retencioniva * 0.01);
+    total  := total + (r.FieldByName('monto').asfloat + monto1);
+    total2 := r.FieldByName('monto').asfloat + monto1;
+
+    nroafiliado := utiles.sLlenarIzquierda(trim(copy(r.FieldByName('nroafiliado').AsString, 1, 8)), 10, '0');
+
+    write(arch, utiles.sLlenarDerecha(nroafiliado, 10, ' ') + sepa);
+    write(arch, utiles.sLlenarDerecha(trim(auditoriacb.Transaccion), 10, ' ') + sepa);
+    write(arch, utiles.sExprFecha2000(auditoriacb.Fecha) + sepa);
+    write(arch, utiles.sExprFecha2000(auditoriacb.Fepedido) + sepa);
+
+    write(arch, 'FAC' + exportObrasSociales.Tipo + sepa);
+    write(arch, exportObrasSociales.Tipo + sepa);
+    write(arch, exportObrasSociales.Sucursal + sepa);
+    write(arch, exportObrasSociales.Numero + sepa);
+    write(arch, utiles.sLlenarDerecha(auditoriacb.Idprof, 10, ' ') + sepa);
+    write(arch, utiles.sLlenarDerecha(r.FieldByName('idprof').AsString, 10, ' ') + sepa);
+    write(arch, utiles.sLlenarDerecha(r.FieldByName('codanalisis').AsString, 10, ' ') + sepa);
+    importe :=  utiles.FormatearNumero(r.FieldByName('monto').asString);
+    //importe :=  utiles.FormatearNumero(FloatToStr(total2));
+    write(arch, utiles.sLlenarIzquierda(utiles.StringRemplazarCaracteres(importe, ',', '.'), 10, '0') + sepa);
+    writeLn(arch, utiles.sLlenarIzquierda(profesional.Nrocuit, 13, '0') + sepa);
+
+    //monto1 := r.FieldByName('iva').AsFloat * (obsocial.retencioniva * 0.01);
+    //total := total + (r.FieldByName('monto').asfloat + monto1);
+
+    r.next;
+  end;
+
+  closeFile(arch);
+
+  montoexport.Caption := utiles.FormatearNumero(FloatToStr(total));
+end;
+
+// FEDERADA
+procedure TfmExportarOrdenesSoporteMagnetico.generarArchivoR6;
+var
+  importe, archivo, nroafiliado, convenio: string;
+  arch: TextFile;
+  i: integer;
+  total, monto1: real;
+  r: TIBQuery;
+begin
+  if not (DirectoryExists(dbs.DirSistema + '\work\exportsopmag')) then utilesarchivos.CrearDirectorio(dbs.DirSistema + '\work\exportsopmag');
+  archivo := dbs.DirSistema + '\work\exportsopmag\' + idos.Text + '_' + utiles.StringRemplazarCaracteres(periodo.Text, '/', '_') + '.txt';
+  AssignFile(arch, archivo);
+  rewrite(arch);
+
+  obsocial.getRegla(idos.Text);
+  convenio := obsocial.Convenio;
+
+  obsocial.SincronizarPosicionFiscal(idos.Text, periodo.Text);
+
+  r := facturacion.getListItemsFacturados(periodo.Text, idos.Text);
+  r.open; i := 1; total := 0;
+  while not r.eof do begin
+
+    auditoriacb.getDatos(r.FieldByName('nroauditoria').AsString);
+
+    nbu.getDatos(r.FieldByName('codanalisis').asString);
+    profesional.getDatos(r.FieldByName('idprof').asString);
+    diagnosticooms.getDatos(auditoriacb.Iddiag);
+    medicoos.getDatos(auditoriacb.Codos, auditoriacb.Idprof);
+
+    nroafiliado := utiles.sLlenarIzquierda(trim(r.FieldByName('nroafiliado').AsString), 14, '0');
+    write(arch, '000'); // código de prestador
+    write(arch, '00'); // código de convenio
+    write(arch, '00'); // código de sub convenio
+    write(arch, numero.Text); // nro. de factura
+    write(arch, '0000000'); // nro rendición
+    write(arch, nroafiliado); // número afiliado
+    write(arch, utiles.sLlenarDerecha(copy(r.FieldByName('nombre').AsString, 1, 30), 30, ' ')); // nombre afiliado
+    write(arch, utiles.sLlenarIzquierda(trim(r.FieldByName('nroafiliado').AsString), 8, '0')); // nro documento
+    write(arch, '0000000'); // nro orden
+    write(arch, r.FieldByName('fecha').AsString); // nro orden
+    write(arch, utiles.sLlenarDerecha(r.FieldByName('codanalisis').AsString, 7, ' ')); // codigo
+    write(arch, 'B'); // tipo nomenclador
+    write(arch, utiles.sLlenarDerecha(copy(nbu.Descrip, 1, 30), 30, ' ')); // descripcion
+    write(arch, '1    '); // cantidad
+    write(arch, r.FieldByName('idprof').asString); // matricula profesional
+    write(arch, utiles.sLlenarDerecha(copy(profesional.nombre, 1, 30), 30, ' ')); // nombre profesional
+    importe := utiles.FormatearNumero(r.FieldByName('monto').asString);
+    write(arch, utiles.sLlenarIzquierda(utiles.StringRemplazarCaracteres(importe, ',', ''), 13, '0'));  // importe
+    write(arch, utiles.sLlenarIzquierda('', 13, '0'));  // importe gastos
+    write(arch, ' ');    // tipo honorario
+    write(arch, '   ');    // % fact honorarios
+    write(arch, '   ');    // % fact gastos
+    write(arch, 'N');    // urgencia
+    write(arch, '      ');    // atricula solicitante
+    writeLn(arch, '  ');    // libres
+
+    monto1 := r.FieldByName('iva').AsFloat * (obsocial.retencioniva * 0.01);
+    total := total + (r.FieldByName('monto').asfloat + monto1);
+
+    r.next;
+  end;
+
+  closeFile(arch);
+
+  montoexport.Caption := utiles.FormatearNumero(FloatToStr(total));
+end;
+
+// SANCOR
+procedure TfmExportarOrdenesSoporteMagnetico.generarArchivoR3;
+var
+  importe, archivo, nroafiliado, convenio: string;
+  arch: TextFile;
+  i, j: integer;
+  total, monto1: real;
+  r: TIBQuery;
+begin
+  if not (DirectoryExists(dbs.DirSistema + '\work\exportsopmag')) then utilesarchivos.CrearDirectorio(dbs.DirSistema + '\work\exportsopmag');
+  archivo := dbs.DirSistema + '\work\exportsopmag\' + idos.Text + '_' + utiles.StringRemplazarCaracteres(periodo.Text, '/', '_') + '.txt';
+  AssignFile(arch, archivo);
+  rewrite(arch);
+
+ obsocial.getRegla(idos.Text);
+ convenio := obsocial.Convenio;
+
+ obsocial.SincronizarPosicionFiscal(idos.Text, periodo.Text);
+
+ r := facturacion.getListItemsFacturados(periodo.Text, idos.Text);
+ r.open; i := 1; total := 0;
+ while not r.eof do begin
+
+    auditoriacb.getDatos(r.FieldByName('nroauditoria').AsString);
+
+    nbu.getDatos(r.FieldByName('codanalisis').asString);
+    profesional.getDatos(r.FieldByName('idprof').asString);
+    diagnosticooms.getDatos(auditoriacb.Iddiag);
+    medicoos.getDatos(auditoriacb.Codos, auditoriacb.Idprof);
+
+    nroafiliado := utiles.sLlenarIzquierda(trim(r.FieldByName('nroafiliado').AsString), 10, '0');
+
+    write(arch, trim(auditoriacb.Transaccion) + ';');
+    write(arch, nroafiliado + ';');
+    write(arch, r.FieldByName('nombre').AsString + ';');
+    write(arch, utiles.sFormatoFechaDDMMAAAA(r.FieldByName('fecha').AsString) + ';');
+    write(arch, r.FieldByName('codanalisis').AsString + ';');
+    write(arch, nbu.Descrip + ';');
+    write(arch, '1' + ';');
+    write(arch, trim(diagnosticooms.Descrip) + ';');
+    write(arch, profesional.Nrocuit + ';');
+    write(arch, trim(profesional.nombre) + ';');
+    write(arch, medicoos.Idprof + ';');
+    write(arch, trim(medicoos.Nombre) + ';');
+    importe := utiles.FormatearNumero(r.FieldByName('monto').asString, '##############.##');
+    write(arch, importe); // utiles.StringRemplazarCaracteres(importe, ',', '.'), 10, '0');
+
+    // Agregamos el comprobante
+    j := 0;
+    for j := 1 to A.RowCount do begin
+      if (length(trim(A.Cells[0, j])) = 0) then break;
+      if (A.Cells[1, j] = r.FieldByName('idprof').asString) then begin
+        write(arch, ';' + A.Cells[8, j] + ';');
+        write(arch, A.Cells[9, j] + ';');
+        write(arch, A.Cells[10,j] + ';');
+        break;
+      end;
+    end;
+
+    writeLn(arch, '');
+
+    monto1 := r.FieldByName('iva').AsFloat * (obsocial.retencioniva * 0.01);
+    total := total + (r.FieldByName('monto').asfloat + monto1);
+
+    r.next;
+  end;
+
+  closeFile(arch);
+
+  montoexport.Caption := utiles.FormatearNumero(FloatToStr(total));
+end;
+{
+//==============================================================================
+// ACA SALUD
+
+procedure TfmExportarOrdenesSoporteMagnetico.generarArchivoR2;
+var
+  importe, archivo, nroafiliado, convenio, sepa: string;
+  arch: TextFile;
+  i: integer;
+  total, monto1, total2: real;
+  r: TIBQuery;
+begin
+  if not (DirectoryExists(dbs.DirSistema + '\work\exportsopmag')) then utilesarchivos.CrearDirectorio(dbs.DirSistema + '\work\exportsopmag');
+  archivo := dbs.DirSistema + '\work\exportsopmag\' + idos.Text + '_' + utiles.StringRemplazarCaracteres(periodo.Text, '/', '_') + '.txt';
+  AssignFile(arch, archivo);
+  rewrite(arch);
+
+  obsocial.getRegla(idos.Text);
+  convenio := obsocial.Convenio;
+
+  obsocial.SincronizarPosicionFiscal(idos.Text, periodo.Text);
+
+  r := facturacion.getListItemsFacturados(periodo.Text, idos.Text);
+  //r := facturacion.getListItemsFacturadosProfesional(periodo.Text, idos.Text, '211081');
+  r.open; i := 1; total := 0;
+
+  //sepa := ';';
+  sepa := '';
+           
+  while not r.eof do begin
+
+    auditoriacb.getDatos(r.FieldByName('nroauditoria').AsString);
+
+    nbu.getDatos(r.FieldByName('codanalisis').asString);
+    profesional.getDatos(r.FieldByName('idprof').asString);
+
+    // Prorrateamos comprobante
+    exportObrasSociales.getDatos(periodo.Text, r.FieldByName('idprof').asstring, idos.Text);
+
+    monto1 := r.FieldByName('iva').AsFloat * (obsocial.retencioniva * 0.01);
+    total  := total + (r.FieldByName('monto').asfloat + monto1);
+    total2 := r.FieldByName('monto').asfloat + monto1;
+
+    nroafiliado := utiles.sLlenarIzquierda(trim(copy(r.FieldByName('nroafiliado').AsString, 1, 8)), 10, '0');
+
+    write(arch, utiles.sLlenarDerecha(nroafiliado, 10, ' ') + sepa);
+    write(arch, utiles.sLlenarDerecha(trim(auditoriacb.Transaccion), 10, ' ') + sepa);
+    write(arch, utiles.sExprFecha2000(auditoriacb.Fecha) + sepa);
+    write(arch, utiles.sExprFecha2000(auditoriacb.Fepedido) + sepa);
+
+    write(arch, 'FAC' + exportObrasSociales.Tipo + sepa);
+    write(arch, exportObrasSociales.Tipo + sepa);
+    write(arch, exportObrasSociales.Sucursal + sepa);
+    write(arch, exportObrasSociales.Numero + sepa);
+    write(arch, utiles.sLlenarDerecha(auditoriacb.Idprof, 10, ' ') + sepa);
+    write(arch, utiles.sLlenarDerecha(r.FieldByName('idprof').AsString, 10, ' ') + sepa);
+    write(arch, utiles.sLlenarDerecha(r.FieldByName('codanalisis').AsString, 10, ' ') + sepa);
+    //importe :=  utiles.FormatearNumero(r.FieldByName('monto').asString);
+    importe :=  utiles.FormatearNumero(FloatToStr(total2));
+    write(arch, utiles.sLlenarIzquierda(utiles.StringRemplazarCaracteres(importe, ',', '.'), 10, '0') + sepa);
+    writeLn(arch, utiles.sLlenarIzquierda(profesional.Nrocuit, 13, '0') + sepa);
+
+    //monto1 := r.FieldByName('iva').AsFloat * (obsocial.retencioniva * 0.01);
+    //total := total + (r.FieldByName('monto').asfloat + monto1);
+
+    r.next;
+  end;
+
+  closeFile(arch);
+
+  montoexport.Caption := utiles.FormatearNumero(FloatToStr(total));
+end;
+}
+
+//==============================================================================
+// JERARQUICO
+
+procedure TfmExportarOrdenesSoporteMagnetico.generarArchivoR1;
+var
+  importe, archivo, nroafiliado, convenio, tipo, sucursal, numero: string;
+  arch: TextFile;
+  i, j: integer;
+  monto1, monto2: double;
+  r: TIBQuery;
+begin
+  if not (DirectoryExists(dbs.DirSistema + '\work\exportsopmag')) then utilesarchivos.CrearDirectorio(dbs.DirSistema + '\work\exportsopmag');
+  archivo := dbs.DirSistema + '\work\exportsopmag\' + idos.Text + '_' + utiles.StringRemplazarCaracteres(periodo.Text, '/', '_') + '.txt';
+  AssignFile(arch, archivo);
+  rewrite(arch);
+
+  {
+   DETALLE CAMPOS:
+--------------
+
+1 - CODIGO PRESTADOR - Obligatorio (10 dígitos) 1 - 10
+2 - TIPO DE FACTURA - Obligatorio (A, B o C - 1 caracter) 11 - 11
+3 - NRO DE FACTURA - Obligatorio - (12 dígitos) 12 - 23
+4 - MATRICULA PROVINCIAL DEL PRESCRIPTOR - Opcional (10 caracteres) 24 - 33
+5 - MATRICULA NACIONAL DEL PRESCRIPTOR - Opcional (10 caracteres) 34 - 43
+6 - ESPECIALIDAD DEL PRESCRIPTOR - Opcional - Ver listado en archivo enviado (3 dígitos) 44 - 46
+7 - APELLIDO DEL PRESCRIPTOR - Opcional (40 caracteres) 47 - 86
+8 - NOMBRE DEL PRESCRIPTOR - Opcional (50 caracteres) 87 - 136
+9 - CUIT DEL PRESCRIPTOR - Opcional (13 caracteres con máscara) 137 - 149
+10 - CONDICION DE GANANCIA DEL PRESCRIPTOR - Opcional - (01 Si, 02 No - 2 dígitos) 150 - 151
+11 - CONDICION ANTE EL IVA DEL PRESCRIPTOR - Opcional - (03 EXENTO, 04 MONOTRIBUTO, 05 RESPONSABLE INSCRIPTO, 06 RESPONSABLE NO INSCRIPTO - 2 dígitos) 152 - 153
+12 - MATRICULA PROVINCIAL DEL EFECTOR - Condicional - Cargar la matrícula provincial o nacional sí o sí (10 caracteres) 154 - 163  (cargo el código)
+13 - MATRICULA NACIONAL DEL EFECTOR - Condicional (10 caracteres) 164 - 173
+14 - ESPECIALIDAD  DEL EFECTOR - Condicional - Ver listado en archivo enviado (3 dígitos) 174 - 176
+15 - APELLIDO DEL EFECTOR - Condicional (40 caracteres) 177 - 216
+16 - NOMBRE DEL EFECTOR - Condicional (50 caracteres) 217 - 266
+17 - CUIT DEL EFECTOR - Opcional (13 caracteres) 267 - 279
+18 - CONDICION DE GANANCIA DEL EFECTOR - Opcional - (01 Si, 02 No - 2 dígitos) 280 - 281
+19 - CONDICION ANTE EL IVA DEL EFECTOR - Opcional - (03 EXENTO, 04 MONOTRIBUTO, 05 RESPONSABLE INSCRIPTO, 06 RESPONSABLE NO INSCRIPTO - 2 dígitos) 282 - 283
+20 - ROL DEL PROFESIONAL - Condicional - Usar para internaciones - (01 ESPECIALISTA, 02 ANESTESISTA, 03 AYUDANTE - 2 dígitos) 284 - 285
+21 - CUPON - Opcional (10 dígitos) 286 - 295
+22 - NRO DE AUTORIZACION - Condicional (10 dígitos) 296 - 305
+23 - FECHA DE PRESCRIPCION - Opcional (8 caracteres) 306 - 313
+24 - FECHA DE REALIZACION - Obligatorio (8 caracteres) 314 - 321
+25 - AFILIADO (nro de socio) - Obligatorio (10 dígitos) 322 - 331
+26 - ORDEN (orden del socio) - Obligatorio (2 dígitos) 332 - 333
+27 - TIPO DE CODIGO - Obligatorio (2 dígitos) 334 - 335
+28 - CODIGO - Obligatorio (10 caracteres) 336 - 345
+29 - DESCRIPCION - Obligatorio (100 caracteres) 346 - 445
+30 - CANTIDAD - Obligatorio (3 dígitos) 446 - 448
+31 - MONTO HONORARIOS - Condicional (10 dígitos - últimos 2 son decimales) 449 - 458
+32 - MONTO GASTOS - Condicional (10 dígitos - últimos 2 son decimales) 459 - 468
+33 - MONTO COSEGURO - Condicional (10 dígitos - últimos 2 son decimales) 469 - 478
+34 - MONTO IVA - Condicional (10 dígitos - últimos 2 son decimales) 479 - 488
+35 - MONTO TOTAL - Obligatorio (10 dígitos - últimos 2 son decimales) 489 - 498
+36 - CLAVE_PS - Opcional (10 caracteres) 499 - 508
+37 - CLAVE_OS - (Para uso de JS) (10 dígitos) 509 - 518
+38 - TIPO_DEB - (Para uso de JS-Tipo de débito) (3 dígitos) 519 - 521
+39 - DES_DEB - (Para uso de JS-Descrición del débito) (50 caracteres) 522 - 571
+40 - MON_DEB - (Para uso de JS-Monto del débito) (10 dígitos - últimos 2 son decimales) 572 - 581
+41 - FILLED - Obligatorio - Para uso futuro (100 dígitos) 582 - 681
+
+  }
+
+
+ obsocial.getRegla(idos.Text);
+ convenio := obsocial.Convenio;
+
+ obsocial.SincronizarPosicionFiscal(idos.Text, periodo.Text);
+
+ r := facturacion.getListItemsFacturados(periodo.Text, idos.Text);
+ r.open; i := 1; monto1 := 0; monto2 := 0;
+ while not r.eof do begin
+
+    nbu.getDatos(r.FieldByName('codanalisis').asString);
+    profesional.getDatos(r.FieldByName('idprof').asString);
+
+     // Agregamos el comprobante
+    j := 0;
+    for j := 1 to A.RowCount do begin
+      if (length(trim(A.Cells[0, j])) = 0) then break;
+      if (A.Cells[1, j] = r.FieldByName('idprof').asString) then begin
+        tipo :=  A.Cells[8, j];
+        sucursal := A.Cells[9, j];
+        numero := A.Cells[10,j];
+        break;
+      end;
+    end;
+
+    //write(arch, utiles.sLlenarIzquierda(r.FieldByName('idprof').asString , 10, '0'));   // 1
+    write(arch, utiles.sLlenarIzquierda(convenio, 10, '0'));   // 1
+    //write(arch, A.Cells[8, i]);                                     // 2
+    //write(arch, A.Cells[9, i]);                                     // 3
+    //write(arch, A.Cells[10,i]);                                     // 4
+    write(arch, tipo);
+    write(arch, sucursal);
+    write(arch, numero);
+    write(arch, utiles.sLlenarIzquierda('', 10, ' '));              // 5
+    write(arch, utiles.sLlenarIzquierda('', 10, ' '));              // 5
+    write(arch, utiles.sLlenarIzquierda('', 3, '0'));               // 6
+    write(arch, utiles.sLlenarDerecha('', 40, ' ')); // 7
+    write(arch, utiles.sLlenarIzquierda('', 50, ' '));               // 8
+    write(arch, '             ');              // 9
+    write(arch, utiles.sLlenarIzquierda('', 2, '0'));               // 10
+    write(arch, utiles.sLlenarIzquierda('', 2, '0'));                   // 11
+    write(arch, utiles.sLlenarIzquierda('', 10, ' '));  // 12 consultar
+    write(arch, utiles.sLlenarIzquierda('', 10, ' '));  // 13 consultar
+    write(arch, '044');  // 14
+    write(arch, utiles.sLlenarDerecha(copy(profesional.nombre, 1, 40), 40, ' '));  // 15
+    write(arch, utiles.sLlenarDerecha('', 50, ' '));  // 16
+    write(arch, utiles.sLlenarIzquierda(profesional.Nrocuit, 13, '0'));  // 17
+    write(arch, utiles.sLlenarDerecha('', 2, '0'));  // 18
+    write(arch, utiles.sLlenarDerecha('', 2, '0'));  // 19
+    write(arch, '01');  // 20
+    write(arch, utiles.sLlenarIzquierda('', 10, '0'));  // 21
+    write(arch, utiles.sLlenarIzquierda(r.FieldByName('nroautorizacion').asString, 10, '0'));  // 22
+    //write(arch, utiles.sLlenarDerecha('', 8, '0'));  // 23
+    write(arch, r.FieldByName('fecha').asString);  // 23
+    write(arch, r.FieldByName('fecha').asString);  // 24
+    nroafiliado := trim(r.FieldByName('nroafiliado').asString);
+    nroafiliado := utiles.StringRemplazarCaracteres(nroafiliado, '.', '');
+    nroafiliado := utiles.sLlenarIzquierda(nroafiliado, 12, '0');
+    nroafiliado := utiles.StringRemplazarCaracteres(nroafiliado, ' ', '0');
+    nroafiliado := utiles.StringRemplazarCaracteres(nroafiliado, 'O', '0');
+    write(arch, copy(nroafiliado, 1, 10));  // 25
+    write(arch, copy(nroafiliado, 11, 2));  // 26        ??
+    //utiles.msgError(copy(nroafiliado, 1, 10) + '-' + copy(nroafiliado, 11, 2));
+    write(arch, '01');  // 27        ??
+    write(arch, utiles.sLlenarIzquierda(r.FieldByName('codanalisis').asString, 10, '0'));  // 28
+    write(arch, utiles.sLlenarDerecha(copy(nbu.Descrip,1, 100), 100, ' '));  // 29
+    write(arch, '001');  // 30
+    write(arch, utiles.sLlenarIzquierda('', 10, '0'));   // 31
+    write(arch, utiles.sLlenarIzquierda('', 10, '0'));   // 32
+    write(arch, utiles.sLlenarIzquierda('', 10, '0'));   // 33
+    importe := utiles.FormatearNumero(FloatToStr( utiles.setNro2Dec( r.FieldByName('iva').AsFloat * (obsocial.retencioniva * 0.01) ) ));
+    monto2 := monto2 + strtofloat(importe);
+    write(arch, utiles.sLlenarIzquierda(utiles.StringRemplazarCaracteres(importe, ',', ''), 10, '0'));   // 34
+    importe := utiles.FormatearNumero(FloatToStr (utiles.setNro2Dec( r.FieldByName('monto').asfloat )));
+    monto1 := monto1 + r.FieldByName('monto').asFloat;
+    write(arch, utiles.sLlenarIzquierda(utiles.StringRemplazarCaracteres(importe, ',', ''), 10, '0'));   // 35
+    write(arch, utiles.sLlenarDerecha('', 10, ' '));  // 36
+    write(arch, utiles.sLlenarDerecha('', 10, '0'));  // 37
+    write(arch, utiles.sLlenarDerecha('', 3, '0'));  // 38
+    write(arch, utiles.sLlenarDerecha('', 50, ' '));  // 39
+    write(arch, utiles.sLlenarDerecha('', 10, '0'));  // 40
+    writeLn(arch, utiles.sLlenarDerecha('', 100, '0'));  // 41
+
+    r.next;
+  end;
+
+  closeFile(arch);
+
+  montoexport.Caption := utiles.FormatearNumero(FloatToStr(monto1 + monto2));
+end;
+
+//==============================================================================
+
+procedure TfmExportarOrdenesSoporteMagnetico.cargarObrasSociales;
+var
+  r: TIBQuery;
+  i: integer;
+  total: double;
+begin
+
+  grid.IniciarGrilla(A);
+
+  obsocial.getDatos(idos.Text);
+  obsocial.SincronizarArancel(idos.Text, periodo.Text);
+
+  listProfesionales.Items.Clear;
+  listprof.items.Clear;
+
+  btnEnviar.Enabled := false;
+
+  listProfesionales.Items.Add('< Todos los Profesionales >');
+  listprof.Items.Add('0');
+  listProfesionales.Items.Add('< Responsables de Monotributo >');
+  listprof.Items.Add('1');
+
+  r := facturacion.getListPracticasFacturadas(periodo.Text, idos.Text);
+  r.open; i := 0; total := 0;
+  while not r.eof do begin
+    profesional.getDatos(r.FieldByName('idprof').asstring);
+    profesional.SincronizarListaRetIVA(periodo.Text, r.FieldByName('idprof').asstring);
+    inc(i);
+    A.Cells[0, i] := periodo.Text;
+    A.Cells[1, i] := profesional.codigo;
+    A.Cells[2, i] := profesional.Nombre;
+    A.Cells[3, i] := utiles.FormatearNumero(r.FieldByName('monto').asstring);
+    A.Cells[4, i] := utiles.FormatearNumero(r.FieldByName('iva').asstring);
+    A.Cells[5, i] := utiles.FormatearNumero(r.FieldByName('exento').asstring);
+    A.Cells[12,i] := utiles.FormatearNumero(FloatToStr (r.FieldByName('iva').asfloat * (obsocial.retencioniva * 0.01) ) );
+    A.Cells[6, i] := utiles.FormatearNumero(FloatToStr(r.FieldByName('iva').asfloat + StrToFloat(A.Cells[12,i]) + r.FieldByName('exento').asfloat)); // + r.FieldByName('iva').asfloat + r.FieldByName('monto').asfloat) );
+    if (profesional.Retieneiva = 'N') then begin
+      A.Cells[6, i] := A.Cells[3, i];
+    end;
+    A.Cells[7, i] := idregla.Text;   // Regla de Exportación
+    A.Cells[11,i] := utiles.setFechaActual;
+
+    if (recalcular) then
+      facturacion.GuardarTotalProfesionalDistribucion(periodo.Text, r.FieldByName('idprof').asstring, idos.Text,
+        strtofloat(A.Cells[6, i]), r.FieldByName('monto').asfloat, r.FieldByName('iva').asfloat, r.FieldByName('exento').asfloat,
+        StrToFloat(A.Cells[12,i]));
+
+    A.Cells[13,i] := profesional.Retieneiva;
+
+    // Ajustamos si la Obra Social no retiene Iva - 22/04/2026
+    if (obsocial.Retieneiva = 'N') then begin
+       A.Cells[4, i] := utiles.FormatearNumero('0');
+       A.Cells[5, i] := utiles.FormatearNumero('0');
+       A.Cells[6, i] := A.Cells[3, i];
+    end;
+
+
+    total := total + strtofloat( A.Cells[6, i] );
+
+    if (profesional.Retieneiva = 'S') then begin
+      listProfesionales.Items.Add(profesional.nombre);
+      listprof.Items.Add(profesional.codigo);
+    end;
+
+    // Prorrateamos comprobante
+    exportObrasSociales.getDatos(periodo.Text, r.FieldByName('idprof').asstring, idos.Text);
+    A.Cells[8, i] := exportObrasSociales.Tipo;
+    A.Cells[9, i] := exportObrasSociales.Sucursal;
+    if (length(trim(exportObrasSociales.Numero)) > 0) then A.Cells[10,i] := utiles.sLlenarIzquierda(exportObrasSociales.Numero, 8, '0') else A.Cells[10,i] := '';
+    A.Cells[11,i] := exportObrasSociales.Fecha;
+
+    if (length(trim(exportObrasSociales.Tipo)) > 0) then btnEnviar.Enabled := true;
+
+    
+
+    r.next;
+  end;
+  r.Close; r.free;
+
+  totalfact.Caption := utiles.FormatearNumero(FloatToStr(total));
+
+  listProfesionales.ItemIndex := 0;
+  listProf.ItemIndex := 0;
+end;
+
+procedure TfmExportarOrdenesSoporteMagnetico.fechaKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) then begin
+    if (length(trim(fecha.Text)) > 0) then begin
+      if (utiles.ctrlFecha(fecha) = false) then utiles.msgError('Fecha Incorrecta ...!');
+    end;
+  end; 
+end;
+
+procedure TfmExportarOrdenesSoporteMagnetico.ADblClick(Sender: TObject);
+begin
+  if (length(trim(A.Cells[0, A.Row])) > 0) then begin
+    tipo.Text := A.Cells[8, A.Row];
+    sucursal.text := A.Cells[9, A.Row];
+    numero.text := A.Cells[10, A.Row];
+    fecha.text := A.Cells[11, A.Row];
+    sucursal.SetFocus;
+  end;                
+end;
+
+procedure TfmExportarOrdenesSoporteMagnetico.btnAllClick(Sender: TObject);
+var
+  i: integer;
+begin
+ if ( (listprof.Text = '0') or (listprof.Text = '1') ) then
+   if not utiles.msgSiNo('Seguro para Aplicar está Opción ?') then exit;
+
+ if (listprof.Text = '0') then begin
+   for i := 1 to A.RowCount do begin
+      if (length(trim(A.Cells[0, i])) = 0) then break;
+      A.Cells[8, i] := tipo.Text;
+      A.Cells[9, i] := sucursal.Text;
+      A.Cells[10,i] := numero.Text;
+      if (length(trim(fecha.Text)) = 8) then A.Cells[11,i] := fecha.Text else A.Cells[11,i] := '';
+      exportObrasSociales.Registrar(periodo.Text, A.Cells[1, i], idos.Text, A.Cells[11,i], A.Cells[8,i], A.Cells[9,i], A.Cells[10,i]);
+    end;
+    btnEnviar.Enabled := true;
+ end;
+
+ if (listprof.Text = '1') then begin
+   for i := 1 to A.RowCount do begin
+      if (length(trim(A.Cells[0, i])) = 0) then break;
+      if (A.Cells[13, i] = 'N') then begin
+        A.Cells[8, i] := tipo.Text;
+        A.Cells[9, i] := sucursal.Text;
+        A.Cells[10,i] := numero.Text;
+        if (length(trim(fecha.Text)) = 8) then A.Cells[11,i] := fecha.Text else A.Cells[11,i] := '';
+        exportObrasSociales.Registrar(periodo.Text, A.Cells[1, i], idos.Text, A.Cells[11,i], A.Cells[8,i], A.Cells[9,i], A.Cells[10,i]);
+      end;
+    end;
+    btnEnviar.Enabled := true;
+ end;
+
+ if (listprof.Text > '1') then begin
+   for i := 1 to A.RowCount do begin
+      if (length(trim(A.Cells[0, i])) = 0) then break;
+      if (A.Cells[1, i] = listprof.Text) then begin
+        A.Cells[8, i] := tipo.Text;
+        A.Cells[9, i] := sucursal.Text;
+        A.Cells[10,i] := numero.Text;
+        if (length(trim(fecha.Text)) = 8) then A.Cells[11,i] := fecha.Text else A.Cells[11,i] := '';
+        exportObrasSociales.Registrar(periodo.Text, A.Cells[1, i], idos.Text, A.Cells[11,i], A.Cells[8,i], A.Cells[9,i], A.Cells[10,i]);
+      end;
+    end;
+    btnEnviar.Enabled := true;
+ end;
+
+end;
+
+procedure TfmExportarOrdenesSoporteMagnetico.btnEnviarClick(Sender: TObject);
+begin
+  if (idregla.Text = '10') then begin
+    utiles.msgError('Esta Obra Social se debe Exportar desde la Solapa Exportación por Regla');
+    exit;
+  end;
+
+
+  if not (utiles.msgSiNo('Este Proceso Generará y Enviará los Archivos Correspondientes.')) then exit;
+
+  if (idregla.Text = '3') then generarArchivoR1v2;   // Jerarquicos
+  //if (idregla.Text = '3') then generarArchivoR1;   // Jerarquicos
+  if (idregla.Text = '1') then generarArchivoR2;   // ACA SALUD
+  if (idregla.Text = '5') then generarArchivoR3;   // SANCOR
+  if (idregla.Text = '6') then generarArchivoR6;   // FEDERADA
+  if (idregla.Text = '13') then generarArchivoR13;   // DASUTEN
+
+end;
+
+procedure TfmExportarOrdenesSoporteMagnetico.btnGenerarArchClick(
+  Sender: TObject);
+begin
+  if (reglanumero.Text = '10') then generarArchivoR10;   // Fe Salud
+
+end;
+
+procedure TfmExportarOrdenesSoporteMagnetico.btnMontosClick(Sender: TObject);
+begin
+  if (utiles.msgSiNo('Este Proceso puede Demorar. No lo Interrumpa. Seguro para Iniciar ?') = false) then exit;
+  StatusBar1.Panels[0].Text := 'Procesando ...!'; StatusBar1.refresh;
+  facturacion.recalcularMontosAnalisisRI(periodo.Text, idos.Text);
+  Refresh;
+  facturacion.ConectarTotalesProf;
+  recalcular := true;
+  cargarObrasSociales;
+  facturacion.DesconectarTotalesProf;
+  recalcular := false;
+  StatusBar1.Panels[0].Text := ''; StatusBar1.refresh;
+end;
+
+procedure TfmExportarOrdenesSoporteMagnetico.btnMostrarDatosClick(
+  Sender: TObject);
+var
+  r: TQuery;
+  i: integer;
+begin
+  Application.CreateForm(TfmDetalleFacturado, fmDetalleFacturado);
+
+  fmDetalleFacturado.Caption := 'Detalle Facturado - Período: ' + periodo.text;
+  fmDetalleFacturado.A.Cells[0, 0] := 'Fecha';
+  fmDetalleFacturado.A.Cells[1, 0] := 'Tipo';
+  fmDetalleFacturado.A.Cells[2, 0] := 'Sucursal';
+  fmDetalleFacturado.A.Cells[3, 0] := 'Número';
+  fmDetalleFacturado.A.Cells[4, 0] := 'Monto';
+  fmDetalleFacturado.A.Cells[5, 0] := 'Profesional';
+
+  r := facturacion.exportarReglaFacturasRI(periodo.text);
+  r.open; i := 0;
+  while not r.eof do begin
+    inc(i);
+    fmDetalleFacturado.A.Cells[0, i] := r.fieldbyname('op1').asstring;
+    fmDetalleFacturado.A.Cells[1, i] := r.fieldbyname('tipo').asstring;
+    fmDetalleFacturado.A.Cells[2, i] := r.fieldbyname('sucursal').asstring;
+    fmDetalleFacturado.A.Cells[3, i] := r.fieldbyname('numero').asstring;
+    fmDetalleFacturado.A.Cells[4, i] := utiles.FormatearNumero(r.fieldbyname('monto').asstring);
+    profesional.getDatos(r.fieldbyname('idprof').asstring);
+    fmDetalleFacturado.A.Cells[5, i] := profesional.codigo + ' - ' + profesional.nombre;
+
+    r.next;
+  end;
+  r.close; r.free;
+
+  r := facturacion.exportarReglaFacturasRM(periodo.text);
+  r.open;
+  while not r.eof do begin
+    inc(i);
+    fmDetalleFacturado.A.Cells[0, i] := r.fieldbyname('op1').asstring;
+    fmDetalleFacturado.A.Cells[1, i] := r.fieldbyname('tipo').asstring;
+    fmDetalleFacturado.A.Cells[2, i] := r.fieldbyname('sucursal').asstring;
+    fmDetalleFacturado.A.Cells[3, i] := r.fieldbyname('numero').asstring;
+    fmDetalleFacturado.A.Cells[4, i] := utiles.FormatearNumero(r.fieldbyname('monto').asstring);
+    fmDetalleFacturado.A.Cells[5, i] := '*** ASOCIACION ***';
+
+    r.next;
+  end;
+  r.close; r.free;
+
+  fmDetalleFacturado.ShowModal;
+
+  fmDetalleFacturado.Release; fmDetalleFacturado := nil;
+end;
+
+procedure TfmExportarOrdenesSoporteMagnetico.btnProcesarExportacionClick(
+  Sender: TObject);
+begin
+  StatusBar1.Panels[0].Text := 'Procesando Datos ...!'; StatusBar1.Refresh;
+
+  facturacion.exportarRegla(periodo.Text, reglaNumero.Text);
+
+  btnGenerarArch.Enabled := true;
+
+  StatusBar1.Panels[0].Text := ''; StatusBar1.Refresh;
+end;
+
+procedure TfmExportarOrdenesSoporteMagnetico.btnRegistrarKeyDown(
+  Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if (length(trim(sucursal.Text)) > 0) and (length(trim(numero.Text)) > 0) then begin
+     A.SetFocus;
+  end;
+end;
+
+procedure TfmExportarOrdenesSoporteMagnetico.FormActivate(Sender: TObject);
+begin
+  redim := false;
+end;
+
+procedure TfmExportarOrdenesSoporteMagnetico.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  configform.Guardar(fmExportarOrdenesSoporteMagnetico, redim);
+  exportObrasSociales.desconectar;
+  auditoriacb.desconectar;
+  facturacion.desconectar;
+  facturacion.DesconectarTotalesProf;
+  grid.GuardarAnchoColumnas(fmExportarOrdenesSoporteMagnetico, A);
+  Release; fmExportarOrdenesSoporteMagnetico := nil;
+end;
+
+procedure TfmExportarOrdenesSoporteMagnetico.FormResize(Sender: TObject);
+begin
+  StatusBar1.Panels[0].Width := (Width - (Width div 3));
+  redim := true;
+end;
+
+procedure TfmExportarOrdenesSoporteMagnetico.FormShow(Sender: TObject);
+var
+  r: TQuery;
+  i: integer;
+begin
+  auditoriacb.conectar;
+  facturacion.conectar;
+  exportObrasSociales.conectar;
+  r := obsocial.getReglas;
+  r.open; i := 0;
+  while not r.eof do begin
+    obsocial.getDatos(r.FieldByName('codos').asstring);
+
+
+    listaos.Items.Add(obsocial.Nombre + ' (' + r.FieldByName('codos').asstring + ')');
+    idregla.Items.Add(r.FieldByName('regla').asstring);
+    idos.Items.Add(r.FieldByName('codos').asstring);
+    if (i = 0) then begin
+      listaos.Text := obsocial.Nombre + ' (' + r.FieldByName('codos').asstring + ')';
+      idos.Text := r.FieldByName('codos').asstring;
+      idregla.Text := r.FieldByName('regla').asstring;
+    end;
+    i := 1;
+    r.next;
+  end;
+  r.close; r.free;
+
+  configform.Setear(fmExportarOrdenesSoporteMagnetico);
+
+  grid.RecuperarAnchoColumnas(fmExportarOrdenesSoporteMagnetico, A);
+
+  A.Cells[0, 0] := 'Período';
+  A.Cells[1, 0] := 'Código';
+  A.Cells[2, 0] := 'Obra Social';
+  A.Cells[3, 0] := 'Monto';
+  A.Cells[4, 0] := 'Grabado';
+  A.Cells[5, 0] := 'Exento';
+  A.Cells[6, 0] := 'Total';
+  A.Cells[7, 0] := 'R';
+  A.Cells[8, 0] := 'Tipo';
+  A.Cells[9, 0] := 'Sucursal';
+  A.Cells[10,0] := 'Número';
+  A.Cells[11,0] := 'Fecha';
+  A.Cells[12,0] := 'I.V.A.';
+  A.Cells[13,0] := 'Grabado';
+
+  periodo.Text := utiles.setPeriodoActual;
+
+  {
+  periodo.Text := '02/2020';
+  tipo.Text := 'C';
+  sucursal.Text := '0001';
+  numero.Text := '00000005';
+  fecha.Text := '29/02/20';
+  }
+
+  montoexport.Caption := utiles.FormatearNumero('0');
+
+  facturacion.DireccionarLaboratorio(periodo.Text, '000000');
+
+  listaOSChange(Self);
+
+  periodo.SetFocus;
+
+end;
+
+procedure TfmExportarOrdenesSoporteMagnetico.listaOSChange(Sender: TObject);
+begin
+  idos.ItemIndex := listaOS.ItemIndex;
+  idregla.ItemIndex := listaOS.ItemIndex;
+  cargarObrasSociales;
+end;
+
+procedure TfmExportarOrdenesSoporteMagnetico.listProfesionalesChange(
+  Sender: TObject);
+begin
+  listprof.ItemIndex := listprofesionales.ItemIndex;
+end;
+
+procedure TfmExportarOrdenesSoporteMagnetico.numeroKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) then begin
+    if (length(trim(numero.Text)) > 0) then begin
+      numero.Text := utiles.sLlenarIzquierda(numero.Text, 8, '0');
+      fecha.SetFocus;
+    end;
+  end;
+end;
+
+procedure TfmExportarOrdenesSoporteMagnetico.periodoKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) then begin
+    if (utiles.verificarPeriodo(periodo.Text)) then begin
+      listaOs.SetFocus;
+      cargarObrasSociales;
+    end;
+  end;
+end;
+
+procedure TfmExportarOrdenesSoporteMagnetico.reglasExportChange(
+  Sender: TObject);
+begin
+  reglaNumero.ItemIndex := reglasExport.ItemIndex;
+end;
+
+procedure TfmExportarOrdenesSoporteMagnetico.sucursalKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) then begin
+    if (length(trim(sucursal.Text)) > 0) then begin
+      sucursal.Text := utiles.sLlenarIzquierda(sucursal.Text, 4, '0');
+      numero.SetFocus;
+    end;
+  end;
+end;
+
+procedure TfmExportarOrdenesSoporteMagnetico.tipoKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) then begin
+    if (length(trim(tipo.Text)) > 0) then begin
+      sucursal.SetFocus;
+    end;
+  end;
+
+end;
+
+end.

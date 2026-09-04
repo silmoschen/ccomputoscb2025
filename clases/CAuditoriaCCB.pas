@@ -459,7 +459,7 @@ Begin
     Numerodoc      := cabauditoria.FieldByName('numerodoc').AsString;
   end else Begin
     Nroauditoria := ''; Fecha := ''; Codos := ''; Idzona := ''; Nrodoc := ''; Idprof := ''; obsdiagnostico := ''; Federivacion := ''; Nroderivacion := ''; Observacion := '';
-    IdFact := ''; Laboratorio := ''; Codosfact := ''; Fepedido := ''; Profcab := ''; Iddiag := ''; Nompac := ''; Online := ''; Transaccion := ''; Token := ''; Numerodoc := null;
+    IdFact := ''; Laboratorio := ''; Codosfact := ''; Fepedido := ''; Profcab := ''; Iddiag := ''; Nompac := ''; Online := ''; Transaccion := ''; Token := ''; Numerodoc := '';
   end;
 
   if BuscarObsFinal(xnroauditoria) then observacfinal := obsauditoria.FieldByName('observacion').AsString else observacfinal := '';

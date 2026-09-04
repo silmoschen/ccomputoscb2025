@@ -143,6 +143,9 @@ procedure TfmPresupuestoRapidoTit.DatosAnalisis;
 var
   p: String;
 begin
+
+  facturacion.IniciarCache; 
+
   if obsocial.FacturaNBU = 'N' then Begin
     obsocial.SincronizarArancel(codos.Text, Copy(utiles.sExprFecha2000(utiles.setFechaActual), 5, 2) + '/' + Copy(utiles.sExprFecha2000(utiles.setFechaActual), 1, 4));
     nomeclatura.getDatos(codanalisis.Text);
@@ -158,6 +161,8 @@ begin
     //Unnbu.Caption := utiles.FormatearNumero(floattostr(unidadesNBU.Unidades));
     precio.Text := utiles.FormatearNumero(FloatToStr(facturacion.setImporteAnalisis(codos.Text, codanalisis.Text, Copy(utiles.setFechaActual, 4, 2) + '/' + Copy(utiles.sExprFecha2000(utiles.setFechaActual), 1, 4))));
     p := precio.Text;
+
+    Unnbu.Caption := utiles.FormatearNumero(floattostr(facturacion.unidadNBUFinal));
     //caption := Copy(utiles.setFechaActual, 4, 2) + '/' + Copy(utiles.sExprFecha2000(utiles.setFechaActual), 1, 4);
   end;
   ActiveControl := precio;

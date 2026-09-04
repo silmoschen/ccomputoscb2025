@@ -207,7 +207,8 @@ uses
   detalleFacturado in 'detalleFacturado.pas' {fmDetalleFacturado},
   reportUBFacturadas in 'reportUBFacturadas.pas' {fmUBFacturadas},
   selectObraSocial in 'selectObraSocial.pas' {fmSelObraSocial},
-  CNomeclatura_ObraSocial in 'clases\CNomeclatura_ObraSocial.pas';
+  CNomeclatura_ObraSocial in 'clases\CNomeclatura_ObraSocial.pas',
+  CAuditoriaCCB in 'clases\CAuditoriaCCB.pas';
 
 {$R *.RES}
 

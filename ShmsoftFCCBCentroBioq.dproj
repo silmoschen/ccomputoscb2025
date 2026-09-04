@@ -6,7 +6,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-    <DCC_DependencyCheckOutputName>ShmsoftFCCBCentroBioq.exe</DCC_DependencyCheckOutputName>
+    <DCC_DependencyCheckOutputName>C:\shmsoft-sj\ShmsoftFCCBCentroBioq.exe</DCC_DependencyCheckOutputName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Version>7.0</Version>
@@ -31,6 +31,7 @@
     <DCC_ObjPath>\sidelphi32\clases;\sidelphi32\interfases;\sidelphi32\cExtras;\sidelphi32\sounds;\sidelphi32\cExtras\chequeadores;C:\sidelphi32\cExtras\mxCaptionBarButton\Component;\LMD70SE\LIB\D6;C:\LMD70SE\vclskin2\d6;C:\sidelphi32\cExtras\vclskin421\source</DCC_ObjPath>
     <DCC_IncludePath>\sidelphi32\clases;\sidelphi32\interfases;\sidelphi32\cExtras;\sidelphi32\sounds;\sidelphi32\cExtras\chequeadores;C:\sidelphi32\cExtras\mxCaptionBarButton\Component;\LMD70SE\LIB\D6;C:\LMD70SE\vclskin2\d6;C:\sidelphi32\cExtras\vclskin421\source</DCC_IncludePath>
     <DCC_Define>DEBUG</DCC_Define>
+    <DCC_ExeOutput>C:\shmsoft-sj</DCC_ExeOutput>
   </PropertyGroup>
   <ProjectExtensions>
     <Borland.Personality>Delphi.Personality</Borland.Personality>
@@ -219,6 +220,7 @@
       <Form>fmBuscarOrdenesOnLine</Form>
     </DCCReference>
     <DCCReference Include="clases\CAgrupacionOSFact.pas" />
+    <DCCReference Include="clases\CAuditoriaCCB.pas" />
     <DCCReference Include="clases\CAuditoriaFacturacion.pas" />
     <DCCReference Include="clases\CCoseguros.pas" />
     <DCCReference Include="clases\CDatosEmpresa.pas" />

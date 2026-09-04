@@ -1,4 +1,4 @@
-unit exportarOrdenesSopMagnetico;
+ï»¿unit exportarOrdenesSopMagnetico;
 
 interface
 
@@ -7,7 +7,7 @@ uses
   Dialogs, ComCtrls, ExtCtrls, CFacturacionCCB, CProfesionalCCB, CObrasSocialesCCB,
   StdCtrls, Mask, DBTables, CUtiles, Grids, CConfigForms, CUtilidadesStringgrid,
   CUtilidadesArchivos, CBDT, IBQuery, CNbu, CAuditoriaCCB, CDiagnosticosCCBOMS,
-  CMedicosCCBOS, CExportObrasSociales, CDatosEmpresa, CIDBFM;
+  CMedicosCCBOS, CExportObrasSociales, CDatosEmpresa, CIDBFM, CMedicosCCB;
 
 type
   TfmExportarOrdenesSoporteMagnetico = class(TForm)
@@ -95,6 +95,9 @@ type
     procedure generarArchivoR6;
     procedure generarArchivoR10;
     procedure generarArchivoR13;
+    procedure generarArchivoR1v2;
+
+    procedure generarArchivoR20;
 
   public
     { Public declarations }
@@ -109,6 +112,174 @@ implementation
 uses detalleFacturado;
 
 {$R *.dfm}
+
+//==============================================================================
+// OSPEDYC
+procedure TfmExportarOrdenesSoporteMagnetico.generarArchivoR20;
+var
+  importe, archivo, nroafiliado, convenio, tipo, sucursal, numero, sepa: string;
+  arch: TextFile;
+  i, j: integer;
+  monto1, monto2: double;
+  r: TIBQuery;
+begin
+  if not (DirectoryExists(dbs.DirSistema + '\work\exportsopmag')) then utilesarchivos.CrearDirectorio(dbs.DirSistema + '\work\exportsopmag');
+  archivo := dbs.DirSistema + '\work\exportsopmag\' + idos.Text + '_' + utiles.StringRemplazarCaracteres(periodo.Text, '/', '_') + '_v2' + '.txt';
+  AssignFile(arch, archivo);
+  rewrite(arch);
+
+  obsocial.getRegla(idos.Text);
+  convenio := obsocial.Convenio;
+
+  sepa := ';'; monto1 := 0;
+
+  obsocial.SincronizarPosicionFiscal(idos.Text, periodo.Text);
+
+  r := facturacion.getListItemsFacturados(periodo.Text, idos.Text);
+  r.open; i := 1; monto1 := 0; monto2 := 0;
+  while not r.eof do begin
+
+    nbu.getDatos(r.FieldByName('codanalisis').asString);
+    write(arch, r.FieldByName('fecha').asString + sepa);
+    write(arch, r.FieldByName('nroafiliado').asString + sepa);
+    write(arch, r.FieldByName('nombre').asString + sepa);
+    write(arch, r.FieldByName('codanalisis').asString + sepa);
+    write(arch, nbu.Descrip + sepa);
+    write(arch, '1' + sepa);
+    write(arch, r.FieldByName('codanalisis').asString + sepa);
+    importe := utiles.FormatearNumero(FloatToStr (utiles.setNro2Dec( r.FieldByName('monto').asfloat )));
+    monto1 := monto1 + r.FieldByName('monto').asFloat;
+    write(arch, utiles.sLlenarIzquierda(utiles.StringRemplazarCaracteres(importe, ',', ''), 10, '0') + sepa);
+    write(arch, '' + sepa);
+    write(arch, r.FieldByName('nroafiliado').asString + sepa);
+    writeLn(arch, r.FieldByName('idprof').asString);
+
+    r.next;
+
+  end;
+
+  r.close; r.free;
+
+  closeFile(arch);
+
+  montoexport.Caption := utiles.FormatearNumero(FloatToStr(monto1 + monto2));
+
+end;
+
+
+
+
+
+//==============================================================================
+// JERARQUICO V2
+
+procedure TfmExportarOrdenesSoporteMagnetico.generarArchivoR1v2;
+var
+  importe, archivo, nroafiliado, convenio, tipo, sucursal, numero: string;
+  arch: TextFile;
+  i, j: integer;
+  monto1, monto2: double;
+  r: TIBQuery;
+begin
+  if not (DirectoryExists(dbs.DirSistema + '\work\exportsopmag')) then utilesarchivos.CrearDirectorio(dbs.DirSistema + '\work\exportsopmag');
+  archivo := dbs.DirSistema + '\work\exportsopmag\' + idos.Text + '_' + utiles.StringRemplazarCaracteres(periodo.Text, '/', '_') + '_v2' + '.txt';
+  AssignFile(arch, archivo);
+  rewrite(arch);
+
+  obsocial.getRegla(idos.Text);
+  convenio := obsocial.Convenio;
+
+  obsocial.SincronizarPosicionFiscal(idos.Text, periodo.Text);
+
+  r := facturacion.getListItemsFacturados(periodo.Text, idos.Text);
+  r.open; i := 1; monto1 := 0; monto2 := 0;
+  while not r.eof do begin
+
+    nbu.getDatos(r.FieldByName('codanalisis').asString);
+    profesional.getDatos(r.FieldByName('idprof').asString);
+    auditoriacb.getDatos(r.FieldByName('nroauditoria').AsString);
+    medicoos.getDatos(auditoriacb.Codos,  auditoriacb.Idprof);
+
+    // Agregamos el comprobante
+    j := 0;
+    for j := 1 to A.RowCount do begin
+      if (length(trim(A.Cells[0, j])) = 0) then break;
+      if (A.Cells[1, j] = r.FieldByName('idprof').asString) then begin
+        tipo :=  A.Cells[8, j];
+        sucursal := A.Cells[9, j];
+        numero := A.Cells[10,j];
+        break;
+      end;
+    end;
+
+    write(arch, utiles.sLlenarIzquierda(convenio, 10, '0'));   // 1
+    write(arch, tipo);
+    write(arch, sucursal);
+    write(arch, numero);
+    write(arch, utiles.sLlenarIzquierda('', 10, ' '));              // 4
+    write(arch, utiles.sLlenarIzquierda('', 10, ' '));              // 5
+    write(arch, utiles.sLlenarIzquierda('', 3, ' '));               // 6
+    write(arch, utiles.sLlenarDerecha(copy(medicoos.Nombre, 1, 40), 40, ' ')); // 7
+    write(arch, utiles.sLlenarIzquierda(copy(medicoos.Nombre, 1, 40), 50, ' '));               // 8
+    write(arch, '             ');              // 9
+    write(arch, utiles.sLlenarIzquierda('', 2, '0'));               // 10
+    write(arch, utiles.sLlenarIzquierda('', 2, '0'));                   // 11
+    write(arch, utiles.sLlenarIzquierda('', 10, ' '));  // 12 consultar
+    write(arch, utiles.sLlenarIzquierda('', 10, ' '));  // 13 consultar
+    write(arch, '044');  // 14
+    write(arch, utiles.sLlenarDerecha(copy(profesional.nombre, 1, 40), 40, ' '));  // 15
+    write(arch, utiles.sLlenarDerecha('', 50, ' '));  // 16
+    write(arch, utiles.sLlenarIzquierda(profesional.Nrocuit, 13, '0'));  // 17
+    write(arch, utiles.sLlenarDerecha('', 2, '0'));  // 18
+    write(arch, utiles.sLlenarDerecha('', 2, '0'));  // 19
+    write(arch, '01');  // 20
+    write(arch, utiles.sLlenarIzquierda('', 10, '0'));  // 21
+    write(arch, utiles.sLlenarIzquierda(r.FieldByName('nroautorizacion').asString, 10, '0'));  // 22
+    //write(arch, utiles.sLlenarDerecha('', 8, '0'));  // 23
+    write(arch, '        ');  // 23
+    write(arch, r.FieldByName('fecha').asString);  // 24
+    nroafiliado := trim(r.FieldByName('nroafiliado').asString);
+    nroafiliado := utiles.StringRemplazarCaracteres(nroafiliado, '.', '');
+    nroafiliado := utiles.sLlenarIzquierda(nroafiliado, 12, '0');
+    nroafiliado := utiles.StringRemplazarCaracteres(nroafiliado, ' ', '0');
+    nroafiliado := utiles.StringRemplazarCaracteres(nroafiliado, 'O', '0');
+    write(arch, copy(nroafiliado, 1, 10));  // 25
+    write(arch, copy(nroafiliado, 11, 2));  // 26        ??
+    //utiles.msgError(copy(nroafiliado, 1, 10) + '-' + copy(nroafiliado, 11, 2));
+    write(arch, '01');  // 27        ??
+    write(arch, utiles.sLlenarIzquierda(r.FieldByName('codanalisis').asString, 10, '0'));  // 28
+    write(arch, utiles.sLlenarDerecha(copy(nbu.Descrip,1, 100), 100, ' '));  // 29
+    write(arch, '001');  // 30
+    write(arch, utiles.sLlenarIzquierda('', 10, '0'));   // 31
+    write(arch, utiles.sLlenarIzquierda('', 10, '0'));   // 32
+    write(arch, utiles.sLlenarIzquierda('', 10, '0'));   // 33
+    importe := utiles.FormatearNumero(FloatToStr( utiles.setNro2Dec( r.FieldByName('iva').AsFloat * (obsocial.retencioniva * 0.01) ) ));
+    monto2 := monto2 + strtofloat(importe);
+    write(arch, utiles.sLlenarIzquierda(utiles.StringRemplazarCaracteres(importe, ',', ''), 10, '0'));   // 34
+    importe := utiles.FormatearNumero(FloatToStr (utiles.setNro2Dec( r.FieldByName('monto').asfloat )));
+    monto1 := monto1 + r.FieldByName('monto').asFloat;
+    write(arch, utiles.sLlenarIzquierda(utiles.StringRemplazarCaracteres(importe, ',', ''), 10, '0'));   // 35
+    write(arch, utiles.sLlenarDerecha('', 10, ' '));  // 36
+    write(arch, utiles.sLlenarDerecha('', 10, '0'));  // 37
+    write(arch, utiles.sLlenarDerecha('', 3, '0'));  // 38
+    write(arch, utiles.sLlenarDerecha('', 50, ' '));  // 39
+    write(arch, utiles.sLlenarDerecha('', 10, '0'));  // 40
+    //writeLn(arch, utiles.sLlenarDerecha('', 100, '0'));  // 41
+    write(arch, '1');  // 41 DU
+    write(arch, utiles.sLlenarIzquierda(auditoriacb.Numerodoc, 9, ' '));  // 42
+    write(arch, utiles.sLlenarDerecha('', 150, ' '));  // 43
+    writeLn(arch, utiles.sLlenarIzquierda(auditoriacb.Token, 10, ' '));  // 44
+
+    r.next;
+  end;
+
+  r.Close; r.Free;
+
+  closeFile(arch);
+
+  montoexport.Caption := utiles.FormatearNumero(FloatToStr(monto1 + monto2));
+end;
+
 
 
 //==============================================================================
@@ -354,9 +525,9 @@ begin
 
     write(arch, utiles.StringRemplazarCaracteres(nrocuit, '-', '') + ';'); // nro. de cuit
     write(arch, r.FieldByName('op2').asstring + ';'); // nro de afiliado
-    write(arch, utiles.sExprFecha2000(r.FieldByName('op1').asstring) + ';'); // fecha de prestación
+    write(arch, utiles.sExprFecha2000(r.FieldByName('op1').asstring) + ';'); // fecha de prestaciÃ³n
     write(arch, '0' + ';'); // nro de bono
-    write(arch, r.FieldByName('codigo').asstring + ';'); // codigo de práctica
+    write(arch, r.FieldByName('codigo').asstring + ';'); // codigo de prÃ¡ctica
     write(arch, '4' + ';'); // componente
     write(arch, '1' + ';'); // cantidad
     write(arch, utiles.StringRemplazarCaracteres(r.FieldByName('op3').asstring, '-', '') + ';'); // nro de afiliado
@@ -420,9 +591,9 @@ begin
 
     write(arch, utiles.StringRemplazarCaracteres(nrocuit, '-', '') + ';'); // nro. de cuit
     write(arch, r.FieldByName('op2').asstring + ';'); // nro de afiliado
-    write(arch, utiles.sExprFecha2000(r.FieldByName('op1').asstring) + ';'); // fecha de prestación
+    write(arch, utiles.sExprFecha2000(r.FieldByName('op1').asstring) + ';'); // fecha de prestaciÃ³n
     write(arch, '0' + ';'); // nro de bono
-    write(arch, r.FieldByName('codigo').asstring + ';'); // codigo de práctica
+    write(arch, r.FieldByName('codigo').asstring + ';'); // codigo de prÃ¡ctica
     write(arch, '4' + ';'); // componente
     write(arch, '1' + ';'); // cantidad
     write(arch, utiles.StringRemplazarCaracteres(r.FieldByName('op3').asstring, '-', '') + ';'); // nro de afiliado
@@ -553,12 +724,12 @@ begin
     medicoos.getDatos(auditoriacb.Codos, auditoriacb.Idprof);
 
     nroafiliado := utiles.sLlenarIzquierda(trim(r.FieldByName('nroafiliado').AsString), 14, '0');
-    write(arch, '000'); // código de prestador
-    write(arch, '00'); // código de convenio
-    write(arch, '00'); // código de sub convenio
+    write(arch, '000'); // cÃ³digo de prestador
+    write(arch, '00'); // cÃ³digo de convenio
+    write(arch, '00'); // cÃ³digo de sub convenio
     write(arch, numero.Text); // nro. de factura
-    write(arch, '0000000'); // nro rendición
-    write(arch, nroafiliado); // número afiliado
+    write(arch, '0000000'); // nro rendiciÃ³n
+    write(arch, nroafiliado); // nÃºmero afiliado
     write(arch, utiles.sLlenarDerecha(copy(r.FieldByName('nombre').AsString, 1, 30), 30, ' ')); // nombre afiliado
     write(arch, utiles.sLlenarIzquierda(trim(r.FieldByName('nroafiliado').AsString), 8, '0')); // nro documento
     write(arch, '0000000'); // nro orden
@@ -755,47 +926,47 @@ begin
    DETALLE CAMPOS:
 --------------
 
-1 - CODIGO PRESTADOR - Obligatorio (10 dígitos) 1 - 10
+1 - CODIGO PRESTADOR - Obligatorio (10 dÃ­gitos) 1 - 10
 2 - TIPO DE FACTURA - Obligatorio (A, B o C - 1 caracter) 11 - 11
-3 - NRO DE FACTURA - Obligatorio - (12 dígitos) 12 - 23
+3 - NRO DE FACTURA - Obligatorio - (12 dÃ­gitos) 12 - 23
 4 - MATRICULA PROVINCIAL DEL PRESCRIPTOR - Opcional (10 caracteres) 24 - 33
 5 - MATRICULA NACIONAL DEL PRESCRIPTOR - Opcional (10 caracteres) 34 - 43
-6 - ESPECIALIDAD DEL PRESCRIPTOR - Opcional - Ver listado en archivo enviado (3 dígitos) 44 - 46
+6 - ESPECIALIDAD DEL PRESCRIPTOR - Opcional - Ver listado en archivo enviado (3 dÃ­gitos) 44 - 46
 7 - APELLIDO DEL PRESCRIPTOR - Opcional (40 caracteres) 47 - 86
 8 - NOMBRE DEL PRESCRIPTOR - Opcional (50 caracteres) 87 - 136
-9 - CUIT DEL PRESCRIPTOR - Opcional (13 caracteres con máscara) 137 - 149
-10 - CONDICION DE GANANCIA DEL PRESCRIPTOR - Opcional - (01 Si, 02 No - 2 dígitos) 150 - 151
-11 - CONDICION ANTE EL IVA DEL PRESCRIPTOR - Opcional - (03 EXENTO, 04 MONOTRIBUTO, 05 RESPONSABLE INSCRIPTO, 06 RESPONSABLE NO INSCRIPTO - 2 dígitos) 152 - 153
-12 - MATRICULA PROVINCIAL DEL EFECTOR - Condicional - Cargar la matrícula provincial o nacional sí o sí (10 caracteres) 154 - 163  (cargo el código)
+9 - CUIT DEL PRESCRIPTOR - Opcional (13 caracteres con mÃ¡scara) 137 - 149
+10 - CONDICION DE GANANCIA DEL PRESCRIPTOR - Opcional - (01 Si, 02 No - 2 dÃ­gitos) 150 - 151
+11 - CONDICION ANTE EL IVA DEL PRESCRIPTOR - Opcional - (03 EXENTO, 04 MONOTRIBUTO, 05 RESPONSABLE INSCRIPTO, 06 RESPONSABLE NO INSCRIPTO - 2 dÃ­gitos) 152 - 153
+12 - MATRICULA PROVINCIAL DEL EFECTOR - Condicional - Cargar la matrÃ­cula provincial o nacional sÃ­ o sÃ­ (10 caracteres) 154 - 163  (cargo el cÃ³digo)
 13 - MATRICULA NACIONAL DEL EFECTOR - Condicional (10 caracteres) 164 - 173
-14 - ESPECIALIDAD  DEL EFECTOR - Condicional - Ver listado en archivo enviado (3 dígitos) 174 - 176
+14 - ESPECIALIDAD  DEL EFECTOR - Condicional - Ver listado en archivo enviado (3 dÃ­gitos) 174 - 176
 15 - APELLIDO DEL EFECTOR - Condicional (40 caracteres) 177 - 216
 16 - NOMBRE DEL EFECTOR - Condicional (50 caracteres) 217 - 266
 17 - CUIT DEL EFECTOR - Opcional (13 caracteres) 267 - 279
-18 - CONDICION DE GANANCIA DEL EFECTOR - Opcional - (01 Si, 02 No - 2 dígitos) 280 - 281
-19 - CONDICION ANTE EL IVA DEL EFECTOR - Opcional - (03 EXENTO, 04 MONOTRIBUTO, 05 RESPONSABLE INSCRIPTO, 06 RESPONSABLE NO INSCRIPTO - 2 dígitos) 282 - 283
-20 - ROL DEL PROFESIONAL - Condicional - Usar para internaciones - (01 ESPECIALISTA, 02 ANESTESISTA, 03 AYUDANTE - 2 dígitos) 284 - 285
-21 - CUPON - Opcional (10 dígitos) 286 - 295
-22 - NRO DE AUTORIZACION - Condicional (10 dígitos) 296 - 305
+18 - CONDICION DE GANANCIA DEL EFECTOR - Opcional - (01 Si, 02 No - 2 dÃ­gitos) 280 - 281
+19 - CONDICION ANTE EL IVA DEL EFECTOR - Opcional - (03 EXENTO, 04 MONOTRIBUTO, 05 RESPONSABLE INSCRIPTO, 06 RESPONSABLE NO INSCRIPTO - 2 dÃ­gitos) 282 - 283
+20 - ROL DEL PROFESIONAL - Condicional - Usar para internaciones - (01 ESPECIALISTA, 02 ANESTESISTA, 03 AYUDANTE - 2 dÃ­gitos) 284 - 285
+21 - CUPON - Opcional (10 dÃ­gitos) 286 - 295
+22 - NRO DE AUTORIZACION - Condicional (10 dÃ­gitos) 296 - 305
 23 - FECHA DE PRESCRIPCION - Opcional (8 caracteres) 306 - 313
 24 - FECHA DE REALIZACION - Obligatorio (8 caracteres) 314 - 321
-25 - AFILIADO (nro de socio) - Obligatorio (10 dígitos) 322 - 331
-26 - ORDEN (orden del socio) - Obligatorio (2 dígitos) 332 - 333
-27 - TIPO DE CODIGO - Obligatorio (2 dígitos) 334 - 335
+25 - AFILIADO (nro de socio) - Obligatorio (10 dÃ­gitos) 322 - 331
+26 - ORDEN (orden del socio) - Obligatorio (2 dÃ­gitos) 332 - 333
+27 - TIPO DE CODIGO - Obligatorio (2 dÃ­gitos) 334 - 335
 28 - CODIGO - Obligatorio (10 caracteres) 336 - 345
 29 - DESCRIPCION - Obligatorio (100 caracteres) 346 - 445
-30 - CANTIDAD - Obligatorio (3 dígitos) 446 - 448
-31 - MONTO HONORARIOS - Condicional (10 dígitos - últimos 2 son decimales) 449 - 458
-32 - MONTO GASTOS - Condicional (10 dígitos - últimos 2 son decimales) 459 - 468
-33 - MONTO COSEGURO - Condicional (10 dígitos - últimos 2 son decimales) 469 - 478
-34 - MONTO IVA - Condicional (10 dígitos - últimos 2 son decimales) 479 - 488
-35 - MONTO TOTAL - Obligatorio (10 dígitos - últimos 2 son decimales) 489 - 498
+30 - CANTIDAD - Obligatorio (3 dÃ­gitos) 446 - 448
+31 - MONTO HONORARIOS - Condicional (10 dÃ­gitos - Ãºltimos 2 son decimales) 449 - 458
+32 - MONTO GASTOS - Condicional (10 dÃ­gitos - Ãºltimos 2 son decimales) 459 - 468
+33 - MONTO COSEGURO - Condicional (10 dÃ­gitos - Ãºltimos 2 son decimales) 469 - 478
+34 - MONTO IVA - Condicional (10 dÃ­gitos - Ãºltimos 2 son decimales) 479 - 488
+35 - MONTO TOTAL - Obligatorio (10 dÃ­gitos - Ãºltimos 2 son decimales) 489 - 498
 36 - CLAVE_PS - Opcional (10 caracteres) 499 - 508
-37 - CLAVE_OS - (Para uso de JS) (10 dígitos) 509 - 518
-38 - TIPO_DEB - (Para uso de JS-Tipo de débito) (3 dígitos) 519 - 521
-39 - DES_DEB - (Para uso de JS-Descrición del débito) (50 caracteres) 522 - 571
-40 - MON_DEB - (Para uso de JS-Monto del débito) (10 dígitos - últimos 2 son decimales) 572 - 581
-41 - FILLED - Obligatorio - Para uso futuro (100 dígitos) 582 - 681
+37 - CLAVE_OS - (Para uso de JS) (10 dÃ­gitos) 509 - 518
+38 - TIPO_DEB - (Para uso de JS-Tipo de dÃ©bito) (3 dÃ­gitos) 519 - 521
+39 - DES_DEB - (Para uso de JS-DescriciÃ³n del dÃ©bito) (50 caracteres) 522 - 571
+40 - MON_DEB - (Para uso de JS-Monto del dÃ©bito) (10 dÃ­gitos - Ãºltimos 2 son decimales) 572 - 581
+41 - FILLED - Obligatorio - Para uso futuro (100 dÃ­gitos) 582 - 681
 
   }
 
@@ -890,6 +1061,8 @@ begin
   montoexport.Caption := utiles.FormatearNumero(FloatToStr(monto1 + monto2));
 end;
 
+//==============================================================================
+
 procedure TfmExportarOrdenesSoporteMagnetico.cargarObrasSociales;
 var
   r: TIBQuery;
@@ -929,7 +1102,7 @@ begin
     if (profesional.Retieneiva = 'N') then begin
       A.Cells[6, i] := A.Cells[3, i];
     end;
-    A.Cells[7, i] := idregla.Text;   // Regla de Exportación
+    A.Cells[7, i] := idregla.Text;   // Regla de ExportaciÃ³n
     A.Cells[11,i] := utiles.setFechaActual;
 
     if (recalcular) then
@@ -1001,7 +1174,7 @@ var
   i: integer;
 begin
  if ( (listprof.Text = '0') or (listprof.Text = '1') ) then
-   if not utiles.msgSiNo('Seguro para Aplicar está Opción ?') then exit;
+   if not utiles.msgSiNo('Seguro para Aplicar estÃ¡ OpciÃ³n ?') then exit;
 
  if (listprof.Text = '0') then begin
    for i := 1 to A.RowCount do begin
@@ -1048,18 +1221,20 @@ end;
 procedure TfmExportarOrdenesSoporteMagnetico.btnEnviarClick(Sender: TObject);
 begin
   if (idregla.Text = '10') then begin
-    utiles.msgError('Esta Obra Social se debe Exportar desde la Solapa Exportación por Regla');
+    utiles.msgError('Esta Obra Social se debe Exportar desde la Solapa ExportaciÃ³n por Regla');
     exit;
   end;
 
 
-  if not (utiles.msgSiNo('Este Proceso Generará y Enviará los Archivos Correspondientes.')) then exit;
+  if not (utiles.msgSiNo('Este Proceso GenerarÃ¡ y EnviarÃ¡ los Archivos Correspondientes.')) then exit;
 
+  //if (idregla.Text = '3') then generarArchivoR1v2;   // Jerarquicos
   if (idregla.Text = '3') then generarArchivoR1;   // Jerarquicos
   if (idregla.Text = '1') then generarArchivoR2;   // ACA SALUD
   if (idregla.Text = '5') then generarArchivoR3;   // SANCOR
   if (idregla.Text = '6') then generarArchivoR6;   // FEDERADA
   if (idregla.Text = '13') then generarArchivoR13;   // DASUTEN
+  if (idregla.Text = '20') then generarArchivoR20;   // OSPEDYC
 
 end;
 
@@ -1092,11 +1267,11 @@ var
 begin
   Application.CreateForm(TfmDetalleFacturado, fmDetalleFacturado);
 
-  fmDetalleFacturado.Caption := 'Detalle Facturado - Período: ' + periodo.text;
+  fmDetalleFacturado.Caption := 'Detalle Facturado - PerÃ­odo: ' + periodo.text;
   fmDetalleFacturado.A.Cells[0, 0] := 'Fecha';
   fmDetalleFacturado.A.Cells[1, 0] := 'Tipo';
   fmDetalleFacturado.A.Cells[2, 0] := 'Sucursal';
-  fmDetalleFacturado.A.Cells[3, 0] := 'Número';
+  fmDetalleFacturado.A.Cells[3, 0] := 'NÃºmero';
   fmDetalleFacturado.A.Cells[4, 0] := 'Monto';
   fmDetalleFacturado.A.Cells[5, 0] := 'Profesional';
 
@@ -1210,8 +1385,8 @@ begin
 
   grid.RecuperarAnchoColumnas(fmExportarOrdenesSoporteMagnetico, A);
 
-  A.Cells[0, 0] := 'Período';
-  A.Cells[1, 0] := 'Código';
+  A.Cells[0, 0] := 'PerÃ­odo';
+  A.Cells[1, 0] := 'CÃ³digo';
   A.Cells[2, 0] := 'Obra Social';
   A.Cells[3, 0] := 'Monto';
   A.Cells[4, 0] := 'Grabado';
@@ -1220,7 +1395,7 @@ begin
   A.Cells[7, 0] := 'R';
   A.Cells[8, 0] := 'Tipo';
   A.Cells[9, 0] := 'Sucursal';
-  A.Cells[10,0] := 'Número';
+  A.Cells[10,0] := 'NÃºmero';
   A.Cells[11,0] := 'Fecha';
   A.Cells[12,0] := 'I.V.A.';
   A.Cells[13,0] := 'Grabado';

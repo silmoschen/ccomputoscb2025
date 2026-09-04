@@ -1,0 +1,3331 @@
+object fmAuditoria: TfmAuditoria
+  Left = 192
+  Top = 115
+  BorderIcons = [biSystemMenu, biMinimize]
+  Caption = 'Auditor'#237'a Obras Sociales'
+  ClientHeight = 417
+  ClientWidth = 605
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  KeyPreview = True
+  OldCreateOrder = False
+  OnActivate = FormActivate
+  OnCanResize = FormCanResize
+  OnClose = FormClose
+  OnKeyDown = FormKeyDown
+  OnResize = FormResize
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object PageControl1: TPageControl
+    Left = 0
+    Top = 23
+    Width = 605
+    Height = 375
+    ActivePage = TabSheet1
+    Align = alClient
+    TabOrder = 0
+    object TabSheet1: TTabSheet
+      Caption = '&Ingresos'
+      OnHide = TabSheet1Hide
+      OnShow = TabSheet1Show
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
+      object Panel2: TPanel
+        Left = 0
+        Top = 0
+        Width = 597
+        Height = 347
+        Align = alClient
+        BevelInner = bvLowered
+        BorderWidth = 4
+        Caption = 'Panel2'
+        TabOrder = 0
+        OnResize = Panel2Resize
+        object ScrollBox: TScrollBox
+          Left = 6
+          Top = 6
+          Width = 585
+          Height = 335
+          HorzScrollBar.Increment = 1
+          HorzScrollBar.Margin = 1
+          HorzScrollBar.Range = 10
+          VertScrollBar.Margin = 6
+          VertScrollBar.Range = 10
+          Align = alClient
+          AutoScroll = False
+          BorderStyle = bsNone
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 0
+          object Splitter2: TSplitter
+            Left = 0
+            Top = 242
+            Width = 585
+            Height = 3
+            Cursor = crVSplit
+            Align = alBottom
+            Visible = False
+          end
+          object Panel1: TPanel
+            Left = 0
+            Top = 26
+            Width = 585
+            Height = 95
+            Align = alTop
+            BevelOuter = bvNone
+            TabOrder = 0
+            object Panel13: TPanel
+              Left = 346
+              Top = 0
+              Width = 239
+              Height = 95
+              Align = alRight
+              BevelOuter = bvNone
+              TabOrder = 0
+              object Label8: TLabel
+                Left = 8
+                Top = 29
+                Width = 38
+                Height = 13
+                Alignment = taRightJustify
+                Caption = 'M'#233'dico:'
+              end
+              object Label9: TLabel
+                Left = 15
+                Top = 47
+                Width = 30
+                Height = 13
+                Alignment = taRightJustify
+                Caption = 'Fecha'
+              end
+              object Label10: TLabel
+                Left = 15
+                Top = 58
+                Width = 31
+                Height = 13
+                Alignment = taRightJustify
+                Caption = 'Deriv.:'
+              end
+              object Label11: TLabel
+                Left = 122
+                Top = 47
+                Width = 20
+                Height = 13
+                Alignment = taRightJustify
+                Caption = 'Nro.'
+              end
+              object Label12: TLabel
+                Left = 111
+                Top = 58
+                Width = 31
+                Height = 13
+                Alignment = taRightJustify
+                Caption = 'Deriv.:'
+              end
+              object Label90: TLabel
+                Left = 8
+                Top = 69
+                Width = 39
+                Height = 13
+                Alignment = taRightJustify
+                Caption = 'M'#233'd. de'
+              end
+              object Label91: TLabel
+                Left = 0
+                Top = 81
+                Width = 49
+                Height = 13
+                Alignment = taRightJustify
+                Caption = 'Cabecera:'
+              end
+              object nprofesional: TMaskEdit
+                Left = 50
+                Top = 26
+                Width = 163
+                Height = 21
+                CharCase = ecUpperCase
+                TabOrder = 0
+                OnChange = nprofesionalChange
+                OnKeyDown = nprofesionalKeyDown
+              end
+              object BuscarMedico: TBitBtn
+                Left = 215
+                Top = 26
+                Width = 20
+                Height = 22
+                Hint = 'Buscar M'#233'dico'
+                ParentShowHint = False
+                ShowHint = True
+                TabOrder = 1
+                OnClick = BuscarMedicoClick
+                Glyph.Data = {
+                  F6000000424DF600000000000000760000002800000010000000100000000100
+                  0400000000008000000000000000000000001000000010000000000000000000
+                  8000008000000080800080000000800080008080000080808000C0C0C0000000
+                  FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+                  FFFFFFFFFFF000FFFFFFFFFFFF0BB00FFFFFFFFFFF0BB00FFFFFFFFFFFF00FFF
+                  FFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0BB00F
+                  FFFFFFFF00F0BB00FFFFFFF0B00F0BB00FFFFFF0B00FF0B00FFFFFF0BB000BB0
+                  0FFFFFFF0BBBBB00FFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFF}
+              end
+              object fechaderivacion: TMaskEdit
+                Left = 51
+                Top = 49
+                Width = 56
+                Height = 21
+                EditMask = '99/99/99;1; '
+                MaxLength = 8
+                TabOrder = 2
+                Text = '  /  /  '
+                OnKeyDown = fechaderivacionKeyDown
+              end
+              object nroderivacion: TMaskEdit
+                Left = 145
+                Top = 49
+                Width = 68
+                Height = 21
+                MaxLength = 10
+                TabOrder = 3
+                OnKeyDown = nroderivacionKeyDown
+              end
+              object Panel33: TPanel
+                Left = 0
+                Top = 0
+                Width = 239
+                Height = 25
+                Align = alTop
+                BevelOuter = bvNone
+                TabOrder = 4
+                object Label4: TLabel
+                  Left = 10
+                  Top = 6
+                  Width = 28
+                  Height = 13
+                  Alignment = taRightJustify
+                  Caption = 'Zona:'
+                end
+                object dzona: TLabel
+                  Left = 85
+                  Top = 6
+                  Width = 36
+                  Height = 13
+                  Caption = '            '
+                  Font.Charset = DEFAULT_CHARSET
+                  Font.Color = clNavy
+                  Font.Height = -11
+                  Font.Name = 'MS Sans Serif'
+                  Font.Style = []
+                  ParentFont = False
+                end
+                object idzona: TMaskEdit
+                  Left = 41
+                  Top = 2
+                  Width = 19
+                  Height = 21
+                  EditMask = '99;1; '
+                  MaxLength = 2
+                  TabOrder = 0
+                  Text = '  '
+                  OnKeyDown = idzonaKeyDown
+                end
+                object BuscarZona: TBitBtn
+                  Left = 62
+                  Top = 2
+                  Width = 20
+                  Height = 22
+                  Hint = 'Buscar Zona'
+                  ParentShowHint = False
+                  ShowHint = True
+                  TabOrder = 1
+                  OnClick = BuscarZonaClick
+                  Glyph.Data = {
+                    F6000000424DF600000000000000760000002800000010000000100000000100
+                    0400000000008000000000000000000000001000000010000000000000000000
+                    8000008000000080800080000000800080008080000080808000C0C0C0000000
+                    FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+                    FFFFFFFFFFF000FFFFFFFFFFFF0BB00FFFFFFFFFFF0BB00FFFFFFFFFFFF00FFF
+                    FFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0BB00F
+                    FFFFFFFF00F0BB00FFFFFFF0B00F0BB00FFFFFF0B00FF0B00FFFFFF0BB000BB0
+                    0FFFFFFF0BBBBB00FFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFF}
+                end
+                object Panel34: TPanel
+                  Left = 178
+                  Top = 0
+                  Width = 61
+                  Height = 25
+                  Align = alRight
+                  BevelOuter = bvNone
+                  TabOrder = 2
+                  object btnCancelar: TButton
+                    Left = 0
+                    Top = 1
+                    Width = 58
+                    Height = 23
+                    Caption = '&Nuevo'
+                    TabOrder = 0
+                    OnClick = btnCancelarClick
+                  end
+                end
+              end
+              object profcab: TMaskEdit
+                Left = 51
+                Top = 72
+                Width = 163
+                Height = 21
+                CharCase = ecUpperCase
+                TabOrder = 5
+                OnChange = profcabChange
+                OnKeyDown = profcabKeyDown
+                OnKeyUp = profcabKeyUp
+              end
+              object btnBuscarMedicoCabecera: TBitBtn
+                Left = 216
+                Top = 72
+                Width = 20
+                Height = 22
+                Hint = 'Buscar M'#233'dico de Cabecera'
+                ParentShowHint = False
+                ShowHint = True
+                TabOrder = 6
+                OnClick = btnBuscarMedicoCabeceraClick
+                Glyph.Data = {
+                  F6000000424DF600000000000000760000002800000010000000100000000100
+                  0400000000008000000000000000000000001000000010000000000000000000
+                  8000008000000080800080000000800080008080000080808000C0C0C0000000
+                  FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+                  FFFFFFFFFFF000FFFFFFFFFFFF0BB00FFFFFFFFFFF0BB00FFFFFFFFFFFF00FFF
+                  FFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0BB00F
+                  FFFFFFFF00F0BB00FFFFFFF0B00F0BB00FFFFFF0B00FF0B00FFFFFF0BB000BB0
+                  0FFFFFFF0BBBBB00FFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFF}
+              end
+            end
+            object Panel29: TPanel
+              Left = 0
+              Top = 0
+              Width = 346
+              Height = 95
+              Align = alClient
+              BevelOuter = bvNone
+              TabOrder = 1
+              object Label2: TLabel
+                Left = 37
+                Top = 0
+                Width = 23
+                Height = 13
+                Alignment = taRightJustify
+                Caption = 'Obra'
+              end
+              object Label3: TLabel
+                Left = 29
+                Top = 11
+                Width = 32
+                Height = 13
+                Alignment = taRightJustify
+                Caption = 'Social:'
+              end
+              object nos: TLabel
+                Left = 138
+                Top = 0
+                Width = 60
+                Height = 13
+                Caption = '                    '
+                Font.Charset = DEFAULT_CHARSET
+                Font.Color = clNavy
+                Font.Height = -11
+                Font.Name = 'MS Sans Serif'
+                Font.Style = []
+                ParentFont = False
+              end
+              object Label6: TLabel
+                Left = 16
+                Top = 25
+                Width = 46
+                Height = 13
+                Alignment = taRightJustify
+                Caption = 'Nro. Doc.'
+              end
+              object Label7: TLabel
+                Left = 25
+                Top = 36
+                Width = 37
+                Height = 13
+                Alignment = taRightJustify
+                Caption = 'Afiliado:'
+              end
+              object Label5: TLabel
+                Left = 8
+                Top = 76
+                Width = 53
+                Height = 13
+                Alignment = taRightJustify
+                Caption = 'C'#243'd. Diag.:'
+              end
+              object Label13: TLabel
+                Left = 138
+                Top = 13
+                Width = 24
+                Height = 13
+                Caption = 'U.B.:'
+                Font.Charset = DEFAULT_CHARSET
+                Font.Color = clBlack
+                Font.Height = -11
+                Font.Name = 'MS Sans Serif'
+                Font.Style = []
+                ParentFont = False
+              end
+              object UB: TLabel
+                Left = 196
+                Top = 13
+                Width = 3
+                Height = 13
+                Alignment = taRightJustify
+                Font.Charset = DEFAULT_CHARSET
+                Font.Color = clNavy
+                Font.Height = -11
+                Font.Name = 'MS Sans Serif'
+                Font.Style = []
+                ParentFont = False
+              end
+              object Label14: TLabel
+                Left = 213
+                Top = 13
+                Width = 25
+                Height = 13
+                Caption = 'U.G.:'
+                Font.Charset = DEFAULT_CHARSET
+                Font.Color = clBlack
+                Font.Height = -11
+                Font.Name = 'MS Sans Serif'
+                Font.Style = []
+                ParentFont = False
+              end
+              object UG: TLabel
+                Left = 269
+                Top = 13
+                Width = 6
+                Height = 13
+                Alignment = taRightJustify
+                Caption = '  '
+                Font.Charset = DEFAULT_CHARSET
+                Font.Color = clNavy
+                Font.Height = -11
+                Font.Name = 'MS Sans Serif'
+                Font.Style = []
+                ParentFont = False
+              end
+              object Label83: TLabel
+                Left = 14
+                Top = 48
+                Width = 45
+                Height = 13
+                Alignment = taRightJustify
+                Caption = 'Fecha de'
+              end
+              object Label86: TLabel
+                Left = 24
+                Top = 59
+                Width = 36
+                Height = 13
+                Alignment = taRightJustify
+                Caption = 'Pedido:'
+              end
+              object Label89: TLabel
+                Left = 129
+                Top = 53
+                Width = 59
+                Height = 13
+                Alignment = taRightJustify
+                Caption = 'Obs. Diagn.:'
+              end
+              object ddiag: TLabel
+                Left = 128
+                Top = 77
+                Width = 60
+                Height = 13
+                Caption = '                    '
+                Font.Charset = DEFAULT_CHARSET
+                Font.Color = clNavy
+                Font.Height = -11
+                Font.Name = 'MS Sans Serif'
+                Font.Style = []
+                ParentFont = False
+              end
+              object idprof: TLabel
+                Left = 192
+                Top = 72
+                Width = 18
+                Height = 13
+                Caption = '      '
+                Font.Charset = DEFAULT_CHARSET
+                Font.Color = clNavy
+                Font.Height = -11
+                Font.Name = 'MS Sans Serif'
+                Font.Style = []
+                ParentFont = False
+                Visible = False
+              end
+              object codos: TMaskEdit
+                Left = 64
+                Top = 2
+                Width = 48
+                Height = 21
+                EditMask = '999999;1; '
+                MaxLength = 6
+                TabOrder = 0
+                Text = '      '
+                OnKeyDown = codosKeyDown
+              end
+              object BuscarObraSocial: TBitBtn
+                Left = 115
+                Top = 2
+                Width = 20
+                Height = 22
+                Hint = 'Buscar Obra Social'
+                ParentShowHint = False
+                ShowHint = True
+                TabOrder = 1
+                OnClick = BuscarObraSocialClick
+                Glyph.Data = {
+                  F6000000424DF600000000000000760000002800000010000000100000000100
+                  0400000000008000000000000000000000001000000010000000000000000000
+                  8000008000000080800080000000800080008080000080808000C0C0C0000000
+                  FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+                  FFFFFFFFFFF000FFFFFFFFFFFF0BB00FFFFFFFFFFF0BB00FFFFFFFFFFFF00FFF
+                  FFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0BB00F
+                  FFFFFFFF00F0BB00FFFFFFF0B00F0BB00FFFFFF0B00FF0B00FFFFFF0BB000BB0
+                  0FFFFFFF0BBBBB00FFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFF}
+              end
+              object nrodoc: TMaskEdit
+                Left = 64
+                Top = 27
+                Width = 62
+                Height = 21
+                TabOrder = 2
+                OnKeyDown = nrodocKeyDown
+              end
+              object nombre: TMaskEdit
+                Left = 128
+                Top = 27
+                Width = 147
+                Height = 21
+                CharCase = ecUpperCase
+                Enabled = False
+                TabOrder = 3
+                OnKeyDown = nombreKeyDown
+              end
+              object iddiag: TMaskEdit
+                Left = 63
+                Top = 73
+                Width = 39
+                Height = 21
+                CharCase = ecUpperCase
+                MaxLength = 5
+                TabOrder = 4
+                OnKeyDown = iddiagKeyDown
+              end
+              object btnBuscarAfiliado: TBitBtn
+                Left = 278
+                Top = 27
+                Width = 20
+                Height = 22
+                Hint = 'Buscar Afiliado'
+                ParentShowHint = False
+                ShowHint = True
+                TabOrder = 5
+                OnClick = btnBuscarAfiliadoClick
+                Glyph.Data = {
+                  F6000000424DF600000000000000760000002800000010000000100000000100
+                  0400000000008000000000000000000000001000000010000000000000000000
+                  8000008000000080800080000000800080008080000080808000C0C0C0000000
+                  FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+                  FFFFFFFFFFF000FFFFFFFFFFFF0BB00FFFFFFFFFFF0BB00FFFFFFFFFFFF00FFF
+                  FFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0BB00F
+                  FFFFFFFF00F0BB00FFFFFFF0B00F0BB00FFFFFF0B00FF0B00FFFFFF0BB000BB0
+                  0FFFFFFF0BBBBB00FFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFF}
+              end
+              object fepedido: TMaskEdit
+                Left = 64
+                Top = 50
+                Width = 55
+                Height = 21
+                EditMask = '99/99/99;1; '
+                MaxLength = 8
+                TabOrder = 6
+                Text = '  /  /  '
+                OnKeyDown = fepedidoKeyDown
+              end
+              object btnBuscarDiagnostico: TBitBtn
+                Left = 105
+                Top = 73
+                Width = 20
+                Height = 22
+                Hint = 'Buscar Diagn'#243'stico'
+                ParentShowHint = False
+                ShowHint = True
+                TabOrder = 7
+                OnClick = btnBuscarDiagnosticoClick
+                Glyph.Data = {
+                  F6000000424DF600000000000000760000002800000010000000100000000100
+                  0400000000008000000000000000000000001000000010000000000000000000
+                  8000008000000080800080000000800080008080000080808000C0C0C0000000
+                  FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+                  FFFFFFFFFFF000FFFFFFFFFFFF0BB00FFFFFFFFFFF0BB00FFFFFFFFFFFF00FFF
+                  FFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0BB00F
+                  FFFFFFFF00F0BB00FFFFFFF0B00F0BB00FFFFFF0B00FF0B00FFFFFF0BB000BB0
+                  0FFFFFFF0BBBBB00FFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFF}
+              end
+              object obsdiagnostico: TMaskEdit
+                Left = 192
+                Top = 50
+                Width = 83
+                Height = 21
+                CharCase = ecUpperCase
+                TabOrder = 8
+                OnKeyDown = obsdiagnosticoKeyDown
+              end
+            end
+          end
+          object Panel3: TPanel
+            Left = 0
+            Top = 121
+            Width = 585
+            Height = 121
+            Align = alClient
+            BevelOuter = bvNone
+            TabOrder = 1
+            object Splitter1: TSplitter
+              Left = 271
+              Top = 0
+              Width = 2
+              Height = 121
+            end
+            object Panel5: TPanel
+              Left = 0
+              Top = 0
+              Width = 271
+              Height = 121
+              Align = alLeft
+              BevelOuter = bvNone
+              TabOrder = 0
+              object Panel6: TPanel
+                Left = 0
+                Top = 0
+                Width = 271
+                Height = 28
+                Align = alTop
+                BevelOuter = bvNone
+                Enabled = False
+                TabOrder = 0
+                object Label15: TLabel
+                  Left = 4
+                  Top = 1
+                  Width = 22
+                  Height = 13
+                  Alignment = taRightJustify
+                  Caption = 'C'#243'd.'
+                end
+                object detaceptada: TLabel
+                  Left = 101
+                  Top = 0
+                  Width = 60
+                  Height = 13
+                  Caption = '                    '
+                  Font.Charset = DEFAULT_CHARSET
+                  Font.Color = clNavy
+                  Font.Height = -11
+                  Font.Name = 'MS Sans Serif'
+                  Font.Style = []
+                  ParentFont = False
+                end
+                object Label47: TLabel
+                  Left = 3
+                  Top = 12
+                  Width = 23
+                  Height = 13
+                  Alignment = taRightJustify
+                  Caption = 'Det.:'
+                end
+                object obs: TLabel
+                  Left = 141
+                  Top = 0
+                  Width = 24
+                  Height = 13
+                  Caption = '        '
+                  Font.Charset = DEFAULT_CHARSET
+                  Font.Color = clMaroon
+                  Font.Height = -11
+                  Font.Name = 'MS Sans Serif'
+                  Font.Style = []
+                  ParentFont = False
+                  Visible = False
+                end
+                object nn1: TLabel
+                  Left = 99
+                  Top = 14
+                  Width = 33
+                  Height = 13
+                  Caption = '           '
+                  Font.Charset = DEFAULT_CHARSET
+                  Font.Color = clNavy
+                  Font.Height = -11
+                  Font.Name = 'MS Sans Serif'
+                  Font.Style = []
+                  ParentFont = False
+                end
+                object codautorizado: TMaskEdit
+                  Left = 29
+                  Top = 2
+                  Width = 44
+                  Height = 21
+                  EditMask = '9999;1; '
+                  MaxLength = 4
+                  TabOrder = 0
+                  Text = '    '
+                  OnChange = codautorizadoChange
+                  OnKeyDown = codautorizadoKeyDown
+                  OnKeyUp = codautorizadoKeyUp
+                end
+                object BuscarCodigosAutorizados: TBitBtn
+                  Left = 76
+                  Top = 2
+                  Width = 20
+                  Height = 22
+                  Hint = 'Buscar Determinaci'#243'n'
+                  ParentShowHint = False
+                  ShowHint = True
+                  TabOrder = 1
+                  OnClick = BuscarCodigosAutorizadosClick
+                  Glyph.Data = {
+                    F6000000424DF600000000000000760000002800000010000000100000000100
+                    0400000000008000000000000000000000001000000010000000000000000000
+                    8000008000000080800080000000800080008080000080808000C0C0C0000000
+                    FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+                    FFFFFFFFFFF000FFFFFFFFFFFF0BB00FFFFFFFFFFF0BB00FFFFFFFFFFFF00FFF
+                    FFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0BB00F
+                    FFFFFFFF00F0BB00FFFFFFF0B00F0BB00FFFFFF0B00FF0B00FFFFFF0BB000BB0
+                    0FFFFFFF0BBBBB00FFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFF}
+                end
+              end
+              object Panel20: TPanel
+                Left = 0
+                Top = 28
+                Width = 271
+                Height = 93
+                Align = alClient
+                BevelInner = bvLowered
+                TabOrder = 1
+                object CA: TStringGrid
+                  Left = 2
+                  Top = 2
+                  Width = 267
+                  Height = 89
+                  Align = alClient
+                  BorderStyle = bsNone
+                  DefaultRowHeight = 15
+                  FixedCols = 0
+                  RowCount = 100
+                  Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowSelect]
+                  TabOrder = 0
+                  OnDblClick = CADblClick
+                  OnKeyDown = CAKeyDown
+                  ColWidths = (
+                    33
+                    164
+                    57
+                    52
+                    64)
+                end
+              end
+            end
+            object Panel4: TPanel
+              Left = 273
+              Top = 0
+              Width = 312
+              Height = 121
+              Align = alClient
+              BevelOuter = bvNone
+              TabOrder = 1
+              object Panel7: TPanel
+                Left = 0
+                Top = 0
+                Width = 312
+                Height = 28
+                Align = alTop
+                BevelOuter = bvNone
+                TabOrder = 0
+                object detrechazada: TLabel
+                  Left = 95
+                  Top = 0
+                  Width = 60
+                  Height = 13
+                  Caption = '                    '
+                  Font.Charset = DEFAULT_CHARSET
+                  Font.Color = clNavy
+                  Font.Height = -11
+                  Font.Name = 'MS Sans Serif'
+                  Font.Style = []
+                  ParentFont = False
+                end
+                object Label18: TLabel
+                  Left = 3
+                  Top = 1
+                  Width = 22
+                  Height = 13
+                  Alignment = taRightJustify
+                  Caption = 'C'#243'd.'
+                end
+                object Label50: TLabel
+                  Left = 2
+                  Top = 12
+                  Width = 23
+                  Height = 13
+                  Alignment = taRightJustify
+                  Caption = 'Det.:'
+                end
+                object nn2: TLabel
+                  Left = 95
+                  Top = 13
+                  Width = 60
+                  Height = 13
+                  Caption = '                    '
+                  Font.Charset = DEFAULT_CHARSET
+                  Font.Color = clNavy
+                  Font.Height = -11
+                  Font.Name = 'MS Sans Serif'
+                  Font.Style = []
+                  ParentFont = False
+                end
+                object codrechazado: TMaskEdit
+                  Left = 26
+                  Top = 2
+                  Width = 44
+                  Height = 21
+                  EditMask = '9999;1; '
+                  MaxLength = 4
+                  TabOrder = 0
+                  Text = '    '
+                  OnChange = codrechazadoChange
+                  OnKeyDown = codrechazadoKeyDown
+                  OnKeyUp = codrechazadoKeyUp
+                end
+                object BuscarCodigosRechazados: TBitBtn
+                  Left = 73
+                  Top = 2
+                  Width = 20
+                  Height = 22
+                  Hint = 'Buscar Determinaci'#243'n'
+                  ParentShowHint = False
+                  ShowHint = True
+                  TabOrder = 1
+                  OnClick = BuscarCodigosRechazadosClick
+                  Glyph.Data = {
+                    F6000000424DF600000000000000760000002800000010000000100000000100
+                    0400000000008000000000000000000000001000000010000000000000000000
+                    8000008000000080800080000000800080008080000080808000C0C0C0000000
+                    FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+                    FFFFFFFFFFF000FFFFFFFFFFFF0BB00FFFFFFFFFFF0BB00FFFFFFFFFFFF00FFF
+                    FFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0BB00F
+                    FFFFFFFF00F0BB00FFFFFFF0B00F0BB00FFFFFF0B00FF0B00FFFFFF0BB000BB0
+                    0FFFFFFF0BBBBB00FFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFF}
+                end
+              end
+              object Panel21: TPanel
+                Left = 0
+                Top = 28
+                Width = 312
+                Height = 93
+                Align = alClient
+                BevelInner = bvLowered
+                TabOrder = 1
+                object CR: TStringGrid
+                  Left = 2
+                  Top = 2
+                  Width = 308
+                  Height = 89
+                  Align = alClient
+                  BorderStyle = bsNone
+                  ColCount = 2
+                  DefaultRowHeight = 15
+                  FixedCols = 0
+                  RowCount = 100
+                  Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowSelect]
+                  TabOrder = 0
+                  OnDblClick = CRDblClick
+                  OnKeyDown = CRKeyDown
+                  ColWidths = (
+                    32
+                    219)
+                end
+              end
+            end
+          end
+          object Panel10: TPanel
+            Left = 0
+            Top = 0
+            Width = 585
+            Height = 26
+            Align = alTop
+            BevelOuter = bvNone
+            TabOrder = 2
+            object Panel22: TPanel
+              Left = 520
+              Top = 0
+              Width = 65
+              Height = 26
+              Align = alRight
+              Alignment = taRightJustify
+              BevelOuter = bvNone
+              TabOrder = 0
+              object btnRegistrar: TButton
+                Left = 4
+                Top = 2
+                Width = 58
+                Height = 23
+                Caption = '&Registrar'
+                Enabled = False
+                TabOrder = 0
+                OnClick = btnRegistrarClick
+              end
+            end
+            object Panel11: TPanel
+              Left = 273
+              Top = 0
+              Width = 247
+              Height = 26
+              Align = alRight
+              BevelOuter = bvNone
+              TabOrder = 1
+              object Panel30: TPanel
+                Left = 119
+                Top = 0
+                Width = 129
+                Height = 26
+                Align = alLeft
+                BevelOuter = bvNone
+                TabOrder = 0
+                object totreceta: TLabel
+                  Left = 120
+                  Top = 13
+                  Width = 6
+                  Height = 13
+                  Alignment = taRightJustify
+                  Caption = '0'
+                  Font.Charset = DEFAULT_CHARSET
+                  Font.Color = clNavy
+                  Font.Height = -11
+                  Font.Name = 'MS Sans Serif'
+                  Font.Style = []
+                  ParentFont = False
+                end
+                object tope: TLabel
+                  Left = 84
+                  Top = 1
+                  Width = 42
+                  Height = 13
+                  Alignment = taRightJustify
+                  Caption = '            0'
+                  Font.Charset = DEFAULT_CHARSET
+                  Font.Color = clNavy
+                  Font.Height = -11
+                  Font.Name = 'MS Sans Serif'
+                  Font.Style = []
+                  ParentFont = False
+                end
+                object Label24: TLabel
+                  Left = 3
+                  Top = 13
+                  Width = 57
+                  Height = 13
+                  Alignment = taRightJustify
+                  Caption = 'Tot.Receta:'
+                  Font.Charset = DEFAULT_CHARSET
+                  Font.Color = clBlack
+                  Font.Height = -11
+                  Font.Name = 'MS Sans Serif'
+                  Font.Style = []
+                  ParentFont = False
+                end
+                object Label36: TLabel
+                  Left = 3
+                  Top = 1
+                  Width = 55
+                  Height = 13
+                  Alignment = taRightJustify
+                  Caption = 'Tope Fact.:'
+                  Font.Charset = DEFAULT_CHARSET
+                  Font.Color = clBlack
+                  Font.Height = -11
+                  Font.Name = 'MS Sans Serif'
+                  Font.Style = []
+                  ParentFont = False
+                end
+              end
+              object Panel31: TPanel
+                Left = 0
+                Top = 0
+                Width = 119
+                Height = 26
+                Align = alLeft
+                BevelOuter = bvNone
+                TabOrder = 1
+                object Label23: TLabel
+                  Left = 1
+                  Top = 0
+                  Width = 52
+                  Height = 13
+                  Alignment = taRightJustify
+                  Caption = 'Disponible:'
+                  Font.Charset = DEFAULT_CHARSET
+                  Font.Color = clBlack
+                  Font.Height = -11
+                  Font.Name = 'MS Sans Serif'
+                  Font.Style = []
+                  ParentFont = False
+                end
+                object Label25: TLabel
+                  Left = 3
+                  Top = 13
+                  Width = 50
+                  Height = 13
+                  Alignment = taRightJustify
+                  Caption = 'Total Mes:'
+                  Font.Charset = DEFAULT_CHARSET
+                  Font.Color = clBlack
+                  Font.Height = -11
+                  Font.Name = 'MS Sans Serif'
+                  Font.Style = []
+                  ParentFont = False
+                end
+                object totmes: TLabel
+                  Left = 77
+                  Top = 13
+                  Width = 42
+                  Height = 13
+                  Alignment = taRightJustify
+                  Caption = '            0'
+                  Font.Charset = DEFAULT_CHARSET
+                  Font.Color = clNavy
+                  Font.Height = -11
+                  Font.Name = 'MS Sans Serif'
+                  Font.Style = []
+                  ParentFont = False
+                end
+                object disponible: TLabel
+                  Left = 77
+                  Top = 0
+                  Width = 42
+                  Height = 13
+                  Alignment = taRightJustify
+                  Caption = '            0'
+                  Font.Charset = DEFAULT_CHARSET
+                  Font.Color = clNavy
+                  Font.Height = -11
+                  Font.Name = 'MS Sans Serif'
+                  Font.Style = []
+                  ParentFont = False
+                end
+              end
+            end
+            object Panel32: TPanel
+              Left = 0
+              Top = 0
+              Width = 233
+              Height = 26
+              Align = alLeft
+              BevelOuter = bvNone
+              TabOrder = 2
+              object Label19: TLabel
+                Left = 23
+                Top = 2
+                Width = 37
+                Height = 13
+                Alignment = taRightJustify
+                Caption = 'N'#250'mero'
+              end
+              object Label20: TLabel
+                Left = 14
+                Top = 13
+                Width = 47
+                Height = 13
+                Alignment = taRightJustify
+                Caption = 'de Orden:'
+              end
+              object Label1: TLabel
+                Left = 144
+                Top = 2
+                Width = 30
+                Height = 13
+                Alignment = taRightJustify
+                Caption = 'Fecha'
+              end
+              object Label21: TLabel
+                Left = 137
+                Top = 13
+                Width = 38
+                Height = 13
+                Alignment = taRightJustify
+                Caption = 'Ingreso:'
+              end
+              object nroauditoria: TMaskEdit
+                Left = 64
+                Top = 4
+                Width = 69
+                Height = 21
+                EditMask = '9999999999;1; '
+                MaxLength = 10
+                TabOrder = 0
+                Text = '          '
+                OnKeyDown = nroauditoriaKeyDown
+              end
+              object fecha: TMaskEdit
+                Left = 178
+                Top = 4
+                Width = 53
+                Height = 21
+                EditMask = '99/99/99;1; '
+                MaxLength = 8
+                TabOrder = 1
+                Text = '  /  /  '
+                OnKeyDown = fechaKeyDown
+              end
+            end
+          end
+          object Panel12: TPanel
+            Left = 0
+            Top = 306
+            Width = 585
+            Height = 29
+            Align = alBottom
+            BevelInner = bvLowered
+            TabOrder = 3
+            object Label76: TLabel
+              Left = 5
+              Top = 2
+              Width = 39
+              Height = 13
+              Alignment = taRightJustify
+              Caption = 'Ob.Soc.'
+            end
+            object Label78: TLabel
+              Left = 17
+              Top = 13
+              Width = 27
+              Height = 13
+              Alignment = taRightJustify
+              Caption = 'Fact.:'
+            end
+            object osf: TLabel
+              Left = 121
+              Top = 9
+              Width = 60
+              Height = 13
+              Caption = '                    '
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clNavy
+              Font.Height = -11
+              Font.Name = 'MS Sans Serif'
+              Font.Style = []
+              ParentFont = False
+            end
+            object codosfact: TMaskEdit
+              Left = 47
+              Top = 4
+              Width = 48
+              Height = 21
+              EditMask = '999999;1; '
+              MaxLength = 6
+              TabOrder = 0
+              Text = '      '
+              OnKeyDown = codosfactKeyDown
+            end
+            object btnBuscarOSFact: TBitBtn
+              Left = 98
+              Top = 4
+              Width = 20
+              Height = 22
+              Hint = 'Buscar Obra Social'
+              ParentShowHint = False
+              ShowHint = True
+              TabOrder = 1
+              OnClick = btnBuscarOSFactClick
+              Glyph.Data = {
+                F6000000424DF600000000000000760000002800000010000000100000000100
+                0400000000008000000000000000000000001000000010000000000000000000
+                8000008000000080800080000000800080008080000080808000C0C0C0000000
+                FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+                FFFFFFFFFFF000FFFFFFFFFFFF0BB00FFFFFFFFFFF0BB00FFFFFFFFFFFF00FFF
+                FFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0BB00F
+                FFFFFFFF00F0BB00FFFFFFF0B00F0BB00FFFFFF0B00FF0B00FFFFFF0BB000BB0
+                0FFFFFFF0BBBBB00FFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFF}
+            end
+            object Panel43: TPanel
+              Left = 310
+              Top = 2
+              Width = 273
+              Height = 25
+              Align = alRight
+              BevelOuter = bvNone
+              TabOrder = 2
+              object Label17: TLabel
+                Left = 0
+                Top = 5
+                Width = 63
+                Height = 13
+                Alignment = taRightJustify
+                Caption = 'Observaci'#243'n:'
+              end
+              object observacion: TMaskEdit
+                Left = 64
+                Top = 2
+                Width = 205
+                Height = 21
+                CharCase = ecUpperCase
+                TabOrder = 0
+                OnKeyDown = observacionKeyDown
+                OnKeyUp = observacionKeyUp
+              end
+            end
+          end
+          object Panel16: TPanel
+            Left = 0
+            Top = 245
+            Width = 585
+            Height = 61
+            Align = alBottom
+            BevelInner = bvLowered
+            BorderWidth = 1
+            TabOrder = 4
+            Visible = False
+            object HistoriaClinica: TStringGrid
+              Left = 3
+              Top = 3
+              Width = 579
+              Height = 55
+              Align = alClient
+              BorderStyle = bsNone
+              ColCount = 2
+              DefaultRowHeight = 16
+              FixedCols = 0
+              RowCount = 1000
+              FixedRows = 0
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clBlack
+              Font.Height = -12
+              Font.Name = 'Courier New'
+              Font.Style = []
+              Options = [goFixedVertLine, goFixedHorzLine, goRangeSelect]
+              ParentFont = False
+              TabOrder = 0
+              ColWidths = (
+                8
+                966)
+            end
+          end
+        end
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'I&nformes'
+      ImageIndex = 1
+      OnShow = TabSheet2Show
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
+      object Panel15: TPanel
+        Left = 0
+        Top = 0
+        Width = 597
+        Height = 347
+        Align = alClient
+        BevelInner = bvLowered
+        BorderWidth = 4
+        TabOrder = 0
+        object Panel8: TPanel
+          Left = 453
+          Top = 6
+          Width = 138
+          Height = 335
+          Align = alRight
+          BevelOuter = bvNone
+          TabOrder = 1
+          object Panel9: TPanel
+            Left = 0
+            Top = 294
+            Width = 138
+            Height = 41
+            Align = alBottom
+            BevelOuter = bvNone
+            TabOrder = 0
+            object btnCerrar: TButton
+              Left = 3
+              Top = 10
+              Width = 129
+              Height = 25
+              Caption = '&Cerrar'
+              TabOrder = 0
+              OnClick = btnCerrarClick
+            end
+          end
+          object btnDispositivo: TBitBtn
+            Left = 5
+            Top = 8
+            Width = 129
+            Height = 25
+            Caption = '&Dispositivo de Salida'
+            TabOrder = 1
+            OnClick = btnDispositivoClick
+          end
+          object btnEmitir: TBitBtn
+            Left = 6
+            Top = 38
+            Width = 128
+            Height = 25
+            Caption = '&Generar Informe'
+            TabOrder = 2
+            OnClick = btnEmitirClick
+          end
+          object btnFax: TBitBtn
+            Left = 6
+            Top = 88
+            Width = 128
+            Height = 25
+            Caption = '&Enviar Datos por FAX'
+            TabOrder = 3
+            OnClick = btnFaxClick
+          end
+          object exportarExcel: TBitBtn
+            Left = 6
+            Top = 128
+            Width = 128
+            Height = 25
+            Caption = 'E&xportar Datos a Excel'
+            TabOrder = 4
+            OnClick = exportarExcelClick
+          end
+        end
+        object GroupBox2: TGroupBox
+          Left = 11
+          Top = 9
+          Width = 330
+          Height = 131
+          Caption = ' Informes de Ordenes Auditadas '
+          TabOrder = 0
+          object Label26: TLabel
+            Left = 105
+            Top = 16
+            Width = 34
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Desde:'
+          end
+          object Label27: TLabel
+            Left = 219
+            Top = 15
+            Width = 31
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Hasta:'
+          end
+          object Label28: TLabel
+            Left = 105
+            Top = 40
+            Width = 34
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Desde:'
+          end
+          object Label29: TLabel
+            Left = 219
+            Top = 39
+            Width = 31
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Hasta:'
+          end
+          object Label42: TLabel
+            Left = 102
+            Top = 108
+            Width = 34
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Desde:'
+          end
+          object Label43: TLabel
+            Left = 217
+            Top = 108
+            Width = 31
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Hasta:'
+          end
+          object desdeNro: TMaskEdit
+            Left = 140
+            Top = 13
+            Width = 69
+            Height = 21
+            EditMask = '9999999999;1; '
+            MaxLength = 10
+            TabOrder = 0
+            Text = '          '
+            OnKeyDown = desdeNroKeyDown
+          end
+          object hastaNro: TMaskEdit
+            Left = 251
+            Top = 13
+            Width = 70
+            Height = 21
+            EditMask = '9999999999;1; '
+            MaxLength = 10
+            TabOrder = 1
+            Text = '          '
+            OnKeyDown = hastaNroKeyDown
+          end
+          object desdeFecha: TMaskEdit
+            Left = 140
+            Top = 37
+            Width = 61
+            Height = 21
+            Enabled = False
+            EditMask = '99/99/99;1; '
+            MaxLength = 8
+            TabOrder = 2
+            Text = '  /  /  '
+            OnKeyDown = desdeFechaKeyDown
+          end
+          object hastaFecha: TMaskEdit
+            Left = 251
+            Top = 37
+            Width = 61
+            Height = 21
+            Enabled = False
+            EditMask = '99/99/99;1; '
+            MaxLength = 8
+            TabOrder = 3
+            Text = '  /  /  '
+            OnKeyDown = hastaFechaKeyDown
+          end
+          object retomarImpr: TEditValid
+            Left = 251
+            Top = 63
+            Width = 70
+            Height = 21
+            Enabled = False
+            MaxLength = 8
+            TabOrder = 4
+            OnChange = retomarImprChange
+            OnKeyDown = retomarImprKeyDown
+            Valid = tvEnteroPos
+          end
+          object CheckBox1: TCheckBox
+            Left = 251
+            Top = 87
+            Width = 69
+            Height = 17
+            Caption = '&Ajustar N'#186
+            TabOrder = 5
+            OnClick = CheckBox1Click
+          end
+          object df: TMaskEdit
+            Left = 141
+            Top = 105
+            Width = 59
+            Height = 21
+            Enabled = False
+            EditMask = '99/99/99;1; '
+            MaxLength = 8
+            TabOrder = 6
+            Text = '  /  /  '
+            OnKeyDown = dfKeyDown
+          end
+          object hf: TMaskEdit
+            Left = 251
+            Top = 105
+            Width = 61
+            Height = 21
+            Enabled = False
+            EditMask = '99/99/99;1; '
+            MaxLength = 8
+            TabOrder = 7
+            Text = '  /  /  '
+            OnKeyDown = hfKeyDown
+          end
+          object listNro: TRadioButton
+            Left = 8
+            Top = 14
+            Width = 81
+            Height = 17
+            Caption = '&Numeraci'#243'n'
+            TabOrder = 8
+            OnClick = listNroClick
+            OnKeyDown = listNroKeyDown
+          end
+          object listFecha: TRadioButton
+            Left = 9
+            Top = 38
+            Width = 53
+            Height = 17
+            Caption = '&Fecha'
+            TabOrder = 9
+            OnClick = listFechaClick
+            OnKeyDown = listFechaKeyDown
+          end
+          object retomar: TRadioButton
+            Left = 8
+            Top = 65
+            Width = 238
+            Height = 17
+            Caption = '&Retomar Impresi'#243'n a Partir del Ultimo N'#250'mero'
+            Checked = True
+            TabOrder = 10
+            TabStop = True
+          end
+          object imprimir: TCheckBox
+            Left = 10
+            Top = 86
+            Width = 225
+            Height = 17
+            Caption = 'Enviar Informe directamente a la Impresora'
+            Checked = True
+            State = cbChecked
+            TabOrder = 11
+          end
+          object ordenesfac: TRadioButton
+            Left = 8
+            Top = 107
+            Width = 57
+            Height = 17
+            Caption = 'F&echa'
+            TabOrder = 12
+            OnClick = ordenesfacClick
+            OnKeyDown = ordenesfacKeyDown
+          end
+        end
+        object GroupBox6: TGroupBox
+          Left = 11
+          Top = 141
+          Width = 330
+          Height = 161
+          Enabled = False
+          TabOrder = 2
+          object Label60: TLabel
+            Left = 225
+            Top = 19
+            Width = 34
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Desde:'
+          end
+          object Label61: TLabel
+            Left = 227
+            Top = 42
+            Width = 31
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Hasta:'
+          end
+          object fadesde: TMaskEdit
+            Left = 263
+            Top = 16
+            Width = 59
+            Height = 21
+            EditMask = '99/99/99;1; '
+            MaxLength = 8
+            TabOrder = 0
+            Text = '  /  /  '
+            OnKeyDown = fadesdeKeyDown
+          end
+          object fahasta: TMaskEdit
+            Left = 263
+            Top = 39
+            Width = 59
+            Height = 21
+            EditMask = '99/99/99;1; '
+            MaxLength = 8
+            TabOrder = 1
+            Text = '  /  /  '
+            OnKeyDown = fahastaKeyDown
+          end
+          object btnEleccionObsocial: TButton
+            Left = 9
+            Top = 55
+            Width = 149
+            Height = 25
+            Caption = '&Elecci'#243'n Obras Sociales'
+            TabOrder = 2
+            OnClick = btnEleccionObsocialClick
+          end
+          object InfDetAutorizadas: TRadioButton
+            Left = 8
+            Top = 18
+            Width = 185
+            Height = 17
+            Caption = 'Est. Determinaciones &Autorizadas'
+            Checked = True
+            TabOrder = 3
+            TabStop = True
+            OnKeyDown = InfDetAutorizadasKeyDown
+          end
+          object InfDetRechazadas: TRadioButton
+            Left = 8
+            Top = 37
+            Width = 193
+            Height = 17
+            Caption = 'Est. Determinaciones &Rechazadas'
+            TabOrder = 4
+            OnKeyDown = InfDetAutorizadasKeyDown
+          end
+          object infTabularOS: TRadioButton
+            Left = 8
+            Top = 121
+            Width = 217
+            Height = 17
+            Caption = 'Tot. &Diarios Obras Sociales (acumulado)'
+            TabOrder = 6
+            OnKeyDown = infTabularOSKeyDown
+          end
+          object infTabularInd: TRadioButton
+            Left = 8
+            Top = 139
+            Width = 233
+            Height = 17
+            Caption = 'Tot. Diarios Obras &Sociales (montos diarios)'
+            TabOrder = 7
+            OnKeyDown = infTabularOSKeyDown
+          end
+          object CheckBox5: TCheckBox
+            Left = 31
+            Top = 82
+            Width = 227
+            Height = 17
+            Caption = '&Generar Informe para Derivar a Obra Social'
+            Checked = True
+            State = cbChecked
+            TabOrder = 8
+          end
+          object infEstMedico: TRadioButton
+            Left = 8
+            Top = 103
+            Width = 145
+            Height = 17
+            Caption = 'Estad'#237'sticas por M'#233'dico'
+            TabOrder = 5
+            OnClick = infEstMedicoClick
+            OnKeyDown = infTabularOSKeyDown
+          end
+        end
+        object infauditoria: TCheckBox
+          Left = 19
+          Top = 140
+          Width = 249
+          Height = 17
+          Caption = '&Informes de Auditor'#237'a y Controles Estad'#237'sticos'
+          TabOrder = 3
+          OnClick = infauditoriaClick
+        end
+      end
+    end
+    object TabSheet5: TTabSheet
+      Caption = '&Utilidades y Transf. de Datos'
+      ImageIndex = 4
+      OnHide = TabSheet5Hide
+      OnShow = TabSheet5Show
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
+      object Panel23: TPanel
+        Left = 0
+        Top = 0
+        Width = 597
+        Height = 347
+        Align = alClient
+        BevelInner = bvLowered
+        BorderWidth = 4
+        TabOrder = 0
+        object Label111: TLabel
+          Left = 12
+          Top = 241
+          Width = 80
+          Height = 13
+          Alignment = taRightJustify
+          Caption = 'Script URL Act.: '
+        end
+        object Label112: TLabel
+          Left = 13
+          Top = 260
+          Width = 287
+          Height = 12
+          Caption = 'Esta opci'#243'n invoca un procedimiento RPC previamente programado.'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -9
+          Font.Name = 'Arial'
+          Font.Style = []
+          ParentFont = False
+        end
+        object GroupBox7: TGroupBox
+          Left = 10
+          Top = 8
+          Width = 575
+          Height = 77
+          Caption = ' Consultar Historia Cl'#237'nicia de Pacientes '
+          TabOrder = 0
+          object Label49: TLabel
+            Left = 39
+            Top = 18
+            Width = 23
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Obra'
+          end
+          object Label72: TLabel
+            Left = 31
+            Top = 29
+            Width = 32
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Social:'
+          end
+          object unos: TLabel
+            Left = 140
+            Top = 24
+            Width = 60
+            Height = 13
+            Caption = '                    '
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clNavy
+            Font.Height = -11
+            Font.Name = 'MS Sans Serif'
+            Font.Style = []
+            ParentFont = False
+          end
+          object Label74: TLabel
+            Left = 31
+            Top = 42
+            Width = 46
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Nro. Doc.'
+          end
+          object Label75: TLabel
+            Left = 13
+            Top = 53
+            Width = 37
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Afiliado:'
+          end
+          object unombre: TLabel
+            Left = 140
+            Top = 48
+            Width = 60
+            Height = 13
+            Caption = '                    '
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clNavy
+            Font.Height = -11
+            Font.Name = 'MS Sans Serif'
+            Font.Style = []
+            ParentFont = False
+          end
+          object ucodos: TMaskEdit
+            Left = 67
+            Top = 20
+            Width = 48
+            Height = 21
+            EditMask = '999999;1; '
+            MaxLength = 6
+            TabOrder = 0
+            Text = '      '
+            OnKeyDown = ucodosKeyDown
+          end
+          object uBuscarOS: TBitBtn
+            Left = 118
+            Top = 20
+            Width = 20
+            Height = 22
+            Hint = 'Buscar Obra Social'
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 1
+            OnClick = uBuscarOSClick
+            Glyph.Data = {
+              F6000000424DF600000000000000760000002800000010000000100000000100
+              0400000000008000000000000000000000001000000010000000000000000000
+              8000008000000080800080000000800080008080000080808000C0C0C0000000
+              FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+              FFFFFFFFFFF000FFFFFFFFFFFF0BB00FFFFFFFFFFF0BB00FFFFFFFFFFFF00FFF
+              FFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0BB00F
+              FFFFFFFF00F0BB00FFFFFFF0B00F0BB00FFFFFF0B00FF0B00FFFFFF0BB000BB0
+              0FFFFFFF0BBBBB00FFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFF}
+          end
+          object uNrodoc: TMaskEdit
+            Left = 52
+            Top = 44
+            Width = 62
+            Height = 21
+            TabOrder = 2
+            OnKeyDown = uNrodocKeyDown
+          end
+          object uBuscarAfiliado: TBitBtn
+            Left = 118
+            Top = 44
+            Width = 20
+            Height = 22
+            Hint = 'Buscar Afiliado'
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 3
+            OnClick = uBuscarAfiliadoClick
+            Glyph.Data = {
+              F6000000424DF600000000000000760000002800000010000000100000000100
+              0400000000008000000000000000000000001000000010000000000000000000
+              8000008000000080800080000000800080008080000080808000C0C0C0000000
+              FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+              FFFFFFFFFFF000FFFFFFFFFFFF0BB00FFFFFFFFFFF0BB00FFFFFFFFFFFF00FFF
+              FFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0BB00F
+              FFFFFFFF00F0BB00FFFFFFF0B00F0BB00FFFFFF0B00FF0B00FFFFFF0BB000BB0
+              0FFFFFFF0BBBBB00FFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFF}
+          end
+          object consultarHC: TButton
+            Left = 504
+            Top = 11
+            Width = 65
+            Height = 25
+            Caption = '&Consultar'
+            TabOrder = 4
+            OnClick = consultarHCClick
+          end
+          object btnFinalizar: TButton
+            Left = 505
+            Top = 39
+            Width = 65
+            Height = 25
+            Caption = '&Finalizar'
+            TabOrder = 5
+            OnClick = btnFinalizarClick
+          end
+        end
+        object GroupBox10: TGroupBox
+          Left = 10
+          Top = 90
+          Width = 192
+          Height = 145
+          Enabled = False
+          TabOrder = 1
+          object Label104: TLabel
+            Left = 29
+            Top = 18
+            Width = 42
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Procesar'
+          end
+          object Label106: TLabel
+            Left = 8
+            Top = 32
+            Width = 64
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Datos Fecha:'
+          end
+          object fechatrans: TMaskEdit
+            Left = 76
+            Top = 21
+            Width = 61
+            Height = 21
+            EditMask = '99/99/99;1; '
+            MaxLength = 8
+            TabOrder = 0
+            Text = '  /  /  '
+            OnKeyDown = fechatransKeyDown
+          end
+          object btnGenerarRegistros: TButton
+            Left = 8
+            Top = 84
+            Width = 160
+            Height = 25
+            Caption = '&Generar Registro de Ordenes'
+            TabOrder = 1
+            OnClick = btnGenerarRegistrosClick
+          end
+          object btnTransferirInternet: TButton
+            Left = 8
+            Top = 113
+            Width = 160
+            Height = 25
+            Caption = '&Transferir Datos a Internet'
+            Enabled = False
+            TabOrder = 2
+            OnClick = btnTransferirInternetClick
+          end
+          object btnExportarTablasMaestras: TButton
+            Left = 8
+            Top = 49
+            Width = 160
+            Height = 25
+            Caption = '&Exportar Tablas Maestras'
+            TabOrder = 3
+            OnClick = btnExportarTablasMaestrasClick
+          end
+        end
+        object CheckBox9: TCheckBox
+          Left = 16
+          Top = 88
+          Width = 177
+          Height = 17
+          Caption = ' Exportar Informaci'#243'n a Internet '
+          Enabled = False
+          TabOrder = 2
+          OnClick = CheckBox9Click
+        end
+        object GroupBox11: TGroupBox
+          Left = 205
+          Top = 91
+          Width = 233
+          Height = 121
+          Caption = ' Conexi'#243'n '
+          Enabled = False
+          TabOrder = 3
+          object Label107: TLabel
+            Left = 52
+            Top = 20
+            Width = 25
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Host:'
+          end
+          object Label108: TLabel
+            Left = 38
+            Top = 69
+            Width = 39
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Usuario:'
+          end
+          object Label109: TLabel
+            Left = 28
+            Top = 94
+            Width = 49
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Password:'
+          end
+          object Label110: TLabel
+            Left = 6
+            Top = 44
+            Width = 71
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Directorio FTP:'
+          end
+          object ftphost: TMaskEdit
+            Left = 80
+            Top = 17
+            Width = 143
+            Height = 21
+            TabOrder = 0
+          end
+          object usuario: TMaskEdit
+            Left = 80
+            Top = 66
+            Width = 143
+            Height = 21
+            TabOrder = 1
+          end
+          object contrasenia: TMaskEdit
+            Left = 80
+            Top = 91
+            Width = 143
+            Height = 21
+            PasswordChar = '*'
+            TabOrder = 2
+          end
+          object dirftp: TMaskEdit
+            Left = 80
+            Top = 41
+            Width = 143
+            Height = 21
+            TabOrder = 3
+          end
+        end
+        object conexiondirecta: TCheckBox
+          Left = 210
+          Top = 218
+          Width = 236
+          Height = 17
+          Caption = 'Conexi'#243'n Directa (ADSL, CableModem, etc.)'
+          Enabled = False
+          TabOrder = 4
+        end
+        object btnAplicarConexion: TButton
+          Left = 447
+          Top = 96
+          Width = 49
+          Height = 25
+          Caption = '&Aplicar'
+          Enabled = False
+          TabOrder = 5
+          OnClick = btnAplicarConexionClick
+        end
+        object theURL: TMaskEdit
+          Left = 92
+          Top = 238
+          Width = 345
+          Height = 21
+          Enabled = False
+          TabOrder = 6
+          Text = 
+            'http://centrobq.hostinggratisargentina.com/auditoria_actualizar.' +
+            'php'
+        end
+      end
+    end
+    object TabSheet3: TTabSheet
+      Caption = '&Par'#225'metros'
+      ImageIndex = 2
+      OnHide = TabSheet3Hide
+      OnShow = TabSheet3Show
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
+      object Panel14: TPanel
+        Left = 0
+        Top = 0
+        Width = 597
+        Height = 347
+        Align = alClient
+        BevelInner = bvLowered
+        BorderWidth = 4
+        TabOrder = 0
+        object Label44: TLabel
+          Left = 250
+          Top = 212
+          Width = 146
+          Height = 13
+          Alignment = taRightJustify
+          Caption = 'Tama'#241'o Fuente C'#243'd. de Barra:'
+        end
+        object Label45: TLabel
+          Left = 430
+          Top = 212
+          Width = 71
+          Height = 13
+          Alignment = taRightJustify
+          Caption = 'Mov.Col.Scroll:'
+        end
+        object Label71: TLabel
+          Left = 229
+          Top = 303
+          Width = 72
+          Height = 13
+          Alignment = taRightJustify
+          Caption = '&Def./Mod. Fax:'
+        end
+        object Label22: TLabel
+          Left = 220
+          Top = 281
+          Width = 81
+          Height = 13
+          Alignment = taRightJustify
+          Caption = '&Imprimir Ordenes:'
+        end
+        object GroupBox1: TGroupBox
+          Left = 380
+          Top = 9
+          Width = 149
+          Height = 82
+          Caption = ' Ajustar N'#186'  de Orden '
+          TabOrder = 0
+          object Label16: TLabel
+            Left = 10
+            Top = 19
+            Width = 52
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Ultimo Nro.'
+          end
+          object Label41: TLabel
+            Left = 12
+            Top = 31
+            Width = 50
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Ingresado:'
+          end
+          object ultimoNro: TMaskEdit
+            Left = 66
+            Top = 22
+            Width = 76
+            Height = 21
+            TabOrder = 0
+            OnChange = ultimoNroChange
+            OnKeyDown = ultimoNroKeyDown
+          end
+          object btnAplicar: TButton
+            Left = 90
+            Top = 50
+            Width = 53
+            Height = 25
+            Caption = '&Aplicar'
+            TabOrder = 1
+            OnClick = btnAplicarClick
+          end
+        end
+        object GroupBox3: TGroupBox
+          Left = 12
+          Top = 9
+          Width = 358
+          Height = 124
+          Caption = ' Listado de Ordenes '
+          TabOrder = 1
+          object Label30: TLabel
+            Left = 13
+            Top = 19
+            Width = 39
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Entidad:'
+          end
+          object Label31: TLabel
+            Left = 17
+            Top = 36
+            Width = 71
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Cant. Items por'
+          end
+          object Label33: TLabel
+            Left = 12
+            Top = 49
+            Width = 76
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Linea de Deter.:'
+          end
+          object Label38: TLabel
+            Left = 150
+            Top = 38
+            Width = 50
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'N'#186' de Ord.'
+          end
+          object Label39: TLabel
+            Left = 146
+            Top = 51
+            Width = 54
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'por P'#225'gina:'
+          end
+          object Label32: TLabel
+            Left = 253
+            Top = 38
+            Width = 71
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Lineas de Sep.'
+          end
+          object Label40: TLabel
+            Left = 254
+            Top = 51
+            Width = 70
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'entre Ordenes:'
+          end
+          object Label62: TLabel
+            Left = 98
+            Top = 94
+            Width = 56
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Lineas Sep.'
+          end
+          object Label63: TLabel
+            Left = 102
+            Top = 107
+            Width = 52
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'entre P'#225'g.:'
+          end
+          object Label64: TLabel
+            Left = 188
+            Top = 94
+            Width = 56
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Lineas Sep.'
+          end
+          object Label65: TLabel
+            Left = 194
+            Top = 107
+            Width = 50
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'entre Ord.:'
+          end
+          object Label66: TLabel
+            Left = 8
+            Top = 94
+            Width = 57
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Cantidad de'
+          end
+          object Label67: TLabel
+            Left = 5
+            Top = 107
+            Width = 60
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Etiq. P'#225'gina:'
+          end
+          object Label46: TLabel
+            Left = 283
+            Top = 94
+            Width = 33
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Alto de'
+          end
+          object Label48: TLabel
+            Left = 281
+            Top = 105
+            Width = 36
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'P'#225'gina:'
+          end
+          object Entidad: TMaskEdit
+            Left = 56
+            Top = 16
+            Width = 295
+            Height = 21
+            TabOrder = 0
+            Text = 'CBLNSF'
+          end
+          object LineasDet: TEditValid
+            Left = 92
+            Top = 41
+            Width = 22
+            Height = 21
+            MaxLength = 2
+            TabOrder = 1
+            Text = '1'
+            Valid = tvEnteroPos
+          end
+          object Etiquetas: TEditValid
+            Left = 205
+            Top = 41
+            Width = 22
+            Height = 21
+            MaxLength = 2
+            TabOrder = 2
+            Text = '5'
+            Valid = tvEnteroPos
+          end
+          object lineasSep: TEditValid
+            Left = 329
+            Top = 41
+            Width = 22
+            Height = 21
+            MaxLength = 2
+            TabOrder = 3
+            Text = '5'
+            Valid = tvEnteroPos
+          end
+          object lineasSepPag: TEditValid
+            Left = 158
+            Top = 97
+            Width = 22
+            Height = 21
+            MaxLength = 2
+            TabOrder = 4
+            Text = '5'
+            Valid = tvEnteroPos
+          end
+          object lineaSepOrdenesTxt: TEditValid
+            Left = 248
+            Top = 97
+            Width = 22
+            Height = 21
+            MaxLength = 2
+            TabOrder = 5
+            Text = '5'
+            Valid = tvEnteroPos
+          end
+          object EtiqPag: TEditValid
+            Left = 69
+            Top = 97
+            Width = 22
+            Height = 21
+            MaxLength = 2
+            TabOrder = 6
+            Text = '5'
+            Valid = tvEnteroPos
+          end
+          object impresionModoTexto: TCheckBox
+            Left = 13
+            Top = 73
+            Width = 182
+            Height = 17
+            Caption = 'Impresi'#243'n R'#225'pida en Modo Texto'
+            TabOrder = 7
+          end
+          object activarSalto: TCheckBox
+            Left = 205
+            Top = 72
+            Width = 124
+            Height = 17
+            Caption = 'Activar Salto P'#225'gina'
+            TabOrder = 8
+          end
+          object altoPag: TEditValid
+            Left = 321
+            Top = 97
+            Width = 30
+            Height = 21
+            MaxLength = 2
+            TabOrder = 9
+            Text = '5'
+            Valid = tvEnteroPos
+          end
+        end
+        object fuente_barra: TMaskEdit
+          Left = 399
+          Top = 208
+          Width = 25
+          Height = 21
+          TabOrder = 2
+          Text = '16'
+        end
+        object scrollhc: TMaskEdit
+          Left = 504
+          Top = 208
+          Width = 25
+          Height = 21
+          TabOrder = 3
+          Text = '4'
+        end
+        object GroupBox5: TGroupBox
+          Left = 13
+          Top = 229
+          Width = 516
+          Height = 47
+          Caption = ' Consultar Laboratorios que Facturaron las Ordenes '
+          TabOrder = 4
+          object Label51: TLabel
+            Left = 13
+            Top = 15
+            Width = 37
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'N'#250'mero'
+          end
+          object Label52: TLabel
+            Left = 4
+            Top = 26
+            Width = 47
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'de Orden:'
+          end
+          object Label53: TLabel
+            Left = 132
+            Top = 15
+            Width = 104
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Fact. por Laboratorio.:'
+          end
+          object lab: TLabel
+            Left = 239
+            Top = 15
+            Width = 12
+            Height = 13
+            Caption = '    '
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clNavy
+            Font.Height = -11
+            Font.Name = 'MS Sans Serif'
+            Font.Style = []
+            ParentFont = False
+          end
+          object Label54: TLabel
+            Left = 132
+            Top = 28
+            Width = 71
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Denominaci'#243'n:'
+          end
+          object dl: TLabel
+            Left = 206
+            Top = 28
+            Width = 9
+            Height = 13
+            Caption = '   '
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clNavy
+            Font.Height = -11
+            Font.Name = 'MS Sans Serif'
+            Font.Style = []
+            ParentFont = False
+          end
+          object na: TMaskEdit
+            Left = 56
+            Top = 17
+            Width = 69
+            Height = 21
+            EditMask = '9999999999;1; '
+            MaxLength = 10
+            TabOrder = 0
+            Text = '          '
+            OnKeyDown = naKeyDown
+          end
+          object btnAnular: TButton
+            Left = 441
+            Top = 13
+            Width = 60
+            Height = 25
+            Caption = '&Anular'
+            Enabled = False
+            TabOrder = 1
+          end
+        end
+        object desactivarCod: TCheckBox
+          Left = 381
+          Top = 97
+          Width = 156
+          Height = 17
+          Caption = 'Desactivar C'#243'digo de Barra'
+          TabOrder = 5
+        end
+        object ingresos: TCheckBox
+          Left = 13
+          Top = 211
+          Width = 232
+          Height = 17
+          Caption = 'Registrar determinaciones autom'#225'ticamente'
+          TabOrder = 6
+        end
+        object CheckBox3: TCheckBox
+          Left = 15
+          Top = 280
+          Width = 200
+          Height = 17
+          Caption = '&Mod/Sel. Auditor'#237'a desde el N'#250'mero'
+          TabOrder = 7
+        end
+        object registrarDerivacion: TCheckBox
+          Left = 15
+          Top = 302
+          Width = 201
+          Height = 17
+          Caption = '&Registrar Fecha/Nro. de Derivaci'#243'n'
+          TabOrder = 8
+        end
+        object fax: TComboBox
+          Left = 304
+          Top = 300
+          Width = 225
+          Height = 21
+          ItemHeight = 0
+          TabOrder = 9
+          OnChange = faxChange
+        end
+        object imprOrdenes: TComboBox
+          Left = 304
+          Top = 277
+          Width = 225
+          Height = 21
+          ItemHeight = 0
+          TabOrder = 10
+          OnChange = imprOrdenesChange
+        end
+        object GroupBox4: TGroupBox
+          Left = 12
+          Top = 139
+          Width = 517
+          Height = 68
+          Enabled = False
+          TabOrder = 11
+          object Label34: TLabel
+            Left = 15
+            Top = 16
+            Width = 23
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Obra'
+          end
+          object Label35: TLabel
+            Left = 7
+            Top = 27
+            Width = 32
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Social:'
+          end
+          object oss: TLabel
+            Left = 119
+            Top = 21
+            Width = 60
+            Height = 13
+            Caption = '                    '
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clNavy
+            Font.Height = -11
+            Font.Name = 'MS Sans Serif'
+            Font.Style = []
+            ParentFont = False
+          end
+          object Label37: TLabel
+            Left = 9
+            Top = 40
+            Width = 30
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Monto'
+          end
+          object btnBorrarTope: TSpeedButton
+            Left = 488
+            Top = 41
+            Width = 23
+            Height = 22
+            Hint = 'Anular Valor para el Tope'
+            Flat = True
+            Glyph.Data = {
+              F6000000424DF600000000000000760000002800000010000000100000000100
+              0400000000008000000000000000000000001000000000000000000000000000
+              8000008000000080800080000000800080008080000080808000C0C0C0000000
+              FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFF000000000
+              FFFFFFF0F7777770FFFFFFF0F0808070FFFFFFF0F0807070FFFFFFF0F0808070
+              FFFFFFF0F0807070FFFFFFF0F0808070FFFFF0F0F0807070F0FFFF00F0808070
+              0FFFFFF0F0807070FFFFFFF070707070FFFFFF00000000000FFFFF0F88877777
+              0FFFFF00000000000FFFFFFFF07770FFFFFFFFFFF00000FFFFFF}
+            ParentShowHint = False
+            ShowHint = True
+            OnClick = btnBorrarTopeClick
+          end
+          object tot_m: TLabel
+            Left = 441
+            Top = 48
+            Width = 42
+            Height = 13
+            Alignment = taRightJustify
+            Caption = '            0'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clNavy
+            Font.Height = -11
+            Font.Name = 'MS Sans Serif'
+            Font.Style = []
+            ParentFont = False
+          end
+          object Label68: TLabel
+            Left = 371
+            Top = 10
+            Width = 78
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Recalcular Total'
+          end
+          object Label69: TLabel
+            Left = 396
+            Top = 22
+            Width = 54
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Mensual al:'
+          end
+          object Label70: TLabel
+            Left = 348
+            Top = 48
+            Width = 60
+            Height = 13
+            Caption = 'Monto Total:'
+          end
+          object Label73: TLabel
+            Left = 217
+            Top = 32
+            Width = 24
+            Height = 13
+            Caption = 'U.B.:'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -11
+            Font.Name = 'MS Sans Serif'
+            Font.Style = []
+            ParentFont = False
+          end
+          object UB1: TLabel
+            Left = 245
+            Top = 32
+            Width = 45
+            Height = 13
+            Alignment = taRightJustify
+            Caption = '               '
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clNavy
+            Font.Height = -11
+            Font.Name = 'MS Sans Serif'
+            Font.Style = []
+            ParentFont = False
+          end
+          object Label77: TLabel
+            Left = 301
+            Top = 32
+            Width = 25
+            Height = 13
+            Caption = 'U.G.:'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -11
+            Font.Name = 'MS Sans Serif'
+            Font.Style = []
+            ParentFont = False
+          end
+          object UG1: TLabel
+            Left = 330
+            Top = 32
+            Width = 45
+            Height = 13
+            Alignment = taRightJustify
+            Caption = '               '
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clNavy
+            Font.Height = -11
+            Font.Name = 'MS Sans Serif'
+            Font.Style = []
+            ParentFont = False
+          end
+          object Label101: TLabel
+            Left = 7
+            Top = 52
+            Width = 33
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Capita:'
+          end
+          object codos1: TMaskEdit
+            Left = 44
+            Top = 18
+            Width = 48
+            Height = 21
+            EditMask = '999999;1; '
+            MaxLength = 6
+            TabOrder = 0
+            Text = '      '
+            OnKeyDown = codos1KeyDown
+          end
+          object btnBuscarOS: TBitBtn
+            Left = 95
+            Top = 18
+            Width = 20
+            Height = 22
+            Hint = 'Buscar Obra Social'
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 1
+            OnClick = btnBuscarOSClick
+            Glyph.Data = {
+              F6000000424DF600000000000000760000002800000010000000100000000100
+              0400000000008000000000000000000000001000000010000000000000000000
+              8000008000000080800080000000800080008080000080808000C0C0C0000000
+              FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+              FFFFFFFFFFF000FFFFFFFFFFFF0BB00FFFFFFFFFFF0BB00FFFFFFFFFFFF00FFF
+              FFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0BB00F
+              FFFFFFFF00F0BB00FFFFFFF0B00F0BB00FFFFFF0B00FF0B00FFFFFF0BB000BB0
+              0FFFFFFF0BBBBB00FFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFF}
+          end
+          object monto: TEditValid
+            Left = 43
+            Top = 42
+            Width = 72
+            Height = 21
+            TabOrder = 2
+            OnKeyDown = montoKeyDown
+            Valid = tvDecimalPos
+          end
+          object btnRecalcularTM: TButton
+            Left = 119
+            Top = 41
+            Width = 87
+            Height = 23
+            Caption = '&Iniciar Proceso'
+            TabOrder = 3
+            OnClick = btnRecalcularTMClick
+          end
+          object fecha_rec: TMaskEdit
+            Left = 456
+            Top = 12
+            Width = 55
+            Height = 21
+            EditMask = '99/99/99;1; '
+            MaxLength = 8
+            TabOrder = 4
+            Text = '  /  /  '
+            OnKeyDown = fecha_recKeyDown
+          end
+          object recalcularMontos: TCheckBox
+            Left = 210
+            Top = 47
+            Width = 113
+            Height = 17
+            Caption = '&Recalcular Montos'
+            Checked = True
+            State = cbChecked
+            TabOrder = 5
+          end
+        end
+        object CheckBox4: TCheckBox
+          Left = 21
+          Top = 136
+          Width = 314
+          Height = 17
+          Caption = ' Montos Disponibles Fact. Obras Sociales/Recalcular Totales'
+          TabOrder = 12
+          OnClick = CheckBox4Click
+        end
+        object tablaOMS: TCheckBox
+          Left = 382
+          Top = 118
+          Width = 156
+          Height = 17
+          Caption = 'Utilidar Diagn'#243'sticos O.M.S.'
+          Checked = True
+          State = cbChecked
+          TabOrder = 13
+        end
+        object btnAplicarCambiosGenerales: TButton
+          Left = 532
+          Top = 13
+          Width = 54
+          Height = 25
+          Caption = '&Aplicar'
+          TabOrder = 14
+          OnClick = btnAplicarCambiosGeneralesClick
+        end
+      end
+    end
+    object TabSheet7: TTabSheet
+      Caption = '&Ajustes y Controles'
+      ImageIndex = 6
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
+      object Panel47: TPanel
+        Left = 0
+        Top = 0
+        Width = 597
+        Height = 347
+        Align = alClient
+        BevelInner = bvLowered
+        BorderWidth = 4
+        TabOrder = 0
+        object GroupBox9: TGroupBox
+          Left = 11
+          Top = 9
+          Width = 305
+          Height = 83
+          Caption = ' Observaci'#243'n Final '
+          TabOrder = 0
+          object Label102: TLabel
+            Left = 13
+            Top = 15
+            Width = 23
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Obra'
+          end
+          object Label103: TLabel
+            Left = 4
+            Top = 26
+            Width = 32
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Social:'
+          end
+          object nosobs: TLabel
+            Left = 115
+            Top = 21
+            Width = 60
+            Height = 13
+            Caption = '                    '
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clNavy
+            Font.Height = -11
+            Font.Name = 'MS Sans Serif'
+            Font.Style = []
+            ParentFont = False
+          end
+          object Label105: TLabel
+            Left = 11
+            Top = 41
+            Width = 63
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Observaci'#243'n:'
+          end
+          object codosobs: TMaskEdit
+            Left = 39
+            Top = 17
+            Width = 48
+            Height = 21
+            EditMask = '999999;1; '
+            MaxLength = 6
+            TabOrder = 0
+            Text = '      '
+            OnKeyDown = codosobsKeyDown
+          end
+          object BuscarOSObs: TBitBtn
+            Left = 91
+            Top = 17
+            Width = 20
+            Height = 22
+            Hint = 'Buscar Obra Social'
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 1
+            OnClick = BuscarOSObsClick
+            Glyph.Data = {
+              F6000000424DF600000000000000760000002800000010000000100000000100
+              0400000000008000000000000000000000001000000010000000000000000000
+              8000008000000080800080000000800080008080000080808000C0C0C0000000
+              FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFFFFFFFFFFF
+              FFFFFFFFFFF000FFFFFFFFFFFF0BB00FFFFFFFFFFF0BB00FFFFFFFFFFFF00FFF
+              FFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0B00FFFFFFFFFFFF0BB00F
+              FFFFFFFF00F0BB00FFFFFFF0B00F0BB00FFFFFF0B00FF0B00FFFFFF0BB000BB0
+              0FFFFFFF0BBBBB00FFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFF}
+          end
+          object observacionfinal: TMaskEdit
+            Left = 40
+            Top = 56
+            Width = 216
+            Height = 21
+            TabOrder = 2
+            OnKeyDown = observacionfinalKeyDown
+          end
+          object CheckBox8: TCheckBox
+            Left = 112
+            Top = 39
+            Width = 142
+            Height = 17
+            Caption = '&Asociar a Obra Social'
+            Checked = True
+            State = cbChecked
+            TabOrder = 3
+          end
+        end
+        object GroupBox8: TGroupBox
+          Left = 10
+          Top = 92
+          Width = 306
+          Height = 77
+          Caption = ' Reparar Fechas '
+          TabOrder = 1
+          object Label79: TLabel
+            Left = 10
+            Top = 22
+            Width = 69
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Ajustar Desde:'
+          end
+          object Label80: TLabel
+            Left = 155
+            Top = 22
+            Width = 71
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Hasta N'#250'mero:'
+          end
+          object Label81: TLabel
+            Left = 35
+            Top = 46
+            Width = 43
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Modificar'
+          end
+          object Label82: TLabel
+            Left = 27
+            Top = 57
+            Width = 51
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'por Fecha:'
+          end
+          object desdeNroAjuste: TMaskEdit
+            Left = 81
+            Top = 19
+            Width = 67
+            Height = 21
+            EditMask = '9999999999;1; '
+            MaxLength = 10
+            TabOrder = 0
+            Text = '          '
+            OnKeyDown = desdeNroAjusteKeyDown
+          end
+          object hastaNroAjuste: TMaskEdit
+            Left = 229
+            Top = 19
+            Width = 70
+            Height = 21
+            EditMask = '9999999999;1; '
+            MaxLength = 10
+            TabOrder = 1
+            Text = '          '
+            OnKeyDown = hastaNroAjusteKeyDown
+          end
+          object fechaAjuste: TMaskEdit
+            Left = 81
+            Top = 48
+            Width = 61
+            Height = 21
+            EditMask = '99/99/99;1; '
+            MaxLength = 8
+            TabOrder = 2
+            Text = '  /  /  '
+            OnKeyDown = fechaAjusteKeyDown
+          end
+          object btnAplicarAjuste: TButton
+            Left = 232
+            Top = 46
+            Width = 67
+            Height = 25
+            Caption = '&Reparar'
+            TabOrder = 3
+            OnClick = btnAplicarAjusteClick
+          end
+        end
+        object GroupBox12: TGroupBox
+          Left = 10
+          Top = 175
+          Width = 306
+          Height = 58
+          Caption = ' Exclusi'#243'n de Obras Sociales (para Rec'#225'culo de Consumo )'
+          TabOrder = 2
+          object btnSeleccionOS: TButton
+            Left = 9
+            Top = 24
+            Width = 188
+            Height = 25
+            Caption = 'Seleccionar Obras Sociales'
+            TabOrder = 0
+            OnClick = btnSeleccionOSClick
+          end
+        end
+      end
+    end
+    object TabSheet4: TTabSheet
+      Caption = '&Logs'
+      ImageIndex = 4
+      OnHide = TabSheet4Hide
+      OnShow = TabSheet4Show
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
+      object Panel35: TPanel
+        Left = 0
+        Top = 0
+        Width = 597
+        Height = 347
+        Align = alClient
+        BevelInner = bvLowered
+        BorderWidth = 4
+        TabOrder = 0
+        object Panel36: TPanel
+          Left = 6
+          Top = 6
+          Width = 585
+          Height = 29
+          Align = alTop
+          BevelOuter = bvNone
+          TabOrder = 0
+          object Label55: TLabel
+            Left = 11
+            Top = 7
+            Width = 33
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Fecha:'
+          end
+          object fechaLog: TMaskEdit
+            Left = 48
+            Top = 4
+            Width = 57
+            Height = 21
+            EditMask = '99/99/99;1; '
+            MaxLength = 8
+            TabOrder = 0
+            Text = '  /  /  '
+            OnKeyDown = fechaLogKeyDown
+          end
+          object btnConsultarLog: TButton
+            Left = 111
+            Top = 2
+            Width = 90
+            Height = 24
+            Caption = '&Consultar Log'
+            TabOrder = 1
+            OnClick = btnConsultarLogClick
+          end
+          object CheckBox2: TCheckBox
+            Left = 205
+            Top = 6
+            Width = 89
+            Height = 17
+            Caption = '&Modificar Log'
+            TabOrder = 2
+            OnClick = CheckBox2Click
+          end
+          object Panel38: TPanel
+            Left = 374
+            Top = 0
+            Width = 211
+            Height = 29
+            Align = alRight
+            BevelOuter = bvNone
+            TabOrder = 3
+            object btnRestaurar: TButton
+              Left = 108
+              Top = 2
+              Width = 98
+              Height = 24
+              Caption = '&Restaurar Datos'
+              TabOrder = 0
+              OnClick = btnRestaurarClick
+            end
+            object btnGuardar: TButton
+              Left = 6
+              Top = 2
+              Width = 98
+              Height = 24
+              Caption = 'Guardar Cambios'
+              Enabled = False
+              TabOrder = 1
+              OnClick = btnGuardarClick
+            end
+          end
+        end
+        object Panel37: TPanel
+          Left = 6
+          Top = 311
+          Width = 585
+          Height = 30
+          Align = alBottom
+          BevelOuter = bvNone
+          TabOrder = 1
+          Visible = False
+          object Label56: TLabel
+            Left = 5
+            Top = 2
+            Width = 54
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Desde Nro.'
+          end
+          object Label57: TLabel
+            Left = 13
+            Top = 13
+            Width = 47
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'de Orden:'
+          end
+          object Label58: TLabel
+            Left = 137
+            Top = 2
+            Width = 51
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Hasta Nro.'
+          end
+          object Label59: TLabel
+            Left = 142
+            Top = 13
+            Width = 47
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'de Orden:'
+          end
+          object dNro: TMaskEdit
+            Left = 63
+            Top = 4
+            Width = 69
+            Height = 21
+            EditMask = '9999999999;1; '
+            MaxLength = 10
+            TabOrder = 0
+            Text = '          '
+            OnKeyDown = nroauditoriaKeyDown
+          end
+          object hNro: TMaskEdit
+            Left = 193
+            Top = 4
+            Width = 69
+            Height = 21
+            EditMask = '9999999999;1; '
+            MaxLength = 10
+            TabOrder = 1
+            Text = '          '
+            OnKeyDown = nroauditoriaKeyDown
+          end
+          object Panel40: TPanel
+            Left = 425
+            Top = 0
+            Width = 160
+            Height = 30
+            Align = alRight
+            BevelOuter = bvNone
+            TabOrder = 2
+            object btnIniciar: TButton
+              Left = 48
+              Top = 2
+              Width = 108
+              Height = 24
+              Caption = '&Iniciar el Proceso'
+              TabOrder = 0
+              OnClick = btnIniciarClick
+            end
+          end
+        end
+        object Panel39: TPanel
+          Left = 6
+          Top = 35
+          Width = 585
+          Height = 276
+          Align = alClient
+          BevelInner = bvLowered
+          TabOrder = 2
+          object Logs: TRichEdit
+            Left = 2
+            Top = 2
+            Width = 581
+            Height = 272
+            Align = alClient
+            BorderStyle = bsNone
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -12
+            Font.Name = 'Courier New'
+            Font.Style = []
+            HideSelection = False
+            HideScrollBars = False
+            ParentFont = False
+            PlainText = True
+            ReadOnly = True
+            ScrollBars = ssBoth
+            TabOrder = 0
+            WantReturns = False
+            WordWrap = False
+          end
+        end
+      end
+    end
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 398
+    Width = 605
+    Height = 19
+    Panels = <
+      item
+        Width = 400
+      end
+      item
+        Width = 100
+      end
+      item
+        Width = 50
+      end>
+  end
+  object Panel17: TPanel
+    Left = 0
+    Top = 0
+    Width = 605
+    Height = 23
+    Align = alTop
+    BevelOuter = bvNone
+    TabOrder = 2
+    object ToolBar1: TToolBar
+      Left = 0
+      Top = 0
+      Width = 241
+      Height = 23
+      Align = alLeft
+      Caption = 'ToolBar1'
+      Images = contenedorImg.ImagenesForms
+      TabOrder = 0
+      object DBNavigator: TDBNavigator
+        Left = 0
+        Top = 0
+        Width = 96
+        Height = 22
+        DataSource = DTS
+        VisibleButtons = [nbFirst, nbPrior, nbNext, nbLast]
+        Flat = True
+        Hints.Strings = (
+          'Primer Registro'
+          'Registro Anterior'
+          'Registro Siguiente'
+          'Ultimo Registro')
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 0
+        OnClick = DBNavigatorClick
+      end
+      object Alta: TToolButton
+        Left = 96
+        Top = 0
+        Hint = 'Nueva Auditoria'
+        Caption = 'Alta'
+        ImageIndex = 4
+        ParentShowHint = False
+        ShowHint = True
+        OnClick = btnCancelarClick
+      end
+      object Baja: TToolButton
+        Left = 119
+        Top = 0
+        Hint = 'Eliminar Registro'
+        Caption = 'Baja'
+        ImageIndex = 5
+        ParentShowHint = False
+        ShowHint = True
+        OnClick = BajaClick
+      end
+      object Modificar: TToolButton
+        Left = 142
+        Top = 0
+        Hint = 'Modificar Datos'
+        Caption = 'Modificar'
+        ImageIndex = 6
+        ParentShowHint = False
+        ShowHint = True
+      end
+      object Buscar: TToolButton
+        Left = 165
+        Top = 0
+        Hint = 'Buscar Ordenes de Auditor'#237'a'
+        Caption = 'Buscar'
+        ImageIndex = 7
+        ParentShowHint = False
+        ShowHint = True
+        OnClick = BuscarClick
+      end
+      object Deshacer: TToolButton
+        Left = 188
+        Top = 0
+        Hint = 'Deshacer'
+        Caption = 'Deshacer'
+        ImageIndex = 8
+        ParentShowHint = False
+        ShowHint = True
+      end
+      object Salir: TToolButton
+        Left = 211
+        Top = 0
+        Hint = 'Salir'
+        Caption = 'Salir'
+        ImageIndex = 9
+        ParentShowHint = False
+        ShowHint = True
+        OnClick = SalirClick
+      end
+    end
+    object Panel18: TPanel
+      Left = 241
+      Top = 0
+      Width = 254
+      Height = 23
+      Align = alClient
+      BevelOuter = bvNone
+      TabOrder = 1
+      object obsfinal: TLabel
+        Left = 4
+        Top = 4
+        Width = 27
+        Height = 13
+        Caption = '         '
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clNavy
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        ParentFont = False
+        Visible = False
+      end
+      object btnOrdenOnLine: TSpeedButton
+        Left = 12
+        Top = 0
+        Width = 103
+        Height = 23
+        Hint = 'Prorratear Orden On Line'
+        Caption = '&Ordenes On Line'
+        Flat = True
+        ParentShowHint = False
+        ShowHint = True
+        OnClick = btnOrdenOnLineClick
+      end
+    end
+    object Panel19: TPanel
+      Left = 495
+      Top = 0
+      Width = 110
+      Height = 23
+      Align = alRight
+      BevelOuter = bvNone
+      TabOrder = 2
+      object btnReanudar: TSpeedButton
+        Left = 4
+        Top = 0
+        Width = 103
+        Height = 23
+        Hint = 
+          'Retomar Trabajo de Impresi'#243'n de Ordenes. Tambi'#233'n puede hacerlo u' +
+          'sando F5'
+        Caption = '&Retomar Impresi'#243'n'
+        Flat = True
+        ParentShowHint = False
+        ShowHint = True
+        OnClick = btnReanudarClick
+      end
+    end
+  end
+  object DTS: TDataSource
+    Left = 552
+    Top = 32
+  end
+  object IdFTP1: TIdFTP
+    AutoLogin = True
+    Password = 'idftp@client.com'
+    ProxySettings.ProxyType = fpcmNone
+    ProxySettings.Port = 0
+    Left = 488
+    Top = 304
+  end
+  object IdLogDebug1: TIdLogDebug
+    LogTime = False
+    Left = 456
+    Top = 304
+  end
+end

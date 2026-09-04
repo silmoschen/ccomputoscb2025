@@ -204,6 +204,7 @@
       <Form>fmBajarActualizaciones</Form>
     </DCCReference>
     <DCCReference Include="clases\CAgrupacionOSFact.pas" />
+    <DCCReference Include="clases\CAuditoriaCCB.pas" />
     <DCCReference Include="clases\CAuditoriaFacturacion.pas" />
     <DCCReference Include="clases\CCoseguros.pas" />
     <DCCReference Include="clases\CDatosEmpresa.pas" />
@@ -299,8 +300,8 @@
     <DCCReference Include="obrasocial.pas">
       <Form>fmObsociales</Form>
     </DCCReference>
-    <DCCReference Include="PresupuestoRapido.pas">
-      <Form>fmPresupuestoRapido</Form>
+    <DCCReference Include="PresupuestoRapidoTit.pas">
+      <Form>fmPresupuestoRapidoTit</Form>
     </DCCReference>
     <DCCReference Include="RepararDatosParadox.pas">
       <Form>fmRepararDatosPdx</Form>

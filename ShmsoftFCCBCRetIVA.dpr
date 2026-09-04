@@ -127,7 +127,8 @@ uses
   CPresupuestoRapidoFabbrissin in 'clases\CPresupuestoRapidoFabbrissin.pas',
   CNomeclatura_ObraSocial in 'clases\CNomeclatura_ObraSocial.pas',
   NominaNomeclaturaObrasSociales in 'NominaNomeclaturaObrasSociales.pas' {fmListNomeclaturaObrasSociales},
-  PresupuestoRapido in 'PresupuestoRapido.pas' {fmPresupuestoRapido};
+  PresupuestoRapidoTit in 'PresupuestoRapidoTit.pas' {fmPresupuestoRapidoTit},
+  CAuditoriaCCB in 'clases\CAuditoriaCCB.pas';
 
 {$R *.RES}
 

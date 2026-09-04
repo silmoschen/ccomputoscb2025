@@ -143,6 +143,9 @@ var
   p: String;
   r: real;
 begin
+
+  facturacion.IniciarCache;
+
   if obsocial.FacturaNBU = 'N' then Begin
     obsocial.SincronizarArancel(codos.Text, Copy(utiles.sExprFecha2000(utiles.setFechaActual), 5, 2) + '/' + Copy(utiles.sExprFecha2000(utiles.setFechaActual), 1, 4));
     nomeclatura.getDatos(codanalisis.Text);
@@ -164,7 +167,8 @@ begin
 
     Unnbu.Caption := utiles.FormatearNumero(floattostr(facturacion.unidadNBUFinal));
 
-    //caption := Copy(utiles.setFechaActual, 4, 2) + '/' + Copy(utiles.sExprFecha2000(utiles.setFechaActual), 1, 4);
+    // NBU original
+    //if (facturacion.unidadNBUFinal = 0) then Unnbu.caption := utiles.FormatearNumero(floattostr(unidadesNBU.getUnidad(codanalisis.Text, Copy(utiles.sExprFecha2000(utiles.setFechaActual), 5, 2) + '/' + Copy(utiles.sExprFecha2000(utiles.setFechaActual), 1, 4))));
 
     // Para NBU con unidades propias en obras sociales // 26/09/2025
     {

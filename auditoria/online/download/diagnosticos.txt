@@ -1,22 +1,34 @@
-Z40.9    Z40.9              CIRUGIA NO ESPECIFICADA                                                                               
 E88.9    E88   9            TRASTORNO METABOLICO, NO ESPECIFICA                                                                   
-E23.2    E23   2            DIABETES                                                                                              
-N39.0    N39   0            INFECCION DE VIAS URINARIAS, SITIO NO ESPECIFICADO                                                    
-C61      C61                TUMOR MALIGNO DE LA PROSTATA                                                                          
-R42      R42                MAREO Y DESVANECIMIENTO                                                                               
-N91      N91                MENSTRUACION AUSENTE, ESCASA O RARA                                                                   
-K59.1    K59   1            DIARREA FUNCIONAL                                                                                     
-J45      J45                ASMA                                                                                                  
-E03.9    E03   9            HIPOTIROIDISMO, NO ESPECIFICADO                                                                       
-D64.9    64    9            ANEMIA DE TIPO NO ESPECIFICADO                                                                        
-B49      B49                MICOSIS, NO ESPECIFICADA                                                                              
-I10      HT    01    01     HIPERTENSION ARTERIAL                                                                                 
-03011    PR    01    11     PREOPERATORIO                                                                                         
-E78.5    78    5            HIPERLIPIDEMIA NO ESPECIFICADA                                                                        
-R10.0    R10   0            ABDOMEN AGUDO                                                                                         
-E05      HT    06    09     HIPERTIROIDISMO                                                                                       
-C80      80                 TUMOR MALIGNO DE SITIOS NO ESPECIFICADOS                                                              
-R50.9    R50   9            FIEBRE, NO ESPECIFICADA                                                                               
-M79.1    M79   1            MIALGIA                                                                                               
 N94.2    N94   2            VAGINISMO                                                                                             
+E03.9    E03   9            HIPOTIROIDISMO, NO ESPECIFICADO                                                                       
+I10      HT    01    01     HIPERTENSION ARTERIAL                                                                                 
+D64.9    64    9            ANEMIA DE TIPO NO ESPECIFICADO                                                                        
+R73.9    R73   9            HIPERGLICEMIA, NO ESPECIFICADA                                                                        
+Z40.9    Z40.9              CIRUGIA NO ESPECIFICADA                                                                               
+E78.5    78    5            HIPERLIPIDEMIA NO ESPECIFICADA                                                                        
+R10      10                 DOLOR ABDOMINAL Y PELVICO                                                                             
+M06.9    M06   9            ARTRITIS REUMATOIDE, NO ESPECIFICADA                                                                  
+C50      C50                TUMOR MALIGNO DE LA MAMA                                                                              
+N39.0    N39   0            INFECCION DE VIAS URINARIAS, SITIO NO ESPECIFICADO                                                    
+J20      J20                BRONQUITIS AGUDA                                                                                      
+R63.4    R63   4            PERDIDA ANORMAL DE PESO                                                                               
+E05      HT    06    09     HIPERTIROIDISMO                                                                                       
+03011    PR    01    11     PREOPERATORIO                                                                                         
+E23.2    E23   2            DIABETES                                                                                              
+N91      N91                MENSTRUACION AUSENTE, ESCASA O RARA                                                                   
+C61      C61                TUMOR MALIGNO DE LA PROSTATA                                                                          
+O00      O00                EMBARAZO ECTOPICO                                                                                     
+R50.9    R50   9            FIEBRE, NO ESPECIFICADA                                                                               
+M81.9    81    9            OSTEOPOROSIS NO ESPECIFICADA                                                                          
+E66      E66                OBESIDAD                                                                                              
+I42      I42                CARDIOMIOPATIA                                                                                        
+T78.4    T78   4            ALERGIA NO ESPECIFICADA                                                                               
+R10.0    R10   0            ABDOMEN AGUDO                                                                                         
+J45      J45                ASMA                                                                                                  
+N30      N30                CISTITIS                                                                                              
+N91.0    N91   0            AMENORREA PRIMARIA                                                                                    
+J18.9    J18   9            NEUMONIA, NO ESPECIFICADA                                                                             
+C80      80                 TUMOR MALIGNO DE SITIOS NO ESPECIFICADOS                                                              
+N18      N18                INSUFICIENCIA RENAL CRONICA                                                                           
 B82      B82                PARASITOSIS INTESTINALES, SIN OTRA ESPECIFICACION                                                     
+N23      N23                COLICO RENAL, NO ESPECIFICADO                                                                         

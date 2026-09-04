@@ -173,7 +173,8 @@ uses
   CDatosEmpresa in 'clases\CDatosEmpresa.pas',
   reportUBFacturadas in 'reportUBFacturadas.pas' {fmUBFacturadas},
   PresupuestoRapido in 'PresupuestoRapido.pas' {fmPresupuestoRapido},
-  CNomeclatura_ObraSocial in 'clases\CNomeclatura_ObraSocial.pas';
+  CNomeclatura_ObraSocial in 'clases\CNomeclatura_ObraSocial.pas',
+  CAuditoriaCCB in 'clases\CAuditoriaCCB.pas';
 
 {$R *.RES}
 

@@ -400,10 +400,10 @@ end;
 
 procedure TfmSistemFact.sistDeduccionClick(Sender: TObject);
 begin
-  if not Assigned(fmPresupuestoRapido) then Begin
-    Application.CreateForm(TfmPresupuestoRapido, fmPresupuestoRapido);
-    fmPresupuestoRapido.FormStyle := FsMDIChild;
-    fmPresupuestoRapido.Show;
+  if not Assigned(fmPresupuestoRapidoTit) then Begin
+    Application.CreateForm(TfmPresupuestoRapidoTit, fmPresupuestoRapidoTit);
+    fmPresupuestoRapidoTit.FormStyle := FsMDIChild;
+    fmPresupuestoRapidoTit.Show;
   end;
 end;
 

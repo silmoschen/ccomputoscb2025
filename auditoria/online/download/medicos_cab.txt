@@ -1,33 +1,42 @@
-121069 09890                                                      FERNANDEZ DANIEL ALBERTO                                                                             717                 
-121069 09915                                                      PEROZZI OSCAR C.                                                                                     750             N   
-121069 06589                                                      VILLA NORMA                                                                                          20              N   
-121069 99917146             0          0          4584            JOSA PEDRO EDUARDO                                                                                   100             N   
-121069 09957                0          0          6472            FRANCO MELINA                                                                                        0               N   
-121069 08639                                                      LOPEZ JOSE LUIS                                                                                      246                 
 121069 05791                                                      LOCATELLI, OSCAR                                                                                     455                 
+121069 09007                                                      ITURRIZ IGNACIO                                                                                      681                 
 121069 08888                                                      MONTYN RICARDO LEON                                                                                  349                 
-121069 09950                03         086        4733            DEMARTIN IRINA PAOLA                                                                                 0               N   
-121069 09927                0          0          4057            FIANT JORGE                                                                                          0               N   
-121069 01827                                                      BIERI LAURA                                                                                          150                 
-121069 99917152             0          0          5662            VERGOTTINI ALEJANDRO                                                                                 300             N   
-121069 09267                                                      PEREYRA MANUEL                                                                                       430                 
+121069 09957                0          0          6472            FRANCO MELINA                                                                                        0               N   
+121069 09890                                                      FERNANDEZ DANIEL ALBERTO                                                                             717                 
+121069 09951                3          106        5136            ESQUENAZI PABLO ALBERTO                                                                              0               N   
 121069 09956                0          0          1597            MASSARO MIGUEL                                                                                       0               N   
 121069 06744                3          130        5606            RICCE MANSILLA LAURA VIRGINIA                                                                        200             N   
-121069 09954                0          0          7105            TULIAN YANINA MARIA L                                                                                0               N   
-121069 09952                130        3          5611            ALONSO JORGE SEBASTIAN                                                                               100             N   
-121069 99917141             43         4          1741            CARTA CARLA MABEL                                                                                    100             N   
-121069 05340                                                      FAES SILVIA GRACIELA                                                                                 388                 
-121069 06152                                                      PUYOL, DANIEL                                                                                        405                 
-121069 09588                                                      CHACON RUBEN HORACIO                                                                                 395                 
-121069 09955                3          33         3668            CHACON MARCELO ALEJANDRO                                                                             144             N   
-121069 01006                                                      CUELLAR NOEMI                                                                                        141             N   
-121069 09007                                                      ITURRIZ IGNACIO                                                                                      681                 
+121069 09927                0          0          4057            FIANT JORGE                                                                                          0               N   
 121069 09914                                                      MARTELLI CARLOS                                                                                      0                   
-121069 908000518188         0          0          8861            ESQUIVEL SEIT ARANZA                                                                                 1000            N   
-121069 09949                0          0          0               ALTUNA  LEOPOLDO                                                                                     0               N   
+121069 908000518191         0          0          5095            CESPEDES MARIA SOLEDAD                                                                               100             N   
+121069 09952                130        3          5611            ALONSO JORGE SEBASTIAN                                                                               100             N   
+121069 908000518209         0          0          0               FANTIN MARIA LIS                                                                                     0               N   
+121069 09588                                                      CHACON RUBEN HORACIO                                                                                 395                 
+121069 07888                                                      NU?EZ AVENDA?O JULIO CESAR                                                                           324                 
+121069 00001                                                      FIRPO IVAN M.                                                                                        138                 
+121069 09946                0          0          4760            RODRIGUEZ NATALIA  MARIA  LAURA                                                                      205             N   
+121069 08000                                                      FIANT MARCELO ALEJANDRO                                                                              160                 
+121069 06633                                                      YERMANOS, HUGO                                                                                       219                 
+121069 09947                3          129        5597            DELSSIN  MAXIMILIANO                                                                                 0               N   
+121069 06152                                                      PUYOL, DANIEL                                                                                        405                 
 121069 09937                03         064        4291            ARMANDO MARISEL SOLEDAD                                                                              0               N   
 121069 09938                3          68         4377            JEDIDOWICZ MARCELA                                                                                   0               N   
-121069 09920                68         0          3               SILVA LILIANA CAROLINA                                                                               146             N   
+121069 01006                                                      CUELLAR NOEMI                                                                                        141             N   
+121069 09955                3          33         3668            CHACON MARCELO ALEJANDRO                                                                             144             N   
+121069 99917141             43         4          1741            CARTA CARLA MABEL                                                                                    100             N   
+121069 99917146             0          0          4584            JOSA PEDRO EDUARDO                                                                                   100             N   
+121069 09949                0          0          0               ALTUNA  LEOPOLDO                                                                                     0               N   
+121069 908000518188         0          0          8861            ESQUIVEL SEIT ARANZA                                                                                 1000            N   
+121069 09953                3          75         4446            VALLEJOS GUSTAVO                                                                                     0               N   
+121069 09954                0          0          7105            TULIAN YANINA MARIA L                                                                                0               N   
+121069 06589                                                      VILLA NORMA                                                                                          20              N   
+121069 08639                                                      LOPEZ JOSE LUIS                                                                                      246                 
+121069 09267                                                      PEREYRA MANUEL                                                                                       430                 
 121069 00000                                                      NIEWIAK CRISTINA                                                                                     445                 
-121069 99917155             0          0          7470            FRANCO MARIA C                                                                                       100             N   
+121069 01827                                                      BIERI LAURA                                                                                          150                 
+121069 05340                                                      FAES SILVIA GRACIELA                                                                                 388                 
+121069 09933                3          85         4715            CENTIS  DIEGO  RODRIGO                                                                               100             N   
+121069 09950                03         086        4733            DEMARTIN IRINA PAOLA                                                                                 0               N   
 121069 09236                                                      CHAPERO, SUSANA                                                                                      266                 
+121069 99917152             0          0          5662            VERGOTTINI ALEJANDRO                                                                                 300             N   
+121069 09915                                                      PEROZZI OSCAR C.                                                                                     750             N   

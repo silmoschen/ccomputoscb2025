@@ -1,4 +1,4 @@
-unit AuditoriaOnLine;
+ï»¿unit AuditoriaOnLine;
 
 interface
 
@@ -36,15 +36,8 @@ type
     Label6: TLabel;
     usuario: TMaskEdit;
     contrasenia: TMaskEdit;
-    Panel6: TPanel;
-    btnDescargar: TButton;
-    btnSubir: TButton;
     IdLogDebug1: TIdLogDebug;
     IdFTP1: TIdFTP;
-    Panel7: TPanel;
-    Si: TSpeedButton;
-    Ninguno: TSpeedButton;
-    Todos: TSpeedButton;
     btnAplicar: TButton;
     TabSheet3: TTabSheet;
     Panel8: TPanel;
@@ -72,13 +65,23 @@ type
     T: TStringGrid;
     CheckBox3: TCheckBox;
     btnChequearReferencias: TButton;
-    resumen: TLabel;
     IdAntiFreeze1: TIdAntiFreeze;
     CheckBox4: TCheckBox;
     CheckBox5: TCheckBox;
     ftpPasivo: TCheckBox;
     Label10: TLabel;
     dirremoto: TMaskEdit;
+    resumen: TLabel;
+    GroupBox5: TGroupBox;
+    tsftp: TRadioButton;
+    tftp: TRadioButton;
+    Si: TSpeedButton;
+    Ninguno: TSpeedButton;
+    Todos: TSpeedButton;
+    btnSubir: TButton;
+    btnDescargar: TButton;
+    Label11: TLabel;
+    puerto: TMaskEdit;
     procedure EKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure desdeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure hastaKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -109,6 +112,8 @@ type
     procedure CheckBox3Click(Sender: TObject);
     procedure btnChequearReferenciasClick(Sender: TObject);
     procedure TabSheet1Show(Sender: TObject);
+    procedure tsftpClick(Sender: TObject);
+    procedure tftpClick(Sender: TObject);
   private
     { Private declarations }
     AbortTransfer, datosok, redim: Boolean;
@@ -121,6 +126,8 @@ type
     procedure DesconectarFTP;
     procedure ChageDir(DirName: String);
     procedure CargarOrdenes(tipo: integer);
+    procedure loadTrans(tipo: integer);
+    procedure DescargarArchivosSFTP(Archivos: TStrings);
   public
     { Public declarations }
   end;
@@ -132,9 +139,81 @@ implementation
 
 uses CAuditoriaOnLine, CAuditoriaCCB, CUtiles, HTTPCliente, CConfigForms, CBDT, CUtilidadesStringGrid,
      CProfesionalCCB, DetalleDeterminacionesOnLine, CUtilidadesArchivos,
-     Disposit, CObrasSocialesCCB;
+     Disposit, CObrasSocialesCCB, CSFTP;
 
 {$R *.dfm}
+
+procedure  TfmAuditoriaOnLine.loadTrans(tipo: integer);
+var
+  archivo: TextFile;
+  v1, v2, v3, v4, v5, v6, v7, x: string;
+begin
+  host.Text := '';
+  ftp.Text := '';
+  usuario.Text := '';
+  contrasenia.Text := '';
+  ftpPasivo.Checked := false;
+  dirremoto.Text := '';
+  puerto.Text := '22';
+  x := '';
+
+  if (tipo = 1) then begin
+    if not (FileExists(dbs.DirSistema + '\ftpsauditoria.ini')) then exit;
+    AssignFile(archivo, dbs.DirSistema + '\ftpsauditoria.ini');
+    x := '1';
+  end;
+
+  if (tipo = 2) then begin
+    if not (FileExists(dbs.DirSistema + '\ftpauditoria.ini')) then exit;
+    AssignFile(archivo, dbs.DirSistema + '\ftpauditoria.ini');
+    x := '1';
+  end;
+           
+  if (x = '') then exit;  
+
+  reset(archivo);
+  readln(archivo, v1);
+  readln(archivo, v2);
+  readln(archivo, v3);
+  readln(archivo, v4);
+  readln(archivo, v5);
+  readln(archivo, v6);
+  v7 := '';
+  if not Eof(archivo) then readln(archivo, v7);
+  host.Text := v1;
+  ftp.Text := v2;
+  usuario.Text := v3;
+  contrasenia.Text := v4;
+  if (v5 = 'S') then ftpPasivo.Checked := true;
+  dirremoto.Text := v6;
+  if Trim(v7) <> '' then
+    puerto.Text := Trim(v7)
+  else if tipo = 1 then
+    puerto.Text := '22'
+  else
+    puerto.Text := '21';
+
+  closeFile(archivo);
+end;
+
+procedure TfmAuditoriaOnLine.DescargarArchivosSFTP(Archivos: TStrings);
+var
+  i: Integer;
+  Destino: string;
+begin
+  if SFTPBuscarCliente(dbs.DirSistema) = '' then begin
+    utiles.msgError('No se encuentra PSCP.EXE. Copie las herramientas SFTP a la carpeta tools\putty.');
+    Exit;
+  end;
+  Destino := dbs.DirSistema + '\auditoria\online\download\';
+  for i := 0 to Archivos.Count - 1 do begin
+    StatusBar1.Panels[0].Text := 'Descargando ' + Archivos[i] + ' de: ' + ftp.Text + ' (SFTP)';
+    StatusBar1.Refresh;
+    Application.ProcessMessages;
+    SFTPDescargarArchivo(dbs.DirSistema, ftp.Text, usuario.Text, contrasenia.Text,
+      puerto.Text, dirremoto.Text, Archivos[i], Destino);
+  end;
+end;
 
 procedure TfmAuditoriaOnLine.conectarFTP;
 begin
@@ -151,6 +230,7 @@ begin
     {$ENDIF}
     Password := contrasenia.Text;
     Host     := ftp.Text;
+    Port     := StrToIntDef(Trim(puerto.Text), 21);
     Connect;
     //Self.ChageDir(''); // modificado para el servidor linux (auditoriareconquista) el 07/12/2013
 
@@ -202,7 +282,7 @@ begin
   if (CheckBox2.Checked) then begin
    if (utiles.ctrlFecha(desde.Text, '') and utiles.ctrlFecha(hasta.Text, '')) then begin
 
-    if (utiles.msgSiNo('Esta Opción le Permite Ajustar el Estado de las Determinaciones Auditadas que se han Transferido en otros Procesos.' + chr(13) +
+    if (utiles.msgSiNo('Esta OpciÃ³n le Permite Ajustar el Estado de las Determinaciones Auditadas que se han Transferido en otros Procesos.' + chr(13) +
                        'Este Proceso puede tardar varios minutos. Seguro para Proceder ?')) then begin
 
       Refresh;
@@ -218,35 +298,42 @@ begin
 
         StatusBar1.Panels[0].Text := 'Transfiriendo a Equipo Local ...!'; StatusBar1.refresh;
 
-        conectarFTP;
-        if IdFTP1.Connected then begin
-
-          //ChageDir('/var/www/html/reco/actualizar');
-
-          //IdFTP1.ChangeDir('/var/www/html/reco/actualizar');
-
-          l := TStringList.Create;
-          IdFTP1.List(l);
-          for i := 1 to l.Count do Begin
-            if (Pos('.txt', l.Strings[i-1]) > 0) then Begin
-              if (Pos('cab_auditoria.txt', l.Strings[i-1]) > 0) then Name := 'cab_auditoria.txt';
-              if (Pos('det_auditoria.txt', l.Strings[i-1]) > 0) then Name := 'det_auditoria.txt';
-              if (Pos('pac_auditoria.txt', l.Strings[i-1]) > 0) then Name := 'pac_auditoria.txt';
-              if Pos('.txt', Name) > 0 then Begin
-                StatusBar1.Panels[0].Text := 'Descargando ' + l.Strings[i-1] + ' de: ' + ftp.Text; StatusBar1.Refresh;
-                IdFTP1.TransferType := ftBinary;
-                BytesToTransfer := IdFTP1.Size(ExtractFileName(l.Strings[i-1]));
-                IdFTP1.Get(Name, dbs.DirSistema + '\auditoria\online\download\' + Name, true);
+        l := TStringList.Create;
+        try
+          l.Add('cab_auditoria.txt');
+          l.Add('det_auditoria.txt');
+          l.Add('pac_auditoria.txt');
+          if (tsftp.Checked) then
+            DescargarArchivosSFTP(l)
+          else begin
+            conectarFTP;
+            if IdFTP1.Connected then begin
+              l.Clear;
+              IdFTP1.List(l);
+              for i := 1 to l.Count do Begin
+                if (Pos('.txt', l.Strings[i-1]) > 0) then Begin
+                  if (Pos('cab_auditoria.txt', l.Strings[i-1]) > 0) then Name := 'cab_auditoria.txt';
+                  if (Pos('det_auditoria.txt', l.Strings[i-1]) > 0) then Name := 'det_auditoria.txt';
+                  if (Pos('pac_auditoria.txt', l.Strings[i-1]) > 0) then Name := 'pac_auditoria.txt';
+                  if Pos('.txt', Name) > 0 then Begin
+                    StatusBar1.Panels[0].Text := 'Descargando ' + l.Strings[i-1] + ' de: ' + ftp.Text; StatusBar1.Refresh;
+                    IdFTP1.TransferType := ftBinary;
+                    BytesToTransfer := IdFTP1.Size(ExtractFileName(l.Strings[i-1]));
+                    IdFTP1.Get(Name, dbs.DirSistema + '\auditoria\online\download\' + Name, true);
+                  end;
+                End;
               end;
-            End;
+            end;
+            DesconectarFTP;
           end;
+        finally
+          l.Free;
         end;
-        DesconectarFTP;
 
         StatusBar1.Panels[0].Text := ''; StatusBar1.refresh;
 
         if (utiles.msgSiNo('El Procesamiento de Datos Remotos se ha Realizado,' + chr(13) +
-                       '¿ Desea Transferirlos para Procesarlos Localmente ?' + chr(13) +
+                       'Â¿ Desea Transferirlos para Procesarlos Localmente ?' + chr(13) +
                        'Este Proceso Puede Demorar Varios Minutos.')) then begin
           Refresh;
 
@@ -293,9 +380,9 @@ var
   l, lt: TStringList;
   transferido: boolean;
 begin
-  //utiles.msgError('Actualmente esta Opción No se utiliza ...!');
+  //utiles.msgError('Actualmente esta OpciÃ³n No se utiliza ...!');
   //exit;
-  if (utiles.msgSiNo('Esta Opción Replicará los Datos en el Servidor Remoto.' + chr(13) + 'Seguro para Proceder ?')) then begin
+  if (utiles.msgSiNo('Esta OpciÃ³n ReplicarÃ¡ los Datos en el Servidor Remoto.' + chr(13) + 'Seguro para Proceder ?')) then begin
     StatusBar1.Panels[0].Text := 'Exportando Datos ...!'; StatusBar1.Refresh;
     l := TStringList.Create; lt := TStringList.Create;
 
@@ -309,7 +396,7 @@ begin
 
     auditonline.Exportar(l);
 
-    if (utiles.msgSiNo('El Procesamiento de Ordenes Terminó Correctamente.' + chr(13) + 'Seguro para Bajarlas y Procesarlas ?') = false) then exit;
+    if (utiles.msgSiNo('El Procesamiento de Ordenes TerminÃ³ Correctamente.' + chr(13) + 'Seguro para Bajarlas y Procesarlas ?') = false) then exit;
 
     l.Clear;
     transferido := false;
@@ -405,15 +492,37 @@ procedure TfmAuditoriaOnLine.btnAplicarClick(Sender: TObject);
 var
   archivo: TextFile;
 begin
-  AssignFile(archivo, dbs.DirSistema + '\ftpauditoria.ini');
+  AssignFile(archivo, dbs.DirSistema + '\ftpauditoriasel.ini');
   rewrite(archivo);
-  writeln(archivo, host.Text);
-  writeln(archivo, ftp.Text);
-  writeln(archivo, usuario.Text);
-  writeln(archivo, contrasenia.Text);
-  if (ftpPasivo.Checked) then writeln(archivo, 'S') else writeln(archivo, 'N');
-  writeln(archivo, dirremoto.Text);
+  if (tsftp.Checked) then writeln(archivo, '1') else writeln(archivo, '2');
   closeFile(archivo);
+
+  if (tsftp.Checked) then begin
+    AssignFile(archivo, dbs.DirSistema + '\ftpsauditoria.ini');
+    rewrite(archivo);
+    writeln(archivo, host.Text);
+    writeln(archivo, ftp.Text);
+    writeln(archivo, usuario.Text);
+    writeln(archivo, contrasenia.Text);
+    if (ftpPasivo.Checked) then writeln(archivo, 'S') else writeln(archivo, 'N');
+    writeln(archivo, dirremoto.Text);
+    writeln(archivo, puerto.Text);
+    closeFile(archivo);
+  end;
+
+  if (tftp.Checked) then begin
+    AssignFile(archivo, dbs.DirSistema + '\ftpauditoria.ini');
+    rewrite(archivo);
+    writeln(archivo, host.Text);
+    writeln(archivo, ftp.Text);
+    writeln(archivo, usuario.Text);
+    writeln(archivo, contrasenia.Text);
+    if (ftpPasivo.Checked) then writeln(archivo, 'S') else writeln(archivo, 'N');
+    writeln(archivo, dirremoto.Text);
+    writeln(archivo, puerto.Text);
+    closeFile(archivo);
+  end;
+
   host.SetFocus;
 end;
 
@@ -462,45 +571,61 @@ begin
 
       //fmClientHTML.ShowModal;
 
-      if (utiles.msgSiNo('El Procesamiento de Ordenes Terminó Correctamente.' + chr(13) + 'Seguro para Bajarlas y Procesarlas ?') = false) then begin
+      if (utiles.msgSiNo('El Procesamiento de Ordenes TerminÃ³ Correctamente.' + chr(13) + 'Seguro para Bajarlas y Procesarlas ?') = false) then begin
         StatusBar1.Panels[0].Text := '';
         exit;
       end;
 
       StatusBar1.Panels[0].Text := 'Transfiriendo a Equipo Local ...!'; StatusBar1.refresh;
 
-      IdFtp1.Passive := ftpPasivo.Checked;
+  l := TStringList.Create;
+  try
+    l.Add('cab_auditoria.txt');
+    l.Add('det_auditoria.txt');
+    l.Add('pac_auditoria.txt');
+    l.Add('pendientes.txt');
+    l.Add('diagnosticos.txt');
+    l.Add('medicos.txt');
+    l.Add('medicos_cab.txt');
 
+    if (tsftp.Checked) then begin
+      DescargarArchivosSFTP(l);
+    end else begin
+      IdFtp1.Passive := ftpPasivo.Checked;
       conectarFTP;
       if IdFTP1.Connected then begin
-          l := TStringList.Create;
-          IdFTP1.List(l);
-          for i := 1 to l.Count do Begin
-
-            if (Pos('.txt', l.Strings[i-1]) > 0) then Begin
-              if (Pos('cab_auditoria.txt', l.Strings[i-1]) > 0) then Name := 'cab_auditoria.txt';
-              if (Pos('det_auditoria.txt', l.Strings[i-1]) > 0) then Name := 'det_auditoria.txt';
-              if (Pos('pac_auditoria.txt', l.Strings[i-1]) > 0) then Name := 'pac_auditoria.txt';
-              if (Pos('pendientes.txt', l.Strings[i-1]) > 0)    then Name := 'pendientes.txt';
-              if (Pos('diagnosticos.txt', l.Strings[i-1]) > 0)  then Name := 'diagnosticos.txt';
-              if (Pos('medicos.txt', l.Strings[i-1]) > 0)       then Name := 'medicos.txt';
-              if (Pos('medicos_cab.txt', l.Strings[i-1]) > 0)   then Name := 'medicos_cab.txt';
-              if Pos('.txt', Name) > 0 then Begin
-                StatusBar1.Panels[0].Text := 'Descargando ' + l.Strings[i-1] + ' de: ' + ftp.Text; StatusBar1.Refresh;
-                IdFTP1.TransferType := ftBinary;
-                BytesToTransfer := IdFTP1.Size(ExtractFileName(l.Strings[i-1]));
-                IdFTP1.Get(Name, dbs.DirSistema + '\auditoria\online\download\' + Name, true);
-              end;
-            End;
-          end;
+        l.Clear;
+        IdFTP1.List(l);
+        for i := 1 to l.Count do Begin
+          if (Pos('.txt', l.Strings[i-1]) > 0) then Begin
+            if (Pos('cab_auditoria.txt', l.Strings[i-1]) > 0) then Name := 'cab_auditoria.txt';
+            if (Pos('det_auditoria.txt', l.Strings[i-1]) > 0) then Name := 'det_auditoria.txt';
+            if (Pos('pac_auditoria.txt', l.Strings[i-1]) > 0) then Name := 'pac_auditoria.txt';
+            if (Pos('pendientes.txt', l.Strings[i-1]) > 0)    then Name := 'pendientes.txt';
+            if (Pos('diagnosticos.txt', l.Strings[i-1]) > 0)  then Name := 'diagnosticos.txt';
+            if (Pos('medicos.txt', l.Strings[i-1]) > 0)       then Name := 'medicos.txt';
+            if (Pos('medicos_cab.txt', l.Strings[i-1]) > 0)   then Name := 'medicos_cab.txt';
+            if Pos('.txt', Name) > 0 then Begin
+              StatusBar1.Panels[0].Text := 'Descargando ' + l.Strings[i-1] + ' de: ' + ftp.Text; StatusBar1.Refresh;
+              IdFTP1.TransferType := ftBinary;
+              BytesToTransfer := IdFTP1.Size(ExtractFileName(l.Strings[i-1]));
+              IdFTP1.Get(Name, dbs.DirSistema + '\auditoria\online\download\' + Name, true);
+            end;
+          End;
+        end;
       end;
       DesconectarFTP;
+    end;
+  finally
+    l.Free;
+  end;
 
-      StatusBar1.Panels[0].Text := ''; StatusBar1.refresh;
+
+    StatusBar1.Panels[0].Text := ''; StatusBar1.refresh;
     end;
 
     if (utiles.msgSiNo('El Procesamiento de Datos Remotos se ha Realizado,' + chr(13) +
-                       '¿ Desea Transferirlos para Procesarlos Localmente ?' + chr(13) +
+                       'Â¿ Desea Transferirlos para Procesarlos Localmente ?' + chr(13) +
                        'Este Proceso Puede Demorar Varios Minutos.')) then begin
       Refresh;
       grid.IniciarGrilla(E);
@@ -655,11 +780,12 @@ end;
 procedure TfmAuditoriaOnLine.FormShow(Sender: TObject);
 var
   archivo: TextFile;
-  v1, v2, v3, v4, v5, v6: string;
+  tipo: integer;
+  v7: string;
 begin
   configform.Setear(fmAuditoriaOnLine);
 
-  E.Cells[0, 0]  := 'Nro.Auditoría';
+  E.Cells[0, 0]  := 'Nro.AuditorÃ­a';
   E.Cells[1, 0]  := 'Fecha';
   E.Cells[2, 0]  := 'Efector';
   E.Cells[3, 0]  := 'Paciente';
@@ -670,9 +796,9 @@ begin
   E.Cells[9, 0]  := 'S';
   E.Cells[10,0]  := 'A/P';
   E.Cells[11,0]  := 'Orden';
-  E.Cells[12,0]  := 'Código de Barra';
+  E.Cells[12,0]  := 'CÃ³digo de Barra';
 
-  T.Cells[0, 0]  := 'Cód. OS';
+  T.Cells[0, 0]  := 'CÃ³d. OS';
   T.Cells[1, 0]  := 'Tot. Acum.';
 
   E.ColWidths[4] := -1;
@@ -680,24 +806,22 @@ begin
 
   grid.RecuperarAnchoColumnas(fmAuditoriaOnLine, E);
 
-  if (FileExists(dbs.DirSistema + '\ftpauditoria.ini')) then begin
-    AssignFile(archivo, dbs.DirSistema + '\ftpauditoria.ini');
+  tipo := 2;
+  if not (FileExists(dbs.DirSistema + '\ftpauditoriasel.ini')) then tftp.Checked := true else begin
+    AssignFile(archivo, dbs.DirSistema + '\ftpauditoriasel.ini');
     reset(archivo);
-    readln(archivo, v1);
-    readln(archivo, v2);
-    readln(archivo, v3);
-    readln(archivo, v4);
-    readln(archivo, v5);
-    readln(archivo, v6);
-    host.Text := v1;
-    ftp.Text := v2;
-    usuario.Text := v3;
-    contrasenia.Text := v4;
-    if (v5 = 'S') then ftpPasivo.Checked := true;
-    dirremoto.Text := v6;
-
+    readln(archivo, v7);
     closeFile(archivo);
+    if (v7 = '1') then begin
+      tipo := 1;
+      tsftp.Checked := true;
+    end else begin
+      tipo := 2;
+      tftp.Checked := true;
+    end;
   end;
+
+  loadTrans(tipo);
 
   salida := 'P';
   auditonline.conectar;
@@ -803,6 +927,16 @@ begin
     E.Refresh;
   end;
   if (length(trim(E.Cells[0, 1])) > 0) then btnSubir.Enabled := true;
+end;
+
+procedure TfmAuditoriaOnLine.tsftpClick(Sender: TObject);
+begin
+   loadTrans(1);
+end;
+
+procedure TfmAuditoriaOnLine.tftpClick(Sender: TObject);
+begin
+  loadTrans(2);
 end;
 
 end.

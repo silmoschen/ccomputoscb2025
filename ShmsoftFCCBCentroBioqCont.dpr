@@ -182,6 +182,7 @@ uses
   formAjustarTotalesProfIVA in 'formAjustarTotalesProfIVA.pas' {fmAjustesTotalesIVA},
   CUtilidadesArchivos in '..\..\CLASES\CUtilidadesArchivos.pas',
   CFTP in 'clases\CFTP.pas',
+  CSFTP in 'clases\CSFTP.pas',
   AuditoriaOnLine in 'AuditoriaOnLine.pas' {fmAuditoriaOnLine},
   CPadronOSCCB in 'clases\CPadronOSCCB.pas',
   Comprobantes in 'Comprobantes.pas' {fmComprobantes},

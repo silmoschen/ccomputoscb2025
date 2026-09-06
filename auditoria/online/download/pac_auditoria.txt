@@ -1,220 +1,418 @@
-121005  25217810        BERNAT MARIA DE LOS ANGELES AMANCIA                                                                                           
-121005  39051294        PIVIDORI ANELEY BELEN                                                                                                         
-121005  05666625        AMBROSIG HILDA                                                                                                                
-121005  37713381        CORONEL MARIEN ARIADNA                                                                                                        
-121005  58729891        RAMIREZ STEBLER ENOC EMANUEL                                                                                                  
-121005  10739758        VALLEJOS TOMASA BEATRIZ                                                                                                       
-121005  10972336        SANCHEZ RONALDO RAUL                                                                                                          
-121005  12650626        ESQUIVEL MARGARITA                                                                                                            
-121005  14336106        LORENZON SILVIA OLGA                                                                                                          
-121005  17202013        MAREGA SUSANA LIA                                                                                                             
-121005  17202013        MAREGA SUSANA LIA                                                                                                             
-121005  17328473        SOLARI SILVIA GRISELDA                                                                                                        
-121005  21642066        MONZON SERGIO GABRIEL                                                                                                         
-121005  24898103        CASCO LAURA MABEL                                                                                                             
-121005  29350393        SIMON GISELA MARICEL                                                                                                          
-121005  32140863        DIAZ GEORGINA SOLEDAD                                                                                                         
-121005  54026367        SULIGOY FRANCISCO TOMAS                                                                                                       
-121005  70777650        CORTI EMILIA JOSEFINA                                                                                                         
-121005  06343377        AQUINO CARLOS JOSE                                                                                                            
-121005  18065555        PUCHETA MIRTA BEATRIZ AURORA                                                                                                  
-121005  23200475        ROJAS NELIDA ARGENTINA                                                                                                        
-121005  25544556        RAMIREZ FABIAN A                                                                                                              
-121005  25882816        VALLEJOS JUAN MARCELO                                                                                                         
-121005  27512896        BAUDIN SERGIO OSCAR                                                                                                           
-121005  27880104        MORALES MARIA MERCEDES                                                                                                        
-121005  32583246        AMADO EVELYN                                                                                                                  
-121005  37828798        DE GREEF ERICK                                                                                                                
-121005  46577917        SOSA ELIAN AUGUSTO                                                                                                            
-121005  46966703        AGUILAR LAUTARO GABRIEL                                                                                                       
-121005  55404536        CASTAÑEDA JUDITH BELEN                                                                                                       
-121005  06238465        PICECH MARTA INES                                                                                                             
-121005  30156738        DIAZ PATRICIA NOEMI                                                                                                           
-121005  55305492        TRONCOSO JUAN ANGEL D                                                                                                         
-121005  57934734        HÚMERE MENDEZ NIZA                                                                                                        N  
-121005  17712462        MORSANT ROSA MABEL                                                                                                            
-121005  17496170        RETAMOZO JOSE                                                                                                                 
-121005  30848369        LUDUEÑA CARLOS SEBASTIAN                                                                                                     
-121005  07675944        BREGANT ORLANDO ATILIO                                                                                                     N  
-121005  14677709        RAMSEYER ATILIO DARIO                                                                                                         
-121005  24768038        KINKELA MAURICIO SEBASTIAN                                                                                                    
-121005  26921842        TOMASIN LUCIANA                                                                                                               
-121005  27677049        REGONAT MARIA DE LOS ANGELES                                                                                                  
-121005  31313407        LLUL SILVIA VANINA                                                                                                            
-121005  18141667        GONZALEZ NORA BEATRIZ                                                                                                         
-121005  25303863        CONTARDE ROSALIA CRISTINA                                                                                                     
-121005  17202214        SILVESTRI LILIANA BEATRIZ                                                                                                     
-121005  13644253        HUGHES ISABEL RAMONA BEATRIZ                                                                                                  
-121005  36541107        FACCIOLI ARIEL ANDRES                                                                                                         
-121005  04502848        FRICK LADY ALBALCAIS                                                                                                          
-121005  05614551        CARRARA EMILIA ELVIRA                                                                                                         
-121005  24194639        PEREYRA ALEJANDRO DARIO                                                                                                       
-121005  26396643        FARIAS HAYDEE BLANCA                                                                                                          
-121005  37211879        TOFANELLI MARIA AGOSTINA                                                                                                      
-121005  42331623        CORONEL SILVANA ELISABETH                                                                                                     
-121005  05657595        PADUAN MARIA B                                                                                                                
-121005  05944813        MUCHIUT GLADYS MARIA                                                                                                          
-121005  14443695        GETAR JUDIT PATRICIA                                                                                                          
-121005  35454231        MEZZA ALEXIS JAVIER                                                                                                           
-121005  48255511        SANDOVAL MAIA JUDITH                                                                                                          
-121005  20223910        GARCIA CARLOS A                                                                                                               
-121005  34746121        SOTO PATRICIA JOANA                                                                                                           
-121005  39568595        GOMEZ DEBORA CANDELA                                                                                                          
-121005  39949318        MOREYRA YAMILE MAGALI                                                                                                         
-121005  10437942        MAZZUCHINI DORA ESTHER                                                                                                        
-121005  13116177        MARTINEZ RUBEN DANIEL                                                                                                         
-121005  41341727        TAPPONNIER FANNY ANALUZ                                                                                                    N  
-121005  70006681        RAVALO FONTANA RENATA                                                                                                         
-121005  16311625        HAKANSON LUIS ALBERTO                                                                                                         
-121005  17112173        D  AMICO RAQUEL ELENA                                                                                                         
-121005  28819340        PAVON CARINA SOLEDAD                                                                                                          
-121005  30787168        CARABALLO CARINA SOLEDAD                                                                                                      
-121005  54026393        LIENDO VICTORIA ABRIL                                                                                                         
-121005  59373036        LUDUEÑA HUBER JULIETA                                                                                                        
-121014  26244074        VERDUN MARIA LAURA                                                                                                    S  S N  
-121014  31249285        SERRANO GASMANN EDUARDO                                                                                               S  S N  
-121018  29081000018     ENRIQUES DIEGO HECTOR JOSE                                                                                                 N  
-121018  33956100015     GOBBI JOSUE ANDRES                                                                                                         S  
-121019  26159691        VALLEJOS LILIANA BEATRIZ                                                                                              S  S N  
-121029  33916186        MARCHETTI VALERIA SABRINA                          2000 OBLIGATORIO SAMI/FRIAR                                             N  
-121030  31541725        BRESSAN ELIANA                                                                                                        S  S N  
-121030  40364620        FACCIOLI RODRIGO                                                                                                      N  N N  
-121030  18664557        BELTRAN LAURA                                                                                                         N  N N  
-121030  18664557        BELTRAN LAURA                                                                                                         N  N N  
-121030  24060436        BERLANDA PAULA CRISTINA                                                                                               N  N N  
-121030  24726978        OJEDA MIRTA BEATRIZ                                                                                                   N  N N  
-121030  53619295        RODRIGUEZ DELFINA                                                                                                     N  N N  
-121036  39125024        COLUSSI SOFIA                                                                                                         S  S N  
-121037  24088219        MORI CLAUDINA MARCELA                                                                                                 S  S N  
-121037  31706733        NARDELLI NATALI JANINA PAOLA                                                                                          S  S N  
-121038  37404551        SPERANZA ARACELI PAOLA                                                                                                S  S N  
-121044  42924857        SULIGOY EUGENIA NARELA                                                                                                     N  
-121045  62291737302     FACCIOLI MARTHA LEONOR                                                                                                     S  
-121045  62292518002     FARIZ MARIA VERONICA                                                                                                       N  
-121045  62953074101     MEDINA JULIANA ELIZABETH                                                                                                   N  
-121045  63354542101     FUN SANTIAGO DANIEL                                                                                                        S  
-121045  62516817702     FRANCESE LILIANA SILVIA                                                                                                    S  
-121045  61456319301     QUESSUS DANIEL                                                                                                             S  
-121045  61456319301     QUESSUS DANIEL                                                                                                             S  
-121045  62776609801     CAPOZZOLO MARIA JOSE                                                                                                       S  
-121045  62776609801     CAPOZZOLO MARIA JOSE                                                                                                       S  
-121046  08714929318     TORTUL OSVALDO ELBIO                                                                                                       N  
-121046  03985713093     VIRILI MARIO ALFREDO                                                                                                       S  
-121046  49937130616     AUDERO MORENA JAQUELINA                                                                                                    N  
-121046  45215014653     TOFFUL MARIEL MARIA GUADALUPE                                                                                              N  
-121046  8072616793      ABBET NELCY EVA                                                                                                            S  
-121046  33701619784     BIANCHI MAIRA ALEJANDRA                                                                                                    S  
-121046  63705115870     DELLA ROSA GELMA C. .                                                                                                      S  
-121046  8078119124      NARDELLI GLADIS MARIA DEL ROSARIO                                                                                          S  
-121046  08078119465     NARDELLI GLADIS MARIA DEL ROSARIO                                                                                          S  
-121046  34838619251     MOSCHEN CLAUDIO HORACIO                                                                                                    S  
-121046  23740419976     BASAN LIS IVANA                                                                                                            S  
-121046  13095011939     MANATTINI WALTER ALEXIS                                                                                                    N  
-121046  13095028474     TOMADIN SILVIA GRACIELA                                                                                                    N  
-121049  5074199         ANGARAMO JOSE LUIS                                                                                                    S  S N  
-121049  26956199        CASTAÑO JULIETA                                                                                                      N  N N  
-121049  16528734        ZUPEL MARIEL HAYDEE                                                                                                   S  S N  
-121057  1473901         Alvarez Mirian Diana                               JS AVANZA                                                               S  
-121057  7655902         Jacuzzi Monica Vanesa                              PMI                                                                     N  
+121005  08508605        LOCATELLI OSCAR ANTONIO                                                                                                       
+121005  11202826        FABBRO NORMA MARI                                                                                                             
+121005  13425569        RIVAS BELKIS BEATRIZ                                                                                                          
+121005  34496050        RODRÍGUEZ LUCIANA MAGALI                                                                                                     
+121005  11505752        OBREGON LILIAN E                                                                                                              
+121005  12590400        CARGNELUTTI ALICIA NORMA                                                                                                      
+121005  14336517        ORSO HUGO ELEODORO                                                                                                            
+121005  16011126        SANDRIGO FERNANDO ANTONIO                                                                                                     
+121005  25469702        CHAPERO CARINA LILIAN                                                                                                      N  
+121005  35678044        NARDIN MELISSA MARÍA                                                                                                         
+121005  05003342        LENA TERTULA                                                                                                                  
+121005  13273928        SEGOVIA ISABEL ESTELA                                                                                                         
+121005  20391922        BLANCO RAMON ALBERTO                                                                                                          
+121005  28012951        BERTRAN MARIA LAURA                                                                                                           
+121005  49574695        ENRIQUEZ ARIANA Y                                                                                                             
+121005  57934696        RAMIREZ ISABELLA LAURA                                                                                                        
+121005  06350397        PRIETO LUIS ADALBERTO                                                                                                         
+121005  12590451        GONZALEZ VALERIA M S                                                                                                          
+121005  13273957        MACUGLIA JORGE ALBERTO                                                                                                        
+121005  05003400        DENIZ OLGA RAMONA                                                                                                             
+121005  21808888        CORDOBA CESAR ADRIAN                                                                                                          
+121005  45493253        SOSA FERNÁNDEZ PAULINA ALEJANDRA                                                                                             
+121005  17982530        ALFARO JUAN CARLOS                                                                                                            
+121005  03578124        BENITEZ CELESTINA                                                                                                             
+121005  24768299        BOSCH ROSINA LORENA                                                                                                           
+121005  12590162        LOPEZ CARLOS HORACIO                                                                                                          
+121005  08071845        MAREGA MIGUEL ANGEL                                                                                                           
+121005  17794784        LEIVA OLGA PETRONA                                                                                                            
+121005  04753986        CHAPERO NORMA G                                                                                                               
+121005  28813734        VARGAS ORESTES MAURICIO                                                                                                    N  
+121005  29529090        BASCOLO VALERIA                                                                                                               
+121005  56526499        VARGAS ORELLANO SANTIAGO                                                                                                      
+121005  16237980        FACCIOLI MARÍA SILVIA                                                                                                        
+121005  16641661        CAMPOS MARIA LILIANA                                                                                                          
+121005  16726243        ZAMER LAURA MARINA                                                                                                            
+121005  17328466        YORIS ANIBAL RENE                                                                                                             
+121005  18542034        YERIEN GLADIS LEONOR                                                                                                          
+121005  29852492        BRUERA LUCIANO JAVIER                                                                                                      N  
+121005  59393371        AYALA ROMERO ELISA ARELI                                                                                                      
+121005  14107171        FERREYRA SILVIA  AVELINA                                                                                                      
+121005  21942190        MEHAUOD MIRIAM ITATI                                                                                                          
+121005  37790197        FRANZOT NADIA BELÉN                                                                                                          
+121005  06309468        SCHEYTT SAUL EMILIO                                                                                                           
+121005  07676433        BUSEGHIN REINALDO                                                                                                             
+121005  07878670        BRAIDOT VICTOR JUAN                                                                                                           
+121005  28275128        VILLA MARINA ALEJANDRA                                                                                                        
+121005  30100512        MOZIMAN ROMINA SOFIA ELISA                                                                                                    
+121005  30663789        OCHOA HERNAN OSMAR                                                                                                            
+121005  31330739        PIVIDORI MARISA SILVINA                                                                                                       
+121005  34359565        MASAT JOANA CAMILA                                                                                                            
+121005  48134011        ZILLI GENARO NAEL                                                                                                             
+121005  F6242576        PADUAN MARTA ROSA                                                                                                             
+121005  04223342        GIORGINI HAYDEE                                                                                                               
+121005  14876658        TAIBO ZUNILDA AIDE                                                                                                            
+121005  16237247        FLEYTA NORBERTO OSMAR                                                                                                         
+121005  26668598        GONZALEZ RUBEN RAFAEL                                                                                                         
+121005  37970077        WILHELEM ANDREA SOLEDAD                                                                                                       
+121005  58690164        ZABALA AARÓN                                                                                                                 
+121005  70551161        AGUILAR SANDOVAL VITTO                                                                                                        
+121005  17180847        AESCHLIMANN EMA TERESA                                                                                                        
+121005  39568729        MANSILLA ADRIANA AYELEN                                                                                                       
+121005  42924801        ARANDA MILAGROS                                                                                                               
+121005  51280270        PRUVOST SAIZ SANTIAGO                                                                                                         
+121005  22175026        CUCIT ROSANA MARIANELA                                                                                                        
+121005  25095258        MAIDANA MARIANA ELISABET                                                                                                      
+121005  25834648        MAGNAGO GUSTAVO MARIANO                                                                                                       
+121005  17591733        ORTIZ VIRGINIO CIPRIANO                                                                                                       
+121005  17930201        FERNANDEZ ANACLETA                                                                                                            
+121005  29409600        INSAURRALDE NELIDA AZUCENA                                                                                                    
+121005  42925773        RAMIREZ ALAN AGUSTIN DAVID                                                                                                    
+121005  12136263        VIVAS HECTOR RAMON                                                                                                            
+121005  17414929        FEREZIN CLAUDIO F                                                                                                             
+121005  26712030        GUZMAN LAURA ITATI                                                                                                            
+121005  37407808        RIVAS DEBORA NEREA                                                                                                            
+121005  06224993        ROBLES OLGA ESTHER                                                                                                            
+121005  13644252        BEJARANO CLAUDIO VIRGINIO                                                                                                     
+121005  38241089        MARTINEZ CAMILA                                                                                                               
+121005  59064891        VARGAS TOEDO GIANNA MILAGROS                                                                                                  
+121005  11102289        NARDELLI RUBEN DARIO                                                                                                          
+121005  26002633        MARTINEZ ANDREA LEONOR                                                                                                        
+121005  35907450        LIOY ROMINA ANTONELLA                                                                                                         
+121005  14864857        BLANCO ALCIDES A                                                                                                              
+121005  16272577        MASAT RICARDO LUIS                                                                                                            
+121005  20552253        FERNANDEZ MARIA E                                                                                                             
+121005  26694342        GOMEZ ANDREA LORENA                                                                                                           
+121005  26694342        GOMEZ ANDREA LORENA                                                                                                           
+121005  28192048        FERNANDEZ ELVIO DANIEL                                                                                                        
+121005  37576322        FERNANDEZ NARELA                                                                                                              
+121005  07878124        BIANCHI EDUARDO ANDRES                                                                                                        
+121005  13600360        TREVISAN EMILIO ALBERTO                                                                                                       
+121005  13971329        NOBILE ELBA BEATRIZ                                                                                                           
+121005  16373761        QUIÑONES LUIS GUILLERMO                                                                                                      
+121005  23257600        MENENDEZ SANDRA ESTER                                                                                                         
+121005  25369878        GOMEZ AMADEO ALBERTO                                                                                                          
+121005  28019695        ISNALDO MERCEDES MARIA ITATI                                                                                                  
+121005  28275093        NUNEZ ROSANA ISABEL                                                                                                           
+121005  28722380        GUZMAN DIEGO MARTIN                                                                                                           
+121005  31313471        MAIDANA VANESA LILIANA                                                                                                        
+121005  33990325        LUQUEZ NATALIA ROMINA                                                                                                      N  
+121005  50556293        ROSELLI DEL FABRO VALENTINO MANUEL                                                                                            
+121005  F6533254        PICCIOCHI TERESITA ROSA SILVESTRE                                                                                             
+121005  12141783        TOURN EUCLIDES DELICIO                                                                                                        
+121005  12355728        LOPEZ ANA LUCIA                                                                                                               
+121005  43766756        MOSCHEN CELESTE MICAELA                                                                                                       
+121005  16237883        RUIZ DIAZ HUGO DANIEL                                                                                                         
+121018  25434402013     SARTOR MARQUEZ SOFIA                                                                                                       S  
+121018  29940600010     SARTOR LARA MAILEN                                                                                                         N  
+121018  42541002014     FRANZOY SEBASTIAN MATEO                                                                                                    S  
+121018  42541002014     FRANZOY SEBASTIAN MATEO                                                                                                    S  
+121018  42541002014     FRANZOY SEBASTIAN MATEO                                                                                                    S  
+121018  43604601016     DIAZ SANDRA VANINA                                                                                                         N  
+121018  44678900017     GAUNA MARISA ALEJANDRA                                                                                                     N  
+121018  29278300014     PIGHIN FRANCO ANDRES                                                                                                       N  
+121018  42797001011     BENITEZ LEILA VALERIA                                                                                                      N  
+121018  18807400046     FRANSOI MARTIN NICOLAS                                                                                                     N  
+121029  39688474        MICHELOUD MELINA EDIT                              2000O NG2                                                               N  
+121030  26694546        PIVIDORI MARISOL DANIELA                                                                                              N  N N  
+121030  32140981        BANDEO MAXIMILIANO                                                                                                    S  S N  
+121030  16237534        HURT ROBERTO ORESTE                                                                                                   N  N N  
+121030  25116508        GOI GUSTAVO                                                                                                           N  N N  
+121030  25831981        STECHINA ANDREA MARISA                                                                                                S  S N  
+121030  14834513        MASIN BERNARDO ALFREDO                                                                                                S  S N  
+121030  21947301        QUINTANA ROSA MABEL                                                                                                   N  N N  
+121030  36508341        BENITEZ YAMILA DANIELA                                                                                                N  N N  
+121030  24060332        RENIERO ROSANA RAQUEL                                                                                                 N  N N  
+121030  28584505        PETROLI MARIANELA ROSANA                                                                                              N  N N  
+121030  23264167        CONTI JESUS MARIA                                                                                                     S  S N  
+121030  25672441        ACEVEDO MELINA GLORIA                                                                                                 N  N N  
+121030  31849854        FERNANDEZ ESQUIVEL MARIA LORENA                                                                                       S  S S  
+121036  7629239         CODAZZI DANIEL CARLOS                                                                                                 N  N N  
+121036  18111194        GIULIANI CRISTINA ROSA                                                                                                S  S N  
+121036  36405810        ROSA AGUSTINA                                                                                                         S  S N  
+121036  11457036        VICENTIN RENE EMILIO                                                                                                  S  S N  
+121036  12907915        SANCHEZ RICARDO RAUL                                                                                                  N  N N  
+121036  36326415        ARCE CANDELA                                                                                                          N  N N  
+121037  3214301         JONES JUDITH LUCRECIA                                                                                                 S  S N  
+121042  0909201         LAMAZON IVAN MARTIN                                900300A.MU.R - ASOCIACION MUTUAL RURALISTA                              N  
+121042  2094401         PAVIOT LEONORA YINA                                000000AMUR                                                              S  
+121043  11583428        QUARIN ELADIO SANTOS                                                                                                  S  S S  
+121045  19218542301     VERGARA DE GOLDARAZ GRACIELA                                                                                               S  
+121045  62317492705     MAGGIO BOURGHEZ JULIA                                                                                                      N  
+121045  62720951202     BAEZ PIA LORENA DE LA SALETTE                                                                                              N  
+121045  61731450001     PITTAU ALEJANDRA FABIANA                                                                                                   N  
+121045  61087092004     RAMUA SOFIA VICTORIA                                                                                                       N  
+121045  19217483901     ALMADA ELSA                                                                                                                S  
+121045  19219547003     CIAN JORGE AMIR                                                                                                            S  
+121045  62665251002     ZANET ROSANNA LUISA                                                                                                        S  
+121045  19215797701     NARDELLI JULIO CESAR                                                                                                       N  
+121045  19217825702     BOURNISSENT SILVIA DEL MILAGRO                                                                                             S  
+121045  19217825702     BOURNISSENT SILVIA DEL MILAGRO                                                                                             S  
+121045  19215239801     PREVIALE OSVALDO ALBERTO                                                                                                   S  
+121045  63225434201     VIANO MARIA BELEN                                                                                                          N  
+121045  63225434201     VIANO MARIA BELEN                                                                                                          N  
+121045  19216764606     GALBUSERA MARIA GIMENA                                                                                                     S  
+121045  19217825701     FACCIOLI JORGE RAUL                                                                                                        S  
+121046  28932710099     CAPELETTI CAMILA BELEN                                                                                                     N  
+121046  20160122015     MAIDANA MARIA BELEN                                                                                                        N  
+121046  35770413532     MORI CARINA MABEL                                                                                                          N  
+121046  04684114435     LONGHI CARLOS DARIOS                                                                                                       S  
+121046  41394218476     MAURENZZI MACARENA DANIELA                                                                                                 S  
+121046  12236815934     PIVIDORI GERARDO GABRIEL                                                                                                   S  
+121046  6169127094      GONZALEZ ISMAEL ALBERTO                                                                                                    S  
+121046  17742913630     LEZCANO AYELEN FIAMA                                                                                                       N  
+121046  11883937782     DYKE FRANCHESCA                                                                                                            N  
+121046  36943818662     NASICH STELLA MARIS                                                                                                        S  
+121046  17612630526     RODRIGUEZ GIANELA DENISE                                                                                                   N  
+121046  18743731947     NARDIN JULIANA EVA                                                                                                         S  
+121046  22098618856     SPONTON LUISINA                                                                                                            S  
+121046  17488617338     CASALIS ROBERTO DANIEL                                                                                                     N  
+121046  9665011668      NARDELLI MONICA ALEJANDRA                                                                                                  S  
+121046  43377916492     NARDELLI ANTONELA                                                                                                          N  
+121046  43377916492     NARDELLI ANTONELA                                                                                                          N  
+121046  43377916831     NARDELLI ANTONELA                                                                                                          N  
+121046  43377916891     NARDELLI ANTONELA                                                                                                          N  
+121046  13095011473     MANATTINI WALTER ALEXIS                                                                                                    N  
+121046  8620327418      ROHRER MARCELA ADRIANA.                                                                                                    S  
+121049  23142697        ZORZON CESAR GABRIEL                                                                                                  S  S N  
+121049  29350083        BANDEO MARCELO ALEJANDRO                                                                                              S  S N  
+121049  29350083        BANDEO MARCELO ALEJANDRO                                                                                              S  S N  
+121057  36490100        Bandeo Gabriela Maria de los Milagros              PMI                                                                     N  
+121057  36490100        Bandeo Gabriela Maria de los Milagros              PMI                                                                     N  
+121057  3054800         Yaccuzzi Nanci Beatriz                             PMI                                                                     N  
+121057  6340100         Mejias Alba Nilda                                  PMI JUB                                                                 N  
+121057  10889903        MASSIN VILMA ADELA                                 PMI 2886                                                                S  
+121057  15448500        Zuttion Lilian Raquel                              PMI 3000 JUB                                                            N  
+121057  16715602        Pepermans Juan Pablo                               PMI                                                                     N  
+121057  17148601        Llull Maria Virginia                               PMI                                                                     N  
+121057  9832900         Pereson Eliana Maria                               PMI 2000                                                                N  
+121057  15502100        Pereson Emiliano Gaston                            PMI                                                                     N  
 121057  6164800         Kiener Marianela                                   PMI 3000                                                                N  
-121067  181275500       DUTTO DENISE DESIRE                                                                                                        N  
-121067  181275500       DUTTO DENISE DESIRE                                                                                                        N  
-121067  145569700       RAMIREZ ROMINA GISELA                                                                                                      N  
-121067  105157002       CUEVAS HARDY MATILDA                                                                                                       N  
-121067  235430400       BOGARIN TERESITA DAIANA                                                                                                    S  
-121067  243006100       DOLZANI ARIANA BELEN                                                                                                       N  
-121069  01383044        MASIN BRIGIDA INES                                                                                                            
-121069  02731509        NASIF ADELINA                                                                                                                 
-121069  03488875        SANDOVAL ELBA FRANCISCA                                                                                                       
-121069  04241501        JANKO JOSEFINA ELISA                                                                                                          
-121069  04623403        ZARZA ALBA YOLANDA                                                                                                            
-121069  06347643        LOPEZ DELMIRO JOSE                                                                                                            
-121069  12297106        YORIS GLADYS T.                                                                                                               
-121069  05668027        LALLANA DELIA DORA                                                                                                            
-121069  07913928        GONZALEZ INDALECIO                                                                                                            
-121069  10184213        GONZALEZ MIRIAN BEATRIZ                                                                                                       
-121069  10662868        MUCHIUT ROBERTO R.                                                                                                            
-121069  11426122        SCHNELL, ALICIA BEATRIZ                                                                                                       
-121069  11879355        MORA FLORENCIA ESTELA                                                                                                         
-121069  13770608        VARGAS BELKIS                                                                                                                 
-121069  16613922        TEDESCA NORMA LILIAN                                                                                                          
-121069  12136327        NOGUERA AMERICO PILAR                                                                                                         
-121069  13273808        QUINTANA SECUNDINA ROSA                                                                                               S  S N  
-121069  13618708        BROGGI RICARDO FIDEL                                                                                                          
-121069  05996475        ZALAZAR ELDA YOLANDA                                                                                                          
-121069  06544974        MARTINEZ OLGA A.                                                                                                              
-121069  12590756        CONTI DAIMO LUIS                                                                                                              
-121069  16328841        PETROLI MIRTA ESTER                                                                                                           
-121069  11541517        ZAPATA JOSE MARIA                                                                                                             
-121069  12901862        RAMIREZ AURORA DEIDAMIA                                                                                                       
-121069  16439393        QUINTANA MONICA GRACIELA                                                                                                      
-121069  17705022        CAPELLETI VILMA RAQUEL                                                                                                        
-121069  11808993        PITTERI JUAN ABEL                                                                                                             
-121069  06256271        MASIN ROSENDO ROLANDO                                                                                                         
-121069  06256271        MASIN ROSENDO ROLANDO                                                                                                         
-121069  06352408        TAIBO MAXIMIANO                                                                                                               
-121069  08280005        FRANCO DELFINO                                                                                                                
-121069  10480536        QUARIN  EMILCE  AIDEE                                                                                                         
-121069  13528196        SOSA LIDIA BEATRIZ                                                                                                            
-121069  04775127        CIAN MARTA INES                                                                                                               
-121069  13990434        CABRERA DANIEL ISMAEL                                                                                                         
-121069  07891973        MAREGA OSCAR ALFREDO                                                                                                          
-121069  06544818        CAMACHO MARIA ESTER                                                                                                           
-121069  11274241        AZCONA AMANCIO ANIBAL                                                                                                         
-121069  04489039        FAULKNER VILMA ISABEL                                                                                                         
-121069  06281744        DELBON ANA MABEL                                                                                                              
-121069  07676443        MAZZUCHINI OSVALDO PEDRO                                                                                                      
-121069  12296826        SOSA SATURNINA DOLORES                                                                                                        
-121069  16011133        CONTI ANA MARIA                                                                                                               
-121069  24898261        VILLAN MARICEL MARIA DE LOS ANGELES                                                                                           
-121069  13644444        BENITEZ HORACIO OSCAR                                                                                                         
-121069  32619812        GOMEZ MARIA YOLANDA                                                                                                           
-121069  12323774        PERALTA ZENONA DEL CARMEN                                                                                                     
-121069  05163816        SERAFINI IMELDA TERESITA                                                                                                      
-121069  05210828        GALARZA IRMA EVANGELISTA                                                                                                      
-121069  12401930        SOSA ANA N.                                                                                                                   
-121069  10560774        PEREZ MARIA MAGDALENA                                                                                                         
-121069  12239545        MINUTTI EDGARDO RUBEN                                                                                                         
-121069  13715426        RODRIGUEZ DELIA                                                                                                               
-121069  20808311        ARRIOLA PATRICIA ROSANA                                                                                                       
+121057  30220001        Hacen Sandra Beatriz                               PMI 2000                                                                N  
+121067  74450000        AGHEMO EMILIANO                                                                                                            N  
+121067  099304802       VITTI VINCENZO OSCAR                                                                                                       N  
+121067  194731701       ZUPEL MORENA LUCIA                                                                                                         N  
+121067  226938800       IMHOFF BRISA                                                                                                               S  
+121067  238495401       GARCIA ROMINA GRISELDA                                                                                                     N  
+121067  244014700       PADUAN NICOLAS ALEJANDRO                                                                                                   S  
+121067  231010700       MARTINEZ MAGALI                                                                                                            N  
+121067  63483001        BATISTUTA ELISA BEATRIZ                                                                                                    S  
+121067  160233200       GONZALEZ EVANGELINA SOLEDAD                                                                                                S  
+121067  202078400       MAURENZIC BRUNELA                                                                                                          N  
+121067  202078400       MAURENZIC BRUNELA                                                                                                          N  
+121067  243685102       BAZAN KEILA YANEL                                                                                                          N  
+121069  08378241        PINATTI MANUEL V.                                                                                                             
+121069  11620128        OLIVERO CARLOS ORLANDO                                                                                                        
+121069  11620135        YORIS, ESTHER MARIA ROSA                                                                                                      
+121069  13590952        CASTANEIRA RAUL ANTONIO                                                                                                       
+121069  07709667        OBREGON, JUAN DOMINGO                                                                                                         
+121069  10662607        TOLEDO JUAN HECTOR                                                                                                            
+121069  13990219        CUCIT NOELIA AIDE                                                                                                             
+121069  14535661        VICENTIN NELCY NORA                                                                                                           
+121069  05870577        GONZALEZ MARTINA                                                                                                              
+121069  10300572        PORTAL CARMEN LIDIA                                                                                                           
+121069  12502918        SUAREZ< ELBA                                                                                                                  
+121069  12986854        RAMIREZ NILDA                                                                                                                 
+121069  17328924        PAREDES MARCELO ADALBERTO                                                                                                     
+121069  03340469        STECHINA MARTA ELSA                                                                                                           
+121069  06238528        VILLASBOAS RAMONA ANASTACIA                                                                                                   
+121069  11882920        MENDOZA VILMA GRACIELA                                                                                                        
+121069  14574489        MUCHUTTI MONICA PATRICIA                                                                                                      
+121069  17684977        BUYATTI CLAUDIA MONICA                                                                                                        
+121069  13618690        PAREDES  STELA MARIS                                                                                                          
+121069  04550850        CORGNIALI JOSEFINA ANA                                                                                                        
+121069  08323450        PICCOLI JOSE RAMON                                                                                                            
+121069  10480526        LUGO RUBEN ALCIDES                                                                                                            
+121069  11435324        GIMENEZ JUAN CARLOS                                                                                                           
+121069  13451053        MANCUELLO ISABEL                                                                                                              
+121069  16484763        ZARATE MARIA CRISTINA                                                                                                         
+121069  18651927        CHAMORRO GRISELDA                                                                                                             
+121069  20281180        VAN WEELE MIRTA BEATRIZ                                                                                                       
+121069  12901415        AVALOS TITO ALBERTO                                                                                                           
+121069  16484779        CUEVAS SELVA OFELIA                                                                                                           
+121069  05870578        CHARA ROMELIA DORA                                                                                                            
+121069  06327846        BERNACHEA RODOLFO                                                                                                             
+121069  10397316        SANCHEZ ANA ROSA                                                                                                              
+121069  13337882        SIERRA ANGELA SATURNINA                                                                                                       
+121069  14936080        MOGLIA ALICIA LILIAN                                                                                                          
+121069  21536963        AGUIRRE JORGELINA                                                                                                             
+121069  04893998        AGUILAR ERMELINDA                                                                                                             
+121069  03766727        MORZAN TELVINA                                                                                                                
+121069  05219294        VICENTIN ELVIRA BENILDES                                                                                                      
+121069  06341266        QUATRIN ANTONIO                                                                                                               
+121069  07882210        BENITEZ RAMON                                                                                                                 
+121069  11758520        MAIDANA GLADIS BEATRIZ                                                                                                        
+121069  12157784        VIRILI ANTONIO DOMINGO                                                                                                        
+121069  12901473        STECHINA DANTE HORACIO                                                                                                        
+121069  14035950        YACCUZZI ZULMA ROSA                                                                                                           
+121069  14712302        CORGNALI HILDA MARIA                                                                                                          
+121069  14891458        ROMERO RAMONA ESTELA                                                                                                          
+121069  22783505        NARDELLI CARINA ANDREA                                                                                                        
+121069  03488894        SALAMONINI JULIA                                                                                                              
+121069  16237875        MONZON JOSE LUIS                                                                                                              
+121069  20820386        CUEVAS GRACIELA C.                                                                                                            
+121069  04285045        SANCHEZ OLGA ESTHER                                                                                                           
+121069  06229306        DEBERNARDIS ELDA MARIA                                                                                                        
+121069  06336865        AGUSTINI DIMAS                                                                                                                
+121069  13050809        RENIERO ROBERTO ARMANDO                                                                                                       
+121069  13367846        PADUAN ESTELA MARIS                                                                                                           
+121069  20299399        BRAIDOT AURELIA MABE                                                                                                          
+121069  22077065        SOTELO MAGDALENA                                                                                                              
+121069  08485678        VALLEJOS ALCIDES EMILIO                                                                                                       
+121069  13990238        ORELLANA GRACIELA BEATRIZ                                                                                                     
+121069  16807838        MAZUQUIN NIDIA OLGA                                                                                                           
+121069  12181432        GONZALEZ IRENE MARGARITA                                                                                                      
+121069  17202083        CAPRIN ELSA GUADALUPE                                                                                                         
+121069  17799676        OJEDA WILDA ITATI                                                                                                             
+121069  21510968        FABATIA MARTA R.                                                                                                              
+121069  17180847        AESCHLIMANN EMA T.                                                                                                            
+121069  06613708        FURRER AVELINO                                                                                                                
+121069  08378105        FLAMA, EMILIO ALBERTO                                                                                                         
+121069  12556944        MAGNAGO NATALIO ANTONIO                                                                                                       
+121069  16908515        YORIS ROSALIA JOSEFINA                                                                                                        
+121069  11997285        MARTINEZ CELINA M.                                                                                                            
+121069  04147746        FRANZOI UBERLINDA VILMA                                                                                                       
+121069  05210819        BERLANDA MARTA ANGELICA                                                                                                       
+121069  10570543        QUIROZ, ALECIO OMAR                                                                                                           
+121069  05176114        TUMINELLI PAULA                                                                                                               
+121069  05316810        RENIERO OLGA LUISA                                                                                                            
+121069  06556226        GARCIA NELSI MABEL                                                                                                            
+121069  13112204        SANCHEZ RAMON IRENEO                                                                                                          
+121069  13112226        ZAPATA AURORA ANGELICA                                                                                                        
+121069  16099300        BARRIOS ANGELA DORA                                                                                                           
+121069  06349918        BENITEZ ANTONIO MARIANO                                                                                                       
+121069  07875028        BERNARDIS AUDINO FRANCISCO                                                                                                    
+121069  12296922        GANCHIER EDUARDO GABINO                                                                                                       
+121069  12923293        VEGA VICTORINA BEATRIZ                                                                                                        
+121069  13367985        PADUAN VICTOR HUGO                                                                                                            
+121069  14336193        PETROLI MARIA BEATRIS                                                                                                         
+121069  14785219        PADUAN HORACIO ORESTE                                                                                                         
+121069  02416197        VICTOR YOLANDA AMABELIA                                                                                                       
 121069  08508815        IMHOOF ALDO MAURICIO                                                                                                          
-121069  12595729        NOBILE ALICIA ELIDA                                                                                                           
-121069  13320369        GEYMONAT ORLANDO                                                                                                              
-121069  07709606        FERNANDEZ HORACIO RAUL                                                                                                        
-121069  07880461        RIOS SERGIO MANUEL                                                                                                            
-121069  08434434        VAZQUEZ MANUEL JESUS                                                                                                          
-121069  17685053        ARNOLD DANTE OSCAR                                                                                                            
-121071  44776574        MORALES GRIBAUDO SOFIA BELEN                                                                                          S  S N  
-121081  29350447        FLEITAS MATIAS ADRIAN                                                                                                 N  N N  
-121081  25347000        FERRERO EDUARDO                                                                                                       N  N N  
-121089  55740902109     BUYATTI,SANDRA MONICA                                                                                                      S  
-121089  0613570010032   COULCHINSKY,IVANA                                                                                                          N  
-121097  1922344426800   FLORES ETELVINA                                                                                                       S  S N  
+121069  08508815        IMHOOF ALDO MAURICIO                                                                                                          
+121069  11879198        ROMERO SARA ISABEL                                                                                                            
+121069  04980459        MERCADO ANA NICOLASA                                                                                                          
+121069  04995502        MARTINEZ NOELIA NORMA                                                                                                         
+121069  06353201        RODRIGUEZ RENE ALCIBIADES                                                                                                     
+121069  12181198        ROMERO RAMON SALVADOR                                                                                                         
+121069  13116548        FLORENTIN AMELIA                                                                                                              
+121069  13425590        PREZ GUILLERMO R.                                                                                                             
+121069  14336297        MIERES JUAN CARLOS                                                                                                            
+121069  14864230        MAZZUCHINI ANA ZUNILDA                                                                                                        
+121069  14864710        SEGOVIA MARIA ESTELA                                                                                                          
+121069  16726286        PETROLI CLAUDIA RAMONA                                                                                                        
+121069  16908883        CASCO ELMA                                                                                                                    
+121069  30156728        ARISTIQUI PAOLA GABRIELA                                                                                                      
+121069  34314946        MORDACINI PRISCILIA                                                                                                           
+121069  10563203        STENICO MIGUEL MARTIN                                                                                                 S  S N  
+121081  26418400        FERRERO MONICA MATILDE                                                                                                N  N N  
+121089  94362601000     BONORA,ALFREDO                                                                                                             N  
+121089  92370701003     MOSCHEN,NATALIA LILIANA                                                                                                    N  
+121089  72991803001     MAREGA,ISLA INAT                                                                                                           N  
+121089  72991804000     MAREGA,IZAN ALEJO                                                                                                          N  
+121089  84586805101     PETROLI,PAULA CORAL                                                                                                        N  
+121089  84586805101     PETROLI,PAULA CORAL                                                                                                        N  
+121089  27798002000     SERRICHIO,CAROLINA SUSANA                                                                                                  N  
+121089  55742601009     BUYATTI,NOELIA ANDREA                                                                                                      N  
+121089  47356301001     CIAN,SEBASTIAN MATIAS                                                                                                      N  
+121089  98664402000     RU,MARTINA                                                                                                                 N  
+121089  98664402000     RU,MARTINA                                                                                                                 N  
+121089  32505302004     KIRILOVSKY,DEBORA                                                                                                          S  
+121089  92231401002     TOMADIN,FEDERICO                                                                                                           N  
+121089  92231401002     TOMADIN,FEDERICO                                                                                                           N  
+121097  41664147        GRAEMIGER MATIAS FEDERICO                                                                                             N  N N  
+121097  70507030        GRAEMIGER OLIVIA                                                                                                      S  S N  
+121129  35466524        LAPLACE ANTONELLA ELIZABETH                        2000 OBLIGATORIO SAMI/FRIAR                                             N  
+121168  238308901       PETROLI ROCIO EVELIN                                                                                                       S  
+121191  26395815        LORENZINI, LIDIA MARIANA                           FESALUD Plan Gente Joven                                           S    S  
+121191  46965111        WILLINER GABRIEL MATIAS                            FESALUD Plan Gente Joven                                           S    S  
+121191  46221127        FERNANDEZ MARTINA                                  FESALUD Plan Gente Joven                                           S    S  
+121205  16486891        ROBLEDO FABIAN BERNARDO                                                                                                    N  
+121205  41790611        BOGADO MACUGLIA JUAN JOSÈ                                                                                                 N  
+121205  58538450        ZARZA GRISMALDI MARTINA                                                                                                    N  
 121205  02416290        MAURENCIG BLANCA IRMA                                                                                                         
-121205  08071079        DEFANT AURELIO GUILLERMO                                                                                                      
-121205  10813800        ABDALA JUAN CARLOS                                                                                                            
+121205  24898042        FERNANDEZ MARTIN ALCIDES                                                                                                      
+121205  02416101        FABBRO CLORINDA VERONICA                                                                                                      
+121205  03385672        RIQUELME OTILIA B                                                                                                             
+121205  05210856        CERDEIRA ROSALIA AMABELIA                                                                                                     
+121205  07873886        GALLOTTI ENRIQUE                                                                                                           N  
+121205  07874769        SANDRIGO RUBEN RUDECINDO                                                                                                      
 121205  12452455        NEFLE OVIDIO ALCIDES                                                                                                          
-121205  08378240        TOROSSI MARIO ALFREDO                                                                                                         
-121205  05531889        VILLANUEVA JOSE REINALDO                                                                                                      
-121205  05650133        BAIS BLANCA                                                                                                                   
-121205  06304325        DELBON NESTOR HUGO                                                                                                            
-121861  30617953701000  PADUAN LUCRECIA MIRNA                                                                                                      N  
-121861  30668997800000  STECHINA DANA LIS                                                                                                          S  
-121861  30673738400000  ORREGO MAXIMILIANO SEBASTIAN                                                                                               S  
-121861  30673738400000  ORREGO MAXIMILIANO SEBASTIAN                                                                                               S  
-121960  24081919        BELDUINA MARIA                                                                                                        N  N N  
-121983  124277201       CENTIS LUISINA NATALI                                                                                                      S  
-121983  84951700        LOPEZ DELIA MARTA                                                                                                          S  
-121983  89012801        CAMUSSI NADIA CAROLINA MICAE                                                                                               N  
-121983  74956001        DELLACASA VICENTIN CANDELARIA                                                                                              S  
-121983  176423200       BELOSO AGOSTINA                                                                                                            N  
-121983  187934300       CHAMORRO CELIA EMILCE MARIBEL                                                                                              N  
-121984  34629600012     SPERANZA SELENE MARIEL                                                                                                     N  
-121984  18887400021     ZORATTI RENE OSCAR                                                                                                         N  
-121984  45724200012     CASALE MATEO TOMAS                                                                                                         S  
-121988  24898082        FONTANA PATRICIA ALEJANDRA                                                                                            S  S N  
-121988  13038975        FABBRO ARNOLDO ADOLFO                                                                                                 S  S N  
-121988  21692653        FAIN JUAN EDUARDO                                                                                                     N  N N  
-121991  31154139        SOTELO DIANA MARISEL                                                                                                  S  S N  
-121996  23757497        ALEGRE RUBEN ALEJANDRO                                                                                                S  S N  
-121996  52903247        OJEDA LUANA NATALI                                                                                                    S  S N  
+121205  17442124        NADALUTTI ELENA JOSEFINA                                                                                                   N  
+121205  18111116        ROMERO MARIA                                                                                                                  
+121205  05531872        UMERE RAMON MANUEL                                                                                                            
+121205  11263478        BOBBIO NESTOR OSCAR                                                                                                           
+121205  12828173        FERROGLIO DINA LILIAN                                                                                                      N  
+121205  39856870        INSAURRALDE STELLA MARIS                                                                                                      
+121205  44022305        LA ROSA LOURDES MARIA                                                                                                      N  
+121259  33452612        SPERANZA VALERIA CECILIA                           FESALUD Plan Vital                                                 S    N  
+121278  36545780        ZABALA MELISA AYELEN                                                                                                  N  N N  
+121346  19215657102     BAEZ DE VENICA LILIANA                                                                                                     N  
+121346  19217825701     FACCIOLI JORGE RAUL                                                                                                        S  
+121459  5781535         FERESIN NILDA ISABEL                               FESALUD Plan B                                                     S    S  
+121459  7709651         LOVEY SAUL EUCLIDES                                FESALUD Plan B                                                     S    S  
+121559  12556857        MAREGA RAQUEL ROSA                                 FESALUD Plan C                                                     S    S  
+121861  30659790101000  AGUSTINI LELIA NOEMI                                                                                                       N  
+121861  30617448102000  RICHARD ANA CLARA                                                                                                          N  
+121861  30616930204000  COPETTI PRIETO FRANCESCA                                                                                                   N  
+121861  30672326405000  ENRIQUEZ TATIANA SELENE                                                                                                    S  
+121861  30672326405000  ENRIQUEZ TATIANA SELENE                                                                                                    S  
+121861  30652025800000  QUARIN DANIELA PAOLA                                                                                                       N  
+121861  30652025800000  QUARIN DANIELA PAOLA                                                                                                       N  
+121861  30640949701000  SILVA  AGUSTINI JOSEFINA                                                                                                   N  
+121960  2699693901      CACERES LIS                                                                                                           N  N N  
+121960  20148783        ALESSO ALBA                                                                                                           N  N N  
+121960  20148783        ALESSO ALBA                                                                                                           N  N N  
+121963  40551015        GAMARRA ROBERTO                                                                                                       S  S N  
+121973  22610628        ARCE HECTOR BERNARDO                                                                                                  S  S N  
+121976  7708784         BRAC MANUEL                                                                                                           S  S N  
+121981  24175831        MOYANO MARISA                                                                                                         N  N N  
+121983  244291700       ZECHIN CAMILA ALDANA                                                                                                       S  
+121983  245296200       BLANCO NARELLA LOANA                                                                                                       S  
+121983  247516801       SAGER MERI DANALI                                                                                                          N  
+121983  230006500       FACCIOLI CAMILA AYELEN                                                                                                     S  
+121983  163753600       MARTINEZ YANINA MARIANA                                                                                                    N  
+121983  238436700       DIBERNARDO NAIARA LORELEY                                                                                                  S  
+121983  130601101       MEJIAS PATRICIA BEATRIZ                                                                                                    N  
+121983  160607200       PASTOR ARIEL GUSTAVO                                                                                                       S  
+121983  88512800        GOMILA EMILIANO GABRIEL                                                                                                    N  
+121983  88512801        QUARIN DIANELA MARIA                                                                                                       N  
+121983  226939600       QUIROZ GONZALO NICOLAS                                                                                                     N  
+121983  185807300       VELAZQUEZ AYELEN MICAELA                                                                                                   N  
+121983  247631800       BELLINI JOSE CARLOS                                                                                                        S  
+121983  240335801       MARELLI MAIRA ALEJANDRA                                                                                                    S  
+121983  223562100       BRAIDA LUCILA SOLEDAD                                                                                                      N  
+121983  239158000       PIETROPAOLO ANA CANDELA                                                                                                    S  
+121983  199345601       MOLINA MARCELO ALEJANDRO                                                                                                   S  
+121984  14088101032     DUARTE RODRIGO YAMIL                                                                                                       N  
+121984  45690300016     GAMARRA PAMELA DANISA                                                                                                      N  
+121984  17239001015     COLUSSI DIANELA SOLEDAD                                                                                                    N  
+121984  46322100011     BORDON GABRIELA MARIEL                                                                                                     N  
+121984  15489000035     OLIVASTRI LAURA MARICEL                                                                                                    S  
+121984  31087500014     ZONE ALICIA SONIA                                                                                                          N  
+121984  13599200046     NOE VALERIA SOLEDAD                                                                                                        S  
+121984  15089000054     LORENZON EVANGELINA AILEN                                                                                                  N  
+121984  48465800016     MONZON MARCOS DARIEL                                                                                                       N  
+121984  48465800016     MONZON MARCOS DARIEL                                                                                                       N  
+121984  48465800016     MONZON MARCOS DARIEL                                                                                                       N  
+121984  22515803028     JUNCO BUSTAMANTE SOFIA                                                                                                     N  
+121984  14756204034     GONZALEZ DAVIS GUADALUPE                                                                                                   N  
+121984  48465800016     MONZON MARCOS DARIEL                                                                                                       N  
+121984  48465800016     MONZON MARCOS DARIEL                                                                                                       N  
+121984  23664602010     CALCABRINI ROJO MARTINA                                                                                                    S  
+121984  24175601020     MEZA SIXTO                                                                                                                 N  
+121986  59814273        BLANCO SOFIA                                                                                                          S  S N  
+121988  12866967        BARBERIS ALBA.                                                                                                        S  S S  
+121988  17798030        BAIS SANDRA BIBIANA                                                                                                   S  S N  
+121989  27524325        SILVAN SILVINA NOEMI                                                                                                  S  S N  
+121996  17274145        ACEBEDO LUIS                                                                                                          S  S N  
+121996  18178467        GONZALEZ JOSE                                                                                                         S  S N  
+121996  47076145        ROMERO AGUSTINA HAYDEE                                                                                                N  N N  
+121996  52903212        CREMONA MAIA VALENTINA                                                                                                S  S N  
+121996  21567502        REGONAT ANA LILIAN                                                                                                    S  S N  
+121996  28722003        NAVARRO ARACELI                                                                                                       S  S N  
+121996  34414864        SUAREZ MAXIMILIANO                                                                                                    S  S N  
+121996  34804773        DUARTE ROMINA                                                                                                         S  S N  
+121996  34856856        RAMIREZ FLAVIA                                                                                                        S  S N  
+121996  49141822        BROGGI VALENTIN                                                                                                       S  S N  
+121996  50556124        VERON  SANTINO PABLO                                                                                                  S  S N  

@@ -273,6 +273,7 @@
     <DCCReference Include="clases\CExportObrasSociales.pas" />
     <DCCReference Include="clases\CFirebirdConnect.pas" />
     <DCCReference Include="clases\CFTP.pas" />
+    <DCCReference Include="clases\CSFTP.pas" />
     <DCCReference Include="clases\CIntegridadReferencial.pas" />
     <DCCReference Include="clases\CLiquidacionObrasSocCCB.pas" />
     <DCCReference Include="clases\CMedicosCabAO.pas" />

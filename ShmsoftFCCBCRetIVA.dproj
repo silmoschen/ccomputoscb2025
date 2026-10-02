@@ -206,6 +206,7 @@
     <DCCReference Include="clases\CAgrupacionOSFact.pas" />
     <DCCReference Include="clases\CAuditoriaCCB.pas" />
     <DCCReference Include="clases\CAuditoriaFacturacion.pas" />
+    <DCCReference Include="clases\CComregi.pas" />
     <DCCReference Include="clases\CCoseguros.pas" />
     <DCCReference Include="clases\CDatosEmpresa.pas" />
     <DCCReference Include="clases\CExportObrasSociales.pas" />

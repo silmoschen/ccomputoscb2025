@@ -1,0 +1,662 @@
+unit ComprobantesRegistrables;
+
+interface
+
+uses
+  SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
+  Forms, Dialogs, StdCtrls, ExtCtrls, Buttons, DB, DBTables, Mask, DBCtrls,
+  ComCtrls, ToolWin, ImgList, Grids, Editv, Printers;
+
+type
+  TfmComprobantesRegistrables = class(TForm)
+    StatusBar1: TStatusBar;
+    DTS: TDataSource;
+    PageControl: TPageControl;
+    tblComprobantes: TTabSheet;
+    Panel2: TPanel;
+    ScrollBox: TScrollBox;
+    Panel1: TPanel;
+    Label3: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    dc: TMaskEdit;
+    ac: TMaskEdit;
+    av: TMaskEdit;
+    ln: TMaskEdit;
+    GroupBox1: TGroupBox;
+    Label7: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
+    Label10: TLabel;
+    cta: TMaskEdit;
+    ctb: TMaskEdit;
+    ctc: TMaskEdit;
+    otros: TMaskEdit;
+    Registrar: TButton;
+    factura_vtas: TCheckBox;
+    factura_com: TCheckBox;
+    Panel3: TPanel;
+    Label1: TLabel;
+    Label2: TLabel;
+    nc: TLabel;
+    codcomp: TMaskEdit;
+    idcompr: TMaskEdit;
+    selcomp: TBitBtn;
+    tblCorrelatividad: TTabSheet;
+    Panel4: TPanel;
+    ScrollBox1: TScrollBox;
+    Panel6: TPanel;
+    Panel7: TPanel;
+    TC: TStringGrid;
+    iva_exento: TCheckBox;
+    Panel5: TPanel;
+    ToolBar1: TToolBar;
+    DBNavigator: TDBNavigator;
+    Alta: TToolButton;
+    Baja: TToolButton;
+    Modificar: TToolButton;
+    Buscar: TToolButton;
+    Deshacer: TToolButton;
+    Salir: TToolButton;
+    Panel8: TPanel;
+    GroupBox2: TGroupBox;
+    Label11: TLabel;
+    Label12: TLabel;
+    Label13: TLabel;
+    Label14: TLabel;
+    Label15: TLabel;
+    Label16: TLabel;
+    Label17: TLabel;
+    Label18: TLabel;
+    Label19: TLabel;
+    Label20: TLabel;
+    Label21: TLabel;
+    Label222: TLabel;
+    Label24: TLabel;
+    Label22: TLabel;
+    Label26: TLabel;
+    Label27: TLabel;
+    Label23: TLabel;
+    codnumer: TEditValid;
+    nroinicial: TEditValid;
+    nrofinal: TEditValid;
+    nroactual: TEditValid;
+    Limpresoras: TComboBox;
+    controlstock: TMaskEdit;
+    nmaximo: TMaskEdit;
+    tipoEmision: TComboBox;
+    ncopias: TComboBox;
+    impcompr: TMaskEdit;
+    resolucion: TEditValid;
+    recibo: TCheckBox;
+    remito: TCheckBox;
+    expendio: TMaskEdit;
+    definir: TButton;
+    modotexto: TCheckBox;
+
+    procedure codcompKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure comprobanteKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure dcKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure idcomprKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure acKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure avKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure lnKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure ctaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure ctbKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure ctcKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure otrosKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure AltaClick(Sender: TObject);
+    procedure SalirClick(Sender: TObject);
+    procedure BajaClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure DBNavigatorClick(Sender: TObject; Button: TNavigateBtn);
+    procedure FormShow(Sender: TObject);
+    procedure RegistrarClick(Sender: TObject);
+    procedure factura_vtasClick(Sender: TObject);
+    procedure tblCorrelatividadShow(Sender: TObject);
+    procedure definirClick(Sender: TObject);
+    procedure TCDblClick(Sender: TObject);
+    procedure codnumerKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure nroinicialKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure nrofinalKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure nroactualKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure LimpresorasChange(Sender: TObject);
+    procedure nmaximoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure controlstockKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure reciboClick(Sender: TObject);
+    procedure reciboKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure tipoEmisionKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure tipoEmisionChange(Sender: TObject);
+    procedure impcomprKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure resolucionKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure expendioKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure LimpresorasKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure remitoClick(Sender: TObject);
+    procedure TCKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure modotextoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure modotextoClick(Sender: TObject);
+    procedure selcompClick(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure Panel2Resize(Sender: TObject);
+    procedure tblCorrelatividadHide(Sender: TObject);
+    procedure nroinicialChange(Sender: TObject);
+  private
+    { Private declarations }
+    redim: Boolean;
+    procedure CargarDatos;
+    procedure CargarDatosComprobante;
+    procedure DatosNumeracion;
+  public
+    solapa: Integer;
+    { Public declarations }
+  end;
+
+var
+  fmComprobantesRegistrables: TfmComprobantesRegistrables;
+
+implementation
+
+uses ImgForms, CUtiles, CComregi, CConfigForms, CAdmNumCompr,
+  NominaComprobantes;
+
+{$R *.DFM}
+
+procedure TfmComprobantesRegistrables.CargarDatos;
+begin
+  compregis.getDatosMov(codcomp.Text, idcompr.Text);
+  nc.Caption := compregis.Descrip;
+  dc.Text    := compregis.Dc;
+  ac.Text    := compregis.AC;
+  av.Text    := compregis.AV;
+  ln.Text    := compregis.LN;
+  cta.Text   := compregis.CTA;
+  ctb.Text   := compregis.CTB;
+  ctc.Text   := compregis.CTC;
+  otros.Text := compregis.Otros;
+  if compregis.Factura_vtas = 'S' then factura_vtas.Checked := True else factura_vtas.Checked := False;
+  if compregis.Factura_com  = 'S' then factura_com.Checked  := True else factura_com.Checked  := False;
+end;
+
+procedure TfmComprobantesRegistrables.CargarDatosComprobante;
+// Objetivo...: Actualizar los datos de comoprobantes numerados
+begin
+  administNum.getDatosDefF(TC.Cells[0, TC.row], TC.Cells[1, TC.row], 'F01');
+  codnumer.Text     := administNum.NCodnumer;
+  nroinicial.Text   := utiles.sLLenarIzquierda(administNum.NNroinicial, 8, '0');
+  nrofinal.Text     := utiles.sLLenarIzquierda(administNum.NNrofinal, 8, '0');
+  nroactual.Text    := utiles.sLLenarIzquierda(administNum.NNroactual, 8, '0');
+  Limpresoras.Text  := Limpresoras.Items[administNum.NImpresora];
+  resolucion.Text   := IntToStr(administNum.NResolucion);
+  nmaximo.Text      := IntToStr(administNum.Nnmaximo);
+  controlstock.Text := administNum.Ncontrolstock;
+  impcompr.Text     := administNum.Nimpcompr;
+  tipoEmision.ItemIndex := administNum.Ncantcopias;
+  recibo.Checked := False; remito.Checked := False;
+  if administNum.Nrecibo = 1 then recibo.Checked := True;
+  if administNum.Nrecibo = 2 then remito.Checked := True;
+  DatosNumeracion;
+  definir.Enabled := False;
+end;
+
+procedure TfmComprobantesRegistrables.DatosNumeracion;
+// Objetivo...: Actualizar los datos de comoprobantes definidos - Fact. Normal
+begin
+  nroinicial.Text := ''; nrofinal.Text := ''; nroactual.Text := ''; nmaximo.Text := '';
+  administNum.getDatosNF(codnumer.Text);
+  nroinicial.Text       := utiles.sLLenarIzquierda(administNum.NFnroinicial, 8, '0');
+  nrofinal.Text         := utiles.sLLenarIzquierda(administNum.NFnrofinal, 8, '0');
+  nroactual.Text        := utiles.sLLenarIzquierda(administNum.NFnroactual, 8, '0');
+  nmaximo.Text          := IntToStr(administNum.NNmaximo);
+  tipoEmision.ItemIndex := administNum.Ncantcopias - 1;
+  tipoEmision.Text      := tipoEmision.Items[administNum.Ncantcopias - 1];
+  Limpresoras.ItemIndex := administNum.Nimpresora;
+  Label22.Caption       := IntToStr(administNum.Nimpresora);
+  Limpresoras.Text      := Limpresoras.Items[administNum.Nimpresora];
+  administNum.getDatosNF(codnumer.Text);
+  expendio.Text         := administNum.NFExpendio;
+  impcompr.Text         := administNum.NFImpCompr;
+  if administNum.NimpRapida = 1 then modotexto.Checked := True else modotexto.Checked := False;
+end;
+
+procedure TfmComprobantesRegistrables.codcompKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(codcomp.Text)) > 0 then Begin
+      idcompr.Text := UpperCase(idcompr.Text);
+      ActiveControl := idcompr;
+    end;
+end;
+
+procedure TfmComprobantesRegistrables.comprobanteKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := codcomp;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+  begin
+  end;
+end;
+
+procedure TfmComprobantesRegistrables.dcKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := idcompr;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.Sionoct(string(dc.Text), 'DC', 'Opción Incorrecta ...!') then ActiveControl := ac;
+end;
+
+procedure TfmComprobantesRegistrables.idcomprKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := codcomp;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    if Length(Trim(idcompr.Text)) = 0 then selcompClick(Self);
+    if compregis.VerifComprobante(idcompr.Text) then Begin
+      if compregis.Buscar(codcomp.Text, idcompr.Text) then Begin
+        StatusBar1.Panels[0].Text := '';
+        CargarDatos;
+        Panel1.Enabled := True;
+        ActiveControl := dc;
+      end else Begin
+        if utiles.DarDeAlta('Comprobante Registrable  ' + codcomp.Text + ' ' + idcompr.Text) then Begin
+          StatusBar1.Panels[0].Text := '';
+          CargarDatos;
+          Panel1.Enabled := True;
+          ActiveControl := dc;
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure TfmComprobantesRegistrables.acKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := dc;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.Sionoct(string(ac.Text), 'SN', 'Opción Incorrecta ...!') then ActiveControl := av;
+end;
+
+procedure TfmComprobantesRegistrables.avKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := ac;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.Sionoct(string(av.Text), 'SN', 'Opción Incorrecta ...!') then ActiveControl := ln;
+end;
+
+procedure TfmComprobantesRegistrables.lnKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := av;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.Sionoct(string(ln.Text), 'SN', 'Opción Incorrecta ...!') then ActiveControl := cta;
+end;
+
+procedure TfmComprobantesRegistrables.ctaKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := ln;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then ActiveControl := ctb;
+end;
+
+procedure TfmComprobantesRegistrables.ctbKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := cta;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then ActiveControl := ctc;
+end;
+
+procedure TfmComprobantesRegistrables.ctcKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := ctb;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then ActiveControl := otros;
+end;
+
+procedure TfmComprobantesRegistrables.otrosKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := ctc;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    registrar.Enabled := True;
+    registrar.SetFocus;
+  end;
+end;
+
+procedure TfmComprobantesRegistrables.AltaClick(Sender: TObject);
+begin
+  if compregis.Buscar(codcomp.Text, idcompr.Text) then compregis.Grabar(codcomp.Text, idcompr.Text, nc.Caption, dc.Text, ac.Text, av.Text, ln.Text, cta.Text, ctb.Text, ctc.Text, otros.Text);
+  ActiveControl := codcomp;
+end;
+
+procedure TfmComprobantesRegistrables.SalirClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfmComprobantesRegistrables.BajaClick(Sender: TObject);
+begin
+  if compregis.Buscar(codcomp.Text, idcompr.Text) then
+   if utiles.BajaRegistro('Seguro para Eliminar Comprobante ' + codcomp.Text + ' ' + idcompr.Text + ' ?') then Begin
+     compregis.Borrar(codcomp.Text, idcompr.Text);
+     codcomp.Text := compregis.Codcomp;
+     idcompr.Text := compregis.Idcompr;
+     CargarDatos;
+   end;
+  ActiveControl := codcomp;
+end;
+
+procedure TfmComprobantesRegistrables.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  configform.Guardar(fmComprobantesRegistrables, redim);
+  compregis.desconectar;
+  DBNavigator.DataSource := nil;
+  Release; fmComprobantesRegistrables := nil;
+end;
+
+procedure TfmComprobantesRegistrables.DBNavigatorClick(Sender: TObject;
+  Button: TNavigateBtn);
+begin
+  codcomp.Text := compregis.tabla1.FieldByName('codcomp').AsString;
+  idcompr.Text := compregis.tabla1.FieldByName('idcompr').AsString;
+  CargarDatos;
+  codcomp.setFocus;
+end;
+
+procedure TfmComprobantesRegistrables.FormShow(Sender: TObject);
+begin
+  compregis.conectar;
+  if not configform.Setear(fmComprobantesRegistrables) then Begin
+    Width := 385; Height := 350;
+  end;
+  DTS.DataSet := compregis.tabla1;
+  codcomp.SetFocus;
+  TC.Cells[0, 0] := 'Tipo'; TC.Cells[1, 0] := 'Cód.'; TC.Cells[2, 0] := 'Descripción'; TC.Cells[3, 0] := 'CN';
+  PageControl.ActivePageIndex := solapa;
+  redim := False;
+end;
+
+procedure TfmComprobantesRegistrables.RegistrarClick(Sender: TObject);
+var
+  xf_v, xf_c: String;
+begin
+  if (factura_vtas.Checked) or (iva_exento.Checked) then xf_v := 'S' else xf_v := 'N';
+  if factura_com.Checked then xf_c := 'S' else xf_c := 'N';
+  compregis.Grabar(codcomp.Text, idcompr.Text, nc.Caption, dc.Text, ac.Text, av.Text, ln.Text, cta.Text, ctb.Text, ctc.Text, otros.Text, '', '', xf_v, xf_c);
+  ActiveControl := codcomp;
+  registrar.Enabled := False;
+  Panel1.Enabled := False;
+  codcomp.SetFocus;
+end;
+
+procedure TfmComprobantesRegistrables.factura_vtasClick(Sender: TObject);
+begin
+  if Panel1.Enabled then Begin
+    registrar.Enabled := True;
+    registrar.SetFocus;
+  end;
+end;
+
+procedure TfmComprobantesRegistrables.tblCorrelatividadShow(
+  Sender: TObject);
+var
+  r: TQuery; i: Integer;
+begin
+  Refresh;
+  r := compregis.setComprobantesFacturacionVentas;
+  r.Open; i := 0;
+  while not r.Eof do Begin
+    Inc(i);
+    TC.Cells[0, i] := r.FieldByName('codcomp').AsString;
+    TC.Cells[1, i] := r.FieldByName('idcompr').AsString;
+    TC.Cells[2, i] := r.FieldByName('descrip').AsString;
+    TC.Cells[3, i] := r.FieldByName('codnum').AsString;
+    r.Next;
+  end;
+  r.Close; r.Free;
+  if Limpresoras.Items.Count = 0 then Limpresoras.Items := printer.Printers;
+  if Length(Trim(TC.Cells[0, TC.Row])) > 0 then TCDblClick(Self);
+
+  alta.Enabled := False; baja.Enabled := False; modificar.Enabled := False; dbnavigator.Enabled := False; buscar.Enabled := False; deshacer.Enabled := False;
+end;
+
+procedure TfmComprobantesRegistrables.definirClick(Sender: TObject);
+var
+  i: ShortInt;
+begin
+  administNum.GrabarDefF(TC.cells[0, TC.row], TC.cells[1, TC.row], 'F01', TC.cells[2, TC.row], 'F01');
+  if recibo.Checked then administNum.FijarReciboPorDefecto(TC.cells[0, TC.row], TC.cells[1, TC.row], 'F01');
+  if remito.Checked then administNum.FijarComprobanteComoRemito(TC.cells[0, TC.row], TC.cells[1, TC.row], 'F01');
+  if Length(Trim(codnumer.Text)) > 0 then Begin
+    if Length(Trim(Label22.Caption)) = 0 then Label22.Caption := '0';
+    administNum.EstablecerCodigoNumeracion(TC.cells[0, TC.row], TC.cells[1, TC.row], 'F01', codnumer.Text, nroinicial.Text, nrofinal.Text, nroactual.Text, StrToInt(Label22.Caption), StrToInt(nmaximo.Text), StrToInt(ncopias.Text), StrToInt(resolucion.Text), controlstock.Text, impcompr.Text);
+    administNum.FijarPuntoDeVenta(codnumer.Text, expendio.Text, 'F01');
+    if modotexto.Checked then i := 1 else i := 0;
+    if administNum.BuscarNF(codnumer.Text) then administNum.ImpresionRapida(codnumer.Text, i);
+  end;
+  compregis.EstablecerCodigoNumeracion(TC.cells[0, TC.row], TC.cells[1, TC.row], codnumer.Text);
+  TC.cells[3, TC.row] := codnumer.Text;
+  definir.Enabled := False;
+  GroupBox2.Enabled := False;
+  TC.SetFocus;
+end;
+
+procedure TfmComprobantesRegistrables.TCDblClick(Sender: TObject);
+begin
+  if Length(Trim(TC.Cells[0, TC.Row])) > 0 then Begin
+    GroupBox2.Enabled := True;
+    codnumer.Text := TC.Cells[3, TC.Row];
+    CargarDatosComprobante;
+    codnumer.SetFocus;
+  end;
+end;
+
+procedure TfmComprobantesRegistrables.codnumerKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    codnumer.Text := utiles.sLlenarIzquierda(codnumer.Text, 2, '0');
+    DatosNumeracion;
+    ActiveControl := nroinicial;
+  end;
+end;
+
+procedure TfmComprobantesRegistrables.nroinicialKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := codnumer;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+   if StrToInt(nroinicial.Text) = 0 then utiles.msgError('El número inicial debe ser mayor a 0 ...!') else Begin
+      nroinicial.Text := utiles.sLlenarIzquierda(nroinicial.Text, 8, '0');
+      ActiveControl   := nrofinal;
+    end;
+end;
+
+procedure TfmComprobantesRegistrables.nrofinalKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := nroinicial;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+   if StrToInt(nroinicial.Text) >= StrToInt(nrofinal.Text) then utiles.msgError('El número inicial debe ser menor al número final ...!') else Begin
+      nrofinal.Text := utiles.sLlenarIzquierda(nrofinal.Text, 8, '0');
+      ActiveControl := nroactual;
+    end;
+end;
+
+procedure TfmComprobantesRegistrables.nroactualKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := nrofinal;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    nroactual.Text := utiles.sLlenarIzquierda(nroactual.Text, 8, '0');
+    ActiveControl  := LImpresoras;
+  end;
+end;
+
+procedure TfmComprobantesRegistrables.LimpresorasChange(Sender: TObject);
+begin
+  label22.Caption := inttostr(limpresoras.ItemIndex);
+  definir.Enabled := True;
+end;
+
+procedure TfmComprobantesRegistrables.nmaximoKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if Length(Trim(nmaximo.Text)) > 0 then ActiveControl := controlstock;
+end;
+
+procedure TfmComprobantesRegistrables.controlstockKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := nmaximo;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.Sionoct(controlstock.Text, 'SN', 'Las posibilidades son S/N ...!') then ActiveControl := recibo;
+end;
+
+procedure TfmComprobantesRegistrables.reciboClick(Sender: TObject);
+begin
+  if recibo.Checked then remito.Checked := False;
+end;
+
+procedure TfmComprobantesRegistrables.reciboKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then ActiveControl  := tipoEmision;
+end;
+
+procedure TfmComprobantesRegistrables.tipoEmisionKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then ActiveControl := impcompr;
+end;
+
+procedure TfmComprobantesRegistrables.tipoEmisionChange(Sender: TObject);
+begin
+  ncopias.ItemIndex := tipoEmision.ItemIndex;
+end;
+
+procedure TfmComprobantesRegistrables.impcomprKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := tipoEmision;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then
+    if utiles.Sionoct(impcompr.Text, 'SN', 'Las posibilidades son S/N ...!') then
+      ActiveControl := resolucion;
+end;
+
+procedure TfmComprobantesRegistrables.resolucionKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := tipoEmision;
+  if (Key = VK_DOWN) or (Key = VK_RETURN) then
+    if Length(Trim(resolucion.Text)) = 0 then utiles.msgError('Error - La resolución debe ser mayor a 0 ...!') else
+      ActiveControl := modotexto;
+end;
+
+procedure TfmComprobantesRegistrables.expendioKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_UP then ActiveControl := resolucion;
+  if (Key = VK_DOWN) or (Key = VK_RETURN) then
+    if Length(Trim(expendio.Text)) > 0 then Begin
+      expendio.Text := utiles.sLlenarIzquierda(expendio.Text, 4, '0'); 
+      definir.Enabled := True;
+      definir.SetFocus;
+    end;
+end;
+
+procedure TfmComprobantesRegistrables.LimpresorasKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then ActiveControl := nmaximo;
+end;
+
+procedure TfmComprobantesRegistrables.remitoClick(Sender: TObject);
+begin
+  if remito.Checked then recibo.Checked := False;
+end;
+
+procedure TfmComprobantesRegistrables.TCKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then TCDblClick(Sender);
+end;
+
+procedure TfmComprobantesRegistrables.modotextoKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then expendio.setFocus;
+end;
+
+procedure TfmComprobantesRegistrables.modotextoClick(Sender: TObject);
+begin
+  expendio.SetFocus;
+end;
+
+procedure TfmComprobantesRegistrables.selcompClick(Sender: TObject);
+begin
+  Application.CreateForm(TfmListComprobantes, fmListComprobantes);
+  fmListComprobantes.introSalir := True;
+  fmListComprobantes.ShowModal;
+  if fmListComprobantes.seleccionOK then Begin
+    idcompr.Text := compregis.tabla.FieldByName('idcompr').AsString;
+    CargarDatos;
+    Panel1.Enabled := True;
+    ActiveControl := idcompr;
+  end;
+  fmListComprobantes.Release; fmListComprobantes := nil;
+end;
+
+procedure TfmComprobantesRegistrables.FormKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then Close;
+end;
+
+procedure TfmComprobantesRegistrables.Panel2Resize(Sender: TObject);
+begin
+  redim := True;
+end;
+
+procedure TfmComprobantesRegistrables.tblCorrelatividadHide(
+  Sender: TObject);
+begin
+  alta.Enabled := True; baja.Enabled := True; modificar.Enabled := True; dbnavigator.Enabled := True; buscar.Enabled := True; deshacer.Enabled := True;
+end;
+
+procedure TfmComprobantesRegistrables.nroinicialChange(Sender: TObject);
+begin
+  definir.Enabled := True;
+end;
+
+end.

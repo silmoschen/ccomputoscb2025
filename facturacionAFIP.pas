@@ -6,7 +6,8 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, CConfigForms, CUtilidadesStringGrid, CUtiles, StdCtrls, Mask,
   ComCtrls, ExtCtrls, Grids, DBTables, CFacturacionccb, InvokeRegistry, Rio,
-  SOAPHTTPClient, facturaService2, CFTP, CDatosEmpresa;
+  SOAPHTTPClient, facturaService3, CDatosEmpresa, CComregi, CComprobantes,
+  CObrasSocialesCCB;
 
 type
   TfmFacturacionAfip = class(TForm)
@@ -24,6 +25,10 @@ type
     btnImprimir: TButton;
     Label2: TLabel;
     fecha: TMaskEdit;
+    Label6: TLabel;
+    fvtopago: TMaskEdit;
+    Label7: TLabel;
+    txtCbu: TEdit;
     Label3: TLabel;
     copias: TMaskEdit;
     Panel5: TPanel;
@@ -32,6 +37,10 @@ type
     Label4: TLabel;
     ComboBox1: TComboBox;
     ComboBox2: TComboBox;
+    ComboBox3: TComboBox;
+    Label5: TLabel;
+    tope: TEdit;
+    ComboBox4: TComboBox;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure periodoKeyDown(Sender: TObject; var Key: Word;
@@ -45,6 +54,9 @@ type
     procedure DKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure Button1Click(Sender: TObject);
     procedure ComboBox1Change(Sender: TObject);
+    procedure fvtopagoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure DClick(Sender: TObject);
   private
     { Private declarations }
     //CREAMOS EL PORT
@@ -54,6 +66,9 @@ type
     ptovta, tipo: integer;
     inicioactividad: string;
     procedure loaditems;
+    procedure loadcomprobantes;
+    procedure seleccionarComprobante;
+    function cbuParaEnviar: string;
   public
     { Public declarations }
   end;
@@ -66,6 +81,67 @@ implementation
 uses reportAfip;
 
 {$R *.dfm}
+
+function TfmFacturacionAfip.cbuParaEnviar: string;
+var
+  i: integer;
+begin
+  empresa.getDatos;
+  Result := '';
+  for i := 1 to Length(empresa.cbu) do
+    if empresa.cbu[i] in ['0'..'9'] then
+      Result := Result + empresa.cbu[i];
+  txtCbu.Text := Result;
+end;
+procedure TfmFacturacionAfip.loadcomprobantes;
+var
+  r: TQuery;
+begin
+  combobox1.Clear; combobox2.Clear; combobox3.Clear; combobox4.Clear;
+
+  r := compregis.setComprobantesCompras;
+  r.open;
+  while not r.eof do begin
+    combobox1.Items.Add(r.FieldByName('descrip').AsString + ' ' + r.FieldByName('codcomp').AsString);
+    combobox2.Items.Add(r.FieldByName('ctc').AsString);
+    combobox3.Items.Add(utiles.FormatearNumero(r.FieldByName('tope').AsString, '#############0.00'));
+    combobox4.Items.Add(r.FieldByName('descrip').AsString + ' ' + r.FieldByName('codcomp').AsString);
+
+    r.Next;
+  end;
+
+  r.close; r.free;
+
+  if (combobox1.Items.Count > 0) then begin
+    combobox1.Text := combobox1.Items[0];
+    combobox2.Text := combobox2.Items[0];
+    tope.Text := combobox3.Items[0];
+  end;
+
+end;
+
+procedure TfmFacturacionAfip.seleccionarComprobante;
+var
+  i, j: integer;
+  g: boolean;
+begin
+
+  g := false;
+  g := obsocial.getGE(D.Cells[2, D.Row]);
+
+  i := 0;
+
+  for j := 0 to ComboBox3.Items.Count - 1 do begin
+    if ((StrToFloat(D.Cells[5, D.Row]) > StrToFloat(ComboBox3.Items[j])) and (g))  then begin
+      i := j;
+    end;
+  end;
+
+  combobox1.Text := combobox1.Items[i];
+  combobox2.Text := combobox2.Items[i];
+  tope.Text := combobox3.Items[i];
+
+end;
 
 procedure TfmFacturacionAfip.loaditems;
 var
@@ -85,6 +161,12 @@ begin
      D.Cells[5, i] := utiles.FormatearNumero(r.FieldByName('monto').AsString);
      D.Cells[6, i] := r.FieldByName('cae').AsString;
      D.Cells[7, i] := r.FieldByName('vtocae').AsString;
+     D.Cells[8, i] := r.FieldByName('idcompr').AsString;
+     D.Cells[9, i] := r.FieldByName('tipo').AsString;
+     D.Cells[10,i] := r.FieldByName('sucursal').AsString;
+     D.Cells[11,i] := r.FieldByName('numero').AsString;
+     D.Cells[12,i] := r.FieldByName('fechavto1').AsString;
+     D.Cells[13,i] := r.FieldByName('fechavto2').AsString;
      r.next;
   end;
   r.Close; r.free;
@@ -96,21 +178,17 @@ begin
 end;
 
 procedure TfmFacturacionAfip.btnFacturarClick(Sender: TObject);
-//VARIABLES DE RETORNO (ARRAYS DE VARIANTS)
-var tokens: anyTypeArray;
 var resultado: anyTypeArray;
-//CREAMOS LOS ARRAYS NECESARIOS
 var alicuotas : alicIvaArray;
 var tributos : tributoArray;
 var asociados: cbteAsocArray;
-//VARIABLES QUE ALMACENAN LAS CREDENCIALES
-var token:WideString;
-var sign:WideString;
 
-var _cuit, _fecha, s, t: string;
+var _cuit, _fecha, _fvto, cbuEnvio, s, t: string;
 var numero, fila: Integer;
 var monto: double;
 begin
+
+     seleccionarComprobante;
 
      if (length(trim(D.Cells[6, D.Row])) > 0) then begin
        utiles.msgError('La Obra Social ya está Facturada ...!');
@@ -136,9 +214,16 @@ begin
      numero:= servicio.obtUltNum(cuit, ptovta, tipo) + 1;  // Obtenemos el próximo número a facturar
      monto := StrToFloat(D.Cells[5, D.Row]);
 
-    //servicio := HTTPRIO1 as FacturaService;
-    tokens := servicio.login(); //GENERO LOS TOKENS
-
+     _fvto := _fecha;
+     cbuEnvio := '';
+     if (tipo = 211) then begin
+       _fvto := utiles.sExprFecha2000(fvtopago.Text);
+       cbuEnvio := cbuParaEnviar;
+       if (cbuEnvio = '') then begin
+         utiles.msgError('Para el comprobante 211 debe cargar el C.B.U. en Datos de la Empresa.');
+         exit;
+       end;
+     end;
 
        //SET LOS ARRAYS VACIOS
        alicuotas := ((nil));
@@ -157,13 +242,18 @@ begin
        _fecha, //'20181204',
        _fecha, //'20181204',
        _fecha, //'20181204',
-       _fecha, //'20181204',
+       _fvto,
        monto,  //200.0,
        'PES',
        1,
        alicuotas,
        tributos,
-       asociados);
+       asociados,
+       0,
+       cbuEnvio,
+       '',
+       '',
+       '');
 
     if (resultado <> nil) then
      begin
@@ -184,8 +274,14 @@ begin
 end;
 
 procedure TfmFacturacionAfip.btnImprimirClick(Sender: TObject);
+var
+  i, j: integer;
 begin
-  facturacion.generarFactura(D.Cells[0, D.Row], D.Cells[2, D.Row], inicioactividad, combobox1.text, StrToInt(copias.Text));
+  j := 0;
+  for i := 0 to combobox2.Items.Count - 1 do
+    if (combobox2.Items[i] = D.Cells[8, D.Row]) then j := i;
+
+  facturacion.generarFactura(D.Cells[0, D.Row], D.Cells[2, D.Row], inicioactividad, combobox4.Items[j], txtCbu.Text, StrToInt(copias.Text));
   Application.CreateForm(TfmReportsAFIP, fmReportsAFIP);
   fmReportsAFIP.Button1Click(self);
   fmReportsAFIP.release; fmReportsAFIP := nil;
@@ -194,8 +290,7 @@ end;
 
 procedure TfmFacturacionAfip.btnTestClick(Sender: TObject);
 begin
- //servicio := HTTPRIO1 as FacturaService;
- utiles.msgError(servicio.test());
+ utiles.msgError(servicio.test(cuit));
 end;
 
 procedure TfmFacturacionAfip.btnUltimoNroClick(Sender: TObject);
@@ -218,6 +313,14 @@ end;
 procedure TfmFacturacionAfip.ComboBox1Change(Sender: TObject);
 begin
   ComboBox2.ItemIndex := combobox1.ItemIndex;
+  ComboBox3.ItemIndex := combobox1.ItemIndex;
+  tope.Text := combobox3.Text;
+end;
+
+procedure TfmFacturacionAfip.DClick(Sender: TObject);
+begin
+  fecha.Text := copy(D.Cells[1, D.Row], 1, 6) + copy(D.Cells[1, D.Row], 9, 2);
+  fvtopago.Text := copy(D.Cells[13, D.Row], 1, 6) + copy(D.Cells[13, D.Row], 9, 2);
 end;
 
 procedure TfmFacturacionAfip.DKeyDown(Sender: TObject; var Key: Word;
@@ -232,10 +335,9 @@ procedure TfmFacturacionAfip.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
   if (servicio <> nil) then servicio._Release;
-
-  ftp.desconectar;
   facturacion.desconectar;
   empresa.desconectar;
+  obsocial.desconectar;
   configform.Guardar(fmFacturacionAfip, redim);
   grid.GuardarAnchoColumnas(fmFacturacionAfip, D);
   Release; fmFacturacionAfip := nil;
@@ -243,7 +345,7 @@ end;
 
 procedure TfmFacturacionAfip.FormResize(Sender: TObject);
 begin
-  StatusBar1.Panels[0].Width := (Width - (Width div 2)) + 50;
+  StatusBar1.Panels[0].Width := (Width - (Width div 2)) + 100;
 end;
 
 procedure TfmFacturacionAfip.FormShow(Sender: TObject);
@@ -253,16 +355,18 @@ begin
   configform.Setear(fmFacturacionAfip);
   grid.RecuperarAnchoColumnas(fmFacturacionAfip, D);
   facturacion.conectar;
-  ftp.conectar;
   empresa.conectar;
   empresa.getDatos;
+  obsocial.conectar;
 
   D.Cells[0, 0] := 'Período'; D.Cells[1, 0] := 'Fecha'; D.Cells[2, 0] := 'Código';
   D.Cells[3, 0] := 'Obra Social'; D.Cells[4, 0] := 'C.U.I.T.'; D.Cells[5, 0] := 'Monto';
-  D.Cells[6, 0] := 'CAE'; D.Cells[7, 0] := 'Vto. CAE';
+  D.Cells[6, 0] := 'CAE'; D.Cells[7, 0] := 'Vto. CAE'; D.Cells[8, 0] := 'IDC';
+  D.Cells[9, 0] := 'Tipo'; D.Cells[10, 0] := 'Sucursal'; D.Cells[11, 0] := 'Número';
+  D.Cells[12, 0] := 'F.Vto.1'; D.Cells[13, 0] := 'F.Vto.2';
 
-  ftp.getDatos(4);
-  HTTPRIO1.WSDLLocation := ftp.host;
+  HTTPRIO1.WSDLLocation := defWSDL;
+  HTTPRIO1.URL := defURL;
 
   servicio := HTTPRIO1 as FacturaService;
 
@@ -273,8 +377,27 @@ begin
   inicioactividad := empresa.inicioactividad;
 
   fecha.Text := utiles.setFechaActual;
+  fvtopago.Text := utiles.setFechaActual;
+  cbuParaEnviar;
+
+  loadcomprobantes;
 
   redim := false;
+end;
+
+procedure TfmFacturacionAfip.fvtopagoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  m, n: string;
+begin
+   if (Key = VK_RETURN) then begin
+     if (utiles.ctrlFecha(fvtopago)) then begin
+       m := utiles.sExprFecha2000(fvtopago.Text);
+       n := copy(m, 7, 2) + '/' + copy(m, 5, 2) + '/' + copy(m, 1, 4);
+       facturacion.registrarFechaVto2(periodo.Text, D.Cells[2, D.Row], n);
+       D.Cells[13, D.Row] := n;
+     end;
+   end;
 end;
 
 procedure TfmFacturacionAfip.periodoKeyDown(Sender: TObject; var Key: Word;

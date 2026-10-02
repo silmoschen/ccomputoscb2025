@@ -199,6 +199,7 @@ type
     exportfact: TMaskEdit;
     CheckBox3: TCheckBox;
     chkRuptura: TCheckBox;
+    Ge: TCheckBox;
 
     procedure codosKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -336,6 +337,7 @@ type
     procedure exportfactKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormActivate(Sender: TObject);
+    procedure GeClick(Sender: TObject);
   private
     { Private declarations }
     modifica, modificaret, mm, h, montosmod, redim: boolean; ultimaseleccionNom: string; it, h1, h2, itemsret, iit1: integer;
@@ -423,6 +425,7 @@ begin
   exportfact.Text   := obsocial.Factexport;
   chkRuptura.Checked := obsocial.Rupturaorden;
   CargarDeterminacionesMontoFijo;
+  ge.Checked := obsocial.getGE(codos.Text);
 end;
 
 procedure TfmObsociales.FiltrarCodigosRecientes;
@@ -2144,6 +2147,11 @@ begin
    end;
 
    codanalisis.setfocus;
+end;
+
+procedure TfmObsociales.GeClick(Sender: TObject);
+begin
+  obsocial.GrabarGE(codos.Text, ge.Checked);
 end;
 
 end.

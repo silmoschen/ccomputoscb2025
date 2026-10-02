@@ -7,14 +7,14 @@ uses SysUtils, DB, DBTables, CUtiles, CIDBFM, CBDT;
 type
 
 TTDatosEmpresa = class(TObject)            // Superclase
-  id, rsocial, direccion, telefono, cuit, ptovta, tipo, inicioactividad: string;
+  id, rsocial, direccion, telefono, cuit, ptovta, tipo, inicioactividad, cbu: string;
   tabla: TTable;
  public
-  { Declaraciones P˙blicas }
+  { Declaraciones Pùblicas }
   constructor Create;
   destructor  Destroy;
 
-  procedure   Grabar(xrsocial, xdireccion, xtelefono, xcuit, xptovta, xtipo, xinicioactividad: string);
+  procedure   Grabar(xrsocial, xdireccion, xtelefono, xcuit, xptovta, xtipo, xinicioactividad, xcbu: string);
   function    Buscar: boolean;
   procedure   getDatos;
 
@@ -43,7 +43,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TTDatosEmpresa.Grabar(xrsocial, xdireccion, xtelefono, xcuit, xptovta, xtipo, xinicioactividad: string);
+procedure TTDatosEmpresa.Grabar(xrsocial, xdireccion, xtelefono, xcuit, xptovta, xtipo, xinicioactividad, xcbu: string);
 // Objetivo...: Grabar Atributos del Objeto
 begin
   if Buscar then tabla.Edit else tabla.Append;
@@ -54,6 +54,8 @@ begin
   tabla.FieldByName('ptovta').AsString          := Trim(xptovta);
   tabla.FieldByName('tipo').AsString            := Trim(xtipo);
   tabla.FieldByName('inicioactividad').AsString := Trim(xinicioactividad);
+  if datosdb.verificarSiExisteCampo(tabla, 'cbu') then
+    tabla.FieldByName('cbu').AsString           := Trim(xcbu);
   try
     tabla.Post
   except
@@ -78,14 +80,39 @@ begin
     ptovta      := tabla.FieldByName('ptovta').AsString;
     tipo        := tabla.FieldByName('tipo').AsString;
     inicioactividad := tabla.FieldByName('inicioactividad').AsString;
+    if datosdb.verificarSiExisteCampo(tabla, 'cbu') then
+      cbu := tabla.FieldByName('cbu').AsString
+    else
+      cbu := '';
   end else begin
-    rsocial := ''; direccion := ''; telefono := ''; cuit := ''; ptovta := ''; tipo := ''; inicioactividad := '';
+    rsocial := ''; direccion := ''; telefono := ''; cuit := ''; ptovta := ''; tipo := ''; inicioactividad := ''; cbu := '';
   end;
 end;
 
 procedure TTDatosEmpresa.conectar;
 // Objetivo...: conectar tablas de persistencia
+var
+  q: TQuery;
+  alias: string;
 begin
+  if not tabla.Active then tabla.Open;
+  tabla.FieldDefs.Update;
+  if datosdb.verificarSiExisteCampo(tabla, 'cbu') then Exit;
+
+  alias := tabla.DatabaseName;
+  tabla.Close;
+  q := TQuery.Create(nil);
+  try
+    q.DatabaseName := alias;
+    q.SQL.Add('ALTER TABLE datosempresa ADD cbu CHAR(50)');
+    try
+      q.ExecSQL;
+    except
+      on E: Exception do utiles.msgError(E.Message);
+    end;
+  finally
+    q.Free;
+  end;
   if not tabla.Active then tabla.Open;
 end;
 

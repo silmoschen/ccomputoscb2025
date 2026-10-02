@@ -96,8 +96,9 @@ type
     procedure generarArchivoR10;
     procedure generarArchivoR13;
     procedure generarArchivoR1v2;
-
     procedure generarArchivoR20;
+    procedure generarArchivoR12;
+
 
   public
     { Public declarations }
@@ -112,6 +113,87 @@ implementation
 uses detalleFacturado;
 
 {$R *.dfm}
+
+//==============================================================================
+// PREVENCIÓN
+procedure TfmExportarOrdenesSoporteMagnetico.generarArchivoR12;
+var
+  importe, archivo, nroafiliado, convenio, tipo, sucursal, numero, sepa: string;
+  arch: TextFile;
+  i, j: integer;
+  monto1, monto2, monto3, monto4: double;
+  r: TIBQuery;
+begin
+  if not (DirectoryExists(dbs.DirSistema + '\work\exportsopmag')) then utilesarchivos.CrearDirectorio(dbs.DirSistema + '\work\exportsopmag');
+  archivo := dbs.DirSistema + '\work\exportsopmag\' + idos.Text + '_' + utiles.StringRemplazarCaracteres(periodo.Text, '/', '_') + '.txt';
+  AssignFile(arch, archivo);
+  rewrite(arch);
+
+  obsocial.getRegla(idos.Text);
+  convenio := obsocial.Convenio;
+
+  sepa := ';'; monto1 := 0; monto2 := 0; monto3 := 0; monto4 := 0;
+
+  obsocial.SincronizarPosicionFiscal(idos.Text, periodo.Text);
+
+  r := facturacion.getListItemsFacturados(periodo.Text, idos.Text);
+  r.open; i := 1; monto1 := 0; monto2 := 0; monto3  := 0; monto4 := 0;
+  while not r.eof do begin
+
+    auditoriacb.getDatos(r.FieldByName('nroauditoria').AsString);
+    medicoos.getDatos(auditoriacb.Codos,  auditoriacb.Idprof);
+    profesional.getDatos(r.FieldByName('idprof').asString);
+
+
+    nbu.getDatos(r.FieldByName('codanalisis').asString);
+    write(arch, '' + sepa);
+    write(arch, r.FieldByName('fecha').asString + sepa);
+    write(arch, r.FieldByName('fecha').asString + sepa);
+    write(arch, '' + sepa);
+    write(arch, medicoos.Idprof + sepa);
+    write(arch, '' + sepa);
+    write(arch, '' + sepa);
+    write(arch, medicoos.Nombre + sepa);
+    write(arch, r.FieldByName('nroafiliado').asString + sepa);
+    write(arch, '' + sepa);
+    write(arch, '' + sepa);
+    write(arch, trim(copy(auditoriacb.Transaccion, 1, 12)) + sepa);
+    write(arch, r.FieldByName('codanalisis').asString + sepa);
+    write(arch, '' + sepa);
+    write(arch, '1' + sepa);
+
+    monto1 := monto1 + r.FieldByName('monto').asFloat;
+    monto2 := r.FieldByName('iva').AsFloat * (obsocial.retencioniva * 0.01);
+    monto3 := monto1 + monto2;
+    monto4 := monto4 + monto2;
+    importe := utiles.FormatearNumero(FloatToStr( utiles.setNro2Dec( r.FieldByName('monto').asFloat + monto2  ) ));
+    write(arch, importe + sepa);
+    write(arch, '' + sepa);
+    write(arch, auditoriacb.Iddiag + sepa);
+    write(arch, '' + sepa);
+    write(arch, '' + sepa);
+    write(arch, '' + sepa);
+    write(arch, '' + sepa);
+    write(arch, '' + sepa);
+    write(arch, '' + sepa);
+    write(arch, '' + sepa);
+    write(arch, '' + sepa);
+    write(arch, r.FieldByName('idprof').asString + sepa);
+    write(arch, r.FieldByName('idprof').asString + sepa);
+    write(arch, '' + sepa);
+    writeLn(arch, 'SANTA FE');
+
+    r.next;
+
+  end;
+
+  r.close; r.free;
+
+  closeFile(arch);
+
+  montoexport.Caption := utiles.FormatearNumero(FloatToStr(monto4 + monto1));
+
+end;   
 
 //==============================================================================
 // OSPEDYC
@@ -1235,6 +1317,7 @@ begin
   if (idregla.Text = '6') then generarArchivoR6;   // FEDERADA
   if (idregla.Text = '13') then generarArchivoR13;   // DASUTEN
   if (idregla.Text = '20') then generarArchivoR20;   // OSPEDYC
+  if (idregla.Text = '12') then generarArchivoR12;   // PREVENCION
 
 end;
 

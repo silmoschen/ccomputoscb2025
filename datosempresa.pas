@@ -23,10 +23,13 @@ type
     tipo: TMaskEdit;
     Label7: TLabel;
     inicioactividad: TMaskEdit;
+    Label8: TLabel;
+    cbu: TMaskEdit;
     btnGuardar: TButton;
     procedure FormShow(Sender: TObject);
     procedure btnGuardarClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure cbuKeyPress(Sender: TObject; var Key: Char);
   private
     { Private declarations }
   public
@@ -42,7 +45,7 @@ implementation
 
 procedure TfmDatosEmpresa.btnGuardarClick(Sender: TObject);
 begin
-  empresa.Grabar(rsocial.Text, direccion.text, telefono.Text, cuit.text, ptovta.text, tipo.Text, inicioactividad.text);
+  empresa.Grabar(rsocial.Text, direccion.text, telefono.Text, cuit.text, ptovta.text, tipo.Text, inicioactividad.text, cbu.Text);
 end;
 
 procedure TfmDatosEmpresa.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -63,7 +66,13 @@ begin
   ptovta.Text := empresa.ptovta;
   tipo.Text := empresa.tipo;
   inicioactividad.Text := empresa.inicioactividad;
+  cbu.Text := empresa.cbu;
   rsocial.SetFocus;
+end;
+
+procedure TfmDatosEmpresa.cbuKeyPress(Sender: TObject; var Key: Char);
+begin
+  if not (Key in ['0'..'9', #8]) then Key := #0;
 end;
 
 end.

@@ -2,7 +2,7 @@ object fmDatosEmpresa: TfmDatosEmpresa
   Left = 0
   Top = 0
   Caption = 'Datos de la Empresa'
-  ClientHeight = 224
+  ClientHeight = 268
   ClientWidth = 487
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
@@ -20,7 +20,7 @@ object fmDatosEmpresa: TfmDatosEmpresa
     Left = 0
     Top = 0
     Width = 487
-    Height = 224
+    Height = 268
     Align = alClient
     BevelInner = bvLowered
     BorderWidth = 4
@@ -140,13 +140,31 @@ object fmDatosEmpresa: TfmDatosEmpresa
       Height = 21
       TabOrder = 6
     end
+    object Label8: TLabel
+      Left = 43
+      Top = 207
+      Width = 75
+      Height = 13
+      Alignment = taRightJustify
+      AutoSize = False
+      Caption = 'C.B.U.:'
+    end
+    object cbu: TMaskEdit
+      Left = 121
+      Top = 205
+      Width = 346
+      Height = 21
+      MaxLength = 50
+      TabOrder = 7
+      OnKeyPress = cbuKeyPress
+    end
     object btnGuardar: TButton
-      Left = 280
-      Top = 175
+      Left = 392
+      Top = 232
       Width = 75
       Height = 25
       Caption = 'Guardar'
-      TabOrder = 7
+      TabOrder = 8
       OnClick = btnGuardarClick
     end
   end

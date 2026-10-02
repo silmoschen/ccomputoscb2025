@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:tns="http://services.arpsoa.com.ar/"
+             xmlns:jaxb="http://jaxb.dev.java.net/array"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             targetNamespace="http://services.arpsoa.com.ar/"
+             name="FacturaServicesImplService">
+  <types>
+    <xsd:schema targetNamespace="http://jaxb.dev.java.net/array" elementFormDefault="qualified">
+      <xsd:complexType name="anyTypeArray">
+        <xsd:sequence>
+          <xsd:element name="item" type="xsd:anyType" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+    <xsd:schema targetNamespace="http://services.arpsoa.com.ar/" xmlns:jaxb="http://jaxb.dev.java.net/array" elementFormDefault="qualified">
+      <xsd:import namespace="http://jaxb.dev.java.net/array"/>
+      <xsd:complexType name="alicIva">
+        <xsd:sequence>
+          <xsd:element name="baseImp" type="xsd:double"/>
+          <xsd:element name="id" type="xsd:int"/>
+          <xsd:element name="importe" type="xsd:double"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="cbteAsoc">
+        <xsd:sequence>
+          <xsd:element name="nro" type="xsd:long"/>
+          <xsd:element name="ptoVta" type="xsd:int"/>
+          <xsd:element name="tipo" type="xsd:int"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="tributo">
+        <xsd:sequence>
+          <xsd:element name="alic" type="xsd:double"/>
+          <xsd:element name="baseImp" type="xsd:double"/>
+          <xsd:element name="desc" type="xsd:string"/>
+          <xsd:element name="id" type="xsd:short"/>
+          <xsd:element name="importe" type="xsd:double"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ivaTipo">
+        <xsd:sequence>
+          <xsd:element name="desc" type="xsd:string"/>
+          <xsd:element name="fchDesde" type="xsd:string"/>
+          <xsd:element name="fchHasta" type="xsd:string"/>
+          <xsd:element name="id" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="docTipo">
+        <xsd:sequence>
+          <xsd:element name="desc" type="xsd:string"/>
+          <xsd:element name="fchDesde" type="xsd:string"/>
+          <xsd:element name="fchHasta" type="xsd:string"/>
+          <xsd:element name="id" type="xsd:int"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="cbteTipo">
+        <xsd:sequence>
+          <xsd:element name="desc" type="xsd:string"/>
+          <xsd:element name="fchDesde" type="xsd:string"/>
+          <xsd:element name="fchHasta" type="xsd:string"/>
+          <xsd:element name="id" type="xsd:int"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="condicionIvaReceptorTipo">
+        <xsd:sequence>
+          <xsd:element name="cmpClase" type="xsd:string" minOccurs="0"/>
+          <xsd:element name="desc" type="xsd:string"/>
+          <xsd:element name="fchDesde" type="xsd:string" minOccurs="0"/>
+          <xsd:element name="fchHasta" type="xsd:string" minOccurs="0"/>
+          <xsd:element name="id" type="xsd:int"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="alicIvaArray">
+        <xsd:sequence>
+          <xsd:element name="alicuotas" type="tns:alicIva" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="tributoArray">
+        <xsd:sequence>
+          <xsd:element name="tributos" type="tns:tributo" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="cbteAsocArray">
+        <xsd:sequence>
+          <xsd:element name="ivas" type="tns:cbteAsoc" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+
+      <xsd:element name="test">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="cuit" type="xsd:long"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="testResponse">
+        <xsd:complexType><xsd:sequence><xsd:element name="return" type="xsd:string"/></xsd:sequence></xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="obtUltNum">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="cuit" type="xsd:long"/>
+            <xsd:element name="ptoVenta" type="xsd:int"/>
+            <xsd:element name="tipo" type="xsd:int"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="obtUltNumResponse">
+        <xsd:complexType><xsd:sequence><xsd:element name="return" type="xsd:int"/></xsd:sequence></xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="facturar">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="cuit" type="xsd:long"/>
+            <xsd:element name="concepto" type="xsd:int"/>
+            <xsd:element name="ptoVenta" type="xsd:int"/>
+            <xsd:element name="cbteTipo" type="xsd:int"/>
+            <xsd:element name="tipoDoc" type="xsd:int"/>
+            <xsd:element name="nroDoc" type="xsd:long"/>
+            <xsd:element name="nroDesde" type="xsd:int"/>
+            <xsd:element name="nroHasta" type="xsd:int"/>
+            <xsd:element name="fecha" type="xsd:string"/>
+            <xsd:element name="fechaServiciodesde" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="fechaServicioHasta" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="fechaServicioVenc" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="impNeto" type="xsd:double"/>
+            <xsd:element name="idMoneda" type="xsd:string"/>
+            <xsd:element name="cotizMoneda" type="xsd:int"/>
+            <xsd:element name="alicuotas" type="tns:alicIva" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="tributos" type="tns:tributo" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="ivas" type="tns:cbteAsoc" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="condicionIvaReceptor" type="xsd:int" minOccurs="0"/>
+            <xsd:element name="cbu" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="aliasCbu" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="transferencia" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="anulacion" type="xsd:string" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="facturarResponse">
+        <xsd:complexType><xsd:sequence><xsd:element name="return" type="jaxb:anyTypeArray" minOccurs="0"/></xsd:sequence></xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="getTiposCbte">
+        <xsd:complexType><xsd:sequence><xsd:element name="cuit" type="xsd:long"/></xsd:sequence></xsd:complexType>
+      </xsd:element>
+      <xsd:element name="getTiposCbteResponse">
+        <xsd:complexType><xsd:sequence><xsd:element name="return" type="tns:cbteTipo" minOccurs="0" maxOccurs="unbounded"/></xsd:sequence></xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="getTiposIva">
+        <xsd:complexType><xsd:sequence><xsd:element name="cuit" type="xsd:long"/></xsd:sequence></xsd:complexType>
+      </xsd:element>
+      <xsd:element name="getTiposIvaResponse">
+        <xsd:complexType><xsd:sequence><xsd:element name="return" type="tns:ivaTipo" minOccurs="0" maxOccurs="unbounded"/></xsd:sequence></xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="getTiposDoc">
+        <xsd:complexType><xsd:sequence><xsd:element name="cuit" type="xsd:long"/></xsd:sequence></xsd:complexType>
+      </xsd:element>
+      <xsd:element name="getTiposDocResponse">
+        <xsd:complexType><xsd:sequence><xsd:element name="return" type="tns:docTipo" minOccurs="0" maxOccurs="unbounded"/></xsd:sequence></xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="getCondicionIvaReceptor">
+        <xsd:complexType><xsd:sequence><xsd:element name="cuit" type="xsd:long"/></xsd:sequence></xsd:complexType>
+      </xsd:element>
+      <xsd:element name="getCondicionIvaReceptorResponse">
+        <xsd:complexType><xsd:sequence><xsd:element name="return" type="tns:condicionIvaReceptorTipo" minOccurs="0" maxOccurs="unbounded"/></xsd:sequence></xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </types>
+
+  <message name="test"><part name="parameters" element="tns:test"/></message>
+  <message name="testResponse"><part name="parameters" element="tns:testResponse"/></message>
+  <message name="obtUltNum"><part name="parameters" element="tns:obtUltNum"/></message>
+  <message name="obtUltNumResponse"><part name="parameters" element="tns:obtUltNumResponse"/></message>
+  <message name="facturar"><part name="parameters" element="tns:facturar"/></message>
+  <message name="facturarResponse"><part name="parameters" element="tns:facturarResponse"/></message>
+  <message name="getTiposCbte"><part name="parameters" element="tns:getTiposCbte"/></message>
+  <message name="getTiposCbteResponse"><part name="parameters" element="tns:getTiposCbteResponse"/></message>
+  <message name="getTiposIva"><part name="parameters" element="tns:getTiposIva"/></message>
+  <message name="getTiposIvaResponse"><part name="parameters" element="tns:getTiposIvaResponse"/></message>
+  <message name="getTiposDoc"><part name="parameters" element="tns:getTiposDoc"/></message>
+  <message name="getTiposDocResponse"><part name="parameters" element="tns:getTiposDocResponse"/></message>
+  <message name="getCondicionIvaReceptor"><part name="parameters" element="tns:getCondicionIvaReceptor"/></message>
+  <message name="getCondicionIvaReceptorResponse"><part name="parameters" element="tns:getCondicionIvaReceptorResponse"/></message>
+
+  <portType name="FacturaService">
+    <operation name="test"><input message="tns:test"/><output message="tns:testResponse"/></operation>
+    <operation name="obtUltNum"><input message="tns:obtUltNum"/><output message="tns:obtUltNumResponse"/></operation>
+    <operation name="facturar"><input message="tns:facturar"/><output message="tns:facturarResponse"/></operation>
+    <operation name="getTiposCbte"><input message="tns:getTiposCbte"/><output message="tns:getTiposCbteResponse"/></operation>
+    <operation name="getTiposIva"><input message="tns:getTiposIva"/><output message="tns:getTiposIvaResponse"/></operation>
+    <operation name="getTiposDoc"><input message="tns:getTiposDoc"/><output message="tns:getTiposDocResponse"/></operation>
+    <operation name="getCondicionIvaReceptor"><input message="tns:getCondicionIvaReceptor"/><output message="tns:getCondicionIvaReceptorResponse"/></operation>
+  </portType>
+
+  <binding name="FacturaServicesImplServiceSoapBinding" type="tns:FacturaService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="test"><soap:operation soapAction=""/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output></operation>
+    <operation name="obtUltNum"><soap:operation soapAction=""/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output></operation>
+    <operation name="facturar"><soap:operation soapAction=""/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output></operation>
+    <operation name="getTiposCbte"><soap:operation soapAction=""/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output></operation>
+    <operation name="getTiposIva"><soap:operation soapAction=""/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output></operation>
+    <operation name="getTiposDoc"><soap:operation soapAction=""/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output></operation>
+    <operation name="getCondicionIvaReceptor"><soap:operation soapAction=""/><input><soap:body use="literal"/></input><output><soap:body use="literal"/></output></operation>
+  </binding>
+
+  <service name="FacturaServicesImplService">
+    <port name="FacturaServicesImplPort" binding="tns:FacturaServicesImplServiceSoapBinding">
+      <soap:address location="https://evaluaciones-api.innovarecode.com/arpsoa/ws/facturaService"/>
+    </port>
+  </service>
+</definitions>

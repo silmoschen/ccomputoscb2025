@@ -191,7 +191,7 @@ uses
   CFirebird in '..\..\CLASES\CFirebird.pas',
   ListPracticasRealizadas in 'ListPracticasRealizadas.pas' {fmListPracticasRealizadas},
   facturacionAFIP in 'facturacionAFIP.pas' {fmFacturacionAfip},
-  facturaService2 in '..\..\ARPSOA\facturaService2.pas',
+  facturaService3 in 'clases\facturaService3.pas',
   CDatosEmpresa in 'clases\CDatosEmpresa.pas',
   reportAfip in 'reportAfip.pas' {fmReportsAFIP},
   datosempresa in 'datosempresa.pas' {fmDatosEmpresa},

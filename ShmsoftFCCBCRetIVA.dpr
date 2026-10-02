@@ -128,7 +128,8 @@ uses
   CNomeclatura_ObraSocial in 'clases\CNomeclatura_ObraSocial.pas',
   NominaNomeclaturaObrasSociales in 'NominaNomeclaturaObrasSociales.pas' {fmListNomeclaturaObrasSociales},
   PresupuestoRapidoTit in 'PresupuestoRapidoTit.pas' {fmPresupuestoRapidoTit},
-  CAuditoriaCCB in 'clases\CAuditoriaCCB.pas';
+  CAuditoriaCCB in 'clases\CAuditoriaCCB.pas',
+  CComregi in 'clases\CComregi.pas';
 
 {$R *.RES}
 

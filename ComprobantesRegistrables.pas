@@ -94,6 +94,8 @@ type
     expendio: TMaskEdit;
     definir: TButton;
     modotexto: TCheckBox;
+    Label30: TLabel;
+    tope: TEditValid;
 
     procedure codcompKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -167,6 +169,7 @@ type
     procedure Panel2Resize(Sender: TObject);
     procedure tblCorrelatividadHide(Sender: TObject);
     procedure nroinicialChange(Sender: TObject);
+    procedure topeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Private declarations }
     redim: Boolean;
@@ -202,6 +205,7 @@ begin
   otros.Text := compregis.Otros;
   if compregis.Factura_vtas = 'S' then factura_vtas.Checked := True else factura_vtas.Checked := False;
   if compregis.Factura_com  = 'S' then factura_com.Checked  := True else factura_com.Checked  := False;
+  tope.Text  := utiles.FormatearNumero(floattostr(compregis.Tope));
 end;
 
 procedure TfmComprobantesRegistrables.CargarDatosComprobante;
@@ -346,8 +350,7 @@ procedure TfmComprobantesRegistrables.otrosKeyDown(Sender: TObject;
 begin
   if Key = VK_UP then ActiveControl := ctc;
   if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
-    registrar.Enabled := True;
-    registrar.SetFocus;
+    tope.SetFocus;
   end;
 end;
 
@@ -411,7 +414,8 @@ var
 begin
   if (factura_vtas.Checked) or (iva_exento.Checked) then xf_v := 'S' else xf_v := 'N';
   if factura_com.Checked then xf_c := 'S' else xf_c := 'N';
-  compregis.Grabar(codcomp.Text, idcompr.Text, nc.Caption, dc.Text, ac.Text, av.Text, ln.Text, cta.Text, ctb.Text, ctc.Text, otros.Text, '', '', xf_v, xf_c);
+  tope.Text := utiles.FormatearNumero(tope.Text, '#######0.00');
+  compregis.Grabar(codcomp.Text, idcompr.Text, nc.Caption, dc.Text, ac.Text, av.Text, ln.Text, cta.Text, ctb.Text, ctc.Text, otros.Text, '', '', xf_v, xf_c, 'N', strtofloat(tope.Text));
   ActiveControl := codcomp;
   registrar.Enabled := False;
   Panel1.Enabled := False;
@@ -558,6 +562,17 @@ procedure TfmComprobantesRegistrables.tipoEmisionKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
   if Key = VK_RETURN then ActiveControl := impcompr;
+end;
+
+procedure TfmComprobantesRegistrables.topeKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+if Key = VK_UP then ActiveControl := ctc;
+  if (Key = VK_RETURN) or (Key = VK_DOWN) then Begin
+    tope.Text := utiles.FormatearNumero(tope.Text, '#######0.00');
+    registrar.Enabled := True;
+    registrar.SetFocus;
+  end;
 end;
 
 procedure TfmComprobantesRegistrables.tipoEmisionChange(Sender: TObject);

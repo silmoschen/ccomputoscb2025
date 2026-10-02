@@ -192,7 +192,7 @@ uses
   CFirebird in '..\..\CLASES\CFirebird.pas',
   ListPracticasRealizadas in 'ListPracticasRealizadas.pas' {fmListPracticasRealizadas},
   facturacionAFIP in 'facturacionAFIP.pas' {fmFacturacionAfip},
-  facturaService2 in '..\..\ARPSOA\facturaService2.pas',
+  facturaService3 in 'clases\facturaService3.pas',
   CDatosEmpresa in 'clases\CDatosEmpresa.pas',
   reportAfip in 'reportAfip.pas' {fmReportsAFIP},
   datosempresa in 'datosempresa.pas' {fmDatosEmpresa},
@@ -209,7 +209,8 @@ uses
   reportUBFacturadas in 'reportUBFacturadas.pas' {fmUBFacturadas},
   selectObraSocial in 'selectObraSocial.pas' {fmSelObraSocial},
   CNomeclatura_ObraSocial in 'clases\CNomeclatura_ObraSocial.pas',
-  CAuditoriaCCB in 'clases\CAuditoriaCCB.pas';
+  CAuditoriaCCB in 'clases\CAuditoriaCCB.pas',
+  CComregi in 'clases\CComregi.pas';
 
 {$R *.RES}
 
@@ -217,9 +218,9 @@ begin
   fmIntroForm := TfmIntroForm.Create(Application);
   fmIntroForm.Label1.Left := fmIntroForm.Label1.Left - 80;
   fmIntroForm.Label2.Left := fmIntroForm.Label2.Left - 80;
-  fmIntroForm.Label1.Caption := 'Administración Central de Bioquímicos';
-  fmIntroForm.Label2.Caption := 'Versión: 3.07.009';
-  fmIntroForm.Label2.Caption := 'Versión: 4.05.006';
+  fmIntroForm.Label1.Caption := 'AdministraciÃ³n Central de BioquÃ­micos';
+  fmIntroForm.Label2.Caption := 'VersiÃ³n: 3.07.009';
+  fmIntroForm.Label2.Caption := 'VersiÃ³n: 4.05.006';
   fmIntroForm.Show;
   fmIntroForm.Update;
   Application.Initialize;

@@ -43,7 +43,7 @@
     <DelphiCompile Include="ShmsoftFCCBCentroBioqCont.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
-    <DCCReference Include="..\..\ARPSOA\facturaService2.pas" />
+    <DCCReference Include="clases\facturaService3.pas" />
     <DCCReference Include="..\..\CLASES\CActualizaciones.pas" />
     <DCCReference Include="..\..\CLASES\CActualizacionesCentroComputosCB.pas" />
     <DCCReference Include="..\..\CLASES\CAdmNumCompr.pas" />
@@ -267,19 +267,20 @@
     <DCCReference Include="clases\CAgrupacionOSFact.pas" />
     <DCCReference Include="clases\CAuditoriaCCB.pas" />
     <DCCReference Include="clases\CAuditoriaOnLine.pas" />
+    <DCCReference Include="clases\CComregi.pas" />
     <DCCReference Include="clases\CCoseguros.pas" />
     <DCCReference Include="clases\CDatosEmpresa.pas" />
     <DCCReference Include="clases\CDebitosCreditosIAPOS.pas" />
     <DCCReference Include="clases\CExportObrasSociales.pas" />
     <DCCReference Include="clases\CFirebirdConnect.pas" />
     <DCCReference Include="clases\CFTP.pas" />
-    <DCCReference Include="clases\CSFTP.pas" />
     <DCCReference Include="clases\CIntegridadReferencial.pas" />
     <DCCReference Include="clases\CLiquidacionObrasSocCCB.pas" />
     <DCCReference Include="clases\CMedicosCabAO.pas" />
     <DCCReference Include="clases\CNBU.pas" />
     <DCCReference Include="clases\CNomeclatura_ObraSocial.pas" />
     <DCCReference Include="clases\CPadronOSCCB.pas" />
+    <DCCReference Include="clases\CSFTP.pas" />
     <DCCReference Include="clases\CUBReferentes.pas" />
     <DCCReference Include="clases\CUnidadesNBU.pas" />
     <DCCReference Include="Comprobantes.pas">

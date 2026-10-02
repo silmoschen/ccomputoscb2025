@@ -2,11 +2,10 @@ unit CFacturacionCCB;
 
 interface
 
-uses CObrasSocialesCCB, CProfesionalCCB, CPacienteCCB, CNomeclaCCB, SysUtils, CListar,
+uses CObrasSocialesCCB, CProfesionalCCB, CPacienteCCB, CNomeclaCCB, SysUtils, CListar,  
      DB, DBTables, CBDT, CUtiles, CIDBFM, CUsuario, Forms, Unit1, WinProcs, CUtilidadesArchivos,
      Classes, CServers2000_Excel, CNBU, CNomeclatura_ObraSocial, CAgrupacionOSFact, CUnidadesNBU,
-     IBQuery;
-
+     CFirebird, IBTable, IBQuery, uLkJSON, CComregi;
 
 const
   elementos = 10;
@@ -15,30 +14,45 @@ type
  TTFacturacionCCB = class(TObject)
   periodo, idprof, codos, codpac, modelo, moneda, directorio, LaboratorioActual, attach, NProfesional: string; NroColumnas, LineasPag, lineas, lineas_audit, lineas_blanco: ShortInt;
   ExisteLiquidacion, ruptura, LaboratorioActivo: Boolean; copias, salto: ShortInt;
-  ExportarTotalesProfInscriptosIVA: Boolean;
-  FechaHoraImport, DirectorioImport, UsuarioImport, ModoImport, transfImport, idcFact, tipoFact, sucursalFact, numeroFact, interbase: String;
+  ExportarTotalesProfInscriptosIVA, factglobal, omitir_ressql: Boolean;
+  REGLA_EXPORTACION: integer; // 25/06/2018
+  NRO_AUDITORIA, NRO_AFILIADO, NRO_AUTORIZACION, FECHA_ORDEN: string; // 25/06/2018
+  FechaHoraImport, DirectorioImport, UsuarioImport, ModoImport, transfImport, idcFact, tipoFact, sucursalFact, numeroFact: String;
   _caran: Real;
-  ExcluirLab, SC, DetMontoFijo: Boolean;
+  ExcluirLab, SC, DetMontoFijo, exporta_web, listtotalboleta, exporta_afip: Boolean;
   listlab: array[1..elementos+5] of String;
-  cabfact, detfact, idordenes, parametrosInf, modeloc, cabfactos, liq, datosfact, ctrlImpr, historico, totalesOS, totalesPROF, ordenes_audit, datosImport: TTable;   
+  cabfact, detfact, idordenes, parametrosInf, modeloc, cabfactos, liq, datosfact, datosfactdet, ctrlImpr, historico, totalesOS, totalesPROF, ordenes_audit, datosImport, cab_auditoria, det_auditoria, wtotalesprof: TTable;
+  unidadNBUFinal: double;
+  //cabfactIB, detfactIB, idordenesIB, ordenes_auditIB, cab_auditoriaIB, det_auditoriaIB: TIBTable;
+  interbase: string;
  public
   { Declaraciones Públicas }
   constructor Create;
   destructor  Destroy; override;
 
-  procedure   Grabar(xperiodo, xidprof, xcodos, xitems, xcodpac, xnombre, xcodanalisis, xorden: string; modifica: boolean);
+  procedure   Grabar(xperiodo, xidprof, xcodos, xitems, xcodpac, xnombre, xcodanalisis, xorden, xperiodo1, xretiva, xmontocoseguro: string; modifica, guardar_orden_interna: boolean);
+  procedure   GrabarIB(xperiodo, xidprof, xcodos, xitems, xcodpac, xnombre, xcodanalisis, xorden, xperiodo1, xretiva, xnroauditoria: string; modifica, guardar_orden_interna: boolean; xnroafiliado, xnroautorizacion, xfecha, xmontocoseguro: string);
   procedure   Borrar(xperiodo, xidprof, xcodos: String);
   procedure   BorrarMovimientosLaboratorio(xperiodo, xidprof: String; ProcesamientoIndividual: Boolean);
   procedure   BorrarPeriodo(xperiodo: String; ProcesamientoIndividual: Boolean);
   procedure   getDatos;
   function    Buscar(xperiodo, xidprof, xcodos: string): boolean;
   procedure   RenumerarOrdenesInternas(xperiodo, xidprof: String);
-  procedure   BorrarOrden(xperiodo, xorden: String);
+  procedure   BorrarOrden(xperiodo, xorden, xidprof: String);
   procedure   GuardarOrdenInterna(xperiodo, xidprof, xorden: string);
   procedure   VerificarOrdenInterna(xperiodo, xidprof: string);
   function    verificarMovimientosObraSocial(xperiodo, xidprof, xcodos: string): boolean;
+  procedure   marcarOrdenesFactGlobal(xperiodo, xidprof, xcodos, xorden, xidproffact: string);
+  procedure   iniciarFacturacionIB(xperiodo: string); overload;
+  procedure   iniciarFacturacionIB(xperiodo, xcodos: string); overload;
+  procedure   iniciarFacturacionIBOL(xperiodo, xcodos: string); overload;
+
+  procedure   desconectarFacturacionIB;
+  procedure   reconectarFacturacionIB;
 
   function    setItems: TQuery;
+  function    setItemsIB: TIBQuery;
+  function    setItemsIBAll(xperiodo, xidprof, xcodos: string): TIBQuery;
   function    NuevaOrdenInterna(xperiodo, xidprof, xcodos: string): string;
   function    NuevoItems(xperiodo, xidprof, xcodos: String): Integer;
   function    verificarSiLaObraSocialTieneMovimientos(xperiodo, xcodos: String): Boolean;
@@ -49,20 +63,24 @@ type
   function    setTot9984: Real;
   function    set9984: Real;
   function    setCodigoMontoFijo: String;
+  function    setNbuNomencladorObraSocial(xcodos, xcodigo: string): Real;
 
   procedure   ListarResumenPrestacionesPorObraSocial(xperiodo, xtitulo, xcolumnas: String; ObrasSocSel: TStringList; salida: char);
   procedure   ListarResumenPorObraSocial(xperiodo, xtitulo: String; ObrasSocSel: TStringList; salida: char; xinf_com: Boolean);
   procedure   ListarResumenPorProfesional(xperiodo, xtitulo: String; profSel: TStringList; ObrasSocSel: TStringList; salida: char);
   procedure   ListarTotGralesObrasSociales(xperiodo, xtitulo: String; ObrasSocSel: TStringList; salida: Char);
   procedure   ListarResumenAProfesionales(xperiodo, xtitulo, xcolumnas: String; xruptura: Boolean; profSel, ObrasSocSel: TStringList; salida: char);
+  procedure   ListarResumenAProfesionalesRI(xperiodo, xtitulo, xcolumnas: String; xruptura: Boolean; profSel, ObrasSocSel: TStringList; salida: char);
   procedure   ListarControlesFinales(xperiodo, xtitulo, xcolumnas: String; profSel, ObrasSocSel: TStringList; presentar_inf: Boolean; salida: char);
   procedure   ListarOrdenesAuditadas(xperiodo: String; profSel: TStringList; presentar_inf: Boolean; salida: char);
   procedure   ListarContorlesAuditoria(xperiodo: String; salida: Char);
   procedure   ListarOrdenesAuditoriaFacturadas(lista: TStringList; salida: char);
   procedure   ListarResumenRetencionesIVA(xperiodo, xtitulo: String; profSel: TStringList; ObrasSocSel: TStringList; salida: char; xinf_com: Boolean);
+  procedure   ListarCosegurosFacturados(xperiodo: String; salida: Char);
 
   procedure   ExportarInforme(xarchivo: String);
   procedure   FinalizarExportacion;
+  procedure   IniciarFacturacionWeb(xperiodo: string);
 
   procedure   GuardarModeloFact(xid, xmodelo: string);
   procedure   getDatosModeloFact(xid: string);
@@ -80,6 +98,8 @@ type
   procedure   getDatosFact(xperiodo, xcodos: String);
   procedure   AjustarDatosFact(xperiodo, xcodos, xidcompr, xtipo, xsucursal, xnumero: String);
 
+  function    BuscarDatosFactDet(xperiodo, xcodos, xitems: String): Boolean;
+
   procedure   Exportar(xperiodo, xidprof, xprofesional: String; listOS: TStringList; xtodoslospacientes: Boolean);
   procedure   CopiarDatosExportados(xdrive: String);
   function    setDatosExportados(xperiodo: String): TQuery;
@@ -89,14 +109,13 @@ type
   procedure   Importar(xperiodo, xidlab, xlaboratorio, xdrive: String);
   function    setDirectorioImportacion: String;
   function    setObrasSocialesImportadas(xidprof: String): TQuery;
+  function    setObrasSocialesImportadasIB(xidprof: String): TIBQuery;
   procedure   TransferirDatosImportados(xperiodo, xidprof: String; listOS: TstringList);
   procedure   getDatosImportados(xperiodo, xidprof: String);
 
   function    setDatosImportados(xperiodo: String): TStringList;
   function    setLaboratoriosImportados(xperiodo: String): TStringList;
   function    setDatosIngresadosEnElDia: TQuery;
-
-  procedure   ModificarPeriodoFacturado(xperiodoactual, xnuevoperiodo, xidprof: String);
 
   procedure   PrepararDirectorio(xperiodo, xlaboratorio: String);
   function    DireccionarLaboratorio(xperiodo, xlaboratorio: String): Boolean;
@@ -125,11 +144,13 @@ type
   procedure   Bloquear;
   function    verificarBloqueo: Boolean;
   procedure   QuitarBloqueo;
-  procedure   PrepararRegistrosTransferenciaFinal; overload;
-  procedure   PrepararRegistrosTransferenciaFinal(xidprof: String); overload;
+  procedure   ReiniciarProcesamientoCentral;
+  procedure   ReiniciarProcesamientoIndividual;
+  procedure   PrepararRegistrosTransferenciaFinalTodos(xperiodo: string); overload;
   procedure   PrepararRegistrosTransferenciaFinal(xperiodo, xidprof: String); overload;
   procedure   TransferenciaFinal(xperiodo, xidprof, xprofesional: String);
   procedure   TransferenciaFinalLaboratorios(xperiodo: String);
+  procedure   CerrarTransferenciaFinal;
 
   procedure   UnificarPeriodosFacturados(xperiodos: TStringList);
   function    setPeriodoUnificacion: String;
@@ -138,6 +159,8 @@ type
   procedure   BorrarTotalFactObraSocial(xperiodo, xcodos: String);
   function    setTotalProfesional(xperiodo, xidprof, xcodos: String): Real; overload;
   function    setTotalProfesional(xperiodo, xcodos: String): Real; overload;
+  function    setTotalProfesionalFacturaElectronica(xperiodo, xidprof: String): TQuery;
+  procedure   registrarFacturaElectronica(xperiodo, xidprof, xcodos, xtipo, xsucursal, xnumero: String);
   function    setTotalUG: Real;
   function    setTotalUB: Real;
   function    setTotalCaran: Real;
@@ -150,7 +173,8 @@ type
   function    setCaran9984: Real;
   procedure   IniciarTotalFacturado(xperiodo: String);
   procedure   IniciarTotalFacturadoObrasSociales(xperiodo: String);
-  function    setTotalFacturado(xperiodo: String): Real;
+  function    setTotalFacturado(xperiodo: String): Real; overload;
+  function    setTotalFacturado(xperiodo, xcodos: String): Real; overload;
   function    setTotalFacturadoProfesionales(xperiodo: String): Real; overload;
   procedure   CalcularTotalFacturadoProfesionales(xperiodo: String; xinicializa_montos: Boolean);
   function    setTotalFacturadoProfesionales(xperiodo, xcodos: String): Real; overload;
@@ -159,6 +183,7 @@ type
   function    setDeterminacionesFacturadas(xperiodo: String): TQuery;
   function    setRangoPeriodos: String;
   function    setDeterminacionesFacturadasPorObraSocial(xperiodo, xcodos: String): TQuery;
+  function    setDeterminacionesFacturadasPorObraSocialIB(xperiodo, xcodos: String): TIBQuery;
   function    setNominaProfesionalesQueFacturaronPorObraSocial(xperiodo, xcodos: String): TQuery;
   function    setCantidadPacientesFacturadosObraSocial(xperiodo, xcodos: String): Integer;
   procedure   CalcularMontosFacturacion(xperiodo: String);
@@ -166,6 +191,8 @@ type
 
   function    setNetoACobrarProfesional(xperiodo, xidprof, xcodos: String): Real; overload;
   function    setMontoACobrarProfesional(xperiodo, xidprof: String): Real;
+
+  procedure   GuardarTotalProfesionalDistribucion(xperiodo, xidprof, xcodos: String; xmonto, xneto, xgrabado, xexento, xiva: Real);
 
   function    setItemsTotalFacturado(xperiodo: String): TQuery;
   function    setItemsTotalFacturadoProfesionales(xperiodo: String): TQuery; overload;
@@ -179,6 +206,7 @@ type
   function    setImporteAnalisis(xcodos, xcodanalisis: String): Real; overload;
   function    setImporteAnalisis(xcodos, xcodanalisis, xperiodo: String): Real; overload;
   function    setImporteAnalisis(xcodos, xcodanalisis: String; xosub, xosug, xosrieub, xosrieug: Real): Real; overload;
+  function    setImporteAnalisis(xcodos, xcodanalisis, xperiodo: String; xnbu: real): Real; overload;
   function    setCodigoRecepcionToma: Boolean;
 
   procedure   IngresarMontoFacturadoObraSocial(xperiodo, xcodos, xnombre: String; ximporte: Real);
@@ -198,20 +226,21 @@ type
   procedure   ConectarTotalesProf;
   procedure   DesconectarTotalesProf;
   function    ProcesandoDatosCentrales: Boolean;
-  procedure   ReiniciarProcesamientoCentral;
 
   { Ordenes Auditadas }
   procedure   PrepararDirectorio_OrdenesAuditadas(xperiodo, xlaboratorio: String);
   function    verificarDirectorio_OrdenesAuditadas(xperiodo, xlaboratorio: String): Boolean;
   procedure   SeleccionarLaboratorio_Auditoria(xperiodo, xdirectorio: String);
-  procedure   RegistrarOrdenes(xperiodo, xitems, xidprof, xnroauditoria: String; xcantidad_items: Integer);
+  procedure   RegistrarOrdenes(xperiodo, xitems, xidprof, xnroauditoria, xestado: String; xcantidad_items: Integer);
   procedure   BorrarOrdenAuditoria(xperiodo, xitems, xidprof: String); overload;
   procedure   BorrarOrdenAuditoria(xperiodo, xidprof: String); overload;
   function    setOrdenesAuditoria(xperiodo, xidprof: String): TQuery;
+  function    setOrdenesAuditoriaIB(xperiodo, xidprof: String): TIBQuery;
   function    verificarOrden(xidprof, xorden: String): Boolean;
   procedure   MarcarOrdenAuditoria(xperiodo, xitems, xidprof, xestado: String);
-  procedure   BorrarOrdenesPorId(xid: String);
-  function    ObtenerUltimoId: Integer;
+  procedure   BorrarOrdenesPorId(xid, xperiodo, xidprof: String);
+  function    ObtenerUltimoId(xperiodo, xidprof: string): Integer;
+  procedure   BorrarOrdenAuditoriaIB(xperiodo, xidprof: String);
 
   { Respaldar Laboratorios }
   function    setLaboratoriosBackup(xperiodo: String): TStringList;
@@ -219,48 +248,99 @@ type
   procedure   RealizarRestauracionLaboratorios(xperiodo, xidprof: String);
   function    ListaLaboratoriosActualizados: TStringList;
 
+  function    getPeriodosFacturadosDepurar: TStringList;
+  function    getPeriodosFacturadosDepurados: TStringList;
+  procedure   DepurarPeriodosFacturadosIB(xperiodo: string);
+
   function    setDeterminacionesProfesional(xperiodo: String): TQuery;
+
+  procedure   CambiarTipoTotalProfesional(xperiodo, xidprof, xcodos: string; xmodo: integer);
 
   procedure   vaciarBuffer;
   procedure   conectar;
   procedure   desconectar;
   procedure   CerrarConexiones;
 
-  function    setItemsIB:TIBQuery;
-  function    setOrdenesAuditoriaIB(xperiodo, xidprof: string): TIBQuery;
-  function    setObrasSocialesImportadasIB(xperiodo: string): TIBQuery;
+  function    setValorAnalisis(xcodos, xcodanalisis: string; xOSUB, xNOUB, xOSUG, xNOUG: real): real;
 
-  procedure   PrepararRegistrosTransferenciaFinalTodos(xperiodo: string);
+  function   verificarEfector(xidprof: string): boolean;
+  function   verificarObraSocial(xcodos: string): boolean;
+  function   verificarDeterminacion(xcodigo: string): boolean;
 
-  function    setDeterminacionesFacturadasPorObraSocialIB(xperiodo, xcodos: string): TIBQuery;
+  function   getTotalesInicidenciaPorDeterminacion_Detallada(xperiodo: string): TQuery;
+  procedure  BorrarTotalesInicidenciaPorDeterminacion_Detallada(xperiodo, xcodos: string);
 
-  procedure   CerrarTransferenciaFinal;
+  procedure  vaciarLoteSecundario; overload;
+  procedure  vaciarLoteSecundario(xlote: TStringList); overload;
+  function   getDBConexion: string;
 
-  procedure   ReiniciarProcesamientoIndividual;
+  function   getPracticasFacturadas(xdesde, xhasta: string): TIBQuery;
+  function   getCantidadPracticasFacturadas(xdesde, xhasta, xcodigo: string): integer;
+  procedure  ListarPracticasFacturadas(xdesde, xhasta: string; lista: TStringList; salida: char);
+
+  function   getListPracticasFacturadas(xperiodo, xcodos: string): TIBQuery;
+  function   getListItemsFacturados(xperiodo, xcodos: string): TIBQuery;
+  function   getListItemsFacturadosProfesional(xperiodo, xcodos, xidprof: string): TIBQuery;
+  function   getListItemsFacturadosSNF(xperiodo, xcodos: string): TIBQuery;
+
+  procedure  recalcularMontosAnalisis(xperiodo, xcodos: string);
+  procedure  recalcularMontosAnalisisRI(xperiodo, xcodos: string);
+  function   getFacturas(xperiodo: string): TQuery;
+  procedure  registrarCAE(xperiodo, xcodos, xcae, xtipo, xsucursal, xnumero, xfecha, xfechavto1, xfechavto2, xvtocae, xcodigocomprobante: string);
+  procedure  registrarFechaVto2(xperiodo, xcodos, xfechavto2: string);
+  procedure  generarFactura(xperiodo, xcodos, xinicioactividad, xcomprobante, xcbu: string; xcopias: integer);
+
+  procedure  exportarTotalesRI(xperiodo: string);
+  procedure  exportarDetalleFacturacion(xperiodo: string);
+
+  function   getLaboratoriosARefacturar(xperiodo: string): TIBQuery;
+  function   getLaboratoriosARefacturarAll(xperiodo: string): TIBQuery;
+
+  function   getLaboratoriosConCoseguro(xperiodo: string): TIBQuery;
+  function   getCoseguroLaboratorios(xperiodo, xidprof: string): TIBQuery;
+  function   getListObrasSocialesRegla(xperiodo, xregla: string): TIBQuery;
+
+  procedure  exportarRegla(xperiodo, xregla: string);
+  function   exportarReglaFacturasRI(xperiodo: string): TQuery;
+  function   exportarReglaFacturasRM(xperiodo: string): TQuery;
+  function   exportarReglaFacturasDetalle(xperiodo: string): TQuery;
+  function   exportarReglaFacturasDetalleRM(xperiodo: string): TQuery;
+
+  procedure  listarUBFacturadas(xperiodo: string; salida: char);
+
+  function   verificarOrdenFacturada(xperiodo, xorden: String): Boolean;
+  procedure  IniciarCache;
 
  private
   { Declaraciones Privadas }
-  conexiones, pag: integer; lin, idanter, idanter1, ordenanter, codosanter, idprofanter, codftoma, titulo, columnas, npac, diractual, DBConexion, dir_lab, osretieneiva: String;
+  conexiones, pag: integer; lin, idanter, idanter1, ordenanter, codosanter, idprofanter, codftoma, titulo, columnas, npac, diractual, DBConexion, dir_lab, osretieneiva, pac_retiva, __c, __t: String;
   nrocol, espaciocol, distanciaImp: ShortInt; it, xf: Integer;
-  cantidad, cantidadordenes, totprestaciones: Integer; subtotal, m9984, tot9984, totUG, totUB, canUG, canUB, total, ttotUB, caran, ivaret, ivaret9984, ivaretcaran, ivaexento, ivaexe9984, ivaexecaran, subtotalorden: real;
-  ttotprestaciones, ccantidadordenes, tttotUB, ttotUG, ccanUB, ccanUG, ccaran, ttotal, compensacion, totcomp, canUB1, totUBSin9984, totUGSin9984, totUB9984, totUG9984, _ccaranSin9984, _ccaran9984, canUB9984: Real;
-  CHR18, CHR15, Caracter, msgImpresion, DBCentral, fx, codigomontofijo: String;
-  ProcesamientoCentral, informe_ivaret, codigo_tomamuestra, datosListadosFact, u_h, nnbu: Boolean;
+  cantidad, cantidadordenes, totprestaciones: Integer; subtotal, m9984, tot9984, totUG, totUB, canUG, canUB, total, ttotUB, caran, ivaret, ivaret9984, ivaretcaran, ivaexento, ivaexe9984, ivaexecaran, subtotalorden, __nbuos: real;
+  ttotprestaciones, ccantidadordenes, tttotUB, ttotUG, ccanUB, ccanUG, ccaran, ttotal, compensacion, totcomp, canUB1, totUBSin9984, totUGSin9984, totUB9984, totUG9984, _ccaranSin9984, _ccaran9984, canUB9984, total_orden: Real;
+  CHR18, CHR15, Caracter, msgImpresion, DBCentral, fx, codigomontofijo, perrem, labrem: String;
+  ProcesamientoCentral, informe_ivaret, codigo_tomamuestra, datosListadosFact, u_h, nnbu, proceso_central, campo1, __laboratorios: Boolean;
   ar1, ar2: TextFile;
+  __ordenint, _query, __periodo, __perfact, __maxperiodo, __peranter: string;
 
   codigos: array[1..elementos]   of String[6];
   montos : array[1..elementos]   of Real;
   totales: array[1..elementos+1] of Real;
   dirlab : array[1..elementos+5] of String;
   totiva : array[1..7] of Real;
-  datosListados, rp, listControl, ExportarDatos,llt: Boolean;
-  rsql: TQuery;
+  totivaol : array[1..7] of Real;
+  datosListados, rp, listControl, ExportarDatos,llt, tibase, __historico, __ignorarcachemontos: Boolean;
+  rsql, ressql: TQuery;
 
   directorio1, diractual1: String;
-  listatrab, lNeto, lub: TStringList;
+  listatrab, lNeto, lub, lote, lotesec: TStringList;
+
+  ffirebird: TTFirebird;
+  cabexptIB, detexptIB, idexptIB: TIBTable;
+  rsqlIB: TIBQuery;
+
+  __codigos, __montos: TStringList;
 
   procedure   InstanciarTablas(xdirectorio: String);
-  function    setValorAnalisis(xcodos, xcodanalisis: string; xOSUB, xNOUB, xOSUG, xNOUG: real): real;
 
   function    ControlarSalto: Boolean;
   procedure   RealizarSalto;
@@ -281,6 +361,7 @@ type
   { Listado Resumen por Profesional }
   procedure   titulo3(xperiodo, xtitulo: String);
   procedure   RupturaPorProfesional2(xperiodo, xtitulo: String; salida: char);
+  procedure   RupturaPorProfesional3(xperiodo, xtitulo: String; salida: char);
   procedure   LineaObraSocial(xperiodo: String; salida: char);
   procedure   SubtotalObraSocialResumenProf(xleyenda: String; salida: char);
   { Listado de Totales Generales por Obra Social }
@@ -301,6 +382,7 @@ type
   procedure   GuardarTotalProfesional(xperiodo, xidprof, xcodos: String; xmonto, xUB, xUG, xCaran: Real);
   procedure   GuardarTotalProf(xperiodo, xidprof, xcodos: String);
   procedure   GuardarTotalProfIVA(xperiodo, xidprof, xcodos: String; xmonto, xneto: Real);
+  procedure   GuardarTotalProfIVAExport(xperiodo, xidprof, xcodos: String; xneto, xiva, xexento, xtotal: Real; xcantidad, xprestaciones: integer);
   { Varios }
   procedure   GuardarRefDatosImportados(xperiodo, xidprof, xnombre, xdirectorio, xmodo: String);
   procedure   GuardarRefDatosExportados(xperiodo, xidprof, xnombre, xdirectorio, xmodo: String);
@@ -344,21 +426,29 @@ begin
     if dbs.BaseClientServ = 'S' then dbs.NuevaBaseDeDatos('factcentro', 'sysdba', 'masterkey');
     if dbs.BaseClientServ = 'N' then DBConexion := dbs.DirSistema + '\archdat' else DBConexion := dbs.TDB1.DatabaseName;
     if dbs.BaseClientServ = 'N' then dbs.DatosHistoricos := dbs.DirSistema + '\historico' else dbs.DatosHistoricos := 'HISTORICOCENTROBIOQ';
+    __laboratorios := true;
   end else Begin                                                                        // Motor de Persistencia para la Versión Full del Software
     if dbs.BaseClientServ = 'N' then DBConexion := dbs.DirSistema + '\archdat' else DBConexion := dbs.baseDat;
     if dbs.BaseClientServ = 'N' then dbs.DatosHistoricos := dbs.DirSistema + '\historico' else dbs.DatosHistoricos := 'HISTORICOCENTROBIOQ';
+  end;
+
+  wtotalesprof := nil;
+  if ((LowerCase(ExtractFileName(Application.ExeName)) = 'shmsoftfccbcentrobioqcont.exe') or (LowerCase(ExtractFileName(Application.ExeName)) = 'shmsoftfccbcentrobioq.exe')) then begin
+    wtotalesprof  := datosdb.openDB('wtotalesprof', 'periodo;codos;idprof', '', dbconexion);
+    datosfactdet := datosdb.openDB('datosfactdet', 'Periodo;Codos;Items', '', DBConexion);
   end;
 
   modeloc      := datosdb.openDB('modcarta', 'Id', '', dbconexion);
   cabfactos    := datosdb.openDB('cabfactos', 'Nroliq;Codos', '', DBConexion);
   liq          := datosdb.openDB('liquidaciones', 'Codos;Periodo', '', DBConexion);
   datosfact    := datosdb.openDB('datosfact', 'Periodo;Nroliq;Codos', '', DBConexion);
+  //datosfactdet := datosdb.openDB('datosfactdet', 'Periodo;Codos;Items', '', DBConexion);
   ctrlImpr     := datosdb.openDB('ctrlImp', 'Reporte', '', DBConexion);
   historico    := datosdb.openDB('historico', 'Periodo', '', DBConexion);
   datosImport  := datosdb.openDB('datosimportados', 'Periodo;Idprof', '', DBConexion);
   if usuario.usuario <> 'Administrador' then Begin  // Conecta en el directorio predeterminado
-    cabfact    := datosdb.openDB('cabfact', 'Periodo;Idprof;Codos', '', dbs.DirSistema + '\archdat');
-    detfact    := datosdb.openDB('detfact', 'Periodo;Idprof;Codos;Items;Orden', '', dbs.DirSistema + '\archdat');
+    //cabfact    := datosdb.openDB('cabfact', 'Periodo;Idprof;Codos', '', dbs.DirSistema + '\archdat');
+    //detfact    := datosdb.openDB('detfact', 'Periodo;Idprof;Codos;Items;Orden', '', dbs.DirSistema + '\archdat');
     idordenes  := datosdb.openDB('idordenes', 'Periodo;Idprof', '', dbs.DirSistema + '\archdat');
     dir_lab    := dbs.DirSistema;
   end else Begin
@@ -372,9 +462,12 @@ begin
   diractual := 'None';
   if (usuario.usuario <> 'Administrador') or (Length(Trim(laboratorioactual)) > 0)  then msgImpresion := 'No Existen Datos para Listar ...!' else msgImpresion := 'No Existen Datos para Listar,' + chr(13) + 'si ha Registrado Operaciones en este Período' + chr(13) + 'vuelva a Realizar la Transferencia Final de Datos ...!';
 
-  interbase := 'N';
-
   listatrab := TStringList.Create;
+
+  lote := TStringList.Create;
+  lotesec := TStringList.Create;
+
+  interbase := 'S';
 end;
 
 destructor TTFacturacionCCB.Destroy;
@@ -385,194 +478,1127 @@ end;
 function TTFacturacionCCB.Buscar(xperiodo, xidprof, xcodos: string): boolean;
 // Objetivo...: Buscar el Objeto solicitado
 begin
-  QuitarFiltro;
-  if cabfact.IndexFieldNames <> 'periodo;idprof;codos' then cabfact.IndexFieldNames := 'periodo;idprof;codos';
-  if datosdb.Buscar(cabfact, 'periodo', 'idprof', 'codos', xperiodo, xidprof, xcodos) then Begin
-    getDatos;
-    Result  := True;
-  end else Begin
-    periodo := ''; idprof := ''; codos := '';
-    Result := False;
+  if (interbase = 'N') then begin
+    QuitarFiltro;
+    if cabfact.IndexFieldNames <> 'periodo;idprof;codos' then cabfact.IndexFieldNames := 'periodo;idprof;codos';
+    if datosdb.Buscar(cabfact, 'periodo', 'idprof', 'codos', xperiodo, xidprof, xcodos) then Begin
+      getDatos;
+      Result  := True;
+    end else Begin
+      periodo := ''; idprof := ''; codos := '';
+      Result := False;
+    end;
+  end;
+  if (interbase = 'S') then begin
+    rsqlIB := ffirebird.getTransacSQL('select * from cabfact where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''' + ' and codos = ' + '''' + xcodos + '''');
+    rsqlIB.open;
+    if (rsqlIB.RecordCount > 0) then begin
+      getDatos;
+      result := true;
+    end else begin
+      periodo := ''; idprof := ''; codos := '';
+      Result := False;
+    end;
+    rsqlIB.Close;
   end;
 end;
 
-procedure TTFacturacionCCB.Grabar(xperiodo, xidprof, xcodos, xitems, xcodpac, xnombre, xcodanalisis, xorden: string; modifica: boolean);
+procedure TTFacturacionCCB.Grabar(xperiodo, xidprof, xcodos, xitems, xcodpac, xnombre, xcodanalisis, xorden, xperiodo1, xretiva, xmontocoseguro: string; modifica, guardar_orden_interna: boolean);
 // Objetivo...: Grabar Atributos del Objeto
+var
+  __c: string;
 begin
-  if xitems = '001' then Begin
+  if (interbase = 'N') then begin
+    if xitems = '001' then Begin
+       if not detfact.active then detfact.Open;
+      // Modificación de las Estructuras a partir del NBU (01/2007)
+      if detfact.FieldByName('codanalisis').DataSize < 6 then Begin
+        VerificarEstructuraDetFact;
+        if not detfact.Active then detfact.Open;
+      end;
 
-    // Modificación de las Estructuras a partir del NBU (01/2007)
-    if detfact.FieldByName('codanalisis').DataSize < 6 then Begin
-      VerificarEstructuraDetFact;
-      if not detfact.Active then detfact.Open;
+      if not modifica then datosdb.tranSQL(directorio, 'DELETE FROM detfact WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"' + ' AND orden = ' + '"' + xorden + '"' + ' AND codos = ' + '"' + xcodos + '"') else datosdb.tranSQL(directorio, 'DELETE FROM detfact WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"' + ' AND codos = ' + '"' + xcodos + '"');
+      datosdb.closedb(detfact); detfact.Open;
+
+      if not Buscar(xperiodo, xidprof, xcodos) then cabfact.Append else cabfact.Edit;
+      cabfact.FieldByName('periodo').AsString := xperiodo;
+      cabfact.FieldByName('idprof').AsString  := xidprof;
+      cabfact.FieldByName('codos').AsString   := xcodos;
+      if (guardar_orden_interna) then GuardarOrdenInterna(xperiodo, xidprof, xorden);
+      try
+        cabfact.Post
+       except
+        cabfact.Cancel
+      end;
     end;
 
-    if not modifica then datosdb.tranSQL(directorio, 'DELETE FROM detfact WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"' + ' AND orden = ' + '"' + xorden + '"' + ' AND codos = ' + '"' + xcodos + '"') else datosdb.tranSQL(directorio, 'DELETE FROM detfact WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"' + ' AND codos = ' + '"' + xcodos + '"');
-    datosdb.closedb(detfact); detfact.Open;
+    detfact.Append;
+    detfact.FieldByName('periodo').AsString     := xperiodo;
+    detfact.FieldByName('idprof').AsString      := xidprof;
+    detfact.FieldByName('codos').AsString       := xcodos;
+    detfact.FieldByName('items').AsString       := xitems;
+    detfact.FieldByName('orden').AsString       := xorden;
+    detfact.FieldByName('codpac').AsString      := xcodpac;
+    detfact.FieldByName('nombre').AsString      := xnombre;
+    detfact.FieldByName('codanalisis').AsString := xcodanalisis;
+    detfact.FieldByName('ref1').AsString        := xperiodo1;
+    detfact.FieldByName('retiva').AsString      := xretiva;
 
-    if not Buscar(xperiodo, xidprof, xcodos) then cabfact.Append else cabfact.Edit;
-    cabfact.FieldByName('periodo').AsString := xperiodo;
-    cabfact.FieldByName('idprof').AsString  := xidprof;
-    cabfact.FieldByName('codos').AsString   := xcodos;
-    GuardarOrdenInterna(xperiodo, xidprof, xorden);
     try
-      cabfact.Post
+      detfact.Post
      except
-      cabfact.Cancel
+      detfact.Cancel
     end;
   end;
 
-  detfact.Append;
-  detfact.FieldByName('periodo').AsString     := xperiodo;
-  detfact.FieldByName('idprof').AsString      := xidprof;
-  detfact.FieldByName('codos').AsString       := xcodos;
-  detfact.FieldByName('items').AsString       := xitems;
-  detfact.FieldByName('orden').AsString       := xorden;
-  detfact.FieldByName('codpac').AsString      := xcodpac;
-  detfact.FieldByName('nombre').AsString      := xnombre;
-  detfact.FieldByName('codanalisis').AsString := xcodanalisis;
-  try
-    detfact.Post
-   except
-    detfact.Cancel
+  if (interbase = 'S') then begin
+
+    // 25/06/2018 - para totales con I.V.A. Jerárquicos
+    // 20/11/2019 - para todas las OS con reglas
+    // antes del 16/06 if (REGLA_EXPORTACION >= 1) then begin
+
+    if ((REGLA_EXPORTACION >= 1) or (length(trim(NRO_AUDITORIA)) > 0)) then begin
+      GrabarIB(xperiodo, xidprof, xcodos, trim(xitems), trim(xcodpac), trimright(xnombre), xcodanalisis, xorden, xperiodo1, xretiva, NRO_AUDITORIA, modifica, guardar_orden_interna, NRO_AFILIADO, NRO_AUTORIZACION, FECHA_ORDEN, xmontocoseguro);
+      exit;
+    end;
+
+    if (factglobal) then __t := 'detfact_gl' else __t := 'detfact';
+    if (factglobal) then __c := 'cabfact_gl' else __c := 'cabfact';
+    if (copy(xorden, 1, 1) = 'R') then __t := 'detfact';
+
+    if xitems = '001' then Begin
+      lote.Clear;
+      if not modifica then begin
+        lote.Add('DELETE FROM ' + __c + ' WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"' + ' AND codos = ' + '"' + xcodos + '"');
+        lote.Add('DELETE FROM ' + __t + ' WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"' + ' AND orden = ' + '"' + xorden + '"' + ' AND codos = ' + '"' + xcodos + '"');
+      end else begin
+        lote.Add('DELETE FROM ' + __c + ' WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"' + ' AND codos = ' + '"' + xcodos + '"');
+        lote.Add('DELETE FROM ' + __t + ' WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"' + ' AND codos = ' + '"' + xcodos + '"');
+      end;
+
+      if (copy(xorden, 1, 1) = 'R') and (factglobal) then begin // Facturación Global, reescribimos - 15/08/2014
+        lote.Clear;
+        lote.Add('DELETE FROM  ' + __c + '  WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"' + ' AND codos = ' + '"' + xcodos + '"');
+        lote.Add('DELETE FROM  ' + __t + '  WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"' + ' AND orden = ' + '"' + xorden + '"' + ' AND codos = ' + '"' + xcodos + '"');
+      end;
+
+      ffirebird.TransacSQLBatch(lote);
+      lote.Clear;
+
+      lote.Add('insert into ' + __c + ' (periodo, idprof, codos) values (' +
+        '''' + xperiodo + '''' + ', ' +
+        '''' + xidprof + '''' + ', ' +
+        '''' + xcodos + '''' + ')');
+
+      if (copy(xorden, 1, 1) <> 'R') then begin
+        //if not (modifica) then __ordenint := utiles.sLlenarIzquierda(NuevaOrdenInterna(xperiodo, xidprof, xcodos), 4, '0');
+        if (guardar_orden_interna) then GuardarOrdenInterna(xperiodo, xidprof, xorden);
+      end;
+
+    end;
+
+    if (factglobal) then __t := 'detfact_gl' else __t := 'detfact';
+    if (copy(xorden, 1, 1) = 'R') then __t := 'detfact';
+    lote.Add('insert into ' + __t + ' (periodo, idprof, codos, items, orden, codpac, nombre, codanalisis, ref1, retiva) values (' +
+      '''' + xperiodo + '''' + ',' +
+      '''' + xidprof + '''' + ',' +
+      '''' + xcodos + '''' + ',' +
+      '''' + xitems + '''' + ',' +
+      '''' + xorden + '''' + ',' +
+      '''' + xcodpac + '''' + ',' +
+      QuotedStr(xnombre) + ',' +
+      '''' + xcodanalisis + '''' + ',' +
+      '''' + xperiodo1 + '''' + ',' +
+      '''' + xretiva + ''''  + ')'
+    );
+
   end;
+end;
+
+procedure TTFacturacionCCB.GrabarIB(xperiodo, xidprof, xcodos, xitems, xcodpac, xnombre, xcodanalisis, xorden, xperiodo1, xretiva, xnroauditoria: string; modifica, guardar_orden_interna: boolean; xnroafiliado, xnroautorizacion, xfecha, xmontocoseguro: string);
+// Objetivo...: Grabar Atributos del Objeto
+var
+  __c: string;
+  monto, iva, coseguro: double;
+begin
+  if (interbase = 'S') then begin
+
+    if (length(trim(NRO_AFILIADO)) = 0) then begin
+      utiles.msgError('Número de Afiliado Incorrecto ...!');
+      exit;
+    end;
+
+    if (length(trim(xnroauditoria)) = 0) then begin
+      utiles.msgError('Número de Auditoría Incorrecto ...!');
+      exit;
+    end;
+
+    if (length(trim(FECHA_ORDEN)) = 0) then begin
+      utiles.msgError('Fecha Orden Incorrecta ...!');
+      exit;
+    end;
+
+    if (xmontocoseguro = '') then coseguro := 0 else coseguro := strtofloat(xmontocoseguro);
+
+    if (factglobal) then __t := 'detfact_gl' else __t := 'detfact';
+    if (factglobal) then __c := 'cabfact_gl' else __c := 'cabfact';
+    if (copy(xorden, 1, 1) = 'R') then __t := 'detfact';
+
+    if xitems = '001' then Begin
+      lote.Clear;
+      if not modifica then begin
+        lote.Add('DELETE FROM ' + __c + ' WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"' + ' AND codos = ' + '"' + xcodos + '"');
+        lote.Add('DELETE FROM ' + __t + ' WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"' + ' AND orden = ' + '"' + xorden + '"' + ' AND codos = ' + '"' + xcodos + '"');
+      end else begin
+        lote.Add('DELETE FROM ' + __c + ' WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"' + ' AND codos = ' + '"' + xcodos + '"');
+        lote.Add('DELETE FROM ' + __t + ' WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"' + ' AND codos = ' + '"' + xcodos + '"');
+      end;
+
+      if (copy(xorden, 1, 1) = 'R') and (factglobal) then begin // Facturación Global, reescribimos - 15/08/2014
+        lote.Clear;
+        lote.Add('DELETE FROM  ' + __c + '  WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"' + ' AND codos = ' + '"' + xcodos + '"');
+        lote.Add('DELETE FROM  ' + __t + '  WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"' + ' AND orden = ' + '"' + xorden + '"' + ' AND codos = ' + '"' + xcodos + '"');
+      end;
+
+      ffirebird.TransacSQLBatch(lote);
+      lote.Clear;
+
+      lote.Add('insert into ' + __c + ' (periodo, idprof, codos) values (' +
+        '''' + xperiodo + '''' + ', ' +
+        '''' + xidprof + '''' + ', ' +
+        '''' + xcodos + '''' + ')');
+
+      if (copy(xorden, 1, 1) <> 'R') then begin
+        //if not (modifica) then __ordenint := utiles.sLlenarIzquierda(NuevaOrdenInterna(xperiodo, xidprof, xcodos), 4, '0');
+        if (guardar_orden_interna) then GuardarOrdenInterna(xperiodo, xidprof, xorden);
+      end;
+
+    end;
+
+    totiva[1] := 0;
+    totiva[2] := 0;
+    periodo := xperiodo;
+    obsocial.SincronizarArancelNBU(xcodos, xperiodo);
+    nbu.getDatos(xcodanalisis);
+    __ignorarcachemontos := true;
+    monto := setValorAnalisis(xcodos, xcodanalisis, 0, 0, 0, 0); // Valor de cada analisis
+    __ignorarcachemontos := false;
+
+
+    if (factglobal) then __t := 'detfact_gl' else __t := 'detfact';
+    if (copy(xorden, 1, 1) = 'R') then __t := 'detfact';
+    lote.Add('insert into ' + __t + ' (periodo, idprof, codos, items, orden, codpac, nroafiliado, nombre, codanalisis, ref1, monto, iva, exento, nroauditoria, nroautorizacion, fecha, coseguro, retiva) values (' +
+      '''' + xperiodo + '''' + ',' +
+      '''' + xidprof + '''' + ',' +
+      '''' + xcodos + '''' + ',' +
+      '''' + TrimRight(xitems) + '''' + ',' +
+      '''' + xorden + '''' + ',' +
+      '''' + xcodpac + '''' + ',' +
+      QuotedStr(xnroafiliado) + ',' +
+      TrimRight(QuotedStr(xnombre)) + ',' +
+      '''' + xcodanalisis + '''' + ',' +
+      '''' + xperiodo1 + '''' + ',' +
+      utiles.StringRemplazarCaracteres(FloatToStr(monto), ',', '.') + ',' +
+      utiles.StringRemplazarCaracteres(FloatToStr(totiva[1]), ',', '.') + ',' +
+      utiles.StringRemplazarCaracteres(FloatToStr(totiva[2]), ',', '.') + ',' +
+      '''' + xnroauditoria + '''' + ',' +
+      '''' + NRO_AUTORIZACION + '''' + ',' +
+      '''' + FECHA_ORDEN + '''' + ',' +
+      utiles.StringRemplazarCaracteres(FloatToStr(coseguro), ',', '.') + ',' +
+      '''' + xretiva + ''''  + ')'
+    );
+  end;
+end;
+
+procedure TTFacturacionCCB.recalcularMontosAnalisis(xperiodo, xcodos: string);
+var
+  rs: TIBQuery;
+  monto: double;
+  c: string;
+begin
+  periodo := xperiodo;
+  obsocial.SincronizarArancelNBU(xcodos, xperiodo);
+
+  lote.Clear;
+
+  rs := ffirebird.getTransacSQL('select distinct(codanalisis) as codanalisis, periodo from detfact where periodo = ' + '''' + xperiodo + '''' +
+    ' and codos = ' + '''' + xcodos + '''');
+  rs.Open;
+  while not rs.eof do begin
+    totiva[1] := 0;
+    totiva[2] := 0;
+    c := rs.FieldByName('codanalisis').AsString;
+    nbu.getDatos(c);
+    monto := setValorAnalisis(xcodos, c, 0, 0, 0, 0); // Valor de cada analisis
+
+    lote.Add('update detfact set monto = ' + utiles.StringRemplazarCaracteres(FloatToStr(monto), ',', '.') + ', ' +
+             'iva = ' + utiles.StringRemplazarCaracteres(FloatToStr(totiva[1]), ',', '.') + ', ' +
+             'exento = ' + utiles.StringRemplazarCaracteres(FloatToStr(totiva[2]), ',', '.') + ' ' +
+             'where codos = ' + '''' + xcodos + '''' + ' and periodo = ' + '''' + xperiodo + '''' + ' ' +
+             'and codanalisis = ' + '''' + c + '''');
+
+    rs.Next;
+  end;
+
+  rs.Close; rs.free;
+
+  ffirebird.TransacSQLBatch(lote);
+
+  lote.Clear;
+end;
+
+procedure TTFacturacionCCB.recalcularMontosAnalisisRI(xperiodo, xcodos: string);
+var
+  rs: TIBQuery;
+  monto, montoiva: double;
+  c: string;
+begin
+  obsocial.SincronizarPosicionFiscal(xcodos, xperiodo);
+
+  lote.Clear;
+
+  rs := ffirebird.getTransacSQL('select periodo, codos, idprof, items, codanalisis, retiva, orden, ref1  from detfact where periodo = ' + '''' + xperiodo + '''' +
+    ' and codos = ' + '''' + xcodos + '''');
+  rs.Open;
+  while not rs.eof do begin
+
+    periodo := xperiodo;
+    if (rs.FieldByName('ref1').AsString <> '') then periodo := rs.FieldByName('ref1').AsString;  // Si difiere del período imputado 26/11/2019
+    obsocial.SincronizarArancelNBU(xcodos, periodo);
+
+    c := rs.FieldByName('codanalisis').AsString;
+    nbu.getDatos(c);
+    monto := setValorAnalisis(xcodos, c, 0, 0, 0, 0); // Valor de cada analisis
+
+    totiva[1] := 0; totiva[2] := 0;
+
+    profesional.getDatos(rs.FieldByName('idprof').AsString);
+
+    profesional.SincronizarListaRetIVA(xperiodo, rs.FieldByName('idprof').AsString);
+
+    if (profesional.Retieneiva = 'S') then begin
+      if (rs.FieldByName('retiva').AsString = 'S') then totiva[1] := monto;
+      if (rs.FieldByName('retiva').AsString = 'N') then totiva[2] := monto;
+    end;
+    
+    lote.Add('update detfact set monto = ' + utiles.StringRemplazarCaracteres(FloatToStr(monto), ',', '.') + ', ' +
+             'iva = ' + utiles.StringRemplazarCaracteres(FloatToStr(totiva[1]), ',', '.') + ', ' +
+             'exento = ' + utiles.StringRemplazarCaracteres(FloatToStr(totiva[2]), ',', '.') + ' ' +
+             'where codos = ' + '''' + xcodos + '''' + ' and periodo = ' + '''' + xperiodo + '''' + ' ' +
+             'and idprof = ' + '''' + rs.FieldByName('idprof').AsString + '''' + ' ' +
+             'and orden = ' + '''' + rs.FieldByName('orden').AsString + '''' + ' ' +
+             'and codanalisis = ' + '''' + c + '''' + ' and items = ' + '''' + rs.FieldByName('items').AsString + '''');
+
+    rs.Next;
+
+  end;
+
+  rs.Close; rs.free;
+
+  ffirebird.TransacSQLBatch(lote);
+
+  lote.Clear;
+end;
+
+function  TTFacturacionCCB.getFacturas(xperiodo: string): TQuery;
+begin
+  result := datosdb.tranSQL(datosfact.DatabaseName, 'select * from datosfact where periodo = ' + '''' + xperiodo + '''');
+end;
+
+procedure TTFacturacionCCB.registrarCAE(xperiodo, xcodos, xcae, xtipo, xsucursal, xnumero, xfecha, xfechavto1, xfechavto2, xvtocae, xcodigocomprobante: string);
+begin
+  if BuscarDatosFact(xperiodo, xcodos) then begin
+      datosfact.Edit;
+      datosfact.FieldByName('tipo').AsString      := xtipo;
+      datosfact.FieldByName('sucursal').AsString  := xsucursal;
+      datosfact.FieldByName('numero').AsString    := xnumero;
+      datosfact.FieldByName('cae').AsString       := xcae;
+      datosfact.FieldByName('fecha').AsString     := xfecha;
+      datosfact.FieldByName('fechavto1').AsString := xfechavto1;
+      datosfact.FieldByName('fechavto2').AsString := xfechavto2;
+      datosfact.FieldByName('vtocae').AsString    := xvtocae;
+      datosfact.FieldByName('idcompr').AsString   := xcodigocomprobante;
+      try
+        datosfact.Post
+       except
+        datosfact.Cancel
+      end;
+      datosdb.refrescar(datosfact);
+  end;
+end;
+
+procedure TTFacturacionCCB.registrarFechaVto2(xperiodo, xcodos, xfechavto2: string);
+begin
+  if BuscarDatosFact(xperiodo, xcodos) then begin
+      datosfact.Edit;
+      datosfact.FieldByName('fechavto2').AsString := xfechavto2;
+      try
+        datosfact.Post
+       except
+        datosfact.Cancel
+      end;
+      datosdb.refrescar(datosfact);
+  end;
+end;
+
+
+procedure TTFacturacionCCB.generarFactura(xperiodo, xcodos, xinicioactividad, xcomprobante, xcbu: string; xcopias: integer);
+var
+  r: TQuery;
+  i, j: integer;
+  c: array[1..3] of string;
+  t: TTable;
+  osdir, oscuit, oslocalidad, osiva, ostel, osloc, osnombre: string;
+begin
+  t := datosdb.openDB('datosfactreport', 'LINEA');
+  t.open;
+  datosdb.tranSQL('delete from datosfactreport');
+  t.Refresh;
+
+  if (obsocial.Buscar(xcodos)) then begin
+    obsocial.getDatos(xcodos);
+    osdir := obsocial.direccion;
+    oscuit := obsocial.nrocuit;
+    osiva := obsocial.codpfis;
+    osloc := obsocial.localidad + ' (' + obsocial.codpost + ')';
+    osnombre := obsocial.Nombrec;
+  end else begin
+    osagrupa.getobject(xcodos);
+    osdir := osagrupa.Direccion;
+    oscuit := osagrupa.Cuit;
+    osiva := osagrupa.Codpfis;
+    osloc := osagrupa.Localidad;
+    osnombre := osagrupa.Nombre;
+  end;
+
+  r := datosdb.tranSQL('select datosfact.periodo, datosfact.codos, datosfact.tipo, datosfact.sucursal, datosfact.numero, datosfact.fecha, datosfact.idcompr, datosfact.vtocae, ' +
+    'datosfact.fechavto1, datosfact.fechavto2, datosfact.cae, datosfact.obrasocial, datosfact.cuit, datosfact.monto, datosfactdet.items, datosfactdet.descrip, ' +
+    'datosfactdet.observacion, datosfactdet.monto as montoitem from datosfact, datosfactdet where datosfact.periodo = datosfactdet.periodo and datosfact.codos = datosfactdet.codos and datosfact.periodo = '
+    + '''' + xperiodo + '''' + ' and datosfact.codos = ' + '''' + xcodos + '''');
+
+  r.Open;
+
+  c[1] := 'ORIGINAL'; c[2] := 'DUPLICADO'; c[3] := 'TRIPLICADO';
+
+  j := 0;
+  for i := 1 to xcopias do begin
+    r.First;
+    while not r.eof do begin
+      inc(j);
+      t.Append;
+      t.FieldByName('linea').asinteger := j;
+      t.FieldByName('copia').asstring := c[i];
+      t.FieldByName('periodo').asstring :=  r.FieldByName('periodo').asstring;
+      t.FieldByName('codos').asstring :=  r.FieldByName('codos').asstring;
+      t.FieldByName('idcompr').asstring :=  r.FieldByName('idcompr').asstring;
+      t.FieldByName('tipo').asstring :=  r.FieldByName('tipo').asstring;
+      t.FieldByName('sucursal').asstring :=  r.FieldByName('sucursal').asstring;
+      t.FieldByName('numero').asstring :=  r.FieldByName('numero').asstring;
+      t.FieldByName('fechavto1').asstring :=  r.FieldByName('fechavto2').asstring;
+      t.FieldByName('fechavto2').asstring :=  r.FieldByName('fechavto2').asstring;
+      t.FieldByName('fecha').asstring :=  r.FieldByName('fecha').asstring;
+      t.FieldByName('periodo').asstring :=  r.FieldByName('periodo').asstring;
+      t.FieldByName('cae').asstring :=  r.FieldByName('cae').asstring;
+      t.FieldByName('par3').asstring :=  copy(r.FieldByName('cae').asstring, 18, 14);
+      t.FieldByName('obrasocial').asstring :=  osnombre; //r.FieldByName('obrasocial').asstring;
+      t.FieldByName('cuit').asstring :=  r.FieldByName('cuit').asstring;
+      t.FieldByName('monto').asstring :=  r.FieldByName('monto').asstring;
+      t.FieldByName('items').asstring :=  r.FieldByName('items').asstring;
+      t.FieldByName('descrip').asstring :=  r.FieldByName('descrip').asstring;
+      t.FieldByName('montoitem').asstring :=  r.FieldByName('montoitem').asstring;
+      t.FieldByName('observacion').asstring :=  r.FieldByName('observacion').asstring;
+      t.FieldByName('orden').asinteger :=  i;
+      t.FieldByName('comprobante').asstring := xcomprobante;
+      t.FieldByName('vtocae').asstring :=  r.FieldByName('vtocae').asstring;
+      t.FieldByName('p1').asstring := osdir;
+      t.FieldByName('p2').asstring := oscuit;
+      t.FieldByName('p3').asstring := osiva;
+      t.FieldByName('p4').asstring := osloc;
+      t.FieldByName('p5').asstring := xinicioactividad;
+      t.FieldByName('par3').asstring := xcbu;
+      try
+        t.post
+      except
+        t.Cancel
+      end;
+      r.next;
+    end;
+  end;
+
+  t.Refresh;
+  t.Close;
+  t.Free;
+
+  r.Close; r.Free;
+end;
+
+procedure TTFacturacionCCB.exportarTotalesRI(xperiodo: string);
+var
+  r: TQuery;
+
+  js:TlkJSONobject;
+  ws: TlkJSONstring;
+  s: String;
+  i: Integer;
+  result: TStringList;
+begin
+  r := datosdb.tranSQL(datosfact.DatabaseName, 'select * from wtotalesprof where periodo = ' + '''' + xperiodo + '''');
+  r.Open;
+
+  result := TStringList.Create;
+
+  while not r.Eof do begin
+
+    js := TlkJSONobject.Create;
+
+    obsocial.getDatos(r.FieldByName('codos').AsString);
+    profesional.getDatos(r.FieldByName('idprof').AsString);
+
+    js.add('periodo', TlkJSONstring.Generate(r.FieldByName('periodo').AsString));
+    js.add('codos', TlkJSONstring.Generate(r.FieldByName('codos').AsString));
+    js.add('neto', TlkJSONnumber.Generate(r.FieldByName('neto').AsFloat));
+    js.add('grabado', TlkJSONnumber.Generate(r.FieldByName('grabado').AsFloat));
+    js.add('exento', TlkJSONnumber.Generate(r.FieldByName('exento').AsFloat));
+    js.add('total', TlkJSONnumber.Generate(r.FieldByName('total').AsFloat));
+    js.add('iva', TlkJSONnumber.Generate(r.FieldByName('iva').AsFloat));
+    js.add('ordenes', TlkJSONnumber.Generate(r.FieldByName('ordenes').AsFloat));
+    js.add('prestaciones', TlkJSONnumber.Generate(r.FieldByName('prestaciones').AsFloat));
+    js.add('idprof', TlkJSONstring.Generate(r.FieldByName('idprof').AsString));
+    js.add('obsocial', TlkJSONstring.Generate(r.FieldByName('obsocial').AsString));
+    js.add('nombrec', TlkJSONstring.Generate(obsocial.Nombrec));
+    js.add('cuit', TlkJSONstring.Generate(obsocial.nrocuit));
+    js.add('direccion', TlkJSONstring.Generate(obsocial.direccion));
+    js.add('localidad', TlkJSONstring.Generate(obsocial.localidad));
+    js.add('codpfis', TlkJSONstring.Generate(obsocial.codpfis));
+    js.add('profesional', TlkJSONstring.Generate(profesional.nombre));
+
+    s := s + TlkJSON.GenerateText(js) + ',';
+
+    r.Next;
+  end;
+
+  s := Copy(s, 1, Length(s) - 1);
+  result.Add('[' + s +  ']');
+
+  js.Free;
+
+  r.Close; r := nil;
+
+  ExportarDatos := false;
+
+  result.SaveToFile(dbs.DirSistema + '\temp\totalesri.json');
+end;
+
+procedure TTFacturacionCCB.exportarDetalleFacturacion(xperiodo: string);
+var
+  r: TIBQuery;
+
+  js:TlkJSONobject;
+  ws: TlkJSONstring;
+  s, c: String;
+  i: Integer;
+  result: TStringList;
+  monto: double;
+begin
+  preparardirectorio(xperiodo, '000000');
+  
+  r := ffirebird.getTransacSQL('select * from detfact where periodo = ' + '"' + xperiodo + '"' + ' order by periodo, idprof, codos, orden, items');
+  r.Open;
+
+  result := TStringList.Create;
+
+  while not r.Eof do begin
+
+    periodo := xperiodo;
+    if (r.FieldByName('ref1').AsString <> '') then
+      if (utiles.verificarPeriodo(r.FieldByName('ref1').AsString, '')) then  periodo := r.FieldByName('ref1').AsString;  // Si difiere del período imputado 26/11/2019
+    obsocial.SincronizarArancelNBU(r.FieldByName('codos').AsString, periodo);
+
+    c := r.FieldByName('codanalisis').AsString;
+    nbu.getDatos(c);
+    monto := setValorAnalisis(r.FieldByName('codos').AsString, c, 0, 0, 0, 0); // Valor de cada analisis
+
+    totiva[1] := 0; totiva[2] := 0;
+
+    js := TlkJSONobject.Create;
+
+    obsocial.getDatos(r.FieldByName('codos').AsString);
+    profesional.getDatos(r.FieldByName('idprof').AsString);
+
+    js.add('periodo', TlkJSONstring.Generate(r.FieldByName('periodo').AsString));
+    js.add('codos', TlkJSONstring.Generate(r.FieldByName('codos').AsString));
+    js.add('idprof', TlkJSONstring.Generate(r.FieldByName('idprof').AsString));
+    js.add('orden', TlkJSONstring.Generate(r.FieldByName('orden').AsString));
+    js.add('items', TlkJSONstring.Generate(r.FieldByName('items').AsString));
+    js.add('codpac', TlkJSONstring.Generate(r.FieldByName('codpac').AsString));
+    js.add('nombre', TlkJSONstring.Generate(r.FieldByName('nombre').AsString));
+    js.add('codanalisis', TlkJSONstring.Generate(r.FieldByName('codanalisis').AsString));
+    js.add('profiva', TlkJSONstring.Generate(r.FieldByName('profiva').AsString));
+    js.add('osiva', TlkJSONstring.Generate(r.FieldByName('osiva').AsString));
+    js.add('ref1', TlkJSONstring.Generate(r.FieldByName('ref1').AsString));
+    js.add('retiva', TlkJSONstring.Generate(r.FieldByName('retiva').AsString));
+
+    js.add('monto', TlkJSONnumber.Generate(monto));
+    js.add('iva', TlkJSONnumber.Generate(totiva[1]));
+    js.add('exento', TlkJSONnumber.Generate(totiva[2]));
+
+    js.add('nroauditoria', TlkJSONstring.Generate(r.FieldByName('nroauditoria').AsString));
+    js.add('nroafiliado', TlkJSONstring.Generate(r.FieldByName('nroafiliado').AsString));
+    js.add('nroautorizacion', TlkJSONstring.Generate(r.FieldByName('nroautorizacion').AsString));
+    js.add('fecha', TlkJSONstring.Generate(r.FieldByName('fecha').AsString));
+    js.add('obrasocial', TlkJSONstring.Generate(obsocial.Nombre));
+    js.add('profesional', TlkJSONstring.Generate(profesional.nombre));
+
+    s := s + TlkJSON.GenerateText(js) + ',';
+
+    r.Next;
+  end;
+
+  s := Copy(s, 1, Length(s) - 1);
+  result.Add('[' + s +  ']');
+
+  js.Free;
+
+  r.Close; r := nil;
+
+  result.SaveToFile(dbs.DirSistema + '\temp\detalle_fact' + StringReplace(xperiodo, '/', '_', [rfReplaceAll, rfIgnoreCase]) + '.json');
 end;
 
 procedure TTFacturacionCCB.Borrar(xperiodo, xidprof, xcodos: String);
 // Objetivo...: Eliminar un Objeto
 begin
-  if Buscar(xperiodo, xidprof, xcodos) then Begin
-    cabfact.Delete;
-    datosdb.tranSQL(directorio, 'DELETE FROM detfact WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"' + ' AND codos = ' + '"' + xcodos + '"');
-    periodo := cabfact.FieldByName('periodo').AsString;
-    idprof  := cabfact.FieldByName('idprof').AsString;
-    codos   := cabfact.FieldByName('codos').AsString;
-    ProcesarDatosCentrales(xperiodo);  // Ahora Eliminamos las Operaciones de la Facturación Central
-    datosdb.tranSQL(directorio, 'DELETE FROM detfact WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"' + ' AND codos = ' + '"' + xcodos + '"');
-    DireccionarLaboratorio(xperiodo, xidprof); // Restablecemos el Laboratorio
-    getDatos;
+  if (interbase  = 'N') then begin
+    if Buscar(xperiodo, xidprof, xcodos) then Begin
+      cabfact.Delete;
+      datosdb.tranSQL(directorio, 'DELETE FROM detfact WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"' + ' AND codos = ' + '"' + xcodos + '"');
+      periodo := cabfact.FieldByName('periodo').AsString;
+      idprof  := cabfact.FieldByName('idprof').AsString;
+      codos   := cabfact.FieldByName('codos').AsString;
+      ProcesarDatosCentrales(xperiodo);  // Ahora Eliminamos las Operaciones de la Facturación Central
+      datosdb.tranSQL(directorio, 'DELETE FROM detfact WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"' + ' AND codos = ' + '"' + xcodos + '"');
+      DireccionarLaboratorio(xperiodo, xidprof); // Restablecemos el Laboratorio
+      getDatos;
+    end;
+  end;
+  if (interbase  = 'S') then begin
+    lote.Clear;
+    lote.Add('delete from cabfact where periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"' + ' AND codos = ' + '"' + xcodos + '"');
+    lote.Add('delete from detfact where periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"' + ' AND codos = ' + '"' + xcodos + '"');
+    ffirebird.TransacSQLBatch(lote);
   end;
 end;
 
 procedure TTFacturacionCCB.BorrarPeriodo(xperiodo: String; ProcesamientoIndividual: Boolean);
 // Objetivo...: Borrar el período completo
 begin
-  if ProcesamientoIndividual then Begin
-    if cabfact.Active then cabfact.Close; if detfact.Active then detfact.Close; if idordenes.Active then idordenes.Close;
-    utilesarchivos.Deltree(dir_lab + '\' + Copy(xperiodo, 1, 2) + Copy(xperiodo, 4, 4));
-    datosdb.tranSQL('DELETE FROM datosExportados WHERE periodo = ' + '"' + xperiodo + '"');
-  end else Begin
-    datosdb.tranSQL(directorio, 'DELETE FROM cabfact   WHERE periodo = ' + '"' + xperiodo + '"');
-    datosdb.tranSQL(directorio, 'DELETE FROM detfact   WHERE periodo = ' + '"' + xperiodo + '"');
-    datosdb.tranSQL(directorio, 'DELETE FROM idordenes WHERE periodo = ' + '"' + xperiodo + '"');
+  if (interbase = 'N') then begin
+    if ProcesamientoIndividual then Begin
+      if cabfact.Active then cabfact.Close; if detfact.Active then detfact.Close; if idordenes.Active then idordenes.Close;
+      utilesarchivos.Deltree(dir_lab + '\' + Copy(xperiodo, 1, 2) + Copy(xperiodo, 4, 4));
+      datosdb.tranSQL('DELETE FROM datosExportados WHERE periodo = ' + '"' + xperiodo + '"');
+    end else Begin
+      datosdb.tranSQL(directorio, 'DELETE FROM cabfact   WHERE periodo = ' + '"' + xperiodo + '"');
+      datosdb.tranSQL(directorio, 'DELETE FROM detfact   WHERE periodo = ' + '"' + xperiodo + '"');
+      datosdb.tranSQL(directorio, 'DELETE FROM idordenes WHERE periodo = ' + '"' + xperiodo + '"');
+    end;
+  end;
+  if (interbase = 'S') then begin
+    lote.clear;
+    if ProcesamientoIndividual then Begin
+      lote.Add('DELETE FROM cabfact   WHERE periodo = ' + '"' + xperiodo + '"');
+      lote.Add('DELETE FROM detfact   WHERE periodo = ' + '"' + xperiodo + '"');
+      lote.Add('DELETE FROM idordenes WHERE periodo = ' + '"' + xperiodo + '"');
+    end else Begin
+      lote.Add('DELETE FROM cabfact   WHERE periodo = ' + '"' + xperiodo + '"');
+      lote.Add('DELETE FROM detfact   WHERE periodo = ' + '"' + xperiodo + '"');
+      lote.Add('DELETE FROM idordenes WHERE periodo = ' + '"' + xperiodo + '"');
+    end;
+    ffirebird.TransacSQLBatch(lote);
   end;
 end;
 
 procedure TTFacturacionCCB.BorrarMovimientosLaboratorio(xperiodo, xidprof: String; ProcesamientoIndividual: Boolean);
 // Objetivo...: Borrar el los movimientos de un periodo para un Laboratorio dado
 begin
- if verificicarSiExisteLaboratorio(xperiodo, xidprof) then begin
-  if ProcesamientoIndividual then Begin
-    ProcesarDatosCentrales(xperiodo);  // Ahora Eliminamos las Operaciones de la Facturación Central
-    datosdb.tranSQL(detfact.DatabaseName, 'DELETE FROM detfact WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"');
-    DireccionarLaboratorio(xperiodo, xidprof); // Restablecemos el Laboratorio
-    if cabfact.Active then cabfact.Close; if detfact.Active then detfact.Close; if idordenes.Active then idordenes.Close;
-    if ordenes_audit <> Nil then
-      if ordenes_audit.Active then ordenes_audit.Close;
-    utilesarchivos.Deltree(dir_lab + '\' + Copy(xperiodo, 1, 2) + Copy(xperiodo, 4, 4) + '\' + xidprof);
+  if (interbase = 'N') then begin
+    if verificicarSiExisteLaboratorio(xperiodo, xidprof) then begin
+      if ProcesamientoIndividual then Begin
+        ProcesarDatosCentrales(xperiodo);  // Ahora Eliminamos las Operaciones de la Facturación Central
+        datosdb.tranSQL(detfact.DatabaseName, 'DELETE FROM detfact WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"');
+        DireccionarLaboratorio(xperiodo, xidprof); // Restablecemos el Laboratorio
+        if cabfact.Active then cabfact.Close; if detfact.Active then detfact.Close; if idordenes.Active then idordenes.Close;
+        if ordenes_audit <> Nil then
+          if ordenes_audit.Active then ordenes_audit.Close;
+        utilesarchivos.Deltree(dir_lab + '\' + Copy(xperiodo, 1, 2) + Copy(xperiodo, 4, 4) + '\' + xidprof);
 
-    datosdb.tranSQL(DBConexion, 'DELETE FROM datosExportados WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"');
-    datosdb.tranSQL(DBConexion, 'DELETE FROM datosImportados WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"');
-    desconectar; diractual := ''; LaboratorioActual := '';
-    // Estas clases necesitan conexion permanente
-    paciente.conectar; obsocial.conectar; profesional.conectar;
-  end else Begin
-    datosdb.tranSQL(directorio, 'DELETE FROM cabfact   WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"');
-    datosdb.tranSQL(directorio, 'DELETE FROM detfact   WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"');
-    datosdb.tranSQL(directorio, 'DELETE FROM idordenes WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"');
+        datosdb.tranSQL(DBConexion, 'DELETE FROM datosExportados WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"');
+        datosdb.tranSQL(DBConexion, 'DELETE FROM datosImportados WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"');
+        desconectar; diractual := ''; LaboratorioActual := '';
+        // Estas clases necesitan conexion permanente
+        paciente.conectar; obsocial.conectar; profesional.conectar;
+      end else Begin
+        datosdb.tranSQL(directorio, 'DELETE FROM cabfact   WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"');
+        datosdb.tranSQL(directorio, 'DELETE FROM detfact   WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"');
+        datosdb.tranSQL(directorio, 'DELETE FROM idordenes WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"');
+      end;
+      facturacion.vaciarBuffer;
+    end;
   end;
- end;
+
+  if (interbase = 'S') then begin
+    if ProcesamientoIndividual then Begin
+      lote.clear;
+      lote.add('DELETE FROM cabfact   WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"');
+      lote.add('DELETE FROM detfact   WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"');
+      lote.add('DELETE FROM idordenes WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"');
+      ffirebird.TransacSQLBatch(lote);
+
+      datosdb.tranSQL(DBConexion, 'DELETE FROM datosExportados WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"');
+      datosdb.tranSQL(DBConexion, 'DELETE FROM datosImportados WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"');
+      desconectar; diractual := ''; LaboratorioActual := '';
+      // Estas clases necesitan conexion permanente
+      paciente.conectar; obsocial.conectar; profesional.conectar;
+    end;
+   end;
 end;
 
 procedure TTFacturacionCCB.getDatos;
 // Objetivo...: Cargar una instancia de la clase
 begin
-  periodo := cabfact.FieldByName('periodo').AsString;
-  idprof  := cabfact.FieldByName('idprof').AsString;
-  codos   := cabfact.FieldByName('codos').AsString;
+  if (interbase = 'N') then begin
+    periodo := cabfact.FieldByName('periodo').AsString;
+    idprof  := cabfact.FieldByName('idprof').AsString;
+    codos   := cabfact.FieldByName('codos').AsString;
+  end;
 end;
 
 function TTFacturacionCCB.verificarMovimientosObraSocial(xperiodo, xidprof, xcodos: string): boolean;
 // Objetivo...: Verificar Integridad en los Items
 var
   resultado: TQuery;
+  res: TIBQuery;
 begin
-  resultado := datosdb.tranSQL(directorio, 'SELECT codos FROM detfact WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"' + ' AND codos = ' + '"' + xcodos + '"');
-  resultado.Open;
-  if (resultado.RecordCount > 0) then begin
-    if Buscar(xperiodo, xidprof, xcodos) then cabfact.Edit else cabfact.Append;
-    cabfact.FieldByName('periodo').AsString := xperiodo;
-    cabfact.FieldByName('codos').AsString   := xcodos;
-    cabfact.FieldByName('idprof').AsString  := xidprof;
-    try
-      cabfact.Post
-     except
-      cabfact.Cancel
-    end;
-    datosdb.closeDB(cabfact); cabfact.Open;
+  if (interbase = 'N') then begin
+    resultado := datosdb.tranSQL(directorio, 'SELECT codos FROM detfact WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"' + ' AND codos = ' + '"' + xcodos + '"');
+    resultado.Open;
+    if (resultado.RecordCount > 0) then begin
+      if Buscar(xperiodo, xidprof, xcodos) then cabfact.Edit else cabfact.Append;
+      cabfact.FieldByName('periodo').AsString := xperiodo;
+      cabfact.FieldByName('codos').AsString   := xcodos;
+      cabfact.FieldByName('idprof').AsString  := xidprof;
+      try
+        cabfact.Post
+       except
+        cabfact.Cancel
+      end;
+      datosdb.closeDB(cabfact); cabfact.Open;
 
-    periodo := xperiodo;
-    codos   := xcodos;
-    idprof  := xidprof;
+      periodo := xperiodo;
+      codos   := xcodos;
+      idprof  := xidprof;
 
-    result := true;
-  end else
-    result := false;
-  resultado.Close; resultado.Free;
+      result := true;
+    end else
+      result := false;
+    resultado.Close; resultado.Free;
+  end;
+
+  if (interbase = 'S') then begin
+    res := ffirebird.getTransacSQL('SELECT codos FROM detfact WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"' + ' AND codos = ' + '"' + xcodos + '"');
+    res.Open;
+    if (res.RecordCount > 0) then begin
+      rsqlIB := ffirebird.getTransacSQL('SELECT codos FROM cabfact WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"' + ' AND codos = ' + '"' + xcodos + '"');
+      rsqlIB.Open;
+      if (rsqlIB.RecordCount = 0) then begin
+        lote.Clear;
+        lote.Add('insert into cabfact(periodo, idprof, codos) values (' +
+        '''' + xperiodo + '''' + ', ' +
+        '''' + xidprof + '''' + ', ' +
+        '''' + xcodos + '''' + ')');
+        ffirebird.TransacSQLBatch(lote);
+        lote.clear;
+      end;
+      rsqlIB.Close; rsqlIB := nil;
+
+      periodo := xperiodo;
+      codos   := xcodos;
+      idprof  := xidprof;
+
+      result := true;
+    end else
+      result := false;
+    res.Close; res.Free;
+  end;
 end;
 
 function TTFacturacionCCB.setItems;
 // Objetivo...: devolver un set de items facturados
 begin
-  Result := datosdb.tranSQL(directorio, 'SELECT items, codanalisis, idprof, codpac, nombre, orden FROM detfact WHERE periodo = ' + '"' + periodo + '"' + ' AND idprof = ' + '"' + idprof + '"' + ' AND codos = ' + '"' + codos + '"' + ' ORDER BY orden, items');
+  if (interbase = 'N') then begin
+    Result := datosdb.tranSQL(directorio, 'SELECT periodo, retiva, items, codanalisis, idprof, codpac, nombre, orden, ref1 FROM detfact WHERE periodo = ' + '"' + periodo + '"' + ' AND idprof = ' + '"' + idprof + '"' + ' AND codos = ' + '"' + codos + '"' + ' ORDER BY orden, items');
+  end;
+end;
+
+function TTFacturacionCCB.setItemsIB: TIBQuery;
+// Objetivo...: devolver un set de items facturados
+begin
+  if (interbase = 'S') then begin
+     if not (factglobal) then Result := ffirebird.getTransacSQL('SELECT * FROM detfact WHERE periodo = ' + '"' + periodo + '"' + ' AND idprof = ' + '"' + idprof + '"' + ' AND codos = ' + '"' + codos + '"' + ' ORDER BY orden, items') else
+     Result := ffirebird.getTransacSQL('SELECT * FROM detfact_gl WHERE periodo = ' + '"' + periodo + '"' + ' AND idprof = ' + '"' + idprof + '"' + ' AND codos = ' + '"' + codos + '"' + ' ORDER BY orden, items');
+  end;
+end;
+
+function TTFacturacionCCB.setItemsIBAll(xperiodo, xidprof, xcodos: string): TIBQuery;
+// Objetivo...: devolver un set de items facturados
+begin
+  if (xcodos = '------') then Result := ffirebird.getTransacSQL('SELECT * FROM detfact_gl WHERE periodo = ' + '"' + xperiodo + '"' + ' and idprof = ' + '"' + xidprof + '"' + ' ORDER BY codos, orden, items') else
+    Result := ffirebird.getTransacSQL('SELECT * FROM detfact_gl WHERE periodo = ' + '"' + xperiodo + '"' + ' and idprof = ' + '"' + xidprof + '"' + ' and codos = ' + '"' + xcodos + '"' + ' ORDER BY codos, orden, items');
+end;
+
+procedure TTFacturacionCCB.marcarOrdenesFactGlobal(xperiodo, xidprof, xcodos, xorden, xidproffact: string);
+begin
+  ffirebird.TransacSQL('update detfact_gl set idproffact = ' + '''' + xidproffact + '''' + ' where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''' + ' and codos = ' + '''' + xcodos + '''' + ' and orden = ' + '''' + xorden + '''');
+end;
+
+procedure TTFacturacionCCB.iniciarFacturacionIB(xperiodo: string);
+var
+  r: TIBQuery;
+begin
+  lote.clear;
+  r := ffirebird.getTransacSQL('select distinct(codos) from detfact where periodo = ' + '"' + xperiodo + '"' + ' and orden < ' + '"' + '5000' + '"');
+  r.open;
+  while not r.eof do begin
+    lote.Add('delete from cabfact where periodo = ' + '''' + xperiodo + '''');
+    r.Next;
+  end;
+
+  // Solamente borramos las ordenes que se generan desde la facturación global
+  lote.Add('delete from detfact where periodo = ' + '''' + xperiodo + '''' + ' and  orden >= ' + '''' + 'R001' + '''');
+
+  ffirebird.TransacSQLBatch(lote);
+  lote.Clear;
+
+  // Habilitamos las tablas de trabajo
+  {ffirebird.closeDB(cabfactIB);
+  ffirebird.closeDB(detfactIB);
+  ffirebird.closeDB(ordenes_auditIB);
+
+  cabfactIB       := ffirebird.InstanciarTabla('cabfact');
+  detfactIB       := ffirebird.InstanciarTabla('detfact');
+  idordenesIB     := ffirebird.InstanciarTabla('idordenes');
+  cab_auditoriaIB := ffirebird.InstanciarTabla('cab_auditoria');
+  det_auditoriaIB := ffirebird.InstanciarTabla('det_auditoria');
+
+  {cabfactIB.Open;
+  detfactIB.Open;
+  idordenesIB.Open;}
+end;
+
+procedure TTFacturacionCCB.iniciarFacturacionIB(xperiodo, xcodos: string);
+begin
+  ffirebird.TransacSQL('delete from detfact where codos = ' + '''' + xcodos + '''' + ' and periodo = ' + '''' + xperiodo + '''');
+  ffirebird.TransacSQL('delete from cabfact where codos = ' + '''' + xcodos + '''' + ' and periodo = ' + '''' + xperiodo + '''');
+
+  // Habilitamos las tablas de trabajo
+  {ffirebird.closeDB(cabfactIB);
+  ffirebird.closeDB(detfactIB);
+  ffirebird.closeDB(ordenes_auditIB);
+
+  cabfactIB       := ffirebird.InstanciarTabla('cabfact');
+  detfactIB       := ffirebird.InstanciarTabla('detfact');
+  idordenesIB     := ffirebird.InstanciarTabla('idordenes');
+  cab_auditoriaIB := ffirebird.InstanciarTabla('cab_auditoria');
+  det_auditoriaIB := ffirebird.InstanciarTabla('det_auditoria');}
+
+  {cabfactIB.Open;
+  detfactIB.Open;
+  idordenesIB.Open;}
+end;
+
+procedure TTFacturacionCCB.iniciarFacturacionIBOL(xperiodo, xcodos: string);
+begin
+  ffirebird.TransacSQL('delete from detfact where codos = ' + '''' + xcodos + '''' + ' and periodo = ' + '''' + xperiodo + '''' + ' and orden >= ' + '''' + 'O001' + '''' + ' and orden <= ' + '''' + 'O999' + '''');
+end;
+
+
+procedure TTFacturacionCCB.desconectarFacturacionIB;
+begin
+  // Habilitamos las tablas de trabajo
+  {ffirebird.closeDB(cabfactIB);
+  ffirebird.closeDB(detfactIB);
+  ffirebird.closeDB(ordenes_auditIB);
+
+  cabfactIB       := ffirebird.InstanciarTabla('cabfact_gl');
+  detfactIB       := ffirebird.InstanciarTabla('detfact_gl');
+  idordenesIB     := ffirebird.InstanciarTabla('idordenes_gl');
+
+  cabfactIB.Open;
+  detfactIB.Open;
+  idordenesIB.Open;}
+end;
+
+procedure TTFacturacionCCB.reconectarFacturacionIB;
+begin
+  exit;  //25/08/2014
+
+  // Habilitamos las tablas de trabajo
+  {if (cabfactIB <> nil) then begin
+    ffirebird.closeDB(cabfactIB);
+    cabfactIB       := ffirebird.InstanciarTabla('cabfact');
+    //cabfactIB.Open;
+  end;
+
+  if (detfactIB <> nil) then begin
+    ffirebird.closeDB(detfactIB);
+    detfactIB       := ffirebird.InstanciarTabla('detfact');
+    //detfactIB.Open;
+  end;
+
+  if (ordenes_auditIB <> nil) then begin
+    ffirebird.closeDB(ordenes_auditIB);
+    idordenesIB     := ffirebird.InstanciarTabla('idordenes');
+    //idordenesIB.Open;
+  end;}
+
+  factglobal := false;
 end;
 
 function TTFacturacionCCB.NuevaOrdenInterna(xperiodo, xidprof, xcodos: string): string;
 // Objetivo...: Devolver el nuevo número de orden
 var
-  periodoanter, idprofanter, ordenanter: string;
+  periodoanter, idprofanter, ordenanter, s, p: string;
+  r: TIBQuery;
 begin
   ordenanter := '0';
-  if DirectoryExists(diractual) then Begin
-    if datosdb.Buscar(idordenes, 'periodo', 'idprof', xperiodo, xidprof) then Begin
-      periodoanter := idordenes.FieldByName('periodo').AsString;
-      idprofanter  := idordenes.FieldByName('idprof').AsString;
-      ordenanter   := idordenes.FieldByName('orden').AsString;
-      while not idordenes.EOF do Begin
-        if (idordenes.FieldByName('periodo').AsString <> periodoanter) or (idordenes.FieldByName('idprof').AsString <> idprofanter) then Break;
+
+  if (interbase = 'N') then begin
+    if DirectoryExists(diractual) then Begin
+      if datosdb.Buscar(idordenes, 'periodo', 'idprof', xperiodo, xidprof) then Begin
         periodoanter := idordenes.FieldByName('periodo').AsString;
         idprofanter  := idordenes.FieldByName('idprof').AsString;
         ordenanter   := idordenes.FieldByName('orden').AsString;
-        idordenes.Next;
+        while not idordenes.EOF do Begin
+          if (idordenes.FieldByName('periodo').AsString <> periodoanter) or (idordenes.FieldByName('idprof').AsString <> idprofanter) then Break;
+          periodoanter := idordenes.FieldByName('periodo').AsString;
+          idprofanter  := idordenes.FieldByName('idprof').AsString;
+          ordenanter   := idordenes.FieldByName('orden').AsString;
+          idordenes.Next;
+        end;
       end;
     end;
   end;
+
+  if (interbase = 'S') then begin
+      if (factglobal) then __t := 'idordenes_gl' else __t := 'idordenes';
+      r := ffirebird.getTransacSQL('select max(orden) from ' + __t + ' where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''');
+      r.open; r.first;
+      while not r.eof do begin
+        ordenanter   := r.Fields[0].AsString;
+        r.next;
+      end;
+      r.close; r.free;
+
+      if (ordenanter = '') then ordenanter := '0'
+
+      {ffirebird.Filtrar(idordenesIB, 'periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''');
+      if ffirebird.Buscar(idordenesIB, 'PERIODO;IDPROF', xperiodo, xidprof) then Begin
+        periodoanter := idordenesIB.FieldByName('periodo').AsString;
+        idprofanter  := idordenesIB.FieldByName('idprof').AsString;
+        ordenanter   := idordenesIB.FieldByName('orden').AsString;
+        while not idordenesIB.EOF do Begin
+          if (idordenesIB.FieldByName('periodo').AsString <> periodoanter) or (idordenesIB.FieldByName('idprof').AsString <> idprofanter) then Break;
+          periodoanter := idordenesIB.FieldByName('periodo').AsString;
+          idprofanter  := idordenesIB.FieldByName('idprof').AsString;
+          ordenanter   := idordenesIB.FieldByName('orden').AsString;
+          idordenesIB.Next;
+        end;
+      end;
+      ffirebird.QuitarFiltro(idordenesIB);}
+  end;
+
   Result := IntToStr(StrToInt(ordenanter) + 1);
+end;
+
+function TTFacturacionCCB.getPeriodosFacturadosDepurar: TStringList;
+var
+  l: TStringList;
+  r: TIBQuery;
+  s, a, m, t: string;
+  __i: boolean;
+begin
+
+  __i := true;
+  if (ffirebird <> nil) then
+    if (pos('FACTLABWORK.GDB', ffirebird.IBDatabase.DatabaseName) > 0) then __i := false;
+
+  if (__i) then begin
+    firebird.getModulo('facturacion');
+    ffirebird := TTFirebird.Create;
+    ffirebird.Conectar(firebird.Host +  'FACTLABWORK.GDB', firebird.Usuario , firebird.Password);
+  end;
+
+  s := utiles.sExprFecha2000(utiles.setFechaActual);
+  a := inttostr( strtoint( copy(s, 1, 4) ) - 1 );
+  m := copy(s, 5, 2);
+
+  l := TStringList.Create;
+  r := ffirebird.getTransacSQL('select distinct(periodo) from cabfact order by substring(periodo from 4 for 4) desc, substring(periodo from 1 for 2) desc');
+  r.open;
+  while not r.eof do begin
+    t := r.Fields[0].asstring;
+    if (copy(t, 1, 2) <= m) and (copy(t, 4, 4) <= a)  then l.Add(t);
+    r.next;
+  end;
+  r.close; r.free;
+  result := l;
+
+  ffirebird.Desconectar;
+  ffirebird.free;
+end;
+
+function TTFacturacionCCB.getPeriodosFacturadosDepurados: TStringList;
+var
+  l: TStringList;
+  r: TIBQuery;
+  t: string;
+begin
+  l := TStringList.Create;
+  r := ffirebird.getTransacSQL('select distinct(periodo) from detfact_hist order by substring(periodo from 4 for 4) desc, substring(periodo from 1 for 2) desc');
+  r.open;
+  while not r.eof do begin
+    t := r.Fields[0].asstring;
+    l.Add(t);
+    r.next;
+  end;
+  r.close; r.free;
+  result := l;
+end;
+
+procedure TTFacturacionCCB.DepurarPeriodosFacturadosIB(xperiodo: string);
+
+procedure procesar(xperiodo: string);
+begin
+  lote.Add('DELETE FROM cabfact_hist WHERE periodo = ' + '''' + xperiodo + '''');
+
+  rsqlIB := ffirebird.getTransacSQL('select * from cabfact where periodo = ' + '''' + xperiodo + '''');
+  rsqlIB.Open;
+  while not rsqlIB.eof do begin
+    lote.Add('insert into cabfact_hist (periodo, idprof, codos, fecha) values (' +
+             '''' + xperiodo + '''' + ', ' +
+             '''' + rsqlIB.FieldByName('idprof').AsString + '''' + ', ' +
+             '''' + rsqlIB.FieldByName('codos').AsString + '''' + ', ' +
+             '''' + rsqlIB.FieldByName('fecha').AsString + '''' + ')');
+    rsqlIB.Next;
+  end;
+  rsqlIB.Close; rsqlIB.Free;
+
+  lote.Add('DELETE FROM detfact_hist WHERE periodo = ' + '''' + xperiodo + '''');
+
+  rsqlIB := ffirebird.getTransacSQL('select * from detfact where periodo = ' + '''' + xperiodo + '''');
+  rsqlIB.Open;
+  while not rsqlIB.eof do begin
+    lote.Add('insert into detfact_hist (periodo, idprof, codos, items, orden, codpac, nombre, codanalisis, ref1, osiva, retiva, profiva, monto, iva, exento, ' +
+             'nroauditoria, nroafiliado, nroautorizacion, fecha, coseguro) values (' +
+             '''' + xperiodo + '''' + ', ' +
+             '''' + rsqlIB.FieldByName('idprof').AsString + '''' + ', ' +
+             '''' + rsqlIB.FieldByName('codos').AsString + '''' + ', ' +
+             '''' + rsqlIB.FieldByName('items').AsString + '''' + ', ' +
+             '''' + rsqlIB.FieldByName('orden').AsString + '''' + ', ' +
+             '''' + rsqlIB.FieldByName('codpac').AsString + '''' + ', ' +
+             QuotedStr(rsqlIB.FieldByName('nombre').AsString) + ', ' +
+             '''' + rsqlIB.FieldByName('codanalisis').AsString + '''' + ', ' +
+             '''' + rsqlIB.FieldByName('ref1').AsString + '''' + ', ' +
+             '''' + rsqlIB.FieldByName('osiva').AsString + '''' + ', ' +
+             '''' + rsqlIB.FieldByName('retiva').AsString + '''' + ', ' +
+             '''' + rsqlIB.FieldByName('profiva').AsString + '''' + ', ' +
+             utiles.StringRemplazarCaracteres(FloatToStr(rsqlIB.FieldByName('monto').AsFloat), ',', '.') + ',' +
+             utiles.StringRemplazarCaracteres(FloatToStr(rsqlIB.FieldByName('iva').AsFloat), ',', '.') + ',' +
+             utiles.StringRemplazarCaracteres(FloatToStr(rsqlIB.FieldByName('exento').AsFloat), ',', '.') + ',' +
+             '''' + rsqlIB.FieldByName('nroauditoria').AsString + '''' + ', ' +
+             '''' + rsqlIB.FieldByName('nroafiliado').AsString + '''' + ', ' +
+             '''' + rsqlIB.FieldByName('nroautorizacion').AsString + '''' + ', ' +
+             '''' + rsqlIB.FieldByName('fecha').AsString + '''' + ', ' +
+             utiles.StringRemplazarCaracteres(FloatToStr(rsqlIB.FieldByName('coseguro').AsFloat), ',', '.') +
+             ')'
+            );
+    rsqlIB.Next;
+  end;
+  rsqlIB.Close; rsqlIB.Free;
+
+  lote.Add('DELETE FROM idordenes_hist WHERE periodo = ' + '''' + xperiodo + '''');
+
+  rsqlIB := ffirebird.getTransacSQL('select * from idordenes where periodo = ' + '''' + xperiodo + '''');
+  rsqlIB.Open;
+  while not rsqlIB.eof do begin
+    lote.Add('insert into idordenes_hist (periodo,idprof, orden) values (' +
+             '''' + xperiodo + '''' + ', ' +
+             '''' + rsqlIB.FieldByName('idprof').AsString + '''' + ', ' +
+             '''' + rsqlIB.FieldByName('orden').AsString + '''' + ')');
+    rsqlIB.Next;
+  end;
+  rsqlIB.Close; rsqlIB.Free;
+end;
+
+begin
+  firebird.getModulo('facturacion');
+  ffirebird := TTFirebird.Create;
+  ffirebird.Conectar(firebird.Host +  'FACTLABWORK.GDB', firebird.Usuario , firebird.Password);
+
+  lote.Clear;
+  procesar(xperiodo);
+  lote.add('delete from detfact where periodo = ' + '''' + xperiodo + '''');
+  lote.add('delete from cabfact where periodo = ' + '''' + xperiodo + '''');
+  lote.add('delete from idordenes where periodo = ' + '''' + xperiodo + '''');
+
+  ffirebird.TransacSQLBatch(lote);
+
+  ffirebird.Desconectar;
+  ffirebird.free;
+
+  ffirebird := TTFirebird.Create;
+  ffirebird.Conectar(firebird.Host +  'FACTLABCENT.GDB', firebird.Usuario , firebird.Password);
+
+  lote.clear;
+  procesar(xperiodo);
+  lote.add('delete from detfact where periodo = ' + '''' + xperiodo + '''');
+  lote.add('delete from cabfact where periodo = ' + '''' + xperiodo + '''');
+  lote.add('delete from idordenes where periodo = ' + '''' + xperiodo + '''');
+
+  ffirebird.TransacSQLBatch(lote);
+
+  ffirebird.Desconectar;
+  ffirebird.free;
+
+  ffirebird := TTFirebird.Create;
+  ffirebird.Conectar(firebird.Host +  'FACTLABWORK.GDB', firebird.Usuario , firebird.Password);
 end;
 
 function TTFacturacionCCB.NuevoItems(xperiodo, xidprof, xcodos: String): Integer;
 // Objetivo...: Recuperar el ultimo Items Facturado
 var
-  r: TQuery;
+  r: TQuery; s: TIBQuery;
 Begin
-  Result := 1;
-  r := datosdb.tranSQL(directorio, 'select * from detfact where Periodo = ' + '''' + xperiodo + '''' + ' and Idprof = ' + '''' + xidprof + '''' + ' and Codos = ' + '''' + xcodos + '''' + ' and Items < ' + '''' + '5000' + '''');
-  r.Open;
-  if r.RecordCount > 0 then Begin
-    r.Last;
-    Result := StrToInt(r.FieldByName('items').AsString) + 1;
+  if (interbase = 'N') then begin
+    Result := 1;
+    r := datosdb.tranSQL(directorio, 'select * from detfact where Periodo = ' + '''' + xperiodo + '''' + ' and Idprof = ' + '''' + xidprof + '''' + ' and Codos = ' + '''' + xcodos + '''' + ' and Items < ' + '''' + '5000' + '''');
+    r.Open;
+    if r.RecordCount > 0 then Begin
+      r.Last;
+      Result := StrToInt(r.FieldByName('items').AsString) + 1;
+    end;
+    r.Close; r.Free;
   end;
-  r.Close; r.Free;
+
+  if (interbase = 'S') then begin
+    Result := 1;
+    s := ffirebird.getTransacSQL('select * from detfact where Periodo = ' + '''' + xperiodo + '''' + ' and Idprof = ' + '''' + xidprof + '''' + ' and Codos = ' + '''' + xcodos + '''' + ' and Items < ' + '''' + '5000' + '''');
+    s.Open;
+    if s.RecordCount > 0 then Begin
+      s.Last;
+      Result := StrToInt(s.FieldByName('items').AsString) + 1;
+    end;
+    s.Close; s.Free;
+  end;
 end;
 
 procedure TTFacturacionCCB.RenumerarOrdenesInternas(xperiodo, xidprof: String);
@@ -580,53 +1606,106 @@ procedure TTFacturacionCCB.RenumerarOrdenesInternas(xperiodo, xidprof: String);
 var
   i, j: Integer;
 Begin
-  //detfact.IndexName := 'DETFACT_RESUMENOS';
-  detfact.IndexFieldNames := 'Periodo;Codos;Idprof;Orden;Items';
+  if (interbase = 'N') then begin
+    detfact.IndexFieldNames := 'Periodo;Codos;Idprof;Orden;Items';
 
-  detfact.First; i := 0; j := 0;
-  while not detfact.EOF do Begin
-    if detfact.FieldByName('orden').AsString <> idanter then Begin
-      Inc(i); j := 0;
-      idanter  := detfact.FieldByName('orden').AsString;
+    detfact.First; i := 0; j := 0;
+    while not detfact.EOF do Begin
+      if detfact.FieldByName('orden').AsString <> idanter then Begin
+        Inc(i); j := 0;
+        idanter  := detfact.FieldByName('orden').AsString;
+      end;
+      Inc(j);
+      detfact.Edit;
+      detfact.FieldByName('orden').AsString := utiles.sLlenarIzquierda(IntToStr(i), 4, '0');
+      try
+        detfact.Post
+       except
+        detfact.Cancel
+      end;
+      detfact.Next;
     end;
-    Inc(j);
-    detfact.Edit;
-    detfact.FieldByName('orden').AsString := utiles.sLlenarIzquierda(IntToStr(i), 4, '0');
-    try
-      detfact.Post
-     except
-      detfact.Cancel
+
+    detfact.IndexFieldNames := 'Periodo;Idprof;Codos;Items;Orden';
+
+    if datosdb.Buscar(idordenes, 'periodo', 'idprof', xperiodo, xidprof) then Begin      // Guardamos la ultima como Orden Interna
+      idordenes.Edit;
+      idordenes.FieldByName('orden').AsString := utiles.sLlenarIzquierda(IntToStr(i), 4, '0');
+      try
+        idordenes.Post
+       except
+        idordenes.Cancel
+      end;
     end;
-    detfact.Next;
+
+    datosdb.refrescar(idordenes);
   end;
 
-  detfact.IndexFieldNames := 'Periodo;Idprof;Codos;Items;Orden';
+  if (interbase = 'S') then begin
+    {if not (detfactIB.Active) then detfactIB.Open;
+    detfactIB.IndexFieldNames := 'Periodo;Codos;Idprof;Orden;Items';
 
-  if datosdb.Buscar(idordenes, 'periodo', 'idprof', xperiodo, xidprof) then Begin      // Guardamos la ultima como Orden Interna
-    idordenes.Edit;
-    idordenes.FieldByName('orden').AsString := utiles.sLlenarIzquierda(IntToStr(i), 4, '0');
-    try
-      idordenes.Post
-     except
-      idordenes.Cancel
+    detfactIB.First; i := 0; j := 0;
+    while not detfact.EOF do Begin
+      if detfactIB.FieldByName('orden').AsString <> idanter then Begin
+        Inc(i); j := 0;
+        idanter  := detfactIB.FieldByName('orden').AsString;
+      end;
+      Inc(j);
+      detfactIB.Edit;
+      detfactIB.FieldByName('orden').AsString := utiles.sLlenarIzquierda(IntToStr(i), 4, '0');
+      try
+        detfactIB.Post
+       except
+        detfactIB.Cancel
+      end;
+      ffirebird.RegistrarTransaccion(detfactIB);
+      detfactIB.Next;
     end;
-  end;
 
-  datosdb.refrescar(idordenes);
+    if not (detfactIB.Active) then detfactIB.Open;
+    detfactIB.IndexFieldNames := 'Periodo;Idprof;Codos;Items;Orden';
+
+    if ffirebird.Buscar(idordenesIB, 'periodo;idprof', xperiodo, xidprof) then Begin      // Guardamos la ultima como Orden Interna
+      idordenesIB.Edit;
+      idordenesIB.FieldByName('orden').AsString := utiles.sLlenarIzquierda(IntToStr(i), 4, '0');
+      try
+        idordenesIB.Post
+       except
+        idordenesIB.Cancel
+      end;
+    end;
+
+    ffirebird.RegistrarTransaccion(idordenesIB);}
+  end;
 end;
 
-procedure TTFacturacionCCB.BorrarOrden(xperiodo, xorden: String);
+procedure TTFacturacionCCB.BorrarOrden(xperiodo, xorden, xidprof: String);
 // Objetivo...: Borrar un items en una determinación
 begin
-  datosdb.tranSQL(directorio, 'DELETE FROM detfact WHERE Periodo = ' + '"' + xperiodo + '"' + ' and orden = ' + '"' + xorden + '"');
+  if (interbase = 'N') then begin
+    datosdb.tranSQL(directorio, 'DELETE FROM detfact WHERE Periodo = ' + '"' + xperiodo + '"' + ' and orden = ' + '"' + xorden + '"');
+  end;
+  if (interbase = 'S') then begin
+    ffirebird.TransacSQL('DELETE FROM detfact WHERE Periodo = ' + '"' + xperiodo + '"' + ' and orden = ' + '"' + xorden + '"' + ' and idprof = ' + '"' + xidprof + '"');
+  end;
 end;
 
 function TTFacturacionCCB.verificarSiLaObraSocialTieneMovimientos(xperiodo, xcodos: String): Boolean;
 Begin
-  Result := False;
-  datosdb.Filtrar(detfact, 'Periodo = ' + '''' + xperiodo + '''' + ' and Codos = ' + '''' + xcodos + '''');
-  if detfact.RecordCount > 0 then Result := True;
-  datosdb.QuitarFiltro(detfact);
+  if (interbase = 'N') then begin
+    Result := False;
+    datosdb.Filtrar(detfact, 'Periodo = ' + '''' + xperiodo + '''' + ' and Codos = ' + '''' + xcodos + '''');
+    if detfact.RecordCount > 0 then Result := True;
+    datosdb.QuitarFiltro(detfact);
+  end;
+  if (interbase = 'S') then begin
+    Result := False;
+    rsqlIB := ffirebird.getTransacSQL('select * from detfact where Periodo = ' + '''' + xperiodo + '''' + ' and Codos = ' + '''' + xcodos + '''');
+    rsqlIB.Open;
+    if rsqlIB.RecordCount > 0 then Result := True;
+    rsqlIB.close;
+  end;
 end;
 
 procedure TTFacturacionCCB.InactivarLaboratorio;
@@ -635,55 +1714,145 @@ Begin
   LaboratorioActivo := False;
   directorio        := '';
   diractual         := 'ninguno';
-  if cabfact   <> nil then if cabfact.Active   then datosdb.closeDB(cabfact);
-  if detfact   <> nil then if detfact.Active   then datosdb.closeDB(detfact);
-  if idordenes <> nil then if idordenes.Active then datosdb.closeDB(idordenes);
-  cabfact := nil; detfact := nil; idordenes := nil;
+
+  if (interbase = 'N') then begin
+    if cabfact   <> nil then if cabfact.Active   then datosdb.closeDB(cabfact);
+    if detfact   <> nil then if detfact.Active   then datosdb.closeDB(detfact);
+    if idordenes <> nil then if idordenes.Active then datosdb.closeDB(idordenes);
+    cabfact := nil; detfact := nil; idordenes := nil;
+  end;
+
+  if (interbase = 'S') then begin
+    {if cabfactIB   <> nil then if cabfactIB.Active   then ffirebird.closeDB(cabfactIB);
+    if detfactIB   <> nil then if detfactIB.Active   then ffirebird.closeDB(detfactIB);
+    if idordenesIB <> nil then if idordenesIB.Active then ffirebird.closeDB(idordenesIB);
+    cabfactIB := nil; detfactIB := nil; idordenesIB := nil;}
+  end;
 end;
 
 procedure TTFacturacionCCB.GuardarOrdenInterna(xperiodo, xidprof, xorden: string);
 // Objetivo...: Guardar ultimo número de orden
 var
   norden: Boolean;
+  r: TIBQuery;
 begin
   norden := False;
-  if xorden < '5000' then Begin
-    if not datosdb.Buscar(idordenes, 'periodo', 'idprof', xperiodo, xidprof) then Begin
-      idordenes.Append;
-      norden := True;
-    end else idordenes.Edit;
-    idordenes.FieldByName('periodo').AsString := xperiodo;
-    idordenes.FieldByName('idprof').AsString  := xidprof;
-    if  norden then idordenes.FieldByName('orden').AsString := '0001' else
-      if xorden > idordenes.FieldByName('orden').AsString then idordenes.FieldByName('orden').AsString := xorden;  // Solo remplazamos si es mayor
-    try
-      idordenes.Post
-     except
-      idordenes.Cancel
+  if (interbase = 'N') then begin
+    if xorden < '5000' then Begin
+      if not datosdb.Buscar(idordenes, 'periodo', 'idprof', xperiodo, xidprof) then Begin
+        idordenes.Append;
+        norden := True;
+      end else idordenes.Edit;
+      idordenes.FieldByName('periodo').AsString := xperiodo;
+      idordenes.FieldByName('idprof').AsString  := xidprof;
+      if  norden then idordenes.FieldByName('orden').AsString := '0001' else
+        if xorden > idordenes.FieldByName('orden').AsString then idordenes.FieldByName('orden').AsString := xorden;  // Solo remplazamos si es mayor
+      try
+        idordenes.Post
+       except
+        idordenes.Cancel
+      end;
+      datosdb.refrescar(idordenes);
     end;
-    datosdb.refrescar(idordenes);
   end;
+
+  if (interbase = 'S') then begin
+    if xorden < '5000' then Begin
+      if (factglobal) then __t := 'idordenes_gl' else __t := 'idordenes';
+
+      r := ffirebird.getTransacSQL('select * from ' + __t + ' where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''');
+      r.open;
+
+      if (r.RecordCount = 0) then begin
+        lote.Add('delete from ' + __t + ' where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''');
+        lote.Add('insert into ' + __t + ' (periodo, idprof, orden) values (' + '''' + xperiodo + '''' + ', ' + '''' + xidprof + '''' + ', ' + '''' + '0001' + '''' + ')');
+      end else begin
+        if xorden > r.FieldByName('orden').AsString then lote.Add('update ' + __t + ' set orden = ' + '''' + xorden + '''' + ' where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''');
+      end;
+
+      r.close; r.free;
+
+      {if not ffirebird.Buscar(idordenesIB, 'PERIODO;IDPROF', xperiodo, xidprof) then Begin
+        idordenesIB.Append;
+        norden := True;
+      end else
+        idordenesIB.Edit;
+      idordenesIB.FieldByName('periodo').AsString := xperiodo;
+      idordenesIB.FieldByName('idprof').AsString  := xidprof;
+      if norden then idordenesIB.FieldByName('orden').AsString := '0001' else
+        if xorden > idordenesIB.FieldByName('orden').AsString then idordenesIB.FieldByName('orden').AsString := xorden;  // Solo remplazamos si es mayor
+      try
+        idordenesIB.Post
+       except
+        idordenesIB.Cancel
+      end;
+      ffirebird.RegistrarTransaccion(idordenesIB);
+      ffirebird.closeDB(idordenesIB); idordenesIB.Open;}
+    end;
+  end;
+
 end;
 
 procedure TTFacturacionCCB.VerificarOrdenInterna(xperiodo, xidprof: string);
 // Objetivo...: Verificar el ultimo nro de orden, para evitar que se superpongan ordenes
 var
   r: TQuery;
+  s: TIBQuery;
 Begin
-  r := datosdb.tranSQL(detfact.DatabaseName, 'select max(orden) from detfact');
-  r.Open;
-  GuardarOrdenInterna(xperiodo, xidprof, r.Fields[0].AsString);
-  r.Close; r.Free;
+  if (interbase = 'N') then begin
+    r := datosdb.tranSQL(detfact.DatabaseName, 'select max(orden) from detfact');
+    r.Open;
+    GuardarOrdenInterna(xperiodo, xidprof, r.Fields[0].AsString);
+    r.Close; r.Free;
+  end;
+  if (interbase = 'S') then begin
+    if (factglobal) then __t := 'detfact_gl' else __t := 'detfact';
+    s := ffirebird.getTransacSQL('select max(orden) from ' + __t + ' where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''');
+    s.Open;
+    if (length(trim(s.Fields[0].AsString)) > 0) then GuardarOrdenInterna(xperiodo, xidprof, s.Fields[0].AsString);
+    s.Close; s.Free;
+  end;
 end;
 
 function TTFacturacionCCB.setValorAnalisis(xcodos, xcodanalisis: string; xOSUB, xNOUB, xOSUG, xNOUG: real): real;
 var
   i, j, v, v9984, porcentOS: real; montoFijo, mf9984: Boolean;
-  _totUB, _canUB, unidadNBU, unidad_NBU: Real;
+  _totUB, _canUB, unidadNBU, unidad_NBU, __montocache, __un: Real;
   rie: String;
-begin
-  //if utiles verificarItemsLista(lista1, xcodos + xcodanalisis + periodo) then Begin
 
+  function getMontoAnalisis(xcodos, xperiodo, xcodigo: string): real;
+  var
+    i: integer;
+    m: real;
+  begin
+    m := 0;
+    if (__codigos = nil) then begin
+      __codigos := TStringList.Create;
+      __montos := TStringList.Create;
+      result := m;
+      exit;
+    end;
+
+    for i:= 1 to __codigos.Count do begin
+      if (__codigos[i-1] = xcodos+xperiodo+xcodigo) then begin
+        m := StrToFloat(__montos[i-1]);
+        break;
+      end;
+    end;
+
+    result := m;
+  end;
+
+  procedure addMonto(xcodos, xperiodo, xcodigo: string; xmonto: real);
+  begin
+    if (not __ignorarcachemontos) then begin
+      __codigos.Add(xcodos+xperiodo+xcodigo);
+      __montos.Add(FloatToStr(xmonto));
+    end;
+    //utiles.msgError((xcodos+xperiodo+xcodigo) + '   ' + FloatToStr(xmonto));
+  end;
+
+begin
   compensacion := 0;
 
   if (obsocial.FactNBU = 'N') or (Length(trim(xcodanalisis)) = 4) then Begin
@@ -702,6 +1871,8 @@ begin
     if i = 0 then codigomontofijo := '' else codigomontofijo := xcodanalisis;
     // Flag que indica si la determinación tiene o no Monto Fijo
     if i > 0 then DetMontoFijo := True else DetMontoFijo := False;
+    // Si tiene Monto Fijo y es cero abortamos Abortamos
+    if (obsocial.MontoFijo) and (i = 0) then exit;
 
     if i = 0 then Begin
       // Cálculamos el valor del análisis
@@ -840,56 +2011,94 @@ begin
   if (obsocial.FactNBU = 'S') and (Length(trim(xcodanalisis)) = 6) then Begin
     totUG := 0; totUB := 0; caran := 0; tot9984 := 0;
 
-    nbu.getDatos(xcodanalisis);
-    // Verificamos si tiene Monto Fijo
-    i := obsocial.setMontoFijoNBU(xcodos, xcodanalisis, periodo);
+    __montocache := getMontoAnalisis(xcodos, periodo, xcodanalisis);
 
-    // Verificamos si tiene unidad diferencial
-    unidadNBU := obsocial.setUnidadNBU(xcodos, xcodanalisis, periodo);
-    if unidadNBU > 0 then i := {nbu.unidad} obsocial.valorNBU * unidadNBU;  //utiles.msgError(floattostr(nbu.unidad) + '   ' + floattostr(unidadNBU) + '   ' + floattostr(i));
+    if (__montocache = 0) then begin // implementamos sistema de cache 09/02/2014
 
-    // Verificamos si la OS tiene nomenclador propio
-    if (nomeclaturaos.Buscar(xcodos, xcodanalisis)) then begin
-      nomeclaturaos.getDatos(xcodos, xcodanalisis);
-      if (nomeclaturaos.Especial <> '*') then begin
-        if i = 0 then i := nomeclaturaos.unidad * obsocial.valorNBU;
+      nbu.getDatos(xcodanalisis);
+      // Verificamos si tiene Monto Fijo
+      i := obsocial.setMontoFijoNBU(xcodos, xcodanalisis, periodo);
+
+      if (i = -1) then begin
+        result := 0;
+        exit;
+      end;
+
+      // Verificamos si tiene unidad diferencial
+      unidadNBU := obsocial.setUnidadNBU(xcodos, xcodanalisis, periodo);
+      unidadNBUFinal := unidadNBU;
+
+      if unidadNBU > 0 then i := {nbu.unidad} obsocial.valorNBU * unidadNBU;  //utiles.msgError(floattostr(nbu.unidad) + '   ' + floattostr(unidadNBU) + '   ' + floattostr(i));
+
+      //========================================================================
+
+      // Verificamos si la OS tiene nomenclador propio
+      __nbuos := 0;
+      if (nomeclaturaos.Buscar(xcodos, xcodanalisis)) then begin
+
+        //nomeclaturaos.getDatos(xcodos, xcodanalisis);
+        // remplazado 11/03/2026 para el prorrateo de unidades
+        nomeclaturaos.getDatosUnidades(xcodos, xcodanalisis, periodo);
+
+        unidadNBUFinal := nomeclaturaos.unidad;
+
+        __nbuos := nomeclaturaos.unidad;
+        if (nomeclaturaos.Especial <> '*') then begin
+          if i = 0 then i := nomeclaturaos.unidad * obsocial.valorNBU;
+        end else begin
+          if i = 0 then i := nomeclaturaos.unidades * obsocial.valorNBU;
+        end;
+
       end else begin
-        if i = 0 then i := nomeclaturaos.unidades * obsocial.valorNBU;
+
+        // 12/07/2010 -> NBU unidades por periodo
+        unidad_NBU := nbu.unidad;
+        __un := unidadesNBU.getUnidad(xcodanalisis, periodo);
+        //if (unidadesNBU.getUnidades > 0) then
+        if (__un > 0) then begin
+
+          unidad_NBU := __un; //unidadesNBU.getUnidades;
+
+          unidadNBUFinal := __un; // 10/08/2026
+
+        end;
+
+        if (nbu.Especial <> '*') then begin
+          if i = 0 then i := unidad_NBU * obsocial.valorNBU;
+        end else begin
+          if i = 0 then i := unidad_NBU * obsocial.valorNBUDif;
+        end;
+      
       end;
-    end;
 
-    // 12/07/2010 -> NBU unidades por periodo
-    unidad_NBU := nbu.unidad;
-    unidadesNBU.getUnidad(xcodanalisis, periodo);
-    if (unidadesNBU.getUnidades > 0) then
-      unidad_NBU := unidadesNBU.getUnidades;
-    
-    if (nbu.Especial <> '*') then begin
-      if i = 0 then i := unidad_NBU * obsocial.valorNBU;
-    end else begin
-      if i = 0 then i := unidad_NBU * obsocial.valorNBUDif;
-    end;
+      // =======================================================================
 
-    //if not (ExcluirLab) then begin   // agregado el 29/01/2010
-    {if paciente.Gravadoiva = 'S' then Begin
-      ivaret      := ivaret      + i;
-      ivaret9984  := 0;
-      ivaretcaran := 0;
-      if obsocial.retencioniva > 0 then Begin
-        totiva[1] := totiva[1] + i;
-        totiva[3] := totiva[1] * (obsocial.retencioniva * 0.01);
-      end;
-    end else Begin
-      ivaexento   := ivaexento   + i;
-      ivaexe9984  := 0;
-      ivaexecaran := 0;
-      if obsocial.retencioniva > 0 then totiva[2] := totiva[2] + i;
-    end;}
-    //end;
+      //if not (ExcluirLab) then begin   // agregado el 29/01/2010
+      {if paciente.Gravadoiva = 'S' then Begin
+        ivaret      := ivaret      + i;
+        ivaret9984  := 0;
+        ivaretcaran := 0;
+        if obsocial.retencioniva > 0 then Begin
+          totiva[1] := totiva[1] + i;
+          totiva[3] := totiva[1] * (obsocial.retencioniva * 0.01);
+        end;
+      end else Begin
+        ivaexento   := ivaexento   + i;
+        ivaexe9984  := 0;
+        ivaexecaran := 0;
+        if obsocial.retencioniva > 0 then totiva[2] := totiva[2] + i;
+      end;}
+      //end;
 
-    if obsocial.porcentaje > 0 then porcentOS := (obsocial.porcentaje * 0.01) else porcentOS := (100 * 0.01);
+      if obsocial.porcentaje > 0 then porcentOS := (obsocial.porcentaje * 0.01) else porcentOS := (100 * 0.01);
 
-    i := i * porcentOS;
+      i := i * porcentOS;
+
+      addMonto(xcodos, periodo, xcodanalisis, i);
+
+    end else
+
+      i := __montocache;
 
     if paciente.Gravadoiva = 'S' then Begin
       ivaret      := ivaret      + i;
@@ -911,6 +2120,14 @@ begin
   end;
 
   Result := i;
+end;
+
+function TTFacturacionCCB.setNbuNomencladorObraSocial(xcodos, xcodigo: string): Real;
+// 26/09/2025
+begin
+  nomeclaturaos.getDatos(xcodos, xcodigo);
+  __nbuos := nomeclaturaos.unidad;
+  result := __nbuos;
 end;
 
 function TTFacturacionCCB.setUB: Real;
@@ -1000,13 +2217,31 @@ end;
 procedure TTFacturacionCCB.FiltrarPeriodo(xperiodo: String);
 // Objetivo...: Filtrar Período
 begin
-  if not cabfact.Filtered then datosdb.Filtrar(cabfact, 'periodo = ' + '''' + xperiodo + '''');
+  firebird.getModulo('facturacion');
+  if (length(trim(firebird.Host)) = 0) then interbase := 'N';
+
+  if (interbase = 'N') then begin
+    if (cabfact <> nil) then
+      if not cabfact.Filtered then datosdb.Filtrar(cabfact, 'periodo = ' + '''' + xperiodo + '''');
+  end;
+  if (interbase = 'S') then begin
+    //if (cabfactIB <> nil) then
+      //if not cabfactIB.Filtered then ffirebird.Filtrar(cabfactIB, 'periodo = ' + '''' + xperiodo + '''');
+  end;
 end;
 
 procedure TTFacturacionCCB.QuitarFiltro;
 // Objetivo...: Quitar Filtrar Período
 begin
-  if cabfact.Filtered then datosdb.QuitarFiltro(cabfact);
+  if (interbase = 'N') then begin
+    if (cabfact <> nil) then
+      if cabfact.Filtered then datosdb.QuitarFiltro(cabfact);
+  end;
+  if (interbase = 'S') then begin
+    //if (cabfactIB <> nil) then begin
+      //if cabfactIB.Filtered then ffirebird.QuitarFiltro(cabfactIB);
+    //end;
+  end;
 end;
 
 { *****************************************************************************
@@ -1051,121 +2286,408 @@ var
   i, j, e: ShortInt;
 begin
   IniciarArreglos;
-  if (salida = 'P') or (salida = 'I') then list.Setear(salida);
-  detfact.IndexFieldNames := 'Periodo;Codos;Idprof;Orden;Items';
-  if listControl then e := 36 else e := 6; pag := 0;
-  Periodo := xperiodo;
 
-  if salida <> 'T' then Begin
-    list.altopag := 0; list.m := 0;
-    list.IniciarTitulos;
-    list.Titulo(0, 0, ' ', 1, 'Arial, normal, 14');
-    list.Titulo(0, 0, xtitulo, 1, 'Arial, normal, 12');
-    list.Titulo(0, 0, 'Facturación a Obras Sociales', 1, 'Arial, negrita, 12');
-    list.Titulo(0, 0, 'Período de Facturación: ' + xperiodo, 1, 'Arial, normal, 11');
-    list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
-    list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
-    list.Titulo(0, 0, 'Paciente', 1, 'Arial, cursiva, 8');
-    espaciocol   := 80 div StrToInt(xcolumnas);
-    nrocol       := 80 div espaciocol;
-    distanciaImp := (nrocol * 12) div StrToInt(xcolumnas);
-    j := 1;
-    For i := 1 to nrocol do Begin
-      list.Titulo((espaciocol * i) + e, list.Lineactual, 'Cód.', j+1, 'Arial, cursiva, 8');
-      list.Titulo((((espaciocol * i) + e) + distanciaImp) - (nrocol), list.Lineactual, 'Aran.', j+2, 'Arial, cursiva, 8');
-      j := j + 2;
+  if (interbase = 'N') then begin
+    if (salida = 'P') or (salida = 'I') then list.Setear(salida);
+    if not (detfact.Active) then detfact.Open;
+    detfact.IndexFieldNames := 'Periodo;Codos;Idprof;Orden;Items';
+    if listControl then e := 36 else e := 6; pag := 0;
+    Periodo := xperiodo;
+
+    if salida <> 'T' then Begin
+      list.altopag := 0; list.m := 0;
+      list.IniciarTitulos;
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 14');
+      list.Titulo(0, 0, xtitulo, 1, 'Arial, normal, 12');
+      list.Titulo(0, 0, 'Facturación a Obras Sociales', 1, 'Arial, negrita, 12');
+      list.Titulo(0, 0, 'Período de Facturación: ' + xperiodo, 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
+      list.Titulo(0, 0, 'Paciente', 1, 'Arial, cursiva, 8');
+      espaciocol   := 80 div StrToInt(xcolumnas);
+      nrocol       := 80 div espaciocol;
+      distanciaImp := (nrocol * 12) div StrToInt(xcolumnas);
+      j := 1;
+      For i := 1 to nrocol do Begin
+        list.Titulo((espaciocol * i) + e, list.Lineactual, 'Cód.', j+1, 'Arial, cursiva, 8');
+        list.Titulo((((espaciocol * i) + e) + distanciaImp) - (nrocol), list.Lineactual, 'Aran.', j+2, 'Arial, cursiva, 8');
+        j := j + 2;
+      end;
+      list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
+    end else Begin
+      if not ExportarDatos then list.IniciarImpresionModoTexto(LineasPag);
+      titulo1(xperiodo, xtitulo, xcolumnas);
     end;
-    list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
-    list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
-  end else Begin
-    if not ExportarDatos then list.IniciarImpresionModoTexto(LineasPag);
-    titulo1(xperiodo, xtitulo, xcolumnas);
+
+    if ProcesamientoCentral then totalesOS.Open;
+
+    detfact.First;
+
+    codosanter  := ''; idprofanter := ''; idanter := ''; ordenanter := ''; i := 0; cantidad := 0; cantidadordenes := 0; subtotal := 0; it := 0; tot9984 := 0; totUB := 0; totUG := 0; canUB := 0; canUG := 0; totprestaciones := 0; periodo := xperiodo; titulo := xtitulo; columnas := xcolumnas; montos[1] := 0; total := 0; totales[1] := 0; datosListados := False;
+    ccanUB := 0; ccanUG := 0; ttotUB := 0; ttotUG := 0; ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0; ivaret := 0; ivaret9984 := 0; ivaretcaran := 0; ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0; totiva[1] := 0; totiva[2] := 0; totiva[3] := 0; _caran := 0; caran := 0;
+
+    ordenanter  := detfact.FieldByName('orden').AsString;
+    idprofanter := 't';
+    while not detfact.EOF do Begin
+      if (detfact.FieldByName('periodo').AsString >= xperiodo) and (utiles.verificarItemsLista(ObrasSocSel, detfact.FieldByName('codos').AsString)) and (listarLinea) then Begin   // Filtro general - Período
+        datosListados := True;
+        nomeclatura.getDatos(detfact.FieldByName('codanalisis').AsString);
+        if nomeclatura.CF <> 'F' then Inc(totprestaciones); // Total de prestaciones
+        if detfact.FieldByName('codos').AsString <> codosanter then Begin
+          obsocial.getDatos(detfact.FieldByname('codos').AsString);
+          if (obsocial.retencioniva <> 0) then osretieneiva := 'S' else osretieneiva := 'N';
+          if cantidad > 0 then Begin
+            ListarLineaDeAnalisis(xcolumnas, salida);
+            SubtotalProfesional(salida);
+          end;
+          RupturaObraSocial(salida, xperiodo, xtitulo, 'clNavy'); // Ruptura por Obra Social
+          idprofanter := ''; cantidad := 0; subtotal := 0; total := 0; //tot9984 := 0;
+        end;
+        if detfact.FieldByName('idprof').AsString <> idprofanter then Begin   // Ruptura por Profesional
+          profesional.SincronizarListaRetIVA(xperiodo, detfact.FieldByname('idprof').AsString);
+          if cantidad > 0 then Begin
+            ListarLineaDeAnalisis(xcolumnas, salida);
+            SubtotalProfesional(salida);
+          end;
+          RupturaPorProfesional('clNavy', salida);
+        end;
+
+        if (i >= StrToInt(xcolumnas)) or (detfact.FieldByName('codpac').AsString <> idanter) or (detfact.FieldByName('orden').AsString <> ordenanter) then Begin
+          if (detfact.FieldByName('codpac').AsString <> idanter) or (detfact.FieldByName('orden').AsString <> ordenanter) then ListarLineaDeAnalisis(xcolumnas, salida) else ListLinea(xcolumnas, salida);
+          i := 0;
+          if detfact.FieldByName('orden').AsString <> ordenanter then idanter1 := '';
+        end;
+
+        paciente.getDatos(detfact.FieldByName('idprof').AsString, detfact.FieldByName('codpac').AsString);
+        if (length(trim(detfact.FieldByName('retiva').AsString)) > 0) then paciente.Gravadoiva := detfact.FieldByName('retiva').AsString;
+        pac_retiva := paciente.Gravadoiva;
+        Inc(i);
+
+        if (length(trim(detfact.FieldByName('ref1').AsString)) = 7) then periodo := detfact.FieldByName('ref1').AsString else periodo := xperiodo;
+
+        if (obsocial.FactNBU = 'N') or (length(trim(detfact.FieldByName('codanalisis').AsString)) = 4) then Begin
+          obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, periodo);
+          if Length(Trim(nomeclatura.codfact)) = 0 then codigos[i] := detfact.FieldByName('codanalisis').AsString else codigos[i] := nomeclatura.codfact;
+          if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
+          if nomeclatura.RIE <> '*' then montos [i] := setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else montos [i] := setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
+        end;
+        if (obsocial.FactNBU = 'S') and (length(trim(detfact.FieldByName('codanalisis').AsString)) = 6) then Begin
+          obsocial.SincronizarArancelNBU(detfact.FieldByname('codos').AsString, periodo);
+          nbu.getDatos(detfact.FieldByName('codanalisis').AsString);
+          codigos[i] := detfact.FieldByName('codanalisis').AsString;
+          montos [i] := setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, 0, 0, 0, 0); // Valor de cada analisis
+          nnbu       := True;
+        end;
+
+        it := i;
+
+        subtotal := subtotal + montos[i];
+
+        if detfact.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
+        codosanter  := detfact.FieldByName('codos').AsString;
+        idprofanter := detfact.FieldByName('idprof').AsString;
+        idanter     := detfact.FieldByName('codpac').AsString;
+        ordenanter  := detfact.FieldByName('orden').AsString;
+        npac        := detfact.FieldByName('nombre').AsString;
+      end;
+      detfact.Next;
+    end;
+    it := i;
+    ListarLineaDeAnalisis(xcolumnas, salida);
+
+    if cantidad > 0 then SubtotalProfesional(salida);
+    if not listControl then SubtotalObraSocial(salida);
+
+    if ProcesamientoCentral then totalesOS.Close;
+
+    if not ExportarDatos then Begin
+      if not datosListados then utiles.msgError(msgImpresion) else
+        if salida <> 'T' then list.FinList else list.FinalizarImpresionModoTexto(1);
+    end else FinalizarExportacion;
+    rp := False;
   end;
 
-  if ProcesamientoCentral then totalesOS.Open;
+  if (interbase = 'S') then begin
+    if (salida = 'P') or (salida = 'I') then list.Setear(salida);
+    //if not (detfactIB.Active) then detfactIB.Open;
+    //if not (ProcesamientoCentral) then ffirebird.Filtrar(detfactIB, 'periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + laboratorioactual + '''') else ffirebird.Filtrar(detfactIB, 'periodo = ' + '''' + xperiodo + '''');
+    //detfactIB.IndexFieldNames := 'Periodo;Codos;Idprof;Orden;Items';
+    //detfactIB.First;
 
-  detfact.First;
+    {rsqlIB :=  ffirebird.getTransacSQL('select count(*) from detfact where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + laboratorioactual + '''');
+    rsqlIB.Open;
+    utiles.msgError(rsqlIB.fields[0].asstring + '  ' + 'select count(*) from detfact where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + laboratorioactual + '''');
+    rsqlIB.close;}
 
-  codosanter  := ''; idprofanter := ''; idanter := ''; ordenanter := ''; i := 0; cantidad := 0; cantidadordenes := 0; subtotal := 0; it := 0; tot9984 := 0; totUB := 0; totUG := 0; canUB := 0; canUG := 0; totprestaciones := 0; periodo := xperiodo; titulo := xtitulo; columnas := xcolumnas; montos[1] := 0; total := 0; totales[1] := 0; datosListados := False;
-  ccanUB := 0; ccanUG := 0; ttotUB := 0; ttotUG := 0; ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0; ivaret := 0; ivaret9984 := 0; ivaretcaran := 0; ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0; totiva[1] := 0; totiva[2] := 0; totiva[3] := 0; _caran := 0; caran := 0;
+    if (factglobal) then __t := 'detfact_gl' else __t := 'detfact';
 
-  ordenanter  := detfact.FieldByName('orden').AsString;
-  idprofanter := 't';
-  while not detfact.EOF do Begin
-    if (detfact.FieldByName('periodo').AsString >= xperiodo) and (utiles.verificarItemsLista(ObrasSocSel, detfact.FieldByName('codos').AsString)) and (listarLinea) then Begin   // Filtro general - Período
-      datosListados := True;
-      nomeclatura.getDatos(detfact.FieldByName('codanalisis').AsString);
-      if nomeclatura.CF <> 'F' then Inc(totprestaciones); // Total de prestaciones
-      if detfact.FieldByName('codos').AsString <> codosanter then Begin
-        obsocial.getDatos(detfact.FieldByname('codos').AsString);
-        if (obsocial.retencioniva <> 0) then osretieneiva := 'S' else osretieneiva := 'N';
-        if cantidad > 0 then Begin
-          ListarLineaDeAnalisis(xcolumnas, salida);
-          SubtotalProfesional(salida);
-        end;
-        RupturaObraSocial(salida, xperiodo, xtitulo, 'clNavy'); // Ruptura por Obra Social
-        idprofanter := ''; cantidad := 0; subtotal := 0; total := 0; //tot9984 := 0;
+    {if not (ProcesamientoCentral) then
+      UTILES.msgError('select * from ' + __t + ' where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + laboratorioactual + '''' + ' order by periodo, codos, idprof, orden, items')
+    else
+      utiles.msgError('select * from ' + __t + ' where periodo = ' + '''' + xperiodo + '''' + ' order by periodo, codos, idprof, orden, items');}
+
+    if not (ProcesamientoCentral) then
+      rsqlIB :=  ffirebird.getTransacSQL('select * from ' + __t + ' where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + laboratorioactual + '''' + ' order by periodo, codos, idprof, orden, items')
+    else
+      rsqlIB :=  ffirebird.getTransacSQL('select * from ' + __t + ' where periodo = ' + '''' + xperiodo + '''' + ' order by periodo, codos, idprof, orden, items');
+
+    {if not (ProcesamientoCentral) then
+      rsqlIB :=  ffirebird.getTransacSQL('select * from detfact where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + laboratorioactual + '''' + ' order by periodo, codos, idprof, orden, items')
+    else
+      rsqlIB :=  ffirebird.getTransacSQL('select * from detfact' + __c + ' where periodo = ' + '''' + xperiodo + '''' + ' order by periodo, codos, idprof, orden, items');}
+
+    rsqlIB.Open; rsqlIB.First;
+    //utiles.msgError(inttostr(rsqlIB.RecordCount));
+    if listControl then e := 36 else e := 6; pag := 0;
+    Periodo := xperiodo;
+
+    if salida <> 'T' then Begin
+      list.altopag := 0; list.m := 0;
+      list.IniciarTitulos;
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 14');
+      list.Titulo(0, 0, xtitulo, 1, 'Arial, normal, 12');
+      list.Titulo(0, 0, 'Facturación a Obras Sociales', 1, 'Arial, negrita, 12');
+      list.Titulo(0, 0, 'Período de Facturación: ' + xperiodo, 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
+      list.Titulo(0, 0, 'Paciente', 1, 'Arial, cursiva, 8');
+      espaciocol   := 80 div StrToInt(xcolumnas);
+      nrocol       := 80 div espaciocol;
+      distanciaImp := (nrocol * 12) div StrToInt(xcolumnas);
+      j := 1;
+      For i := 1 to nrocol do Begin
+        list.Titulo((espaciocol * i) + e, list.Lineactual, 'Cód.', j+1, 'Arial, cursiva, 8');
+        list.Titulo((((espaciocol * i) + e) + distanciaImp) - (nrocol), list.Lineactual, 'Aran.', j+2, 'Arial, cursiva, 8');
+        j := j + 2;
       end;
-      if detfact.FieldByName('idprof').AsString <> idprofanter then Begin   // Ruptura por Profesional
-        profesional.SincronizarListaRetIVA(xperiodo, detfact.FieldByname('idprof').AsString);
-        if cantidad > 0 then Begin
-          ListarLineaDeAnalisis(xcolumnas, salida);
-          SubtotalProfesional(salida);
-        end;
-        RupturaPorProfesional('clNavy', salida);
-      end;
-
-      if (i >= StrToInt(xcolumnas)) or (detfact.FieldByName('codpac').AsString <> idanter) or (detfact.FieldByName('orden').AsString <> ordenanter) then Begin
-        if (detfact.FieldByName('codpac').AsString <> idanter) or (detfact.FieldByName('orden').AsString <> ordenanter) then ListarLineaDeAnalisis(xcolumnas, salida) else ListLinea(xcolumnas, salida);
-        i := 0;
-        if detfact.FieldByName('orden').AsString <> ordenanter then idanter1 := '';
-      end;
-
-      //obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
-      //obsocial.SincronizarArancelNBU(detfact.FieldByname('codos').AsString, xperiodo);
-      paciente.getDatos(detfact.FieldByName('idprof').AsString, detfact.FieldByName('codpac').AsString);
-      Inc(i);
-
-      if (obsocial.FactNBU = 'N') or (length(trim(detfact.FieldByName('codanalisis').AsString)) = 4) then Begin
-        obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
-        if Length(Trim(nomeclatura.codfact)) = 0 then codigos[i] := detfact.FieldByName('codanalisis').AsString else codigos[i] := nomeclatura.codfact;
-        if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
-        if nomeclatura.RIE <> '*' then montos [i] := setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else montos [i] := setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
-      end;
-      if (obsocial.FactNBU = 'S') and (length(trim(detfact.FieldByName('codanalisis').AsString)) = 6) then Begin
-        obsocial.SincronizarArancelNBU(detfact.FieldByname('codos').AsString, xperiodo);
-        nbu.getDatos(detfact.FieldByName('codanalisis').AsString);
-        codigos[i] := detfact.FieldByName('codanalisis').AsString;
-        montos [i] := setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, 0, 0, 0, 0); // Valor de cada analisis
-        nnbu       := True;
-      end;
-
-      it := i;
-
-      subtotal := subtotal + montos[i];
-
-      if detfact.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
-      codosanter  := detfact.FieldByName('codos').AsString;
-      idprofanter := detfact.FieldByName('idprof').AsString;
-      idanter     := detfact.FieldByName('codpac').AsString;
-      ordenanter  := detfact.FieldByName('orden').AsString;
-      npac        := detfact.FieldByName('nombre').AsString
+      list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
+    end else Begin
+      if not ExportarDatos then list.IniciarImpresionModoTexto(LineasPag);
+      titulo1(xperiodo, xtitulo, xcolumnas);
     end;
-    detfact.Next;
+
+    if ProcesamientoCentral then totalesOS.Open;
+
+    codosanter  := ''; idprofanter := ''; idanter := ''; ordenanter := ''; i := 0; cantidad := 0; cantidadordenes := 0; subtotal := 0; it := 0; tot9984 := 0; totUB := 0; totUG := 0; canUB := 0; canUG := 0; totprestaciones := 0; periodo := xperiodo; titulo := xtitulo; columnas := xcolumnas; montos[1] := 0; total := 0; totales[1] := 0; datosListados := False;
+    ccanUB := 0; ccanUG := 0; ttotUB := 0; ttotUG := 0; ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0; ivaret := 0; ivaret9984 := 0; ivaretcaran := 0; ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0; totiva[1] := 0; totiva[2] := 0; totiva[3] := 0; _caran := 0; caran := 0;
+    __peranter := '';
+
+    ordenanter  := rsqlIB.FieldByName('orden').AsString;
+    idprofanter := 't';
+    while not rsqlIB.EOF do Begin
+      if (rsqlIB.FieldByName('periodo').AsString <> xperiodo) then break;
+      if (rsqlIB.FieldByName('periodo').AsString >= xperiodo) and (utiles.verificarItemsLista(ObrasSocSel, rsqlIB.FieldByName('codos').AsString)) and (listarLinea) then Begin   // Filtro general - Período
+        datosListados := True;
+        nomeclatura.getDatos(rsqlIB.FieldByName('codanalisis').AsString);
+        if nomeclatura.CF <> 'F' then Inc(totprestaciones); // Total de prestaciones
+        if rsqlIB.FieldByName('codos').AsString <> codosanter then Begin
+          obsocial.getDatos(rsqlIB.FieldByname('codos').AsString);
+          if (obsocial.retencioniva <> 0) then osretieneiva := 'S' else osretieneiva := 'N';
+          if cantidad > 0 then Begin
+            ListarLineaDeAnalisis(xcolumnas, salida);
+            SubtotalProfesional(salida);
+          end;
+          RupturaObraSocial(salida, xperiodo, xtitulo, 'clNavy'); // Ruptura por Obra Social
+          idprofanter := ''; cantidad := 0; subtotal := 0; total := 0; //tot9984 := 0;
+        end;
+        if rsqlIB.FieldByName('idprof').AsString <> idprofanter then Begin   // Ruptura por Profesional
+          profesional.SincronizarListaRetIVA(xperiodo, rsqlIB.FieldByname('idprof').AsString);
+          if cantidad > 0 then Begin
+            ListarLineaDeAnalisis(xcolumnas, salida);
+            SubtotalProfesional(salida);
+          end;
+          RupturaPorProfesional('clNavy', salida);
+        end;
+
+        if (i >= StrToInt(xcolumnas)) or (rsqlIB.FieldByName('codpac').AsString <> idanter) or (rsqlIB.FieldByName('orden').AsString <> ordenanter) then Begin
+          if (rsqlIB.FieldByName('codpac').AsString <> idanter) or (rsqlIB.FieldByName('orden').AsString <> ordenanter) then ListarLineaDeAnalisis(xcolumnas, salida) else ListLinea(xcolumnas, salida);
+          i := 0;
+          if rsqlIB.FieldByName('orden').AsString <> ordenanter then idanter1 := '';
+        end;
+
+         if (length(trim(rsqlIB.FieldByName('retiva').AsString)) > 0) then begin
+          paciente.Gravadoiva := rsqlIB.FieldByName('retiva').AsString;
+          paciente.Nombre := rsqlIB.FieldByName('nombre').AsString;
+        end else
+          paciente.getDatos(rsqlIB.FieldByName('idprof').AsString, rsqlIB.FieldByName('codpac').AsString);
+
+        //paciente.getDatos(rsqlIB.FieldByName('idprof').AsString, rsqlIB.FieldByName('codpac').AsString);
+        Inc(i);
+        //if (length(trim(rsqlIB.FieldByName('retiva').AsString)) > 0) then paciente.Gravadoiva := rsqlIB.FieldByName('retiva').AsString;
+        pac_retiva := paciente.Gravadoiva;
+
+        if (length(trim(rsqlIB.FieldByName('ref1').AsString)) = 7) then periodo := rsqlIB.FieldByName('ref1').AsString else periodo := xperiodo;
+
+         // 21/03/2022
+        if  (utiles.getPeriodoAAAAMM(periodo) > __peranter) then __maxperiodo := periodo;
+        __peranter := utiles.getPeriodoAAAAMM(periodo);
+
+        if (obsocial.FactNBU = 'N') or (length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 4) then Begin
+          obsocial.SincronizarArancel(rsqlIB.FieldByname('codos').AsString, periodo);
+          if Length(Trim(nomeclatura.codfact)) = 0 then codigos[i] := rsqlIB.FieldByName('codanalisis').AsString else codigos[i] := nomeclatura.codfact;
+          if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
+          if nomeclatura.RIE <> '*' then montos [i] := setValorAnalisis(rsqlIB.FieldByName('codos').AsString, rsqlIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else montos [i] := setValorAnalisis(rsqlIB.FieldByName('codos').AsString, rsqlIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
+        end;
+        if (obsocial.FactNBU = 'S') and (length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 6) then Begin
+          obsocial.SincronizarArancelNBU(rsqlIB.FieldByname('codos').AsString, periodo);
+          //nbu.getDatos(rsqlIB.FieldByName('codanalisis').AsString);
+          codigos[i] := rsqlIB.FieldByName('codanalisis').AsString;
+          montos [i] := setValorAnalisis(rsqlIB.FieldByName('codos').AsString, rsqlIB.FieldByName('codanalisis').AsString, 0, 0, 0, 0); // Valor de cada analisis
+          nnbu       := True;
+        end;
+
+        it := i;
+
+        subtotal := subtotal + montos[i];
+
+        if rsqlIB.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
+        codosanter  := rsqlIB.FieldByName('codos').AsString;
+        idprofanter := rsqlIB.FieldByName('idprof').AsString;
+        idanter     := rsqlIB.FieldByName('codpac').AsString;
+        ordenanter  := rsqlIB.FieldByName('orden').AsString;
+        npac        := rsqlIB.FieldByName('nombre').AsString;
+        __perfact   := rsqlIB.FieldByName('ref1').AsString;
+      end;
+      rsqlIB.Next;
+    end;
+    it := i;
+    ListarLineaDeAnalisis(xcolumnas, salida);
+
+    if cantidad > 0 then SubtotalProfesional(salida);
+    if not listControl then SubtotalObraSocial(salida);
+
+    if ProcesamientoCentral then totalesOS.Close;
+
+    if not ExportarDatos then Begin
+      if not datosListados then utiles.msgError(msgImpresion) else
+        if salida <> 'T' then list.FinList else list.FinalizarImpresionModoTexto(1);
+    end else FinalizarExportacion;
+    rp := False;
+
+    rsqlIB.Close; rsqlIB.free;
+
+    {
+    if listControl then e := 36 else e := 6; pag := 0;
+    Periodo := xperiodo;
+
+    if salida <> 'T' then Begin
+      list.altopag := 0; list.m := 0;
+      list.IniciarTitulos;
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 14');
+      list.Titulo(0, 0, xtitulo, 1, 'Arial, normal, 12');
+      list.Titulo(0, 0, 'Facturación a Obras Sociales', 1, 'Arial, negrita, 12');
+      list.Titulo(0, 0, 'Período de Facturación: ' + xperiodo, 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
+      list.Titulo(0, 0, 'Paciente', 1, 'Arial, cursiva, 8');
+      espaciocol   := 80 div StrToInt(xcolumnas);
+      nrocol       := 80 div espaciocol;
+      distanciaImp := (nrocol * 12) div StrToInt(xcolumnas);
+      j := 1;
+      For i := 1 to nrocol do Begin
+        list.Titulo((espaciocol * i) + e, list.Lineactual, 'Cód.', j+1, 'Arial, cursiva, 8');
+        list.Titulo((((espaciocol * i) + e) + distanciaImp) - (nrocol), list.Lineactual, 'Aran.', j+2, 'Arial, cursiva, 8');
+        j := j + 2;
+      end;
+      list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
+    end else Begin
+      if not ExportarDatos then list.IniciarImpresionModoTexto(LineasPag);
+      titulo1(xperiodo, xtitulo, xcolumnas);
+    end;
+
+    if ProcesamientoCentral then totalesOS.Open;
+
+    codosanter  := ''; idprofanter := ''; idanter := ''; ordenanter := ''; i := 0; cantidad := 0; cantidadordenes := 0; subtotal := 0; it := 0; tot9984 := 0; totUB := 0; totUG := 0; canUB := 0; canUG := 0; totprestaciones := 0; periodo := xperiodo; titulo := xtitulo; columnas := xcolumnas; montos[1] := 0; total := 0; totales[1] := 0; datosListados := False;
+    ccanUB := 0; ccanUG := 0; ttotUB := 0; ttotUG := 0; ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0; ivaret := 0; ivaret9984 := 0; ivaretcaran := 0; ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0; totiva[1] := 0; totiva[2] := 0; totiva[3] := 0; _caran := 0; caran := 0;
+
+    ordenanter  := detfactIB.FieldByName('orden').AsString;
+    idprofanter := 't';
+    while not detfactIB.EOF do Begin
+      if (detfactIB.FieldByName('periodo').AsString <> xperiodo) then break;
+      if (detfactIB.FieldByName('periodo').AsString >= xperiodo) and (utiles.verificarItemsLista(ObrasSocSel, detfactIB.FieldByName('codos').AsString)) and (listarLinea) then Begin   // Filtro general - Período
+        datosListados := True;
+        nomeclatura.getDatos(detfactIB.FieldByName('codanalisis').AsString);
+        if nomeclatura.CF <> 'F' then Inc(totprestaciones); // Total de prestaciones
+        if detfactIB.FieldByName('codos').AsString <> codosanter then Begin
+          obsocial.getDatos(detfactIB.FieldByname('codos').AsString);
+          if (obsocial.retencioniva <> 0) then osretieneiva := 'S' else osretieneiva := 'N';
+          if cantidad > 0 then Begin
+            ListarLineaDeAnalisis(xcolumnas, salida);
+            SubtotalProfesional(salida);
+          end;
+          RupturaObraSocial(salida, xperiodo, xtitulo, 'clNavy'); // Ruptura por Obra Social
+          idprofanter := ''; cantidad := 0; subtotal := 0; total := 0; //tot9984 := 0;
+        end;
+        if detfactIB.FieldByName('idprof').AsString <> idprofanter then Begin   // Ruptura por Profesional
+          profesional.SincronizarListaRetIVA(xperiodo, detfactIB.FieldByname('idprof').AsString);
+          if cantidad > 0 then Begin
+            ListarLineaDeAnalisis(xcolumnas, salida);
+            SubtotalProfesional(salida);
+          end;
+          RupturaPorProfesional('clNavy', salida);
+        end;
+
+        if (i >= StrToInt(xcolumnas)) or (detfactIB.FieldByName('codpac').AsString <> idanter) or (detfactIB.FieldByName('orden').AsString <> ordenanter) then Begin
+          if (detfactIB.FieldByName('codpac').AsString <> idanter) or (detfactIB.FieldByName('orden').AsString <> ordenanter) then ListarLineaDeAnalisis(xcolumnas, salida) else ListLinea(xcolumnas, salida);
+          i := 0;
+          if detfactIB.FieldByName('orden').AsString <> ordenanter then idanter1 := '';
+        end;
+
+        paciente.getDatos(detfactIB.FieldByName('idprof').AsString, detfactIB.FieldByName('codpac').AsString);
+        Inc(i);
+        if (length(trim(detfactIB.FieldByName('retiva').AsString)) > 0) then paciente.Gravadoiva := detfactIB.FieldByName('retiva').AsString;
+        pac_retiva := paciente.Gravadoiva;
+
+        if (length(trim(detfactIB.FieldByName('ref1').AsString)) = 7) then periodo := detfactIB.FieldByName('ref1').AsString else periodo := xperiodo;
+
+        if (obsocial.FactNBU = 'N') or (length(trim(detfactIB.FieldByName('codanalisis').AsString)) = 4) then Begin
+          obsocial.SincronizarArancel(detfactIB.FieldByname('codos').AsString, periodo);
+          if Length(Trim(nomeclatura.codfact)) = 0 then codigos[i] := detfactIB.FieldByName('codanalisis').AsString else codigos[i] := nomeclatura.codfact;
+          if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
+          if nomeclatura.RIE <> '*' then montos [i] := setValorAnalisis(detfactIB.FieldByName('codos').AsString, detfactIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else montos [i] := setValorAnalisis(detfactIB.FieldByName('codos').AsString, detfactIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
+        end;
+        if (obsocial.FactNBU = 'S') and (length(trim(detfactIB.FieldByName('codanalisis').AsString)) = 6) then Begin
+          obsocial.SincronizarArancelNBU(detfactIB.FieldByname('codos').AsString, periodo);
+          nbu.getDatos(detfactIB.FieldByName('codanalisis').AsString);
+          codigos[i] := detfactIB.FieldByName('codanalisis').AsString;
+          montos [i] := setValorAnalisis(detfactIB.FieldByName('codos').AsString, detfactIB.FieldByName('codanalisis').AsString, 0, 0, 0, 0); // Valor de cada analisis
+          nnbu       := True;
+        end;
+
+        it := i;
+
+        subtotal := subtotal + montos[i];
+
+        if detfactIB.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
+        codosanter  := detfactIB.FieldByName('codos').AsString;
+        idprofanter := detfactIB.FieldByName('idprof').AsString;
+        idanter     := detfactIB.FieldByName('codpac').AsString;
+        ordenanter  := detfactIB.FieldByName('orden').AsString;
+        npac        := detfactIB.FieldByName('nombre').AsString
+      end;
+      detfactIB.Next;
+    end;
+    it := i;
+    ListarLineaDeAnalisis(xcolumnas, salida);
+
+    if cantidad > 0 then SubtotalProfesional(salida);
+    if not listControl then SubtotalObraSocial(salida);
+
+    if ProcesamientoCentral then totalesOS.Close;
+
+    if not ExportarDatos then Begin
+      if not datosListados then utiles.msgError(msgImpresion) else
+        if salida <> 'T' then list.FinList else list.FinalizarImpresionModoTexto(1);
+    end else FinalizarExportacion;
+    rp := False;
+    }
   end;
-  it := i;
-  ListarLineaDeAnalisis(xcolumnas, salida);
 
-  if cantidad > 0 then SubtotalProfesional(salida);
-  if not listControl then SubtotalObraSocial(salida);
+  //ffirebird.QuitarFiltro(detfactIB);
 
-  if ProcesamientoCentral then totalesOS.Close;
-
-  if not ExportarDatos then Begin
-    if not datosListados then utiles.msgError(msgImpresion) else
-      if salida <> 'T' then list.FinList else list.FinalizarImpresionModoTexto(1);
-  end else FinalizarExportacion;
-  rp := False;
 end;
 
 procedure TTFacturacionCCB.titulo1(xperiodo, xtitulo, xcolumnas: String);
@@ -1198,18 +2720,20 @@ procedure TTFacturacionCCB.listLinea(xcolumnas: string; salida: char);
 // Nota.......: listControl -> bandera
 var
   i, j, e: ShortInt;
+  torden: real;
 begin
   if (Length(Trim(npac)) = 0) then paciente.getDatos(idprofanter, idanter);
   if listControl then j := 2  else j := 1;
   if listControl then e := 18 else e := 6;
   if salida <> 'T' then Begin
-    if not listControl then distanciaImp := (nrocol * 12) div StrToInt(xcolumnas) else distanciaImp := (nrocol * 12) div StrToInt(xcolumnas);
+    //if not listControl then distanciaImp := (nrocol * 12) div StrToInt(xcolumnas) else distanciaImp := (nrocol * 12) div StrToInt(xcolumnas);
+    if not listControl then distanciaImp := (nrocol * 14) div StrToInt(xcolumnas) else distanciaImp := (nrocol * 14) div StrToInt(xcolumnas);
     if idanter <> idanter1 then Begin
       if (osretieneiva <> 'S') then begin
         if Length(Trim(npac)) = 0 then list.Linea(0, 0, Copy(paciente.nombre, 1, 15), 1, 'Arial, normal, 8', salida, 'N') else list.Linea(0, 0, Copy(npac, 1, 15), 1, 'Arial, normal, 8', salida, 'N')
       end else begin
         paciente.getDatos(idprofanter, idanter);
-        if Length(Trim(npac)) = 0 then list.Linea(0, 0, Copy(paciente.nombre, 1, 11) + ' [' + paciente.Gravadoiva + ']', 1, 'Arial, normal, 8', salida, 'N') else list.Linea(0, 0, Copy(npac, 1, 11) + ' [' + paciente.Gravadoiva + ']', 1, 'Arial, normal, 8', salida, 'N');
+        if Length(Trim(npac)) = 0 then list.Linea(0, 0, Copy(paciente.nombre, 1, 11) + ' [' + pac_retiva {paciente.Gravadoiva} + ']', 1, 'Arial, normal, 8', salida, 'N') else list.Linea(0, 0, Copy(npac, 1, 11) + ' [' + pac_retiva {paciente.Gravadoiva} + ']', 1, 'Arial, normal, 8', salida, 'N');
       end;
       if listControl then list.Linea(17, list.Lineactual, '[' + ordenanter + ']', 2, 'Arial, normal, 8', salida, 'N');
     end else list.Linea(0, 0, ' ', 1, 'Arial, normal, 8', salida, 'N');
@@ -1220,14 +2744,17 @@ begin
       if not listControl then list.importe((((espaciocol * i) + e) + distanciaImp) - (2), list.Lineactual, '', montos[i], j+2, 'Arial, normal, 8');
       j := j + 2;
     end;
-    list.Linea(97, list.Lineactual, ' ', j+3, 'Arial, normal, 8', salida, 'S');
+    //list.Linea(97, list.Lineactual, ' ', j+3, 'Arial, normal, 8', salida, 'S');
+    list.Linea(101, list.Lineactual, '', j+3, 'Arial, normal, 8', salida, 'S');
   end else Begin
     if idanter <> idanter1 then Begin
       if (osretieneiva <> 'S') then begin
         if Length(Trim(npac)) = 0 then list.LineaTxt(Copy(paciente.nombre, 1, 15) + utiles.espacios(15 - Length(Copy(paciente.nombre, 1, 15))), False) else list.LineaTxt(Copy(npac, 1, 15) + utiles.espacios(15 - Length(Copy(npac, 1, 15))), False)
       end else begin
         paciente.getDatos(idprofanter, idanter);
-        if Length(Trim(npac)) = 0 then list.LineaTxt(Copy(paciente.nombre, 1, 11) + ' [' + paciente.Gravadoiva + ']' + utiles.espacios(15 - Length(Copy(paciente.nombre, 1, 11) + ' [' + paciente.Gravadoiva + ']')), False) else list.LineaTxt(Copy(npac, 1, 11) + ' [' + paciente.Gravadoiva + ']' + utiles.espacios(15 - Length(Copy(npac, 1, 11) + ' [' + paciente.Gravadoiva + ']')), False);
+        if Length(Trim(npac)) = 0 then list.LineaTxt(Copy(paciente.nombre, 1, 11) + ' [' + pac_retiva {paciente.Gravadoiva} + ']' + utiles.espacios(15 - Length(Copy(paciente.nombre, 1, 11) + ' [' + pac_retiva {paciente.Gravadoiva} + ']')), False)
+        else
+        list.LineaTxt(Copy(npac, 1, 11) + ' [' + pac_retiva {paciente.Gravadoiva} + ']' + utiles.espacios(15 - Length(Copy(npac, 1, 11) + ' [' + paciente.Gravadoiva + ']')), False);
       end;
     end else list.LineaTxt('               ', False);
 
@@ -1240,10 +2767,24 @@ begin
     list.LineaTxt(' ', True); Inc(lineas); if ControlarSalto then titulo1(periodo, titulo, xcolumnas);
   end;
   idanter1 := idanter;
+
   For i := 1 to elementos do Begin
     subtotalorden := subtotalorden + montos[i];
+    total_orden := total_orden + montos[i];
+    torden := torden + montos[i];
     codigos[i] := ''; montos[i] := 0;
   end;
+
+  {if (listtotalboleta) and not (l_linea) then begin
+    if (salida = 'P') or (salida = 'I') then begin
+      list.Linea(0, 0, 'Total Orden:', 1, 'Arial, negrita, 8', salida, 'N');
+      list.importe(45,list.Lineactual, '', torden, 2, 'Arial, negrita, 8');
+      list.Linea(95, list.Lineactual, '', 3, 'Arial, negrita, 8', salida, 'S');
+      list.Linea(0, 0, '', 1, 'Arial, negrita, 5', salida, 'S');
+    end;
+  end;}
+
+  torden := 0;
 end;
 
 procedure TTFacturacionCCB.ListarLineaDeAnalisis(xcolumnas: String; salida: char);
@@ -1269,7 +2810,7 @@ begin
     subtotal := subtotal + tot9984;
     tot9984  := 0;
     idanter  := ''; idanter1 := ''; ordenanter := ''; nnbu := False;
-    no_pass := True;
+    no_pass  := True;
   end;
 
   if not (no_pass) and (it > 0) then Begin  // Para los casos en que ninguna determinación tiene 9984
@@ -1278,6 +2819,34 @@ begin
     idanter  := ''; idanter1 := ''; ordenanter := ''; nnbu := False;
   end;
 
+  // Ruptura de totales por Orden de Obra Social
+  if (((obsocial.Corteorden = 'S') or (listtotalboleta) or (obsocial.Rupturaorden) ) and (total_orden <> 0) and not (listControl)) or ((listtotalboleta) and (total_orden <> 0)) then begin
+    if (salida = 'P') or (salida = 'I') then begin
+      if (length(trim(__perfact)) = 0) then
+        list.Linea(0, 0, 'Total Orden: ', 1, 'Arial, negrita, 8', salida, 'N')
+      else
+        list.Linea(0, 0, 'Total Orden / Per. ' + __perfact + ' : ', 1, 'Arial, negrita, 8', salida, 'N');
+      list.importe(95, list.Lineactual, '', total_orden, 2, 'Arial, negrita, 8');
+      list.Linea(95, list.lineactual, '', 3, 'Arial, negrita, 8', salida, 'S');
+      list.Linea(0, 0, list.Linealargopagina('..', salida), 1, 'Arial, normal, 11', salida, 'S');
+      list.Linea(0, 0, '', 1, 'Arial, negrita, 8', salida, 'S');
+    end;
+    if (salida = 'T') then begin
+      //list.LineaTxt(CHR15 + '  ', True); Inc(lineas); if controlarSalto then titulo1(periodo, titulo, columnas);
+      if (length(trim(__perfact)) = 0) then
+        list.LineaTxt(CHR18 + list.modo_resaltado_seleccionar + 'Total Orden / Per. ' + __perfact + ' : ' + utiles.FormatearNumero(floattostr(total_orden)), True)
+      else
+        list.LineaTxt(CHR18 + list.modo_resaltado_seleccionar + 'Total Orden: ' + utiles.FormatearNumero(floattostr(total_orden)), True);
+      Inc(lineas); if controlarSalto then titulo1(periodo, titulo, columnas);
+      list.LineaTxt(utiles.sLlenarIzquierda(CHR18 + lin, 80, Caracter) + CHR15, True);
+      Inc(lineas); if controlarSalto then titulo1(periodo, titulo, columnas);
+      //list.LineaTxt(' ', True); Inc(lineas); if ControlarSalto then titulo1(periodo, titulo, xcolumnas);
+    end;
+
+    total_orden := 0;
+  end;
+
+  total_orden := 0;
 end;
 
 procedure TTFacturacionCCB.RupturaObraSocial(salida: char; xperiodo, xtitulo, Color: string);
@@ -1289,7 +2858,10 @@ begin
     SubtotalObraSocial(salida);
     totales[1] := 0;
   end;
-  nLiq := setNumeroDeLiquidacion(xperiodo, detfact.FieldByName('codos').AsString);
+  if (interbase = 'N') then
+    nLiq := setNumeroDeLiquidacion(xperiodo, detfact.FieldByName('codos').AsString)
+  else
+    nLiq := setNumeroDeLiquidacion(xperiodo, rsqlIB.FieldByName('codos').AsString);
   if salida <> 'T' then Begin
     if (ruptura) and (Length(Trim(codosanter)) > 0) then Begin
       pag := 0;
@@ -1328,6 +2900,7 @@ begin
   obsocial.getDatos(codosanter);
   obsocial.SincronizarArancel(codosanter, Periodo);
   profesional.SincronizarListaRetIVA(Periodo, profesional.Codigo);
+  if (length(trim(__maxperiodo)) > 0) then profesional.SincronizarListaRetIVA(__maxperiodo, profesional.Codigo);
 
   if totales[1] > 0 then Begin
    if not rp then Begin
@@ -1462,8 +3035,14 @@ var
   ColorLinea: String;
 begin
   if Length(Trim(Color)) > 0 then ColorLinea := ', ' + Color else ColorLinea := '';
-  profesional.getDatos(detfact.FieldByName('idprof').AsString);
-  profesional.SincronizarCategoria(detfact.FieldByName('idprof').AsString, detfact.FieldByName('periodo').AsString);
+  if (interbase = 'N') then begin
+    profesional.getDatos(detfact.FieldByName('idprof').AsString);
+    profesional.SincronizarCategoria(detfact.FieldByName('idprof').AsString, detfact.FieldByName('periodo').AsString);
+  end;
+  if (interbase = 'S') then begin
+    profesional.getDatos(rsqlIB.FieldByName('idprof').AsString);
+    profesional.SincronizarCategoria(rsqlIB.FieldByName('idprof').AsString, rsqlIB.FieldByName('periodo').AsString);
+  end;
   if salida <> 'T' then Begin
     List.Linea(0, 0, ' ', 1, 'Arial, normal, 5', salida, 'S');
     if not listControl then list.Linea(0, 0, profesional.codigo + '  ' + profesional.nombre, 1, 'Arial, negrita, 8', salida, 'N') else list.Linea(0, 0, profesional.codigo + '  ' + profesional.nombre, 1, 'Arial, negrita, 9' + ColorLinea, salida, 'N');
@@ -1528,129 +3107,415 @@ end;
 
 procedure TTFacturacionCCB.ListarResumenPorObraSocial(xperiodo, xtitulo: String; ObrasSocSel: TStringList; salida: char; xinf_com: Boolean);
 begin
-  detfact.IndexFieldNames := 'Periodo;Codos;Idprof;Orden;Items';
+  if (interbase = 'N') then begin
+    if not (detfact.Active) then detfact.Open;
+    detfact.IndexFieldNames := 'Periodo;Codos;Idprof;Orden;Items';
 
-  IniciarArreglos;
-  if (salida = 'P') or (salida = 'I') then list.Setear(salida);
-  pag := 0; datosListados := False;
-  Periodo := xperiodo;
-  if (salida = 'P') or (salida = 'I') then Begin
-    list.altopag := 0; list.m := 0;
-    list.IniciarTitulos;
-    list.Titulo(0, 0, ' ', 1, 'Arial, normal, 14');
-    list.Titulo(0, 0, xtitulo, 1, 'Arial, normal, 12');
-    list.Titulo(0, 0, 'Resumen por Obra Social', 1, 'Arial, negrita, 12');
-    list.Titulo(0, 0, 'Período de Facturación: ' + xperiodo, 1, 'Arial, normal, 11');
-    list.Titulo(0, 0, ' ', 1, 'Arial, normal, 8');
-    list.Titulo(0, 0, 'Apellido y Nom. del Profesional           Código', 1, 'Arial, cursiva, 8');
-    list.Titulo(34, list.Lineactual, 'Cant.Ord.', 2, 'Arial, cursiva, 8');
-    list.Titulo(48, list.Lineactual, 'U.G.', 3, 'Arial, cursiva, 8');
-    list.Titulo(57, list.Lineactual, 'U.H.', 4, 'Arial, cursiva, 8');
-    list.Titulo(65, list.Lineactual, '$ U.G.', 5, 'Arial, cursiva, 8');
-    list.Titulo(74, list.Lineactual, '$ U.B.', 6, 'Arial, cursiva, 8');
-    list.Titulo(83, list.Lineactual, '$ Cat.', 7, 'Arial, cursiva, 8');
-    list.Titulo(94, list.Lineactual, 'Total', 8, 'Arial, cursiva, 8');
-    list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
-  end;
-  if salida = 'T' then Begin
-    if not ExportarDatos then list.IniciarImpresionModoTexto(LineasPag);
-    titulo2(xperiodo, xtitulo);
-  end;
-  if salida = 'X' then Begin
-    excel.FijarAnchoColumna('a1', 'a1', 30);
-    excel.FijarAnchoColumna('b1', 'b1', 7);
-    excel.FijarAnchoColumna('c1', 'c1', 4);
-    excel.FijarAnchoColumna('d1', 'd1', 8);
-    excel.FijarAnchoColumna('e1', 'e1', 8);
-    excel.FijarAnchoColumna('f1', 'f1', 8);
-    excel.FijarAnchoColumna('g1', 'g1', 8);
-    excel.FijarAnchoColumna('h1', 'h1', 8);
-    excel.FijarAnchoColumna('i1', 'i1', 8);
-    excel.setString('a1', 'a1', xtitulo, 'Arial, negrita, 12');
-    excel.setString('a2', 'a2', 'Resumen por Obra Social', 'Arial, negrita, 14');
-    excel.setString('d2', 'd2', 'Período: ' + xperiodo, 'Arial, normal, 12');
-    excel.setString('a4', 'a4', 'Profesional', 'Arial, negrita, 8');
-    excel.Alinear('b4', 'b4', 'D');
-    excel.setString('b4', 'b4', 'Código', 'Arial, negrita, 8');
-    excel.Alinear('c4', 'c4', 'D');
-    excel.setString('c4', 'c4', 'Cant.', 'Arial, negrita, 8');
-    excel.Alinear('d4', 'd4', 'D');
-    excel.setString('d4', 'd4', 'U.G.', 'Arial, negrita, 8');
-    excel.Alinear('e4', 'e4', 'D');
-    excel.setString('e4', 'e4', 'U.H.', 'Arial, negrita, 8');
-    excel.Alinear('f4', 'f4', 'D');
-    excel.setString('f4', 'f4', '$ U.G.', 'Arial, negrita, 8');
-    excel.Alinear('g4', 'g4', 'D');
-    excel.setString('g4', 'g4', '$ U.B.', 'Arial, negrita, 8');
-    excel.Alinear('h4', 'h4', 'D');
-    excel.setString('h4', 'h4', '$ Cat.', 'Arial, negrita, 8');
-    excel.Alinear('i4', 'i4', 'D');
-    excel.setString('i4', 'i4', 'Total', 'Arial, negrita, 8');
-  end;
+    IniciarArreglos;
+    if (salida = 'P') or (salida = 'I') then list.Setear(salida);
+    pag := 0; datosListados := False;
+    Periodo := xperiodo;
+    if (salida = 'P') or (salida = 'I') then Begin
+      list.altopag := 0; list.m := 0;
+      list.IniciarTitulos;
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 14');
+      list.Titulo(0, 0, xtitulo, 1, 'Arial, normal, 12');
+      list.Titulo(0, 0, 'Resumen por Obra Social', 1, 'Arial, negrita, 12');
+      list.Titulo(0, 0, 'Período de Facturación: ' + xperiodo, 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 8');
+      list.Titulo(0, 0, 'Apellido y Nom. del Profesional           Código', 1, 'Arial, cursiva, 8');
+      list.Titulo(34, list.Lineactual, 'Cant.Ord.', 2, 'Arial, cursiva, 8');
+      list.Titulo(48, list.Lineactual, 'U.G.', 3, 'Arial, cursiva, 8');
+      list.Titulo(57, list.Lineactual, 'U.H.', 4, 'Arial, cursiva, 8');
+      list.Titulo(65, list.Lineactual, '$ U.G.', 5, 'Arial, cursiva, 8');
+      list.Titulo(74, list.Lineactual, '$ U.B.', 6, 'Arial, cursiva, 8');
+      list.Titulo(83, list.Lineactual, '$ Cat.', 7, 'Arial, cursiva, 8');
+      list.Titulo(94, list.Lineactual, 'Total', 8, 'Arial, cursiva, 8');
+      list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
+    end;
+    if salida = 'T' then Begin
+      if not ExportarDatos then list.IniciarImpresionModoTexto(LineasPag);
+      titulo2(xperiodo, xtitulo);
+    end;
+    if salida = 'X' then Begin
+      excel.FijarAnchoColumna('a1', 'a1', 30);
+      excel.FijarAnchoColumna('b1', 'b1', 7);
+      excel.FijarAnchoColumna('c1', 'c1', 4);
+      excel.FijarAnchoColumna('d1', 'd1', 8);
+      excel.FijarAnchoColumna('e1', 'e1', 8);
+      excel.FijarAnchoColumna('f1', 'f1', 8);
+      excel.FijarAnchoColumna('g1', 'g1', 8);
+      excel.FijarAnchoColumna('h1', 'h1', 8);
+      excel.FijarAnchoColumna('i1', 'i1', 8);
+      excel.setString('a1', 'a1', xtitulo, 'Arial, negrita, 12');
+      excel.setString('a2', 'a2', 'Resumen por Obra Social', 'Arial, negrita, 14');
+      excel.setString('d2', 'd2', 'Período: ' + xperiodo, 'Arial, normal, 12');
+      excel.setString('a4', 'a4', 'Profesional', 'Arial, negrita, 8');
+      excel.Alinear('b4', 'b4', 'D');
+      excel.setString('b4', 'b4', 'Código', 'Arial, negrita, 8');
+      excel.Alinear('c4', 'c4', 'D');
+      excel.setString('c4', 'c4', 'Cant.', 'Arial, negrita, 8');
+      excel.Alinear('d4', 'd4', 'D');
+      excel.setString('d4', 'd4', 'U.G.', 'Arial, negrita, 8');
+      excel.Alinear('e4', 'e4', 'D');
+      excel.setString('e4', 'e4', 'U.H.', 'Arial, negrita, 8');
+      excel.Alinear('f4', 'f4', 'D');
+      excel.setString('f4', 'f4', '$ U.G.', 'Arial, negrita, 8');
+      excel.Alinear('g4', 'g4', 'D');
+      excel.setString('g4', 'g4', '$ U.B.', 'Arial, negrita, 8');
+      excel.Alinear('h4', 'h4', 'D');
+      excel.setString('h4', 'h4', '$ Cat.', 'Arial, negrita, 8');
+      excel.Alinear('i4', 'i4', 'D');
+      excel.setString('i4', 'i4', 'Total', 'Arial, negrita, 8');
+    end;
 
-  cantidad := 0; subtotal := 0; montos[1] := 0; montos[2] := 0; ordenanter := ''; codosanter := ''; totUB := 0; totUG := 0; canUB := 0; canUG := 0; tot9984 := 0; ccantidadordenes := 0; tttotUB := 0; ttotUG := 0; ccanUB := 0; ccanUG := 0; ccaran := 0; ttotal := 0; xf := 4; caran := 0;
-  ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0; codosanter := '';
-  detfact.First;
-  idprofanter := detfact.FieldByName('idprof').AsString;
-  profesional.getDatos(idprofanter);
-  profesional.SincronizarCategoria(idprofanter, xperiodo);
-  while not detfact.EOF do Begin
-    if (detfact.FieldByName('periodo').AsString >= xperiodo) and (utiles.verificarItemsLista(ObrasSocSel, detfact.FieldByName('codos').AsString)) and (listarLinea) then Begin
-      datosListados := True;
+    cantidad := 0; subtotal := 0; montos[1] := 0; montos[2] := 0; ordenanter := ''; codosanter := ''; totUB := 0; totUG := 0; canUB := 0; canUG := 0; tot9984 := 0; ccantidadordenes := 0; tttotUB := 0; ttotUG := 0; ccanUB := 0; ccanUG := 0; ccaran := 0; ttotal := 0; xf := 4; caran := 0;
+    ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0; codosanter := '';
+    detfact.First;
+    idprofanter := detfact.FieldByName('idprof').AsString;
+    profesional.getDatos(idprofanter);
+    profesional.SincronizarCategoria(idprofanter, xperiodo);
+    while not detfact.EOF do Begin
+      if (detfact.FieldByName('periodo').AsString >= xperiodo) and (utiles.verificarItemsLista(ObrasSocSel, detfact.FieldByName('codos').AsString)) and (listarLinea) then Begin
+        datosListados := True;
 
-      if (obsocial.FactNBU = 'N') or (Length(trim(detfact.FieldByName('codanalisis').AsString)) = 4) then Begin
-        obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
-        nomeclatura.getDatos(detfact.FieldByName('codanalisis').AsString);
-      End;
-      if (obsocial.FactNBU = 'S') and (Length(trim(detfact.FieldByName('codanalisis').AsString)) = 6) then Begin
-        obsocial.SincronizarArancelNBU(detfact.FieldByname('codos').AsString, xperiodo);
-        nbu.getDatos(detfact.FieldByName('codanalisis').AsString);
-      End;
-
-      if detfact.FieldByName('codos').AsString <> codosanter then Begin
-        obsocial.getDatos(detfact.FieldByname('codos').AsString);
         if (obsocial.FactNBU = 'N') or (Length(trim(detfact.FieldByName('codanalisis').AsString)) = 4) then Begin
           obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
+          nomeclatura.getDatos(detfact.FieldByName('codanalisis').AsString);
         End;
         if (obsocial.FactNBU = 'S') and (Length(trim(detfact.FieldByName('codanalisis').AsString)) = 6) then Begin
-          obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
+          obsocial.SincronizarArancelNBU(detfact.FieldByname('codos').AsString, xperiodo);
+          nbu.getDatos(detfact.FieldByName('codanalisis').AsString);
         End;
 
-        //obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
+        if detfact.FieldByName('codos').AsString <> codosanter then Begin
+          obsocial.getDatos(detfact.FieldByname('codos').AsString);
+          if (obsocial.FactNBU = 'N') or (Length(trim(detfact.FieldByName('codanalisis').AsString)) = 4) then Begin
+            obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
+          End;
+          if (obsocial.FactNBU = 'S') and (Length(trim(detfact.FieldByName('codanalisis').AsString)) = 6) then Begin
+            obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
+          End;
 
-        if cantidad > 0 then LineaLaboratorio(salida);
-        RupturaObraSocial1(xperiodo, xtitulo, salida, xinf_com);
-      end else
-        if detfact.FieldByName('idprof').AsString <> idprofanter then LineaLaboratorio(salida);
-      if detfact.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
+          if cantidad > 0 then LineaLaboratorio(salida);
+          RupturaObraSocial1(xperiodo, xtitulo, salida, xinf_com);
+        end else
+          if detfact.FieldByName('idprof').AsString <> idprofanter then LineaLaboratorio(salida);
+        if detfact.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
 
-      if detfact.FieldByName('idprof').AsString <> idprofanter then Begin
-        profesional.getDatos(detfact.FieldByName('idprof').AsString);
-        profesional.SincronizarCategoria(detfact.FieldByName('idprof').AsString, xperiodo);
+        if detfact.FieldByName('idprof').AsString <> idprofanter then Begin
+          profesional.getDatos(detfact.FieldByName('idprof').AsString);
+          profesional.SincronizarCategoria(detfact.FieldByName('idprof').AsString, xperiodo);
+        end;
+
+        paciente.getDatos(detfact.FieldByName('idprof').AsString, detfact.FieldByName('codpac').AsString);
+        if (length(trim(detfact.FieldByName('retiva').AsString)) > 0) then paciente.Gravadoiva := detfact.FieldByName('retiva').AsString; // 08/2013
+
+        if (length(trim(detfact.FieldByName('ref1').AsString)) = 7) then periodo := detfact.FieldByName('ref1').AsString else periodo := xperiodo;
+
+        if (obsocial.FactNBU = 'N') or (Length(trim(detfact.FieldByName('codanalisis').AsString)) = 4) then Begin
+          obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, periodo);
+          if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
+          if nomeclatura.RIE <> '*' then subtotal := subtotal + setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else subtotal := subtotal + setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
+        end;
+        if (obsocial.FactNBU = 'S') and (Length(trim(detfact.FieldByName('codanalisis').AsString)) = 6) then Begin
+          obsocial.SincronizarArancelNBU(detfact.FieldByname('codos').AsString, periodo);
+          subtotal := subtotal + setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, 0, 0, 0, 0);  // Valor de cada análisis
+        end;
+
+        codosanter  := detfact.FieldByName('codos').AsString;
+        idprofanter := detfact.FieldByName('idprof').AsString;
+        ordenanter  := detfact.FieldByName('orden').AsString;
       end;
-
-      paciente.getDatos(detfact.FieldByName('idprof').AsString, detfact.FieldByName('codpac').AsString);
-
-      if (obsocial.FactNBU = 'N') or (Length(trim(detfact.FieldByName('codanalisis').AsString)) = 4) then Begin
-        obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
-        if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
-        if nomeclatura.RIE <> '*' then subtotal := subtotal + setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else subtotal := subtotal + setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
-      end;
-      if (obsocial.FactNBU = 'S') and (Length(trim(detfact.FieldByName('codanalisis').AsString)) = 6) then Begin
-        obsocial.SincronizarArancelNBU(detfact.FieldByname('codos').AsString, xperiodo);
-        subtotal := subtotal + setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, 0, 0, 0, 0);  // Valor de cada análisis
-      end;
-
-      codosanter  := detfact.FieldByName('codos').AsString;
-      idprofanter := detfact.FieldByName('idprof').AsString;
-      ordenanter  := detfact.FieldByName('orden').AsString;
+      detfact.Next;
     end;
-    detfact.Next;
+
+    LineaLaboratorio(salida);
+    SubtotalObraSocial1(xperiodo, xtitulo, salida);
+    FinalizarInforme(salida);
   end;
 
-  LineaLaboratorio(salida);
-  SubtotalObraSocial1(xperiodo, xtitulo, salida);
-  FinalizarInforme(salida);
+  if (interbase = 'S') then begin
+    //if not (detfactIB.Active) then detfactIB.Open;
+    //if not (ProcesamientoCentral) then ffirebird.Filtrar(detfactIB, 'periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + laboratorioactual + '''') else ffirebird.Filtrar(detfactIB, 'periodo = ' + '''' + xperiodo + '''');
+    //detfactIB.IndexFieldNames := 'Periodo;Codos;Idprof;Orden;Items';
+    //ffirebird.buscar(detfactIB, 'periodo', xperiodo);
+    //detfactIB.First;
+
+    {
+    if not (ProcesamientoCentral) then
+      rsqlIB :=  ffirebird.getTransacSQL('select * from detfact where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + laboratorioactual + '''' + ' order by periodo, codos, idprof, orden, items')
+    else
+      rsqlIB :=  ffirebird.getTransacSQL('select * from detfact' + __c + ' where periodo = ' + '''' + xperiodo + '''' + ' order by periodo, codos, idprof, orden, items');
+    rsqlIB.Open; rsqlIB.First;
+    }
+
+    IniciarArreglos;
+    if (salida = 'P') or (salida = 'I') then list.Setear(salida);
+    pag := 0; datosListados := False;
+    Periodo := xperiodo;
+    if (salida = 'P') or (salida = 'I') then Begin
+      list.altopag := 0; list.m := 0;
+      list.IniciarTitulos;
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 14');
+      list.Titulo(0, 0, xtitulo, 1, 'Arial, normal, 12');
+      list.Titulo(0, 0, 'Resumen por Obra Social', 1, 'Arial, negrita, 12');
+      list.Titulo(0, 0, 'Período de Facturación: ' + xperiodo, 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 8');
+      list.Titulo(0, 0, 'Apellido y Nom. del Profesional           Código', 1, 'Arial, cursiva, 8');
+      list.Titulo(34, list.Lineactual, 'Cant.Ord.', 2, 'Arial, cursiva, 8');
+      list.Titulo(48, list.Lineactual, 'U.G.', 3, 'Arial, cursiva, 8');
+      list.Titulo(57, list.Lineactual, 'U.H.', 4, 'Arial, cursiva, 8');
+      list.Titulo(65, list.Lineactual, '$ U.G.', 5, 'Arial, cursiva, 8');
+      list.Titulo(74, list.Lineactual, '$ U.B.', 6, 'Arial, cursiva, 8');
+      list.Titulo(83, list.Lineactual, '$ Cat.', 7, 'Arial, cursiva, 8');
+      list.Titulo(94, list.Lineactual, 'Total', 8, 'Arial, cursiva, 8');
+      list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
+    end;
+    if salida = 'T' then Begin
+      if not ExportarDatos then list.IniciarImpresionModoTexto(LineasPag);
+      titulo2(xperiodo, xtitulo);
+    end;
+    if salida = 'X' then Begin
+      excel.FijarAnchoColumna('a1', 'a1', 30);
+      excel.FijarAnchoColumna('b1', 'b1', 7);
+      excel.FijarAnchoColumna('c1', 'c1', 4);
+      excel.FijarAnchoColumna('d1', 'd1', 8);
+      excel.FijarAnchoColumna('e1', 'e1', 8);
+      excel.FijarAnchoColumna('f1', 'f1', 8);
+      excel.FijarAnchoColumna('g1', 'g1', 8);
+      excel.FijarAnchoColumna('h1', 'h1', 8);
+      excel.FijarAnchoColumna('i1', 'i1', 8);
+      excel.setString('a1', 'a1', xtitulo, 'Arial, negrita, 12');
+      excel.setString('a2', 'a2', 'Resumen por Obra Social', 'Arial, negrita, 14');
+      excel.setString('d2', 'd2', 'Período: ' + xperiodo, 'Arial, normal, 12');
+      excel.setString('a4', 'a4', 'Profesional', 'Arial, negrita, 8');
+      excel.Alinear('b4', 'b4', 'D');
+      excel.setString('b4', 'b4', 'Código', 'Arial, negrita, 8');
+      excel.Alinear('c4', 'c4', 'D');
+      excel.setString('c4', 'c4', 'Cant.', 'Arial, negrita, 8');
+      excel.Alinear('d4', 'd4', 'D');
+      excel.setString('d4', 'd4', 'U.G.', 'Arial, negrita, 8');
+      excel.Alinear('e4', 'e4', 'D');
+      excel.setString('e4', 'e4', 'U.H.', 'Arial, negrita, 8');
+      excel.Alinear('f4', 'f4', 'D');
+      excel.setString('f4', 'f4', '$ U.G.', 'Arial, negrita, 8');
+      excel.Alinear('g4', 'g4', 'D');
+      excel.setString('g4', 'g4', '$ U.B.', 'Arial, negrita, 8');
+      excel.Alinear('h4', 'h4', 'D');
+      excel.setString('h4', 'h4', '$ Cat.', 'Arial, negrita, 8');
+      excel.Alinear('i4', 'i4', 'D');
+      excel.setString('i4', 'i4', 'Total', 'Arial, negrita, 8');
+    end;
+
+    cantidad := 0; subtotal := 0; montos[1] := 0; montos[2] := 0; ordenanter := ''; codosanter := ''; totUB := 0; totUG := 0; canUB := 0; canUG := 0; tot9984 := 0; ccantidadordenes := 0; tttotUB := 0; ttotUG := 0; ccanUB := 0; ccanUG := 0; ccaran := 0; ttotal := 0; xf := 4; caran := 0;
+    ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0; codosanter := '';   __peranter := '';
+
+    if not (ProcesamientoCentral) then
+      rsqlIB :=  ffirebird.getTransacSQL('select * from detfact where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + laboratorioactual + '''' + ' order by periodo, codos, idprof, orden, items')
+    else
+      rsqlIB :=  ffirebird.getTransacSQL('select * from detfact' + __c + ' where periodo = ' + '''' + xperiodo + '''' + ' order by periodo, codos, idprof, orden, items');
+    rsqlIB.Open; rsqlIB.First;
+
+    idprofanter := rsqlIB.FieldByName('idprof').AsString;
+    profesional.getDatos(idprofanter);
+
+    profesional.SincronizarCategoria(idprofanter, xperiodo);
+    while not rsqlIB.EOF do Begin
+      if (rsqlIB.FieldByName('periodo').AsString <> xperiodo) then break;
+      if (rsqlIB.FieldByName('periodo').AsString >= xperiodo) and (utiles.verificarItemsLista(ObrasSocSel, rsqlIB.FieldByName('codos').AsString)) and (listarLinea) then Begin
+        datosListados := True;
+
+        if (obsocial.FactNBU = 'N') or (Length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 4) then Begin
+          obsocial.SincronizarArancel(rsqlIB.FieldByname('codos').AsString, xperiodo);
+          nomeclatura.getDatos(rsqlIB.FieldByName('codanalisis').AsString);
+        End;
+        if (obsocial.FactNBU = 'S') and (Length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 6) then Begin
+          obsocial.SincronizarArancelNBU(rsqlIB.FieldByname('codos').AsString, xperiodo);
+          nbu.getDatos(rsqlIB.FieldByName('codanalisis').AsString);
+        End;
+
+        if rsqlIB.FieldByName('codos').AsString <> codosanter then Begin
+          obsocial.getDatos(rsqlIB.FieldByname('codos').AsString);
+          if (obsocial.FactNBU = 'N') or (Length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 4) then Begin
+            obsocial.SincronizarArancel(rsqlIB.FieldByname('codos').AsString, xperiodo);
+          End;
+          if (obsocial.FactNBU = 'S') and (Length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 6) then Begin
+            obsocial.SincronizarArancel(rsqlIB.FieldByname('codos').AsString, xperiodo);
+          End;
+
+          if cantidad > 0 then LineaLaboratorio(salida);
+          RupturaObraSocial1(xperiodo, xtitulo, salida, xinf_com);
+        end else
+          if rsqlIB.FieldByName('idprof').AsString <> idprofanter then LineaLaboratorio(salida);
+        if rsqlIB.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
+
+        if rsqlIB.FieldByName('idprof').AsString <> idprofanter then Begin
+          profesional.getDatos(rsqlIB.FieldByName('idprof').AsString);
+          profesional.SincronizarCategoria(rsqlIB.FieldByName('idprof').AsString, xperiodo);
+        end;
+
+         if (length(trim(rsqlIB.FieldByName('retiva').AsString)) > 0) then begin
+          paciente.Gravadoiva := rsqlIB.FieldByName('retiva').AsString;
+          paciente.Nombre := rsqlIB.FieldByName('nombre').AsString;
+        end else
+          paciente.getDatos(rsqlIB.FieldByName('idprof').AsString, rsqlIB.FieldByName('codpac').AsString);
+
+        //paciente.getDatos(rsqlIB.FieldByName('idprof').AsString, rsqlIB.FieldByName('codpac').AsString);
+        //if (length(trim(rsqlIB.FieldByName('retiva').AsString)) > 0) then paciente.Gravadoiva := rsqlIB.FieldByName('retiva').AsString; // 08/2013
+
+        if (length(trim(rsqlIB.FieldByName('ref1').AsString)) = 7) then periodo := rsqlIB.FieldByName('ref1').AsString else periodo := xperiodo;
+
+         // 21/03/2022
+        if  (utiles.getPeriodoAAAAMM(periodo) > __peranter) then __maxperiodo := periodo;
+        __peranter := utiles.getPeriodoAAAAMM(periodo);
+
+        if (obsocial.FactNBU = 'N') or (Length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 4) then Begin
+          obsocial.SincronizarArancel(rsqlIB.FieldByname('codos').AsString, periodo);
+          if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
+          if nomeclatura.RIE <> '*' then subtotal := subtotal + setValorAnalisis(rsqlIB.FieldByName('codos').AsString, rsqlIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else subtotal := subtotal + setValorAnalisis(rsqlIB.FieldByName('codos').AsString, rsqlIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
+        end;
+        if (obsocial.FactNBU = 'S') and (Length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 6) then Begin
+          obsocial.SincronizarArancelNBU(rsqlIB.FieldByname('codos').AsString, periodo);
+          subtotal := subtotal + setValorAnalisis(rsqlIB.FieldByName('codos').AsString, rsqlIB.FieldByName('codanalisis').AsString, 0, 0, 0, 0);  // Valor de cada análisis
+        end;
+
+        codosanter  := rsqlIB.FieldByName('codos').AsString;
+        idprofanter := rsqlIB.FieldByName('idprof').AsString;
+        ordenanter  := rsqlIB.FieldByName('orden').AsString;
+      end;
+      rsqlIB.Next;
+    end;
+
+    rsqlIB.Close; rsqlIB.free;
+
+    {IniciarArreglos;
+    if (salida = 'P') or (salida = 'I') then list.Setear(salida);
+    pag := 0; datosListados := False;
+    Periodo := xperiodo;
+    if (salida = 'P') or (salida = 'I') then Begin
+      list.altopag := 0; list.m := 0;
+      list.IniciarTitulos;
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 14');
+      list.Titulo(0, 0, xtitulo, 1, 'Arial, normal, 12');
+      list.Titulo(0, 0, 'Resumen por Obra Social', 1, 'Arial, negrita, 12');
+      list.Titulo(0, 0, 'Período de Facturación: ' + xperiodo, 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 8');
+      list.Titulo(0, 0, 'Apellido y Nom. del Profesional           Código', 1, 'Arial, cursiva, 8');
+      list.Titulo(34, list.Lineactual, 'Cant.Ord.', 2, 'Arial, cursiva, 8');
+      list.Titulo(48, list.Lineactual, 'U.G.', 3, 'Arial, cursiva, 8');
+      list.Titulo(57, list.Lineactual, 'U.H.', 4, 'Arial, cursiva, 8');
+      list.Titulo(65, list.Lineactual, '$ U.G.', 5, 'Arial, cursiva, 8');
+      list.Titulo(74, list.Lineactual, '$ U.B.', 6, 'Arial, cursiva, 8');
+      list.Titulo(83, list.Lineactual, '$ Cat.', 7, 'Arial, cursiva, 8');
+      list.Titulo(94, list.Lineactual, 'Total', 8, 'Arial, cursiva, 8');
+      list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
+    end;
+    if salida = 'T' then Begin
+      if not ExportarDatos then list.IniciarImpresionModoTexto(LineasPag);
+      titulo2(xperiodo, xtitulo);
+    end;
+    if salida = 'X' then Begin
+      excel.FijarAnchoColumna('a1', 'a1', 30);
+      excel.FijarAnchoColumna('b1', 'b1', 7);
+      excel.FijarAnchoColumna('c1', 'c1', 4);
+      excel.FijarAnchoColumna('d1', 'd1', 8);
+      excel.FijarAnchoColumna('e1', 'e1', 8);
+      excel.FijarAnchoColumna('f1', 'f1', 8);
+      excel.FijarAnchoColumna('g1', 'g1', 8);
+      excel.FijarAnchoColumna('h1', 'h1', 8);
+      excel.FijarAnchoColumna('i1', 'i1', 8);
+      excel.setString('a1', 'a1', xtitulo, 'Arial, negrita, 12');
+      excel.setString('a2', 'a2', 'Resumen por Obra Social', 'Arial, negrita, 14');
+      excel.setString('d2', 'd2', 'Período: ' + xperiodo, 'Arial, normal, 12');
+      excel.setString('a4', 'a4', 'Profesional', 'Arial, negrita, 8');
+      excel.Alinear('b4', 'b4', 'D');
+      excel.setString('b4', 'b4', 'Código', 'Arial, negrita, 8');
+      excel.Alinear('c4', 'c4', 'D');
+      excel.setString('c4', 'c4', 'Cant.', 'Arial, negrita, 8');
+      excel.Alinear('d4', 'd4', 'D');
+      excel.setString('d4', 'd4', 'U.G.', 'Arial, negrita, 8');
+      excel.Alinear('e4', 'e4', 'D');
+      excel.setString('e4', 'e4', 'U.H.', 'Arial, negrita, 8');
+      excel.Alinear('f4', 'f4', 'D');
+      excel.setString('f4', 'f4', '$ U.G.', 'Arial, negrita, 8');
+      excel.Alinear('g4', 'g4', 'D');
+      excel.setString('g4', 'g4', '$ U.B.', 'Arial, negrita, 8');
+      excel.Alinear('h4', 'h4', 'D');
+      excel.setString('h4', 'h4', '$ Cat.', 'Arial, negrita, 8');
+      excel.Alinear('i4', 'i4', 'D');
+      excel.setString('i4', 'i4', 'Total', 'Arial, negrita, 8');
+    end;
+
+    cantidad := 0; subtotal := 0; montos[1] := 0; montos[2] := 0; ordenanter := ''; codosanter := ''; totUB := 0; totUG := 0; canUB := 0; canUG := 0; tot9984 := 0; ccantidadordenes := 0; tttotUB := 0; ttotUG := 0; ccanUB := 0; ccanUG := 0; ccaran := 0; ttotal := 0; xf := 4; caran := 0;
+    ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0; codosanter := '';
+
+    idprofanter := detfactIB.FieldByName('idprof').AsString;
+    profesional.getDatos(idprofanter);
+    profesional.SincronizarCategoria(idprofanter, xperiodo);
+    while not detfactIB.EOF do Begin
+      if (detfactIB.FieldByName('periodo').AsString <> xperiodo) then break;
+      if (detfactIB.FieldByName('periodo').AsString >= xperiodo) and (utiles.verificarItemsLista(ObrasSocSel, detfactIB.FieldByName('codos').AsString)) and (listarLinea) then Begin
+        datosListados := True;
+
+        if (obsocial.FactNBU = 'N') or (Length(trim(detfactIB.FieldByName('codanalisis').AsString)) = 4) then Begin
+          obsocial.SincronizarArancel(detfactIB.FieldByname('codos').AsString, xperiodo);
+          nomeclatura.getDatos(detfactIB.FieldByName('codanalisis').AsString);
+        End;
+        if (obsocial.FactNBU = 'S') and (Length(trim(detfactIB.FieldByName('codanalisis').AsString)) = 6) then Begin
+          obsocial.SincronizarArancelNBU(detfactIB.FieldByname('codos').AsString, xperiodo);
+          nbu.getDatos(detfactIB.FieldByName('codanalisis').AsString);
+        End;
+
+        if detfactIB.FieldByName('codos').AsString <> codosanter then Begin
+          obsocial.getDatos(detfactIB.FieldByname('codos').AsString);
+          if (obsocial.FactNBU = 'N') or (Length(trim(detfactIB.FieldByName('codanalisis').AsString)) = 4) then Begin
+            obsocial.SincronizarArancel(detfactIB.FieldByname('codos').AsString, xperiodo);
+          End;
+          if (obsocial.FactNBU = 'S') and (Length(trim(detfactIB.FieldByName('codanalisis').AsString)) = 6) then Begin
+            obsocial.SincronizarArancel(detfactIB.FieldByname('codos').AsString, xperiodo);
+          End;
+
+          if cantidad > 0 then LineaLaboratorio(salida);
+          RupturaObraSocial1(xperiodo, xtitulo, salida, xinf_com);
+        end else
+          if detfactIB.FieldByName('idprof').AsString <> idprofanter then LineaLaboratorio(salida);
+        if detfactIB.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
+
+        if detfactIB.FieldByName('idprof').AsString <> idprofanter then Begin
+          profesional.getDatos(detfactIB.FieldByName('idprof').AsString);
+          profesional.SincronizarCategoria(detfactIB.FieldByName('idprof').AsString, xperiodo);
+        end;
+
+        paciente.getDatos(detfactIB.FieldByName('idprof').AsString, detfactIB.FieldByName('codpac').AsString);
+        if (length(trim(detfactIB.FieldByName('retiva').AsString)) > 0) then paciente.Gravadoiva := detfactIB.FieldByName('retiva').AsString; // 08/2013
+
+        if (length(trim(detfactIB.FieldByName('ref1').AsString)) = 7) then periodo := detfactIB.FieldByName('ref1').AsString else periodo := xperiodo;
+
+        if (obsocial.FactNBU = 'N') or (Length(trim(detfactIB.FieldByName('codanalisis').AsString)) = 4) then Begin
+          obsocial.SincronizarArancel(detfactIB.FieldByname('codos').AsString, periodo);
+          if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
+          if nomeclatura.RIE <> '*' then subtotal := subtotal + setValorAnalisis(detfactIB.FieldByName('codos').AsString, detfactIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else subtotal := subtotal + setValorAnalisis(detfactIB.FieldByName('codos').AsString, detfactIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
+        end;
+        if (obsocial.FactNBU = 'S') and (Length(trim(detfactIB.FieldByName('codanalisis').AsString)) = 6) then Begin
+          obsocial.SincronizarArancelNBU(detfactIB.FieldByname('codos').AsString, periodo);
+          subtotal := subtotal + setValorAnalisis(detfactIB.FieldByName('codos').AsString, detfactIB.FieldByName('codanalisis').AsString, 0, 0, 0, 0);  // Valor de cada análisis
+        end;
+
+        codosanter  := detfactIB.FieldByName('codos').AsString;
+        idprofanter := detfactIB.FieldByName('idprof').AsString;
+        ordenanter  := detfactIB.FieldByName('orden').AsString;
+      end;
+      detfactIB.Next;
+    end;
+
+    ffirebird.QuitarFiltro(detfactIB);}
+
+    LineaLaboratorio(salida);
+    SubtotalObraSocial1(xperiodo, xtitulo, salida);
+    FinalizarInforme(salida);
+  end;
+
 end;
 
 procedure TTFacturacionCCB.titulo2(xperiodo, xtitulo: String);
@@ -1673,11 +3538,21 @@ procedure TTFacturacionCCB.RupturaObraSocial1(xperiodo, xtitulo: String; salida:
 var
   nLiq: String; s: Boolean;
 begin
-  nLiq := setNumeroDeLiquidacion(xperiodo, detfact.FieldByName('codos').AsString);  // Obtenemoe en número de Liquidación
+  if (interbase = 'N') then
+    nLiq := setNumeroDeLiquidacion(xperiodo, detfact.FieldByName('codos').AsString);  // Obtenemoe en número de Liquidación
+  if (interbase = 'S') then
+    nLiq := setNumeroDeLiquidacion(xperiodo, rsqlIB.FieldByName('codos').AsString);  // Obtenemoe en número de Liquidación
+
   if ccantidadordenes > 0 then s := True else s := False;
   if ccantidadordenes > 0 then SubtotalObraSocial1(xperiodo, xtitulo, salida);
-  obsocial.getDatos(detfact.FieldByName('codos').AsString);
-  obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
+  if (interbase = 'N') then begin
+    obsocial.getDatos(detfact.FieldByName('codos').AsString);
+    obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
+  end;
+  if (interbase = 'S') then begin
+    obsocial.getDatos(rsqlIB.FieldByName('codos').AsString);
+    obsocial.SincronizarArancel(rsqlIB.FieldByname('codos').AsString, xperiodo);
+  end;
   if not llt then Begin
     if (salida = 'P') or (salida = 'I') then Begin
       if (ruptura) and (s) then Begin
@@ -1786,7 +3661,7 @@ begin
       list.Linea(99, list.Lineactual, ' ', 9, 'Arial, negrita, 8', salida, 'S');
       if (totiva[1] + totiva[2] > 0) and not (ExcluirLab) then Begin
         list.Linea(0, 0, ' ', 1, 'Arial, normal, 5', salida, 'S');
-        list.Linea(0,0, 'Grabado / Exento / I.V.A. / Total:', 1, 'Arial, negrita, 8', salida, 'N');
+        list.Linea(0,0, 'Gravado / Exento / I.V.A. / Total:', 1, 'Arial, negrita, 8', salida, 'N');
         list.importe(69, list.Lineactual, '', totiva[1], 2, 'Arial, negrita, 8');
         list.importe(78, list.Lineactual, '', totiva[2], 3, 'Arial, negrita, 8');
         list.importe(87, list.Lineactual, '', totiva[3], 4, 'Arial, negrita, 8');
@@ -1806,7 +3681,7 @@ begin
       list.ImporteTxt(ccaran, 9, 2, False);
       list.ImporteTxt(ttotal, 11, 2, True); Inc(lineas); if controlarSalto then titulo2(periodo, titulo);
       if (totiva[1] + totiva[2] > 0) and not (ExcluirLab) then Begin
-        list.LineaTxt(CHR15 + 'Grabado / Exento / I.V.A. / Total:              ', False);
+        list.LineaTxt(CHR15 + 'Gravado / Exento / I.V.A. / Total:              ', False);
         list.ImporteTxt(totiva[1], 9, 2, False);
         list.ImporteTxt(totiva[2], 9, 2, False);
         list.ImporteTxt(totiva[3], 9, 2, False);
@@ -1837,103 +3712,345 @@ end;
 
 procedure TTFacturacionCCB.ListarResumenPorProfesional(xperiodo, xtitulo: String; profSel: TStringList; ObrasSocSel: TStringList; salida: char);
 // Objetivo...: Listado resumen por profesional
+var
+  id_prof: string;
+  cant: integer;
+
 begin
-  //detfact.IndexName := 'DETFACT_RESUMENPROF';
-  detfact.IndexFieldNames := 'Periodo;Idprof;Codos;Orden;Items';
 
-  IniciarArreglos;
-  if (salida = 'P') or (salida = 'I') then list.Setear(salida);
-  pag := 0; datosListados := False;
-  Periodo := xperiodo;
-  if (salida = 'P') or (salida = 'I') then Begin
-    list.altopag := 0; list.m := 0;
-    list.IniciarTitulos;
-    list.Titulo(0, 0, ' ', 1, 'Arial, normal, 14');
-    list.Titulo(0, 0, xtitulo, 1, 'Arial, normal, 12');
-    list.Titulo(0, 0, 'Resúmen por Profesionales', 1, 'Arial, negrita, 12');
-    list.Titulo(0, 0, 'Período de Facturación: ' + xperiodo, 1, 'Arial, normal, 11');
-    list.Titulo(0, 0, ' ', 1, 'Arial, normal, 8');
-    list.Titulo(0, 0, 'Código   Obra Social', 1, 'Arial, cursiva, 8');
-    list.Titulo(35, list.Lineactual, 'Ord.', 2, 'Arial, cursiva, 8');
-    list.Titulo(40, list.Lineactual, 'Det.', 3, 'Arial, cursiva, 8');
-    list.Titulo(48, list.Lineactual, 'U.G.', 4, 'Arial, cursiva, 8');
-    list.Titulo(57, list.Lineactual, 'U.H.', 5, 'Arial, cursiva, 8');
-    list.Titulo(65, list.Lineactual, '$ U.G.', 6, 'Arial, cursiva, 8');
-    list.Titulo(74, list.Lineactual, '$ U.B.', 7, 'Arial, cursiva, 8');
-    list.Titulo(82, list.Lineactual, '$ Cat.', 8, 'Arial, cursiva, 8');
-    list.Titulo(93, list.Lineactual, 'Total', 9, 'Arial, cursiva, 8');
-    list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
-    list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
-  end;
-  if salida = 'T' then Begin
-    if not ExportarDatos then list.IniciarImpresionModoTexto(LineasPag);
-    titulo3(xperiodo, xtitulo);
-    titulo := xtitulo;
+  if (exporta_web) then begin
+    utilesarchivos.BorrarArchivos(dbs.DirSistema + '\export_reportes\web_resfacturacion', '*.txt');
+    list.AnularCaracteresTexto;
+    salida := 'T';
+    ExportarDatos := true;
+    list.IniciarImpresionModoTexto(10000);
+    list.exportar_rep := true;
   end;
 
-  if Length(Trim(laboratorioactual)) = 0 then Begin
-    totalesPROF.Open; // Guardamos totales para liquidar, si se estan procesando los datos centrales
-    testeartotalesprof;
-  end;
-  detfact.First;
-  cantidad := 0; subtotal := 0; montos[1] := 0; montos[2] := 0; montos[3] := 0; montos[4] := 0; ordenanter := ''; codosanter := ''; idprofanter := ''; totUB := 0; totUG := 0; canUB := 0; canUG := 0; tot9984 := 0; ttotUB := 0; ttotUG := 0; ccanUB := 0; ccanUG := 0; totales[1] := 0; totales[2] := 0; totales[3] := 0; totales[4] := 0; totales[5] := 0; totales[6] := 0; totales[7] := 0; totales[8] := 0; totales[9] := 0; totales[10] := 0; totales[11] := 0;
-  ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0;
-  while not detfact.EOF do Begin
-    if (detfact.FieldByName('periodo').AsString >= xperiodo) and (utiles.verificarItemsLista(profSel, detfact.FieldByName('idprof').AsString)) and (utiles.verificarItemsLista(ObrasSocSel, detfact.FieldByName('codos').AsString)) and (listarLinea) then Begin
-      if not datosListados then Begin
-        obsocial.getDatos(detfact.FieldByname('codos').AsString);
-        obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
-        codosanter := detfact.FieldByName('codos').AsString;
-        datosListados := True;
-      end;
+  if (interbase = 'N') then begin
 
-      if (obsocial.FactNBU = 'N') or (length(trim(detfact.FieldByName('codanalisis').AsString)) = 4) then Begin
-        nomeclatura.getDatos(detfact.FieldByName('codanalisis').AsString);
-        if nomeclatura.CF <> 'F' then Inc(totprestaciones); // Total de prestaciones
-      end;
+    if not (detfact.Active) then detfact.Open;
+    detfact.IndexFieldNames := 'Periodo;Idprof;Codos;Orden;Items';
 
-      if (obsocial.FactNBU = 'S') and (length(trim(detfact.FieldByName('codanalisis').AsString)) = 6) then Inc(totprestaciones);
-
-      if detfact.FieldByName('idprof').AsString <> idprofanter then RupturaPorProfesional2(xperiodo, xtitulo, salida);
-      if (detfact.FieldByName('codos').AsString <> codosanter) and (totprestaciones > 0) and (cantidad > 0) then LineaObraSocial(xperiodo, salida);
-      if detfact.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
-
-      if detfact.FieldByname('codos').AsString <> codosanter then Begin
-        obsocial.getDatos(detfact.FieldByname('codos').AsString);
-        //obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
-      end;
-
-      profesional.SincronizarCategoria(detfact.FieldByName('idprof').AsString, xperiodo);
-      //obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
-
-      if (obsocial.FactNBU = 'N') or (length(trim(detfact.FieldByName('codanalisis').AsString)) = 4) then Begin
-        obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
-        if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
-        if nomeclatura.RIE <> '*' then subtotal := subtotal + setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else subtotal := subtotal + setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
-      end;
-      if (obsocial.FactNBU = 'S') and (length(trim(detfact.FieldByName('codanalisis').AsString)) = 6) then Begin
-        obsocial.SincronizarArancelNBU(detfact.FieldByname('codos').AsString, xperiodo);
-        nbu.getDatos(detfact.FieldByName('codanalisis').AsString);
-        subtotal := subtotal + setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, 0, 0, 0, 0);  // Valor de cada analisis
-      end;
-
-      codosanter  := detfact.FieldByName('codos').AsString;
-      idprofanter := detfact.FieldByName('idprof').AsString;
-      ordenanter  := detfact.FieldByName('orden').AsString;
+    IniciarArreglos;
+    if (salida = 'P') or (salida = 'I') then list.Setear(salida);
+    pag := 0; datosListados := False;
+    Periodo := xperiodo;
+    if (salida = 'P') or (salida = 'I') then Begin
+      list.altopag := 0; list.m := 0;
+      list.IniciarTitulos;
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 14');
+      list.Titulo(0, 0, xtitulo, 1, 'Arial, normal, 12');
+      list.Titulo(0, 0, 'Resúmen por Profesionales', 1, 'Arial, negrita, 12');
+      list.Titulo(0, 0, 'Período de Facturación: ' + xperiodo, 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 8');
+      list.Titulo(0, 0, 'Código   Obra Social', 1, 'Arial, cursiva, 8');
+      list.Titulo(35, list.Lineactual, 'Ord.', 2, 'Arial, cursiva, 8');
+      list.Titulo(40, list.Lineactual, 'Det.', 3, 'Arial, cursiva, 8');
+      list.Titulo(48, list.Lineactual, 'U.G.', 4, 'Arial, cursiva, 8');
+      list.Titulo(57, list.Lineactual, 'U.H.', 5, 'Arial, cursiva, 8');
+      list.Titulo(65, list.Lineactual, '$ U.G.', 6, 'Arial, cursiva, 8');
+      list.Titulo(74, list.Lineactual, '$ U.B.', 7, 'Arial, cursiva, 8');
+      list.Titulo(82, list.Lineactual, '$ Cat.', 8, 'Arial, cursiva, 8');
+      list.Titulo(93, list.Lineactual, 'Total', 9, 'Arial, cursiva, 8');
+      list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
     end;
-    detfact.Next;
+    if salida = 'T' then Begin
+      if not ExportarDatos then list.IniciarImpresionModoTexto(LineasPag);
+      titulo3(xperiodo, xtitulo);
+      titulo := xtitulo;
+    end;
+
+    if Length(Trim(laboratorioactual)) = 0 then Begin
+      totalesPROF.Open; // Guardamos totales para liquidar, si se estan procesando los datos centrales
+      testeartotalesprof;
+    end;
+    detfact.First;
+    cantidad := 0; subtotal := 0; montos[1] := 0; montos[2] := 0; montos[3] := 0; montos[4] := 0; ordenanter := ''; codosanter := ''; idprofanter := ''; totUB := 0; totUG := 0; canUB := 0; canUG := 0; tot9984 := 0; ttotUB := 0; ttotUG := 0; ccanUB := 0; ccanUG := 0; totales[1] := 0; totales[2] := 0; totales[3] := 0; totales[4] := 0; totales[5] := 0; totales[6] := 0; totales[7] := 0; totales[8] := 0; totales[9] := 0; totales[10] := 0; totales[11] := 0;
+    ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0;
+    while not detfact.EOF do Begin
+      if (detfact.FieldByName('periodo').AsString >= xperiodo) and (utiles.verificarItemsLista(profSel, detfact.FieldByName('idprof').AsString)) and (utiles.verificarItemsLista(ObrasSocSel, detfact.FieldByName('codos').AsString)) and (listarLinea) then Begin
+         if not datosListados then Begin
+           obsocial.getDatos(detfact.FieldByname('codos').AsString);
+           obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
+           codosanter := detfact.FieldByName('codos').AsString;
+           datosListados := True;
+         end;
+
+         if (obsocial.FactNBU = 'N') or (length(trim(detfact.FieldByName('codanalisis').AsString)) = 4) then Begin
+           nomeclatura.getDatos(detfact.FieldByName('codanalisis').AsString);
+           if nomeclatura.CF <> 'F' then Inc(totprestaciones); // Total de prestaciones
+         end;
+
+         if (obsocial.FactNBU = 'S') and (length(trim(detfact.FieldByName('codanalisis').AsString)) = 6) then Inc(totprestaciones);
+         if detfact.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
+
+         if detfact.FieldByName('idprof').AsString <> idprofanter then RupturaPorProfesional2(xperiodo, xtitulo, salida);
+         if (detfact.FieldByName('codos').AsString <> codosanter) and (totprestaciones > 0) {and (cantidad > 0)} then LineaObraSocial(xperiodo, salida);
+
+         if detfact.FieldByname('codos').AsString <> codosanter then Begin
+           obsocial.getDatos(detfact.FieldByname('codos').AsString);
+         end;
+
+         profesional.SincronizarCategoria(detfact.FieldByName('idprof').AsString, xperiodo);
+
+         if (length(trim(detfact.FieldByName('ref1').AsString)) = 7) then periodo := detfact.FieldByName('ref1').AsString else periodo := xperiodo;
+
+         // 21/03/2022
+         if  (utiles.getPeriodoAAAAMM(periodo) > __peranter) then begin
+          __maxperiodo := periodo;
+          __peranter := periodo;
+         end;
+
+         if (obsocial.FactNBU = 'N') or (length(trim(detfact.FieldByName('codanalisis').AsString)) = 4) then Begin
+           obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, periodo);
+           if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
+           if nomeclatura.RIE <> '*' then subtotal := subtotal + setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else subtotal := subtotal + setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
+         end;
+         if (obsocial.FactNBU = 'S') and (length(trim(detfact.FieldByName('codanalisis').AsString)) = 6) then Begin
+           obsocial.SincronizarArancelNBU(detfact.FieldByname('codos').AsString, periodo);
+           nbu.getDatos(detfact.FieldByName('codanalisis').AsString);
+           subtotal := subtotal + setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, 0, 0, 0, 0);  // Valor de cada analisis
+         end;
+
+         codosanter  := detfact.FieldByName('codos').AsString;
+         idprofanter := detfact.FieldByName('idprof').AsString;
+         id_prof := detfact.FieldByName('idprof').AsString;
+         ordenanter  := detfact.FieldByName('orden').AsString;
+      end;
+      detfact.Next;
+    end;
+
+    LineaObraSocial(xperiodo, salida);
+
+    if totales[1] + totales[2] > 0 then SubtotalObraSocialResumenProf('Subtotal:', salida);    // Subtotales Obra Social
+
+    if Length(Trim(laboratorioactual)) = 0 then Begin
+      CalcularMontosFacturacion(xperiodo);  // Unificar Montos para Facturación
+      totalesPROF.Close;
+    end;
   end;
 
-  LineaObraSocial(xperiodo, salida);
+  if (interbase = 'S') then begin
+    {if not (detfactIB.Active) then detfactIB.Open;
+    if not (ProcesamientoCentral) then ffirebird.Filtrar(detfactIB, 'periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + laboratorioactual + '''') else ffirebird.Filtrar(detfactIB, 'periodo = ' + '''' + xperiodo + '''');
+    detfactIB.IndexFieldNames := 'Periodo;Idprof;Codos;Orden;Items';
+    detfactIB.First;}
 
-  if totales[1] + totales[2] > 0 then SubtotalObraSocialResumenProf('Subtotal:', salida);    // Subtotales Obra Social
+    if not (ProcesamientoCentral) then
+      rsqlIB :=  ffirebird.getTransacSQL('select * from detfact where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + laboratorioactual + '''' + ' order by periodo, idprof, codos, orden, items')
+    else
+      rsqlIB :=  ffirebird.getTransacSQL('select * from detfact' + __c + ' where periodo = ' + '''' + xperiodo + '''' + ' order by periodo, idprof, codos, orden, items');
+    rsqlIB.Open; rsqlIB.First;
+    
+    IniciarArreglos;
+    if (salida = 'P') or (salida = 'I') then list.Setear(salida);
+    pag := 0; datosListados := False;
+    Periodo := xperiodo;
+    if (salida = 'P') or (salida = 'I') then Begin
+      list.altopag := 0; list.m := 0;
+      list.IniciarTitulos;
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 14');
+      list.Titulo(0, 0, xtitulo, 1, 'Arial, normal, 12');
+      list.Titulo(0, 0, 'Resúmen por Profesionales', 1, 'Arial, negrita, 12');
+      list.Titulo(0, 0, 'Período de Facturación: ' + xperiodo, 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 8');
+      list.Titulo(0, 0, 'Código   Obra Social', 1, 'Arial, cursiva, 8');
+      list.Titulo(35, list.Lineactual, 'Ord.', 2, 'Arial, cursiva, 8');
+      list.Titulo(40, list.Lineactual, 'Det.', 3, 'Arial, cursiva, 8');
+      list.Titulo(48, list.Lineactual, 'U.G.', 4, 'Arial, cursiva, 8');
+      list.Titulo(57, list.Lineactual, 'U.H.', 5, 'Arial, cursiva, 8');
+      list.Titulo(65, list.Lineactual, '$ U.G.', 6, 'Arial, cursiva, 8');
+      list.Titulo(74, list.Lineactual, '$ U.B.', 7, 'Arial, cursiva, 8');
+      list.Titulo(82, list.Lineactual, '$ Cat.', 8, 'Arial, cursiva, 8');
+      list.Titulo(93, list.Lineactual, 'Total', 9, 'Arial, cursiva, 8');
+      list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
+    end;
+    if salida = 'T' then Begin
+      if not ExportarDatos then list.IniciarImpresionModoTexto(LineasPag);
+      titulo3(xperiodo, xtitulo);
+      titulo := xtitulo;
+    end;
 
-  if Length(Trim(laboratorioactual)) = 0 then Begin
-    CalcularMontosFacturacion(xperiodo);  // Unificar Montos para Facturación
-    totalesPROF.Close;
+    if Length(Trim(laboratorioactual)) = 0 then Begin
+      totalesPROF.Open; // Guardamos totales para liquidar, si se estan procesando los datos centrales
+      testeartotalesprof;
+    end;
+
+    cantidad := 0; subtotal := 0; montos[1] := 0; montos[2] := 0; montos[3] := 0; montos[4] := 0; ordenanter := ''; codosanter := ''; idprofanter := ''; totUB := 0; totUG := 0; canUB := 0; canUG := 0; tot9984 := 0; ttotUB := 0; ttotUG := 0; ccanUB := 0; ccanUG := 0; totales[1] := 0; totales[2] := 0; totales[3] := 0; totales[4] := 0; totales[5] := 0; totales[6] := 0; totales[7] := 0; totales[8] := 0; totales[9] := 0; totales[10] := 0; totales[11] := 0;
+    ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0; idprofanter := ''; codosanter := ''; __peranter := '';
+    while not rsqlIB.EOF do Begin
+      if (rsqlIB.FieldByName('periodo').AsString >= xperiodo) and (utiles.verificarItemsLista(profSel, rsqlIB.FieldByName('idprof').AsString)) and (utiles.verificarItemsLista(ObrasSocSel, rsqlIB.FieldByName('codos').AsString)) and (listarLinea) then Begin
+
+         if not datosListados then Begin
+           obsocial.getDatos(rsqlIB.FieldByname('codos').AsString);
+           obsocial.SincronizarArancel(rsqlIB.FieldByname('codos').AsString, xperiodo);
+           codosanter := rsqlIB.FieldByName('codos').AsString;
+           datosListados := True;
+         end;
+
+         if (obsocial.FactNBU = 'N') or (length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 4) then Begin
+           nomeclatura.getDatos(rsqlIB.FieldByName('codanalisis').AsString);
+           if nomeclatura.CF <> 'F' then Inc(totprestaciones); // Total de prestaciones
+         end;
+
+         if (obsocial.FactNBU = 'S') and (length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 6) then Inc(totprestaciones);
+         if rsqlIB.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
+
+         if rsqlIB.FieldByName('idprof').AsString <> idprofanter then RupturaPorProfesional2(xperiodo, xtitulo, salida);
+         if (rsqlIB.FieldByName('codos').AsString <> codosanter) and (totprestaciones > 0) {and (cantidad > 0)} then LineaObraSocial(xperiodo, salida);
+
+         if rsqlIB.FieldByname('codos').AsString <> codosanter then Begin
+           obsocial.getDatos(rsqlIB.FieldByname('codos').AsString);
+         end;
+
+         profesional.SincronizarCategoria(rsqlIB.FieldByName('idprof').AsString, xperiodo);
+
+         if (length(trim(rsqlIB.FieldByName('ref1').AsString)) = 7) then periodo := rsqlIB.FieldByName('ref1').AsString else periodo := xperiodo;
+
+          // 21/03/2022
+         if  (utiles.getPeriodoAAAAMM(periodo) > __peranter) then __maxperiodo := periodo;
+         __peranter := utiles.getPeriodoAAAAMM(periodo);
+
+         if (obsocial.FactNBU = 'N') or (length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 4) then Begin
+           obsocial.SincronizarArancel(rsqlIB.FieldByname('codos').AsString, periodo);
+           if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
+           if nomeclatura.RIE <> '*' then subtotal := subtotal + setValorAnalisis(rsqlIB.FieldByName('codos').AsString, rsqlIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else subtotal := subtotal + setValorAnalisis(rsqlIB.FieldByName('codos').AsString, rsqlIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
+         end;
+         if (obsocial.FactNBU = 'S') and (length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 6) then Begin
+           obsocial.SincronizarArancelNBU(rsqlIB.FieldByname('codos').AsString, periodo);
+           //nbu.getDatos(rsqlIB.FieldByName('codanalisis').AsString);
+           subtotal := subtotal + setValorAnalisis(rsqlIB.FieldByName('codos').AsString, rsqlIB.FieldByName('codanalisis').AsString, 0, 0, 0, 0);  // Valor de cada analisis
+         end;
+
+         codosanter  := rsqlIB.FieldByName('codos').AsString;
+         idprofanter := rsqlIB.FieldByName('idprof').AsString;
+         id_prof := rsqlIB.FieldByName('idprof').AsString;
+         ordenanter  := rsqlIB.FieldByName('orden').AsString;
+      end;
+      rsqlIB.Next;
+    end;
+
+    LineaObraSocial(xperiodo, salida);
+
+    if totales[1] + totales[2] > 0 then SubtotalObraSocialResumenProf('Subtotal:', salida);    // Subtotales Obra Social
+
+    if Length(Trim(laboratorioactual)) = 0 then Begin
+      CalcularMontosFacturacion(xperiodo);  // Unificar Montos para Facturación
+      totalesPROF.Close;
+    end;
+
+    rsqlIB.close; rsqlIB.Free;
+
+    {IniciarArreglos;
+    if (salida = 'P') or (salida = 'I') then list.Setear(salida);
+    pag := 0; datosListados := False;
+    Periodo := xperiodo;
+    if (salida = 'P') or (salida = 'I') then Begin
+      list.altopag := 0; list.m := 0;
+      list.IniciarTitulos;
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 14');
+      list.Titulo(0, 0, xtitulo, 1, 'Arial, normal, 12');
+      list.Titulo(0, 0, 'Resúmen por Profesionales', 1, 'Arial, negrita, 12');
+      list.Titulo(0, 0, 'Período de Facturación: ' + xperiodo, 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 8');
+      list.Titulo(0, 0, 'Código   Obra Social', 1, 'Arial, cursiva, 8');
+      list.Titulo(35, list.Lineactual, 'Ord.', 2, 'Arial, cursiva, 8');
+      list.Titulo(40, list.Lineactual, 'Det.', 3, 'Arial, cursiva, 8');
+      list.Titulo(48, list.Lineactual, 'U.G.', 4, 'Arial, cursiva, 8');
+      list.Titulo(57, list.Lineactual, 'U.H.', 5, 'Arial, cursiva, 8');
+      list.Titulo(65, list.Lineactual, '$ U.G.', 6, 'Arial, cursiva, 8');
+      list.Titulo(74, list.Lineactual, '$ U.B.', 7, 'Arial, cursiva, 8');
+      list.Titulo(82, list.Lineactual, '$ Cat.', 8, 'Arial, cursiva, 8');
+      list.Titulo(93, list.Lineactual, 'Total', 9, 'Arial, cursiva, 8');
+      list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
+    end;
+    if salida = 'T' then Begin
+      if not ExportarDatos then list.IniciarImpresionModoTexto(LineasPag);
+      titulo3(xperiodo, xtitulo);
+      titulo := xtitulo;
+    end;
+
+    if Length(Trim(laboratorioactual)) = 0 then Begin
+      totalesPROF.Open; // Guardamos totales para liquidar, si se estan procesando los datos centrales
+      testeartotalesprof;
+    end;
+
+    cantidad := 0; subtotal := 0; montos[1] := 0; montos[2] := 0; montos[3] := 0; montos[4] := 0; ordenanter := ''; codosanter := ''; idprofanter := ''; totUB := 0; totUG := 0; canUB := 0; canUG := 0; tot9984 := 0; ttotUB := 0; ttotUG := 0; ccanUB := 0; ccanUG := 0; totales[1] := 0; totales[2] := 0; totales[3] := 0; totales[4] := 0; totales[5] := 0; totales[6] := 0; totales[7] := 0; totales[8] := 0; totales[9] := 0; totales[10] := 0; totales[11] := 0;
+    ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0; idprofanter := ''; codosanter := '';
+    while not detfactIB.EOF do Begin
+      if (detfactIB.FieldByName('periodo').AsString >= xperiodo) and (utiles.verificarItemsLista(profSel, detfactIB.FieldByName('idprof').AsString)) and (utiles.verificarItemsLista(ObrasSocSel, detfactIB.FieldByName('codos').AsString)) and (listarLinea) then Begin
+
+         if not datosListados then Begin
+           obsocial.getDatos(detfactIB.FieldByname('codos').AsString);
+           obsocial.SincronizarArancel(detfactIB.FieldByname('codos').AsString, xperiodo);
+           codosanter := detfactIB.FieldByName('codos').AsString;
+           datosListados := True;
+         end;
+
+         if (obsocial.FactNBU = 'N') or (length(trim(detfactIB.FieldByName('codanalisis').AsString)) = 4) then Begin
+           nomeclatura.getDatos(detfactIB.FieldByName('codanalisis').AsString);
+           if nomeclatura.CF <> 'F' then Inc(totprestaciones); // Total de prestaciones
+         end;
+
+         if (obsocial.FactNBU = 'S') and (length(trim(detfactIB.FieldByName('codanalisis').AsString)) = 6) then Inc(totprestaciones);
+         if detfactIB.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
+
+         if detfactIB.FieldByName('idprof').AsString <> idprofanter then RupturaPorProfesional2(xperiodo, xtitulo, salida);
+         if (detfactIB.FieldByName('codos').AsString <> codosanter) and (totprestaciones > 0) then LineaObraSocial(xperiodo, salida);
+
+         if detfactIB.FieldByname('codos').AsString <> codosanter then Begin
+           obsocial.getDatos(detfactIB.FieldByname('codos').AsString);
+         end;
+
+         profesional.SincronizarCategoria(detfactIB.FieldByName('idprof').AsString, xperiodo);
+
+         if (length(trim(detfactIB.FieldByName('ref1').AsString)) = 7) then periodo := detfactIB.FieldByName('ref1').AsString else periodo := xperiodo;
+
+         if (obsocial.FactNBU = 'N') or (length(trim(detfactIB.FieldByName('codanalisis').AsString)) = 4) then Begin
+           obsocial.SincronizarArancel(detfactIB.FieldByname('codos').AsString, periodo);
+           if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
+           if nomeclatura.RIE <> '*' then subtotal := subtotal + setValorAnalisis(detfactIB.FieldByName('codos').AsString, detfactIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else subtotal := subtotal + setValorAnalisis(detfactIB.FieldByName('codos').AsString, detfactIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
+         end;
+         if (obsocial.FactNBU = 'S') and (length(trim(detfactIB.FieldByName('codanalisis').AsString)) = 6) then Begin
+           obsocial.SincronizarArancelNBU(detfactIB.FieldByname('codos').AsString, periodo);
+           nbu.getDatos(detfactIB.FieldByName('codanalisis').AsString);
+           subtotal := subtotal + setValorAnalisis(detfactIB.FieldByName('codos').AsString, detfactIB.FieldByName('codanalisis').AsString, 0, 0, 0, 0);  // Valor de cada analisis
+         end;
+
+         codosanter  := detfactIB.FieldByName('codos').AsString;
+         idprofanter := detfactIB.FieldByName('idprof').AsString;
+         id_prof := detfactIB.FieldByName('idprof').AsString;
+         ordenanter  := detfactIB.FieldByName('orden').AsString;
+      end;
+      detfactIB.Next;
+    end;
+
+    LineaObraSocial(xperiodo, salida);
+
+    if totales[1] + totales[2] > 0 then SubtotalObraSocialResumenProf('Subtotal:', salida);    // Subtotales Obra Social
+
+    if Length(Trim(laboratorioactual)) = 0 then Begin
+      CalcularMontosFacturacion(xperiodo);  // Unificar Montos para Facturación
+      totalesPROF.Close;
+    end;
+
+    ffirebird.QuitarFiltro(detfactIB);}
+
   end;
 
-  FinalizarInforme(salida);
+  if (exporta_web) and (salida = 'T') then begin
+    list.FinalizarExportacion;
+    CopyFile(PChar(dbs.DirSistema + '\list.txt'), PChar(dbs.DirSistema + '\export_reportes\web_resfacturacion\' + copy(xperiodo, 1, 2) + copy(xperiodo, 4, 6) + '_' + id_prof + '_RE' + '.txt'), false);
+  end else begin
+    if salida <> 'N' then FinalizarInforme(salida);
+  end;
+
+  exporta_web := false;
+
 end;
 
 procedure TTFacturacionCCB.titulo3(xperiodo, xtitulo: String);
@@ -1953,6 +4070,8 @@ end;
 
 procedure TTFacturacionCCB.RupturaPorProfesional2(xperiodo, xtitulo: String; salida: char);
 // Objetivo...: Ruptura por profesional
+var
+  archdest: string;
 begin
   if (Length(Trim(idprofanter)) > 0) and (totprestaciones > 0) then Begin
     LineaObraSocial(xperiodo, salida);
@@ -1961,8 +4080,14 @@ begin
 
   if totales[1] + totales[2] > 0 then SubtotalObraSocialResumenProf('Subtotal:', salida);    // Subtotales Obra Social
 
-  profesional.getDatos(detfact.FieldByName('idprof').AsString);
-  profesional.SincronizarCategoria(detfact.FieldByName('idprof').AsString, xperiodo);
+  if (interbase = 'N') then begin
+    profesional.getDatos(detfact.FieldByName('idprof').AsString);
+    profesional.SincronizarCategoria(detfact.FieldByName('idprof').AsString, xperiodo);
+  end;
+  if (interbase = 'S') then begin
+    profesional.getDatos(rsqlIB.FieldByName('idprof').AsString);
+    profesional.SincronizarCategoria(rsqlIB.FieldByName('idprof').AsString, xperiodo);
+  end;
   if (salida = 'P') or (salida = 'I') then Begin
       if (ruptura) and (Length(Trim(idprofanter)) > 0) then Begin
         pag := 0;
@@ -1970,10 +4095,62 @@ begin
       end;
       list.Linea(0, 0, 'Profesional:  ' + profesional.codigo + '  ' + profesional.nombre, 1, 'Arial, negrita, 8, clNavy', salida, 'S');
   end;
-  if salida = 'T' then Begin
+  if (salida = 'T') then Begin
     if (ruptura) and (Length(Trim(idprofanter)) > 0) then Begin
       pag := 0;
-      RealizarSalto;
+      if not (exporta_web) then RealizarSalto else begin
+        list.FinalizarExportacion;
+        archdest := copy(xperiodo, 1, 2) + copy(xperiodo, 4, 6) + '_' + idprofanter + '_RE' + '.txt';
+        CopyFile(PChar(dbs.DirSistema + '\list.txt'), PChar(dbs.DirSistema + '\export_reportes\web_resfacturacion\' + archdest), false);
+        list.IniciarImpresionModoTexto(10000);
+        list.exportar_rep := true;
+      end;
+      titulo3(xperiodo, xtitulo);
+    end;
+    if (Length(Trim(idprofanter)) > 0) then Begin
+      list.LineaTxt(CHR18 + ' ', True); Inc(lineas); if controlarSalto then titulo3(periodo, xtitulo);
+    end;
+    list.LineaTxt(list.modo_resaltado_seleccionar + 'Profesional:  ' + profesional.codigo + '  ' + profesional.nombre + list.modo_resaltado_cancelar + CHR15, True); Inc(lineas); if controlarSalto then titulo3(periodo, xtitulo);
+  end;
+end;
+
+procedure TTFacturacionCCB.RupturaPorProfesional3(xperiodo, xtitulo: String; salida: char);
+// Objetivo...: Ruptura por profesional
+var
+  archdest: string;
+begin
+  if (Length(Trim(idprofanter)) > 0) and (totprestaciones > 0) then Begin
+    LineaObraSocial(xperiodo, salida);
+    if (salida = 'P') or (salida = 'I') then list.Linea(0, 0, '  ', 1, 'Arial, negrita, 5', salida, 'S');
+  end;
+
+  if totales[1] + totales[2] > 0 then SubtotalObraSocialResumenProf('Subtotal:', salida);    // Subtotales Obra Social
+
+  if (interbase = 'N') then begin
+    profesional.getDatos(detfact.FieldByName('idprof').AsString);
+    profesional.SincronizarCategoria(detfact.FieldByName('idprof').AsString, xperiodo);
+  end;
+  if (interbase = 'S') then begin
+    profesional.getDatos(rsqlIB.FieldByName('idprof').AsString);
+    profesional.SincronizarCategoria(rsqlIB.FieldByName('idprof').AsString, xperiodo);
+  end;
+  if (salida = 'P') or (salida = 'I') then Begin
+      if (ruptura) and (Length(Trim(idprofanter)) > 0) then Begin
+        pag := 0;
+        list.IniciarNuevaPagina;
+      end;
+      list.Linea(0, 0, 'Profesional:  ' + profesional.codigo + '  ' + profesional.nombre, 1, 'Arial, negrita, 8, clNavy', salida, 'S');
+  end;
+  if (salida = 'T') then Begin
+    if (Length(Trim(idprofanter)) > 0) then Begin
+      pag := 0;
+      if not (exporta_web) then RealizarSalto else begin
+        list.FinalizarExportacion;
+        archdest := copy(xperiodo, 1, 2) + copy(xperiodo, 4, 6) + '_' + idprofanter + '_REIN' + '.txt';
+        CopyFile(PChar(dbs.DirSistema + '\list.txt'), PChar(dbs.DirSistema + '\export_reportes\web_totalesri\' + archdest), false);
+        list.IniciarImpresionModoTexto(10000);
+        list.exportar_rep := true;
+      end;
       titulo3(xperiodo, xtitulo);
     end;
     if (Length(Trim(idprofanter)) > 0) then Begin
@@ -2000,6 +4177,13 @@ begin
     list.Linea(99, list.Lineactual, '  ', 10, 'Arial, normal, 8', salida, 'S');
   end;
   if salida = 'T' then Begin
+    if (exporta_web) then begin   // 01/04/2019
+      list.LineaTxt(Copy(obsocial.Nombrec, 1, 45) + utiles.espacios(46 - Length(TrimRight(Copy(obsocial.Nombrec, 1, 45)))), False);
+      list.LineaTxt(Copy(obsocial.direccion, 1, 30) + utiles.espacios(31 - Length(TrimRight(Copy(obsocial.direccion, 1, 30)))), False);
+      list.LineaTxt(Copy(obsocial.localidad, 1, 20) + utiles.espacios(21 - Length(TrimRight(Copy(obsocial.localidad, 1, 20)))), False);
+      list.LineaTxt(obsocial.nrocuit, True);
+      Inc(lineas); if controlarSalto then titulo7(periodo, titulo);
+    end;
     list.LineaTxt('  ' + CHR15 + obsocial.codos + ' ' + Copy(obsocial.Nombre, 1, 38) + utiles.espacios(45 - Length(TrimRight(Copy(obsocial.Nombre, 1, 38)))), False);
     list.ImporteTxt(cantidad, 4, 0, False);
     list.ImporteTxt(totprestaciones, 8, 0, False);
@@ -2034,7 +4218,7 @@ begin
 
   totales[11] := totales[11] + subtotal;
 
-  cantidad := 0; totprestaciones := 0; totUB := 0; totUG := 0; canUB := 0; canUG := 0; caran := 0; subtotal := 0; tot9984 := 0;
+  cantidad := 0; totprestaciones := 0; totUB := 0; totUG := 0; canUB := 0; canUG := 0; caran := 0; subtotal := 0; tot9984 := 0; ordenanter := '';
 end;
 
 procedure TTFacturacionCCB.SubtotalObraSocialResumenProf(xleyenda: String; salida: char);
@@ -2111,108 +4295,293 @@ procedure TTFacturacionCCB.ListarTotGralesObrasSociales(xperiodo, xtitulo: Strin
 // Objetivo...: Totales generales por obra social
 begin
   IniciarArreglos;
-  if (salida = 'P') or (salida = 'I') then list.Setear(salida);
-  pag := 0; datosListados := False;
-  Periodo := xperiodo;
-  if (salida = 'P') or (salida = 'I') then Begin
-    list.altopag := 0; list.m := 0;
-    list.IniciarTitulos;
-    list.Titulo(0, 0, ' ', 1, 'Arial, normal, 14');
-    list.Titulo(0, 0, xtitulo, 1, 'Arial, normal, 12');
-    list.Titulo(0, 0, 'Totales Generales por Obra Social', 1, 'Arial, negrita, 12');
-    list.Titulo(0, 0, 'Período de Facturación: ' + xperiodo, 1, 'Arial, normal, 11');
-    list.Titulo(0, 0, ' ', 1, 'Arial, normal, 8');
-    list.Titulo(0, 0, 'Código   Obra Social', 1, 'Arial, cursiva, 8');
-    list.Titulo(26, list.Lineactual, 'Nro.Liq.', 2, 'Arial, cursiva, 8');
-    list.Titulo(34, list.Lineactual, 'Nro. Factura', 3, 'Arial, cursiva, 8');
-    list.Titulo(50, list.Lineactual, 'U.G.', 4, 'Arial, cursiva, 8');
-    list.Titulo(59, list.Lineactual, 'U.H.', 5, 'Arial, cursiva, 8');
-    list.Titulo(67, list.Lineactual, '$ U.G.', 6, 'Arial, cursiva, 8');
-    list.Titulo(77, list.Lineactual, '$ U.B.', 7, 'Arial, cursiva, 8');
-    list.Titulo(86, list.Lineactual, '$ Cat.', 8, 'Arial, cursiva, 8');
-    list.Titulo(94, list.Lineactual, 'Total', 9, 'Arial, cursiva, 8');
-    list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
-    list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
-  end;
-  if salida = 'T' then Begin
-    if not ExportarDatos then list.IniciarImpresionModoTexto(LineasPag);
-    titulo4(xperiodo, xtitulo);
-  end;
-
-  //detfact.IndexName := 'DETFACT_RESUMENOS';
-  detfact.IndexFieldNames := 'Periodo;Codos;Idprof;Orden;Items';
-  subtotal := 0; totUB := 0; totUG := 0; canUB := 0; canUG := 0; tot9984 := 0; idprofanter := ''; datosListados := False; ordenanter := ''; totales[1] := 0; totales[2] := 0; totales[3] := 0; totales[4] := 0; totales[5] := 0; totales[6] := 0;  ccaran := 0; llt := True;
-  ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0;
-  if Length(Trim(laboratorioactual)) = 0 then totalesOS.Open;   // Instancia para Guardar los totales por Obra Social, si se trata de procesamiento central
-  detfact.First;
-  cantidad := 0; subtotal := 0; montos[1] := 0; montos[2] := 0; ordenanter := ''; codosanter := ''; totUB := 0; totUG := 0; canUB := 0; canUG := 0; tot9984 := 0; ccantidadordenes := 0; tttotUB := 0; ttotUG := 0; ccanUB := 0; ccanUG := 0; ccaran := 0; ttotal := 0;
-  idprofanter := detfact.FieldByName('idprof').AsString;
-  profesional.getDatos(idprofanter);
-  profesional.SincronizarCategoria(idprofanter, xperiodo);
-  while not detfact.EOF do Begin
-    if (detfact.FieldByName('periodo').AsString = xperiodo) and (utiles.verificarItemsLista(ObrasSocSel, detfact.FieldByName('codos').AsString)) and (listarLinea) then Begin
-      datosListados := True;
-      nomeclatura.getDatos(detfact.FieldByName('codanalisis').AsString);
-      if detfact.FieldByName('codos').AsString <> codosanter then Begin
-        if cantidad > 0 then LineaLaboratorio(salida);
-        if ttotal > 0 then LineaOS(xperiodo, codosanter, xtitulo, salida);
-        RupturaObraSocial1(xperiodo, xtitulo, salida, False);
-        obsocial.getDatos(detfact.FieldByname('codos').AsString);
-        obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
-      end else
-        if detfact.FieldByName('idprof').AsString <> idprofanter then LineaLaboratorio(salida);
-      if detfact.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
-
-      if detfact.FieldByName('idprof').AsString <> idprofanter then Begin
-        profesional.getDatos(detfact.FieldByName('idprof').AsString);
-        profesional.SincronizarCategoria(detfact.FieldByName('idprof').AsString, xperiodo);
-      end;
-      //obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
-
-      if (obsocial.FactNBU = 'N') or (Length(trim(detfact.FieldByName('codanalisis').AsString)) = 4) then Begin
-        obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
-        if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
-        if nomeclatura.RIE <> '*' then subtotal := subtotal + setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else subtotal := subtotal + setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
-      end;
-      if (obsocial.FactNBU = 'S') and (Length(trim(detfact.FieldByName('codanalisis').AsString)) = 6) then Begin
-        subtotal := subtotal + setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, 0, 0, 0, 0);  // Valor de cada analisis
-      end;
-
-      codosanter  := detfact.FieldByName('codos').AsString;
-      idprofanter := detfact.FieldByName('idprof').AsString;
-      ordenanter  := detfact.FieldByName('orden').AsString;
+  if (interbase = 'N') then begin
+    if (salida = 'P') or (salida = 'I') then list.Setear(salida);
+    pag := 0; datosListados := False;
+    Periodo := xperiodo;
+    if (salida = 'P') or (salida = 'I') then Begin
+      list.altopag := 0; list.m := 0;
+      list.IniciarTitulos;
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 14');
+      list.Titulo(0, 0, xtitulo, 1, 'Arial, normal, 12');
+      list.Titulo(0, 0, 'Totales Generales por Obra Social', 1, 'Arial, negrita, 12');
+      list.Titulo(0, 0, 'Período de Facturación: ' + xperiodo, 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 8');
+      list.Titulo(0, 0, 'Código   Obra Social', 1, 'Arial, cursiva, 8');
+      list.Titulo(26, list.Lineactual, 'Nro.Liq.', 2, 'Arial, cursiva, 8');
+      list.Titulo(34, list.Lineactual, 'Nro. Factura', 3, 'Arial, cursiva, 8');
+      list.Titulo(50, list.Lineactual, 'U.G.', 4, 'Arial, cursiva, 8');
+      list.Titulo(59, list.Lineactual, 'U.H.', 5, 'Arial, cursiva, 8');
+      list.Titulo(67, list.Lineactual, '$ U.G.', 6, 'Arial, cursiva, 8');
+      list.Titulo(77, list.Lineactual, '$ U.B.', 7, 'Arial, cursiva, 8');
+      list.Titulo(86, list.Lineactual, '$ Cat.', 8, 'Arial, cursiva, 8');
+      list.Titulo(94, list.Lineactual, 'Total', 9, 'Arial, cursiva, 8');
+      list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
     end;
-    detfact.Next;
+    if salida = 'T' then Begin
+      if not ExportarDatos then list.IniciarImpresionModoTexto(LineasPag);
+      titulo4(xperiodo, xtitulo);
+    end;
+
+    if not (detfact.Active) then detfact.Open;
+    detfact.IndexFieldNames := 'Periodo;Codos;Idprof;Orden;Items';
+    subtotal := 0; totUB := 0; totUG := 0; canUB := 0; canUG := 0; tot9984 := 0; idprofanter := ''; datosListados := False; ordenanter := ''; totales[1] := 0; totales[2] := 0; totales[3] := 0; totales[4] := 0; totales[5] := 0; totales[6] := 0;  ccaran := 0; llt := True;
+    ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0;
+    if Length(Trim(laboratorioactual)) = 0 then totalesOS.Open;   // Instancia para Guardar los totales por Obra Social, si se trata de procesamiento central
+    detfact.First;
+    cantidad := 0; subtotal := 0; montos[1] := 0; montos[2] := 0; ordenanter := ''; codosanter := ''; totUB := 0; totUG := 0; canUB := 0; canUG := 0; tot9984 := 0; ccantidadordenes := 0; tttotUB := 0; ttotUG := 0; ccanUB := 0; ccanUG := 0; ccaran := 0; ttotal := 0;
+    idprofanter := detfact.FieldByName('idprof').AsString;
+    profesional.getDatos(idprofanter);
+    profesional.SincronizarCategoria(idprofanter, xperiodo);
+    while not detfact.EOF do Begin
+      if (detfact.FieldByName('periodo').AsString = xperiodo) and (utiles.verificarItemsLista(ObrasSocSel, detfact.FieldByName('codos').AsString)) and (listarLinea) then Begin
+        datosListados := True;
+        nomeclatura.getDatos(detfact.FieldByName('codanalisis').AsString);
+        if detfact.FieldByName('codos').AsString <> codosanter then Begin
+          if cantidad > 0 then LineaLaboratorio(salida);
+          if ttotal > 0 then LineaOS(xperiodo, codosanter, xtitulo, salida);
+          RupturaObraSocial1(xperiodo, xtitulo, salida, False);
+          obsocial.getDatos(detfact.FieldByname('codos').AsString);
+          obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
+        end else
+          if detfact.FieldByName('idprof').AsString <> idprofanter then LineaLaboratorio(salida);
+        if detfact.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
+
+        if detfact.FieldByName('idprof').AsString <> idprofanter then Begin
+          profesional.getDatos(detfact.FieldByName('idprof').AsString);
+          profesional.SincronizarCategoria(detfact.FieldByName('idprof').AsString, xperiodo);
+        end;
+
+        if (length(trim(detfact.FieldByName('ref1').AsString)) = 7) then periodo := detfact.FieldByName('ref1').AsString else periodo := xperiodo;
+
+        if (obsocial.FactNBU = 'N') or (Length(trim(detfact.FieldByName('codanalisis').AsString)) = 4) then Begin
+          obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, periodo);
+          if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
+          if nomeclatura.RIE <> '*' then subtotal := subtotal + setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else subtotal := subtotal + setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
+        end;
+        if (obsocial.FactNBU = 'S') and (Length(trim(detfact.FieldByName('codanalisis').AsString)) = 6) then Begin
+          obsocial.SincronizarArancelNBU(detfact.FieldByname('codos').AsString, periodo);
+          subtotal := subtotal + setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, 0, 0, 0, 0);  // Valor de cada analisis
+        end;
+
+        codosanter  := detfact.FieldByName('codos').AsString;
+        idprofanter := detfact.FieldByName('idprof').AsString;
+        ordenanter  := detfact.FieldByName('orden').AsString;
+      end;
+      detfact.Next;
+    end;
+
+    if cantidad > 0 then LineaLaboratorio(salida);
+    if ttotal > 0 then LineaOS(xperiodo, codosanter, xtitulo, salida);
+
+    if Length(Trim(laboratorioactual)) = 0 then totalesOS.Close;
+
+    if (salida = 'P') or (salida = 'I') then Begin
+      list.Linea(0, 0, '', 1, 'Arial, normal, 8', salida, 'N');
+      list.Linea(48, list.Lineactual, '---------------------------------------------------------------------------------------------', 2, 'Arial, normal, 8', salida, 'S');
+      list.Linea(0, 0, 'Subtotal:', 1, 'Arial, negrita, 8', salida, 'N');
+      list.importe(54, list.Lineactual, '', totales[1], 2, 'Arial, negrita, 8');
+      list.importe(62, list.Lineactual, '', totales[2], 3, 'Arial, negrita, 8');
+      list.importe(72, list.Lineactual, '', totales[3], 4, 'Arial, negrita, 8');
+      list.importe(81, list.Lineactual, '', totales[4], 5, 'Arial, negrita, 8');
+      list.importe(90, list.Lineactual, '', totales[5], 6, 'Arial, negrita, 9');
+      list.importe(99, list.Lineactual, '', totales[6], 7, 'Arial, negrita, 8');
+    end;
+    if salida = 'T' then Begin
+      list.LineaTxt(utiles.espacios(54) + '---------------------------------------------------------', True); Inc(lineas); if controlarSalto then titulo4(periodo, titulo);
+      list.LineaTxt('Subtotal:  ' + utiles.espacios(52 - Length(TrimRight('Subtotal:'))), False);
+      list.importeTxt(totales[1], 9, 2, False);
+      list.importeTxt(totales[2], 9, 2, False);
+      list.importeTxt(totales[3], 9, 2, False);
+      list.importeTxt(totales[4], 9, 2, False);
+      list.importeTxt(totales[5], 9, 2, False);
+      list.importeTxt(totales[6], 11, 2, True); Inc(lineas); if controlarSalto then titulo4(periodo, titulo);
+    end;
+    if salida <> 'N' then FinalizarInforme(salida);
+    llt := False;
   end;
 
-  if cantidad > 0 then LineaLaboratorio(salida);
-  if ttotal > 0 then LineaOS(xperiodo, codosanter, xtitulo, salida);
+  if (interbase = 'S') then begin
+    if (salida = 'P') or (salida = 'I') then list.Setear(salida);
+    pag := 0; datosListados := False;
+    Periodo := xperiodo;
+    if (salida = 'P') or (salida = 'I') then Begin
+      list.altopag := 0; list.m := 0;
+      list.IniciarTitulos;
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 14');
+      list.Titulo(0, 0, xtitulo, 1, 'Arial, normal, 12');
+      list.Titulo(0, 0, 'Totales Generales por Obra Social', 1, 'Arial, negrita, 12');
+      list.Titulo(0, 0, 'Período de Facturación: ' + xperiodo, 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 8');
+      list.Titulo(0, 0, 'Código   Obra Social', 1, 'Arial, cursiva, 8');
+      list.Titulo(26, list.Lineactual, 'Nro.Liq.', 2, 'Arial, cursiva, 8');
+      list.Titulo(34, list.Lineactual, 'Nro. Factura', 3, 'Arial, cursiva, 8');
+      list.Titulo(50, list.Lineactual, 'U.G.', 4, 'Arial, cursiva, 8');
+      list.Titulo(59, list.Lineactual, 'U.H.', 5, 'Arial, cursiva, 8');
+      list.Titulo(67, list.Lineactual, '$ U.G.', 6, 'Arial, cursiva, 8');
+      list.Titulo(77, list.Lineactual, '$ U.B.', 7, 'Arial, cursiva, 8');
+      list.Titulo(86, list.Lineactual, '$ Cat.', 8, 'Arial, cursiva, 8');
+      list.Titulo(94, list.Lineactual, 'Total', 9, 'Arial, cursiva, 8');
+      list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
+    end;
+    if salida = 'T' then Begin
+      if not ExportarDatos then list.IniciarImpresionModoTexto(LineasPag);
+      titulo4(xperiodo, xtitulo);
+    end;
 
-  if Length(Trim(laboratorioactual)) = 0 then totalesOS.Close;
+    {if not (detfactIB.Active) then detfactIB.Open;
+    if not (ProcesamientoCentral) then ffirebird.Filtrar(detfactIB, 'periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + laboratorioactual + '''') else ffirebird.Filtrar(detfactIB, 'periodo = ' + '''' + xperiodo + '''');
+    detfactIB.IndexFieldNames := 'Periodo;Codos;Idprof;Orden;Items';
+    detfactIB.First;}
 
-  if (salida = 'P') or (salida = 'I') then Begin
-    list.Linea(0, 0, '', 1, 'Arial, normal, 8', salida, 'N');
-    list.Linea(48, list.Lineactual, '---------------------------------------------------------------------------------------------', 2, 'Arial, normal, 8', salida, 'S');
-    list.Linea(0, 0, 'Subtotal:', 1, 'Arial, negrita, 8', salida, 'N');
-    list.importe(54, list.Lineactual, '', totales[1], 2, 'Arial, negrita, 8');
-    list.importe(62, list.Lineactual, '', totales[2], 3, 'Arial, negrita, 8');
-    list.importe(72, list.Lineactual, '', totales[3], 4, 'Arial, negrita, 8');
-    list.importe(81, list.Lineactual, '', totales[4], 5, 'Arial, negrita, 8');
-    list.importe(90, list.Lineactual, '', totales[5], 6, 'Arial, negrita, 9');
-    list.importe(99, list.Lineactual, '', totales[6], 7, 'Arial, negrita, 8');
+    //osagrupa.conectar;
+    //ressql := osagrupa.getListaObrasSocialesAgrupadas;
+    //ressql.Open;
+
+    if not (ProcesamientoCentral) then
+      rsqlIB :=  ffirebird.getTransacSQL('select * from detfact where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + laboratorioactual + '''' + ' order by periodo, codos, idprof, orden, items')
+    else
+      rsqlIB :=  ffirebird.getTransacSQL('select * from detfact' + __c + ' where periodo = ' + '''' + xperiodo + '''' + ' order by periodo, codos, idprof, orden, items');
+    rsqlIB.Open; rsqlIB.First;
+
+     subtotal := 0; totUB := 0; totUG := 0; canUB := 0; canUG := 0; tot9984 := 0; idprofanter := ''; datosListados := False; ordenanter := ''; totales[1] := 0; totales[2] := 0; totales[3] := 0; totales[4] := 0; totales[5] := 0; totales[6] := 0;  ccaran := 0; llt := True;
+    ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0; __peranter := '';
+    if Length(Trim(laboratorioactual)) = 0 then totalesOS.Open;   // Instancia para Guardar los totales por Obra Social, si se trata de procesamiento central
+    cantidad := 0; subtotal := 0; montos[1] := 0; montos[2] := 0; ordenanter := ''; codosanter := ''; totUB := 0; totUG := 0; canUB := 0; canUG := 0; tot9984 := 0; ccantidadordenes := 0; tttotUB := 0; ttotUG := 0; ccanUB := 0; ccanUG := 0; ccaran := 0; ttotal := 0;
+    idprofanter := rsqlIB.FieldByName('idprof').AsString;
+    profesional.getDatos(idprofanter);
+    profesional.SincronizarCategoria(idprofanter, xperiodo);
+    while not rsqlIB.EOF do Begin
+      if (rsqlIB.FieldByName('periodo').AsString <> xperiodo) then break;
+      if (rsqlIB.FieldByName('periodo').AsString = xperiodo) and (utiles.verificarItemsLista(ObrasSocSel, rsqlIB.FieldByName('codos').AsString)) and (listarLinea) then Begin
+        datosListados := True;
+        nomeclatura.getDatos(rsqlIB.FieldByName('codanalisis').AsString);
+        if rsqlIB.FieldByName('codos').AsString <> codosanter then Begin
+          if cantidad > 0 then LineaLaboratorio(salida);
+          if ttotal > 0 then LineaOS(xperiodo, codosanter, xtitulo, salida);
+          RupturaObraSocial1(xperiodo, xtitulo, salida, False);
+          obsocial.getDatos(rsqlIB.FieldByname('codos').AsString);
+          obsocial.SincronizarArancel(rsqlIB.FieldByname('codos').AsString, xperiodo);
+        end else
+          if rsqlIB.FieldByName('idprof').AsString <> idprofanter then LineaLaboratorio(salida);
+        if rsqlIB.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
+
+        if rsqlIB.FieldByName('idprof').AsString <> idprofanter then Begin
+          profesional.getDatos(rsqlIB.FieldByName('idprof').AsString);
+          profesional.SincronizarCategoria(rsqlIB.FieldByName('idprof').AsString, xperiodo);
+        end;
+
+        if (length(trim(rsqlIB.FieldByName('ref1').AsString)) = 7) then periodo := rsqlIB.FieldByName('ref1').AsString else periodo := xperiodo;
+
+         // 21/03/2022
+        if  (utiles.getPeriodoAAAAMM(periodo) > __peranter) then __maxperiodo := periodo;
+        __peranter := utiles.getPeriodoAAAAMM(periodo);
+
+        if (obsocial.FactNBU = 'N') or (Length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 4) then Begin
+          obsocial.SincronizarArancel(rsqlIB.FieldByname('codos').AsString, periodo);
+          if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
+          if nomeclatura.RIE <> '*' then subtotal := subtotal + setValorAnalisis(rsqlIB.FieldByName('codos').AsString, rsqlIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else subtotal := subtotal + setValorAnalisis(rsqlIB.FieldByName('codos').AsString, rsqlIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
+        end;
+        if (obsocial.FactNBU = 'S') and (Length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 6) then Begin
+          obsocial.SincronizarArancelNBU(rsqlIB.FieldByname('codos').AsString, periodo);
+          subtotal := subtotal + setValorAnalisis(rsqlIB.FieldByName('codos').AsString, rsqlIB.FieldByName('codanalisis').AsString, 0, 0, 0, 0);  // Valor de cada analisis
+        end;
+
+        codosanter  := rsqlIB.FieldByName('codos').AsString;
+        idprofanter := rsqlIB.FieldByName('idprof').AsString;
+        ordenanter  := rsqlIB.FieldByName('orden').AsString;
+      end;
+      rsqlIB.Next;
+    end;
+
+    if cantidad > 0 then LineaLaboratorio(salida);
+    if ttotal > 0 then LineaOS(xperiodo, codosanter, xtitulo, salida);
+
+    rsqlIB.close; rsqlIB.Free;
+
+    //ressql.Close; ressql.Free;
+    //osagrupa.desconectar;
+
+    {subtotal := 0; totUB := 0; totUG := 0; canUB := 0; canUG := 0; tot9984 := 0; idprofanter := ''; datosListados := False; ordenanter := ''; totales[1] := 0; totales[2] := 0; totales[3] := 0; totales[4] := 0; totales[5] := 0; totales[6] := 0;  ccaran := 0; llt := True;
+    ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0;
+    if Length(Trim(laboratorioactual)) = 0 then totalesOS.Open;   // Instancia para Guardar los totales por Obra Social, si se trata de procesamiento central
+    cantidad := 0; subtotal := 0; montos[1] := 0; montos[2] := 0; ordenanter := ''; codosanter := ''; totUB := 0; totUG := 0; canUB := 0; canUG := 0; tot9984 := 0; ccantidadordenes := 0; tttotUB := 0; ttotUG := 0; ccanUB := 0; ccanUG := 0; ccaran := 0; ttotal := 0;
+    idprofanter := detfactIB.FieldByName('idprof').AsString;
+    profesional.getDatos(idprofanter);
+    profesional.SincronizarCategoria(idprofanter, xperiodo);
+    while not detfactIB.EOF do Begin
+      if (detfactIB.FieldByName('periodo').AsString <> xperiodo) then break;
+      if (detfactIB.FieldByName('periodo').AsString = xperiodo) and (utiles.verificarItemsLista(ObrasSocSel, detfactIB.FieldByName('codos').AsString)) and (listarLinea) then Begin
+        datosListados := True;
+        nomeclatura.getDatos(detfactIB.FieldByName('codanalisis').AsString);
+        if detfactIB.FieldByName('codos').AsString <> codosanter then Begin
+          if cantidad > 0 then LineaLaboratorio(salida);
+          if ttotal > 0 then LineaOS(xperiodo, codosanter, xtitulo, salida);
+          RupturaObraSocial1(xperiodo, xtitulo, salida, False);
+          obsocial.getDatos(detfactIB.FieldByname('codos').AsString);
+          obsocial.SincronizarArancel(detfactIB.FieldByname('codos').AsString, xperiodo);
+        end else
+          if detfactIB.FieldByName('idprof').AsString <> idprofanter then LineaLaboratorio(salida);
+        if detfactIB.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
+
+        if detfactIB.FieldByName('idprof').AsString <> idprofanter then Begin
+          profesional.getDatos(detfactIB.FieldByName('idprof').AsString);
+          profesional.SincronizarCategoria(detfactIB.FieldByName('idprof').AsString, xperiodo);
+        end;
+
+        if (length(trim(detfactIB.FieldByName('ref1').AsString)) = 7) then periodo := detfactIB.FieldByName('ref1').AsString else periodo := xperiodo;
+
+        if (obsocial.FactNBU = 'N') or (Length(trim(detfactIB.FieldByName('codanalisis').AsString)) = 4) then Begin
+          obsocial.SincronizarArancel(detfactIB.FieldByname('codos').AsString, periodo);
+          if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
+          if nomeclatura.RIE <> '*' then subtotal := subtotal + setValorAnalisis(detfactIB.FieldByName('codos').AsString, detfactIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else subtotal := subtotal + setValorAnalisis(detfactIB.FieldByName('codos').AsString, detfactIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
+        end;
+        if (obsocial.FactNBU = 'S') and (Length(trim(detfactIB.FieldByName('codanalisis').AsString)) = 6) then Begin
+          obsocial.SincronizarArancelNBU(detfactIB.FieldByname('codos').AsString, periodo);
+          subtotal := subtotal + setValorAnalisis(detfactIB.FieldByName('codos').AsString, detfactIB.FieldByName('codanalisis').AsString, 0, 0, 0, 0);  // Valor de cada analisis
+        end;
+
+        codosanter  := detfactIB.FieldByName('codos').AsString;
+        idprofanter := detfactIB.FieldByName('idprof').AsString;
+        ordenanter  := detfactIB.FieldByName('orden').AsString;
+      end;
+      detfactIB.Next;
+    end;
+
+    if cantidad > 0 then LineaLaboratorio(salida);
+    if ttotal > 0 then LineaOS(xperiodo, codosanter, xtitulo, salida);
+
+    ffirebird.QuitarFiltro(detfactIB);}
+
+    if Length(Trim(laboratorioactual)) = 0 then totalesOS.Close;
+
+    if (salida = 'P') or (salida = 'I') then Begin
+      list.Linea(0, 0, '', 1, 'Arial, normal, 8', salida, 'N');
+      list.Linea(48, list.Lineactual, '---------------------------------------------------------------------------------------------', 2, 'Arial, normal, 8', salida, 'S');
+      list.Linea(0, 0, 'Subtotal:', 1, 'Arial, negrita, 8', salida, 'N');
+      list.importe(54, list.Lineactual, '', totales[1], 2, 'Arial, negrita, 8');
+      list.importe(62, list.Lineactual, '', totales[2], 3, 'Arial, negrita, 8');
+      list.importe(72, list.Lineactual, '', totales[3], 4, 'Arial, negrita, 8');
+      list.importe(81, list.Lineactual, '', totales[4], 5, 'Arial, negrita, 8');
+      list.importe(90, list.Lineactual, '', totales[5], 6, 'Arial, negrita, 9');
+      list.importe(99, list.Lineactual, '', totales[6], 7, 'Arial, negrita, 8');
+    end;
+    if salida = 'T' then Begin
+      list.LineaTxt(utiles.espacios(54) + '---------------------------------------------------------', True); Inc(lineas); if controlarSalto then titulo4(periodo, titulo);
+      list.LineaTxt('Subtotal:  ' + utiles.espacios(52 - Length(TrimRight('Subtotal:'))), False);
+      list.importeTxt(totales[1], 9, 2, False);
+      list.importeTxt(totales[2], 9, 2, False);
+      list.importeTxt(totales[3], 9, 2, False);
+      list.importeTxt(totales[4], 9, 2, False);
+      list.importeTxt(totales[5], 9, 2, False);
+      list.importeTxt(totales[6], 11, 2, True); Inc(lineas); if controlarSalto then titulo4(periodo, titulo);
+    end;
+    if salida <> 'N' then FinalizarInforme(salida);
+    llt := False;
   end;
-  if salida = 'T' then Begin
-    list.LineaTxt(utiles.espacios(54) + '---------------------------------------------------------', True); Inc(lineas); if controlarSalto then titulo4(periodo, titulo);
-    list.LineaTxt('Subtotal:  ' + utiles.espacios(52 - Length(TrimRight('Subtotal:'))), False);
-    list.importeTxt(totales[1], 9, 2, False);
-    list.importeTxt(totales[2], 9, 2, False);
-    list.importeTxt(totales[3], 9, 2, False);
-    list.importeTxt(totales[4], 9, 2, False);
-    list.importeTxt(totales[5], 9, 2, False);
-    list.importeTxt(totales[6], 11, 2, True); Inc(lineas); if controlarSalto then titulo4(periodo, titulo);
-  end;
-  if salida <> 'N' then FinalizarInforme(salida);
-  llt := False;
+
 end;
 
 procedure TTFacturacionCCB.titulo4(xperiodo, xtitulo: String);
@@ -2275,138 +4644,978 @@ procedure TTFacturacionCCB.ListarResumenAProfesionales(xperiodo, xtitulo, xcolum
 var
   i, j: ShortInt;
   ord: array[1..2] of Integer;
+  archdest: string;
+
+  procedure Terminar(fin: boolean);
+  begin
+    if (length(trim(idprofanter)) < 5) then exit;
+    if (salida = 'T') and (exporta_web) then begin
+      if not (exporta_web) then RealizarSalto else list.FinalizarExportacion;
+      archdest := copy(xperiodo, 1, 2) + copy(xperiodo, 4, 6) + '_' + idprofanter + '_FA' + '.txt';
+      CopyFile(PChar(dbs.DirSistema + '\list.txt'), PChar(dbs.DirSistema + '\export_reportes\web_facturacion\' + archdest), false);
+      if not (fin) then begin
+        pag := 0;
+        list.IniciarImpresionModoTexto(10000);
+        list.exportar_rep := true;
+        titulo5(xperiodo, xtitulo, xcolumnas);
+      end;
+      //utiles.msgError('0');
+    end;
+
+    if (salida = 'T') and not (exporta_web) then begin
+      //utiles.msgError('3' + ' ' + salida);
+      //if salida <> 'N' then FinalizarInforme(salida); // 26/11/2019
+    end;
+  end;
+
 begin
   IniciarArreglos;
-  if (salida = 'P') or (salida = 'I') then list.Setear(salida);
-  //detfact.IndexName :=  'DETFACT_RESUMENPROF';
-  detfact.IndexFieldNames := 'Periodo;Idprof;Codos;Orden;Items';
-  pag := 0; rp := True; datosListados := False;
-  ruptura := xruptura;
-  Periodo := xperiodo;
-  if salida <> 'T' then Begin
-    list.altopag := 0; list.m := 0;
-    list.IniciarTitulos;
-    list.Titulo(0, 0, ' ', 1, 'Arial, normal, 14');
-    list.Titulo(0, 0, xtitulo, 1, 'Arial, normal, 12');
-    list.Titulo(0, 0, 'Facturación Resumen a Profesionales', 1, 'Arial, negrita, 12');
-    list.Titulo(0, 0, 'Período de Facturación: ' + xperiodo, 1, 'Arial, normal, 11');
-    list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
-    list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
-    list.Titulo(0, 0, 'Paciente', 1, 'Arial, normal, 8');
-    espaciocol   := 80 div StrToInt(xcolumnas);
-    nrocol       := 80 div espaciocol;
-    distanciaImp := (nrocol * 12) div 5;
-    j := 1;
-    For i := 1 to nrocol do Begin
-      list.Titulo(espaciocol * i, list.Lineactual, 'Cód.', j+1, 'Arial, cursiva, 8');
-      list.Titulo(((espaciocol * i) + distanciaImp) - (nrocol), list.Lineactual, 'Aran.', j+2, 'Arial, cursiva, 8');
-      j := j + 2;
+  if (interbase = 'N') then begin
+    if (salida = 'P') or (salida = 'I') then list.Setear(salida);
+
+    if (exporta_web) then begin
+      utilesarchivos.BorrarArchivos(dbs.DirSistema + '\export_reportes\web_facturacion', '*.txt');
+      list.AnularCaracteresTexto;
+      salida := 'T';
+      ExportarDatos := true;
+      list.IniciarImpresionModoTexto(10000);
+      list.exportar_rep := true;
     end;
-    list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
-    list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
-  end else Begin
-    if not ExportarDatos then list.IniciarImpresionModoTexto(LineasPag);
-    titulo5(xperiodo, xtitulo, xcolumnas);
-  end;
 
-  detfact.First;
-  codosanter  := ''; idprofanter := 't'; idanter := ''; ordenanter := ''; i := 0; cantidad := 0; cantidadordenes := 0; subtotal := 0; it := 0; tot9984 := 0; totUB := 0; totUG := 0; totprestaciones := 0; periodo := xperiodo; titulo := xtitulo; columnas := xcolumnas; datosListados := False;
-  ttotprestaciones := 0; ccantidadordenes := 0; tttotUB := 0; ttotUG := 0; ccanUB := 0; ccanUG := 0; ttotal := 0; tot9984 := 0; totales[1] := 0; ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0; canUB1 := 0;
-  while not detfact.EOF do Begin
-    if (detfact.FieldByName('periodo').AsString >= xperiodo) and (utiles.verificarItemsLista(profSel, detfact.FieldByName('idprof').AsString)) and (utiles.verificarItemsLista(ObrasSocSel, detfact.FieldByName('codos').AsString)) and (listarLinea) then Begin   // Filtro general - Período
-      datosListados := True;
+    if not (detfact.Active) then detfact.Open;
+    detfact.IndexFieldNames := 'Periodo;Idprof;Codos;Orden;Items';
+    pag := 0; rp := True; datosListados := False;
+    ruptura := xruptura;
+    Periodo := xperiodo;
+    if salida <> 'T' then Begin
+      list.altopag := 0; list.m := 0;
+      list.IniciarTitulos;
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 14');
+      list.Titulo(0, 0, xtitulo, 1, 'Arial, normal, 12');
+      list.Titulo(0, 0, 'Facturación Resumen a Profesionales', 1, 'Arial, negrita, 12');
+      list.Titulo(0, 0, 'Período de Facturación: ' + xperiodo, 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
+      list.Titulo(0, 0, 'Paciente', 1, 'Arial, normal, 8');
+      espaciocol   := 80 div StrToInt(xcolumnas);
+      nrocol       := 80 div espaciocol;
+      distanciaImp := (nrocol * 12) div 5;
+      j := 1;
+      For i := 1 to nrocol do Begin
+        list.Titulo(espaciocol * i, list.Lineactual, 'Cód.', j+1, 'Arial, cursiva, 8');
+        list.Titulo(((espaciocol * i) + distanciaImp) - (nrocol), list.Lineactual, 'Aran.', j+2, 'Arial, cursiva, 8');
+        j := j + 2;
+      end;
+      list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
+    end else Begin
+      if not ExportarDatos then list.IniciarImpresionModoTexto(LineasPag);
+      titulo5(xperiodo, xtitulo, xcolumnas);
+    end;
 
-      if (length(trim(codosanter)) = 0) then obsocial.getDatos(detfact.FieldByname('codos').AsString);
+    detfact.First;
+    codosanter  := ''; idprofanter := 't'; idanter := ''; ordenanter := ''; i := 0; cantidad := 0; cantidadordenes := 0; subtotal := 0; it := 0; tot9984 := 0; totUB := 0; totUG := 0; totprestaciones := 0; periodo := xperiodo; titulo := xtitulo; columnas := xcolumnas; datosListados := False; __maxperiodo := '';
+    ttotprestaciones := 0; ccantidadordenes := 0; tttotUB := 0; ttotUG := 0; ccanUB := 0; ccanUG := 0; ttotal := 0; tot9984 := 0; totales[1] := 0; ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0; canUB1 := 0;
 
-      if (obsocial.FactNBU = 'N') or (length(trim(detfact.FieldByName('codanalisis').AsString)) = 4) then
-        nomeclatura.getDatos(detfact.FieldByName('codanalisis').AsString);
+    while not detfact.EOF do Begin
+      if (detfact.FieldByName('periodo').AsString >= xperiodo) and (utiles.verificarItemsLista(profSel, detfact.FieldByName('idprof').AsString)) and (utiles.verificarItemsLista(ObrasSocSel, detfact.FieldByName('codos').AsString)) and (listarLinea) then Begin   // Filtro general - Período
+        datosListados := True;
 
-      if (obsocial.FactNBU = 'S') and (length(trim(detfact.FieldByName('codanalisis').AsString)) = 6) then
-        nbu.getDatos(detfact.FieldByName('codanalisis').AsString);
+        if (length(trim(codosanter)) = 0) then obsocial.getDatos(detfact.FieldByname('codos').AsString);
 
-      if detfact.FieldByname('codos').AsString <> codosanter then Begin
-        obsocial.getDatos(detfact.FieldByname('codos').AsString);
         if (obsocial.FactNBU = 'N') or (length(trim(detfact.FieldByName('codanalisis').AsString)) = 4) then
-          obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
+          nomeclatura.getDatos(detfact.FieldByName('codanalisis').AsString);
+
         if (obsocial.FactNBU = 'S') and (length(trim(detfact.FieldByName('codanalisis').AsString)) = 6) then
-          obsocial.SincronizarArancelNBU(detfact.FieldByname('codos').AsString, xperiodo);
-      end;
+          nbu.getDatos(detfact.FieldByName('codanalisis').AsString);
 
-      if detfact.FieldByName('idprof').AsString <> idprofanter then Begin  // Ruptura por Profesional
-        ListarLineaDeAnalisis(xcolumnas, salida);
-        SubtotalProfesional(salida);
-        ord[1] := cantidadordenes; ord[2] := totprestaciones;
-        SubtotalObraSocial(salida);
-        cantidadordenes := ord[1]; totprestaciones := ord[2];
-        SubtotalObraSocial2(salida);
+        if (length(trim(detfact.FieldByName('ref1').AsString)) = 7) then periodo := detfact.FieldByName('ref1').AsString else periodo := xperiodo;
 
-        RupturaProf(salida, detfact.FieldByName('idprof').AsString, xperiodo, ruptura);
-        cantidad := 0; subtotal := 0; total := 0; codosanter := ''; caran := 0; canUB := 0; totUB := 0;
-      end;
-      if detfact.FieldByName('codos').AsString <> codosanter then Begin
-        if cantidad > 0 then Begin
+        // 21/03/2022
+        if  (utiles.getPeriodoAAAAMM(periodo) > __peranter) then begin
+          __maxperiodo := periodo;
+          __peranter := periodo;
+        end;
+        periodo := __maxperiodo;
+
+        if detfact.FieldByname('codos').AsString <> codosanter then Begin
+          obsocial.getDatos(detfact.FieldByname('codos').AsString);
+          if (obsocial.retencioniva <> 0) then osretieneiva := 'S' else osretieneiva := 'N';
+          if (obsocial.FactNBU = 'N') or (length(trim(detfact.FieldByName('codanalisis').AsString)) = 4) then
+            obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, periodo);
+          if (obsocial.FactNBU = 'S') and (length(trim(detfact.FieldByName('codanalisis').AsString)) = 6) then
+            obsocial.SincronizarArancelNBU(detfact.FieldByname('codos').AsString, periodo);
+        end;
+
+        if detfact.FieldByName('idprof').AsString <> idprofanter then Begin  // Ruptura por Profesional
           ListarLineaDeAnalisis(xcolumnas, salida);
           SubtotalProfesional(salida);
+          ord[1] := cantidadordenes; ord[2] := totprestaciones;
+          SubtotalObraSocial(salida);
+          cantidadordenes := ord[1]; totprestaciones := ord[2];
+          SubtotalObraSocial2(salida);
+
+          Terminar(false);
+
+          if not (exporta_web) then RupturaProf(salida, detfact.FieldByName('idprof').AsString, xperiodo, ruptura);
+          cantidad := 0; subtotal := 0; total := 0; codosanter := ''; caran := 0; canUB := 0; totUB := 0;
         end;
-        RupturaOS(salida, xperiodo, xtitulo); // Ruptura por Obra Social
-        subtotal := 0; idprofanter := ''; idanter := ''; cantidad := 0; caran := 0; canUB := 0; totUB := 0;
+        if detfact.FieldByName('codos').AsString <> codosanter then Begin
+          if cantidad > 0 then Begin
+            ListarLineaDeAnalisis(xcolumnas, salida);
+            SubtotalProfesional(salida);
+          end;
+          RupturaOS(salida, xperiodo, xtitulo); // Ruptura por Obra Social
+          subtotal := 0; idprofanter := ''; idanter := ''; cantidad := 0; caran := 0; canUB := 0; totUB := 0;
+        end;
+
+        if (i >= StrToInt(xcolumnas)) or (detfact.FieldByName('codpac').AsString <> idanter) or (detfact.FieldByName('orden').AsString <> ordenanter) then Begin
+          if (detfact.FieldByName('codpac').AsString <> idanter) or (detfact.FieldByName('orden').AsString <> ordenanter) then ListarLineaDeAnalisis(xcolumnas, salida) else ListLinea(xcolumnas, salida);
+          i := 0;
+          if detfact.FieldByName('orden').AsString <> ordenanter then idanter1 := '';
+        end;
+
+        Inc(i);
+        paciente.getDatos(detfact.FieldByName('idprof').AsString, detfact.FieldByName('codpac').AsString);
+        if (length(trim(detfact.FieldByName('retiva').AsString)) > 0) then paciente.Gravadoiva := detfact.FieldByName('retiva').AsString;
+        pac_retiva := paciente.Gravadoiva;
+
+        if (obsocial.FactNBU = 'N') or (length(trim(detfact.FieldByName('codanalisis').AsString)) = 4) then Begin
+          obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, periodo);
+          if Length(Trim(nomeclatura.codfact)) = 0 then codigos[i] := detfact.FieldByName('codanalisis').AsString else codigos[i] := nomeclatura.codfact;
+          if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
+          if nomeclatura.RIE <> '*' then montos[i] := setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else montos [i] := setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
+          if nomeclatura.CF <> 'F' then Inc(totprestaciones); // Total de prestaciones
+        end;
+        if (obsocial.FactNBU = 'S') and (length(trim(detfact.FieldByName('codanalisis').AsString)) = 6) then Begin
+          obsocial.SincronizarArancelNBU(detfact.FieldByname('codos').AsString, periodo);
+          nbu.getDatos(detfact.FieldByName('codanalisis').AsString);
+          codigos[i] := detfact.FieldByName('codanalisis').AsString;
+          montos[i]  := setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, 0, 0, 0, 0);  // Valor de cada analisis
+          Inc(totprestaciones);
+          nnbu       := True;
+        end;
+
+        it := i;
+
+        subtotal   := subtotal + montos[i];
+
+        if detfact.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
+        codosanter  := detfact.FieldByName('codos').AsString;
+        idprofanter := detfact.FieldByName('idprof').AsString;
+        idanter     := detfact.FieldByName('codpac').AsString;
+        ordenanter  := detfact.FieldByName('orden').AsString;
+        npac        := detfact.FieldByName('nombre').AsString;
+       end;
+       detfact.Next;
+    end;
+
+    it := i;
+
+    ListarLineaDeAnalisis(xcolumnas, salida);
+    SubtotalProfesional(salida);
+    ord[1] := cantidadordenes; ord[2] := totprestaciones;
+    cantidadordenes := ord[1]; totprestaciones := ord[2];
+    SubtotalObraSocial2(salida);   // 08/2013
+
+    it := 0;
+    if not (ExportarDatos) and (salida <> 'T') then FinalizarInforme(salida);
+    rp := False;
+
+    Terminar(true);
+   end;
+
+  if (interbase = 'S') then begin
+    if (salida = 'P') or (salida = 'I') then list.Setear(salida);
+
+    if (exporta_web) then begin
+      utilesarchivos.BorrarArchivos(dbs.DirSistema + '\export_reportes\web_facturacion', '*.txt');
+      list.AnularCaracteresTexto;
+      salida := 'T';
+      ExportarDatos := true;
+      list.IniciarImpresionModoTexto(10000);
+      list.exportar_rep := true;
+    end;
+
+    {if not (detfactIB.Active) then detfactIB.Open;
+    if not (ProcesamientoCentral) then ffirebird.Filtrar(detfactIB, 'periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + laboratorioactual + '''') else ffirebird.Filtrar(detfactIB, 'periodo = ' + '''' + xperiodo + '''');
+    detfactIB.IndexFieldNames := 'Periodo;Idprof;Codos;Orden;Items';
+    detfactIB.First;}
+
+    if not (ProcesamientoCentral) then
+      rsqlIB :=  ffirebird.getTransacSQL('select * from detfact where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + laboratorioactual + '''' + ' order by periodo, idprof, codos, orden, items')
+    else
+      rsqlIB :=  ffirebird.getTransacSQL('select * from detfact' + __c + ' where periodo = ' + '''' + xperiodo + '''' + ' order by periodo, idprof, codos, orden, items');
+    rsqlIB.Open; rsqlIB.First;
+
+    pag := 0; rp := True; datosListados := False;
+    ruptura := xruptura;
+    Periodo := xperiodo;
+    if salida <> 'T' then Begin
+      list.altopag := 0; list.m := 0;
+      list.IniciarTitulos;
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 14');
+      list.Titulo(0, 0, xtitulo, 1, 'Arial, normal, 12');
+      list.Titulo(0, 0, 'Facturación Resumen a Profesionales', 1, 'Arial, negrita, 12');
+      list.Titulo(0, 0, 'Período de Facturación: ' + xperiodo, 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
+      list.Titulo(0, 0, 'Paciente', 1, 'Arial, normal, 8');
+      espaciocol   := 80 div StrToInt(xcolumnas);
+      nrocol       := 80 div espaciocol;
+      distanciaImp := (nrocol * 12) div 5;
+      j := 1;
+      For i := 1 to nrocol do Begin
+        list.Titulo(espaciocol * i, list.Lineactual, 'Cód.', j+1, 'Arial, cursiva, 8');
+        list.Titulo(((espaciocol * i) + distanciaImp) - (nrocol), list.Lineactual, 'Aran.', j+2, 'Arial, cursiva, 8');
+        j := j + 2;
       end;
+      list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
+    end else Begin
+      if not ExportarDatos then list.IniciarImpresionModoTexto(LineasPag);
+      titulo5(xperiodo, xtitulo, xcolumnas);
+    end;
 
-      if (i >= StrToInt(xcolumnas)) or (detfact.FieldByName('codpac').AsString <> idanter) or (detfact.FieldByName('orden').AsString <> ordenanter) then Begin
-        if (detfact.FieldByName('codpac').AsString <> idanter) or (detfact.FieldByName('orden').AsString <> ordenanter) then ListarLineaDeAnalisis(xcolumnas, salida) else ListLinea(xcolumnas, salida);
-        i := 0;
-        if detfact.FieldByName('orden').AsString <> ordenanter then idanter1 := '';
+    codosanter  := ''; idprofanter := 't'; idanter := ''; ordenanter := ''; i := 0; cantidad := 0; cantidadordenes := 0; subtotal := 0; it := 0; tot9984 := 0; totUB := 0; totUG := 0; totprestaciones := 0; periodo := xperiodo; titulo := xtitulo; columnas := xcolumnas; datosListados := False;
+    ttotprestaciones := 0; ccantidadordenes := 0; tttotUB := 0; ttotUG := 0; ccanUB := 0; ccanUG := 0; ttotal := 0; tot9984 := 0; totales[1] := 0; ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0; canUB1 := 0;
+    __peranter := '';
+
+    while not rsqlIB.EOF do Begin
+      if (rsqlIB.FieldByName('periodo').AsString <> xperiodo) then break;
+      if (rsqlIB.FieldByName('periodo').AsString >= xperiodo) and (utiles.verificarItemsLista(profSel, rsqlIB.FieldByName('idprof').AsString)) and (utiles.verificarItemsLista(ObrasSocSel, rsqlIB.FieldByName('codos').AsString)) and (listarLinea) then Begin   // Filtro general - Período
+        datosListados := True;
+
+        if (length(trim(codosanter)) = 0) then obsocial.getDatos(rsqlIB.FieldByname('codos').AsString);
+
+        if (obsocial.FactNBU = 'N') or (length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 4) then
+          nomeclatura.getDatos(rsqlIB.FieldByName('codanalisis').AsString);
+
+        if (obsocial.FactNBU = 'S') and (length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 6) then
+          nbu.getDatos(rsqlIB.FieldByName('codanalisis').AsString);
+
+        if (length(trim(rsqlIB.FieldByName('ref1').AsString)) = 7) then periodo := rsqlIB.FieldByName('ref1').AsString else periodo := xperiodo;
+
+         // 21/03/2022
+        if  (utiles.getPeriodoAAAAMM(periodo) > __peranter) then __maxperiodo := periodo;
+        __peranter := utiles.getPeriodoAAAAMM(periodo);
+
+        if rsqlIB.FieldByname('codos').AsString <> codosanter then Begin
+          obsocial.getDatos(rsqlIB.FieldByname('codos').AsString);
+          if (obsocial.retencioniva <> 0) then osretieneiva := 'S' else osretieneiva := 'N';
+          if (obsocial.FactNBU = 'N') or (length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 4) then
+            obsocial.SincronizarArancel(rsqlIB.FieldByname('codos').AsString, periodo);
+          if (obsocial.FactNBU = 'S') and (length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 6) then
+            obsocial.SincronizarArancelNBU(rsqlIB.FieldByname('codos').AsString, periodo);
+        end;
+
+        if rsqlIB.FieldByName('idprof').AsString <> idprofanter then Begin  // Ruptura por Profesional
+          ListarLineaDeAnalisis(xcolumnas, salida);
+          SubtotalProfesional(salida);
+          ord[1] := cantidadordenes; ord[2] := totprestaciones;
+          SubtotalObraSocial(salida);
+          cantidadordenes := ord[1]; totprestaciones := ord[2];
+          SubtotalObraSocial2(salida);
+
+          Terminar(false);
+
+          RupturaProf(salida, rsqlIB.FieldByName('idprof').AsString, xperiodo, ruptura);
+          cantidad := 0; subtotal := 0; total := 0; codosanter := ''; caran := 0; canUB := 0; totUB := 0;
+        end;
+        if rsqlIB.FieldByName('codos').AsString <> codosanter then Begin
+          if cantidad > 0 then Begin
+            obsocial.getDatos(codosanter);
+            ListarLineaDeAnalisis(xcolumnas, salida);
+            obsocial.getDatos(rsqlIB.FieldByName('codos').AsString);
+            SubtotalProfesional(salida);
+          end;
+          RupturaOS(salida, xperiodo, xtitulo); // Ruptura por Obra Social
+          subtotal := 0; idprofanter := ''; idanter := ''; cantidad := 0; caran := 0; canUB := 0; totUB := 0;
+        end;
+
+        if (i >= StrToInt(xcolumnas)) or (rsqlIB.FieldByName('codpac').AsString <> idanter) or (rsqlIB.FieldByName('orden').AsString <> ordenanter) then Begin
+          if (rsqlIB.FieldByName('codpac').AsString <> idanter) or (rsqlIB.FieldByName('orden').AsString <> ordenanter) then ListarLineaDeAnalisis(xcolumnas, salida) else ListLinea(xcolumnas, salida);
+          i := 0;
+          if rsqlIB.FieldByName('orden').AsString <> ordenanter then idanter1 := '';
+        end;
+
+        Inc(i);
+
+        //paciente.getDatos(rsqlIB.FieldByName('idprof').AsString, rsqlIB.FieldByName('codpac').AsString);
+        //if (length(trim(rsqlIB.FieldByName('retiva').AsString)) > 0) then paciente.Gravadoiva := rsqlIB.FieldByName('retiva').AsString;
+        if (length(trim(rsqlIB.FieldByName('retiva').AsString)) > 0) then begin
+          paciente.Gravadoiva := rsqlIB.FieldByName('retiva').AsString;
+          paciente.Nombre := rsqlIB.FieldByName('nombre').AsString;
+        end else
+          paciente.getDatos(rsqlIB.FieldByName('idprof').AsString, rsqlIB.FieldByName('codpac').AsString);
+
+        pac_retiva := paciente.Gravadoiva;
+
+        if (obsocial.FactNBU = 'N') or (length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 4) then Begin
+          obsocial.SincronizarArancel(rsqlIB.FieldByname('codos').AsString, xperiodo);
+          if Length(Trim(nomeclatura.codfact)) = 0 then codigos[i] := rsqlIB.FieldByName('codanalisis').AsString else codigos[i] := nomeclatura.codfact;
+          if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
+          if nomeclatura.RIE <> '*' then montos[i] := setValorAnalisis(rsqlIB.FieldByName('codos').AsString, rsqlIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else montos [i] := setValorAnalisis(rsqlIB.FieldByName('codos').AsString, rsqlIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
+          if nomeclatura.CF <> 'F' then Inc(totprestaciones); // Total de prestaciones
+        end;
+        if (obsocial.FactNBU = 'S') and (length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 6) then Begin
+          obsocial.SincronizarArancelNBU(rsqlIB.FieldByname('codos').AsString, periodo);
+          nbu.getDatos(rsqlIB.FieldByName('codanalisis').AsString);
+          codigos[i] := rsqlIB.FieldByName('codanalisis').AsString;
+          montos[i]  := setValorAnalisis(rsqlIB.FieldByName('codos').AsString, rsqlIB.FieldByName('codanalisis').AsString, 0, 0, 0, 0);  // Valor de cada analisis
+          Inc(totprestaciones);
+          nnbu       := True;
+        end;
+
+        it := i;
+
+        subtotal   := subtotal + montos[i];
+
+        if rsqlIB.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
+        codosanter  := rsqlIB.FieldByName('codos').AsString;
+        idprofanter := rsqlIB.FieldByName('idprof').AsString;
+        idanter     := rsqlIB.FieldByName('codpac').AsString;
+        ordenanter  := rsqlIB.FieldByName('orden').AsString;
+        npac        := rsqlIB.FieldByName('nombre').AsString;
+        __perfact   := rsqlIB.FieldByName('ref1').AsString;
+       end;
+       rsqlIB.Next;
+    end;
+
+    it := i;
+
+    rsqlIB.close; rsql.Free;
+
+    {pag := 0; rp := True; datosListados := False;
+    ruptura := xruptura;
+    Periodo := xperiodo;
+    if salida <> 'T' then Begin
+      list.altopag := 0; list.m := 0;
+      list.IniciarTitulos;
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 14');
+      list.Titulo(0, 0, xtitulo, 1, 'Arial, normal, 12');
+      list.Titulo(0, 0, 'Facturación Resumen a Profesionales', 1, 'Arial, negrita, 12');
+      list.Titulo(0, 0, 'Período de Facturación: ' + xperiodo, 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
+      list.Titulo(0, 0, 'Paciente', 1, 'Arial, normal, 8');
+      espaciocol   := 80 div StrToInt(xcolumnas);
+      nrocol       := 80 div espaciocol;
+      distanciaImp := (nrocol * 12) div 5;
+      j := 1;
+      For i := 1 to nrocol do Begin
+        list.Titulo(espaciocol * i, list.Lineactual, 'Cód.', j+1, 'Arial, cursiva, 8');
+        list.Titulo(((espaciocol * i) + distanciaImp) - (nrocol), list.Lineactual, 'Aran.', j+2, 'Arial, cursiva, 8');
+        j := j + 2;
       end;
+      list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
+    end else Begin
+      if not ExportarDatos then list.IniciarImpresionModoTexto(LineasPag);
+      titulo5(xperiodo, xtitulo, xcolumnas);
+    end;
 
-      Inc(i);
-      //obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
-      paciente.getDatos(detfact.FieldByName('idprof').AsString, detfact.FieldByName('codpac').AsString);
+    codosanter  := ''; idprofanter := 't'; idanter := ''; ordenanter := ''; i := 0; cantidad := 0; cantidadordenes := 0; subtotal := 0; it := 0; tot9984 := 0; totUB := 0; totUG := 0; totprestaciones := 0; periodo := xperiodo; titulo := xtitulo; columnas := xcolumnas; datosListados := False;
+    ttotprestaciones := 0; ccantidadordenes := 0; tttotUB := 0; ttotUG := 0; ccanUB := 0; ccanUG := 0; ttotal := 0; tot9984 := 0; totales[1] := 0; ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0; canUB1 := 0;
+    while not detfactIB.EOF do Begin
+      if (detfactIB.FieldByName('periodo').AsString <> xperiodo) then break;
+      if (detfactIB.FieldByName('periodo').AsString >= xperiodo) and (utiles.verificarItemsLista(profSel, detfactIB.FieldByName('idprof').AsString)) and (utiles.verificarItemsLista(ObrasSocSel, detfactIB.FieldByName('codos').AsString)) and (listarLinea) then Begin   // Filtro general - Período
+        datosListados := True;
 
-      if (obsocial.FactNBU = 'N') or (length(trim(detfact.FieldByName('codanalisis').AsString)) = 4) then Begin
-        obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
-        if Length(Trim(nomeclatura.codfact)) = 0 then codigos[i] := detfact.FieldByName('codanalisis').AsString else codigos[i] := nomeclatura.codfact;
-        if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
-        if nomeclatura.RIE <> '*' then montos[i] := setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else montos [i] := setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
-        if nomeclatura.CF <> 'F' then Inc(totprestaciones); // Total de prestaciones
+        if (length(trim(codosanter)) = 0) then obsocial.getDatos(detfactIB.FieldByname('codos').AsString);
+
+        if (obsocial.FactNBU = 'N') or (length(trim(detfactIB.FieldByName('codanalisis').AsString)) = 4) then
+          nomeclatura.getDatos(detfactIB.FieldByName('codanalisis').AsString);
+
+        if (obsocial.FactNBU = 'S') and (length(trim(detfactIB.FieldByName('codanalisis').AsString)) = 6) then
+          nbu.getDatos(detfactIB.FieldByName('codanalisis').AsString);
+
+        if (length(trim(detfactIB.FieldByName('ref1').AsString)) = 7) then periodo := detfactIB.FieldByName('ref1').AsString else periodo := xperiodo;
+
+        if detfactIB.FieldByname('codos').AsString <> codosanter then Begin
+          obsocial.getDatos(detfactIB.FieldByname('codos').AsString);
+          if (obsocial.retencioniva <> 0) then osretieneiva := 'S' else osretieneiva := 'N';
+          if (obsocial.FactNBU = 'N') or (length(trim(detfactIB.FieldByName('codanalisis').AsString)) = 4) then
+            obsocial.SincronizarArancel(detfactIB.FieldByname('codos').AsString, periodo);
+          if (obsocial.FactNBU = 'S') and (length(trim(detfactIB.FieldByName('codanalisis').AsString)) = 6) then
+            obsocial.SincronizarArancelNBU(detfactIB.FieldByname('codos').AsString, periodo);
+        end;
+
+        if detfactIB.FieldByName('idprof').AsString <> idprofanter then Begin  // Ruptura por Profesional
+          ListarLineaDeAnalisis(xcolumnas, salida);
+          SubtotalProfesional(salida);
+          ord[1] := cantidadordenes; ord[2] := totprestaciones;
+          SubtotalObraSocial(salida);
+          cantidadordenes := ord[1]; totprestaciones := ord[2];
+          SubtotalObraSocial2(salida);
+
+          Terminar(false);
+
+          RupturaProf(salida, detfactIB.FieldByName('idprof').AsString, xperiodo, ruptura);
+          cantidad := 0; subtotal := 0; total := 0; codosanter := ''; caran := 0; canUB := 0; totUB := 0;
+        end;
+        if detfactIB.FieldByName('codos').AsString <> codosanter then Begin
+          if cantidad > 0 then Begin
+            ListarLineaDeAnalisis(xcolumnas, salida);
+            SubtotalProfesional(salida);
+          end;
+          RupturaOS(salida, xperiodo, xtitulo); // Ruptura por Obra Social
+          subtotal := 0; idprofanter := ''; idanter := ''; cantidad := 0; caran := 0; canUB := 0; totUB := 0;
+        end;
+
+        if (i >= StrToInt(xcolumnas)) or (detfactIB.FieldByName('codpac').AsString <> idanter) or (detfactIB.FieldByName('orden').AsString <> ordenanter) then Begin
+          if (detfactIB.FieldByName('codpac').AsString <> idanter) or (detfactIB.FieldByName('orden').AsString <> ordenanter) then ListarLineaDeAnalisis(xcolumnas, salida) else ListLinea(xcolumnas, salida);
+          i := 0;
+          if detfactIB.FieldByName('orden').AsString <> ordenanter then idanter1 := '';
+        end;
+
+        Inc(i);
+        paciente.getDatos(detfactIB.FieldByName('idprof').AsString, detfactIB.FieldByName('codpac').AsString);
+        if (length(trim(detfactIB.FieldByName('retiva').AsString)) > 0) then paciente.Gravadoiva := detfactIB.FieldByName('retiva').AsString;
+        pac_retiva := paciente.Gravadoiva;
+
+        if (obsocial.FactNBU = 'N') or (length(trim(detfactIB.FieldByName('codanalisis').AsString)) = 4) then Begin
+          obsocial.SincronizarArancel(detfactIB.FieldByname('codos').AsString, xperiodo);
+          if Length(Trim(nomeclatura.codfact)) = 0 then codigos[i] := detfactIB.FieldByName('codanalisis').AsString else codigos[i] := nomeclatura.codfact;
+          if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
+          if nomeclatura.RIE <> '*' then montos[i] := setValorAnalisis(detfactIB.FieldByName('codos').AsString, detfactIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else montos [i] := setValorAnalisis(detfactIB.FieldByName('codos').AsString, detfactIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
+          if nomeclatura.CF <> 'F' then Inc(totprestaciones); // Total de prestaciones
+        end;
+        if (obsocial.FactNBU = 'S') and (length(trim(detfactIB.FieldByName('codanalisis').AsString)) = 6) then Begin
+          obsocial.SincronizarArancelNBU(detfactIB.FieldByname('codos').AsString, periodo);
+          nbu.getDatos(detfactIB.FieldByName('codanalisis').AsString);
+          codigos[i] := detfactIB.FieldByName('codanalisis').AsString;
+          montos[i]  := setValorAnalisis(detfactIB.FieldByName('codos').AsString, detfactIB.FieldByName('codanalisis').AsString, 0, 0, 0, 0);  // Valor de cada analisis
+          Inc(totprestaciones);
+          nnbu       := True;
+        end;
+
+        it := i;
+
+        subtotal   := subtotal + montos[i];
+
+        if detfactIB.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
+        codosanter  := detfactIB.FieldByName('codos').AsString;
+        idprofanter := detfactIB.FieldByName('idprof').AsString;
+        idanter     := detfactIB.FieldByName('codpac').AsString;
+        ordenanter  := detfactIB.FieldByName('orden').AsString;
+        npac        := detfactIB.FieldByName('nombre').AsString
+       end;
+       detfactIB.Next;
+    end;
+
+    it := i;
+
+    ffirebird.QuitarFiltro(detfactIB);}
+
+    ListarLineaDeAnalisis(xcolumnas, salida);
+    SubtotalProfesional(salida);
+    ord[1] := cantidadordenes; ord[2] := totprestaciones;
+    SubtotalObraSocial(salida);
+    cantidadordenes := ord[1]; totprestaciones := ord[2];
+    //SubtotalObraSocial2(salida);   // 08/2013
+
+    it := 0;
+    SubtotalObraSocial2(salida);
+    if not (ExportarDatos) then FinalizarInforme(salida);
+    rp := False;
+
+    Terminar(true);
+   end;
+
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TTFacturacionCCB.IniciarFacturacionWeb(xperiodo: string);
+begin
+  datosdb.tranSQL(cabfactos.DatabaseName, 'delete from wtotalesprof where periodo = ' + '''' + xperiodo + '''');
+  utilesarchivos.BorrarArchivos(dbs.DirSistema + '\export_reportes\web_totalesri', '*.txt');
+end;
+
+procedure TTFacturacionCCB.ListarResumenAProfesionalesRI(xperiodo, xtitulo, xcolumnas: String; xruptura: Boolean; profSel: TStringList; ObrasSocSel: TStringList; salida: char);
+// Objetivo...: Listar Resumen de Prestaciones por Obra Social
+var
+  i, j: ShortInt;
+  ord: array[1..2] of Integer;
+  archdest: string;
+
+  procedure Terminar(fin: boolean; xcodos: string);
+  begin
+    if (length(trim(idprofanter)) < 5) then exit;
+    if (salida = 'T') and (exporta_web) then begin
+      if not (exporta_web) then RealizarSalto else list.FinalizarExportacion;
+      archdest := copy(xperiodo, 1, 2) + copy(xperiodo, 4, 6) + '_' + idprofanter + '_' + xcodos + '_REIN' + '.txt';
+      CopyFile(PChar(dbs.DirSistema + '\list.txt'), PChar(dbs.DirSistema + '\export_reportes\web_totalesri\' + archdest), false);
+
+      if not (fin) then begin
+        pag := 0;
+        list.IniciarImpresionModoTexto(10000);
+        list.exportar_rep := true;
+        titulo5(xperiodo, xtitulo, xcolumnas);
       end;
-      if (obsocial.FactNBU = 'S') and (length(trim(detfact.FieldByName('codanalisis').AsString)) = 6) then Begin
-        obsocial.SincronizarArancelNBU(detfact.FieldByname('codos').AsString, xperiodo);
-        nbu.getDatos(detfact.FieldByName('codanalisis').AsString);
-        codigos[i] := detfact.FieldByName('codanalisis').AsString;
-        montos[i]  := setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, 0, 0, 0, 0);  // Valor de cada analisis
-        Inc(totprestaciones);
-        nnbu       := True;
-      end;
-
-      //if nomeclatura.CF <> 'F' then Inc(totprestaciones); // Total de prestaciones
-
-      it := i;
-
-      subtotal   := subtotal + montos[i];
-
-      if detfact.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
-      codosanter  := detfact.FieldByName('codos').AsString;
-      idprofanter := detfact.FieldByName('idprof').AsString;
-      idanter     := detfact.FieldByName('codpac').AsString;
-      ordenanter  := detfact.FieldByName('orden').AsString;
-      npac        := detfact.FieldByName('nombre').AsString
-     end;
-     detfact.Next;
+    end;
+    if (salida = 'T') and not (exporta_web) then begin
+      if salida <> 'N' then FinalizarInforme(salida);
+    end;
   end;
 
-  it := i;
+begin
+  IniciarArreglos;
+  __periodo := xperiodo;
 
-  ListarLineaDeAnalisis(xcolumnas, salida);
-  SubtotalProfesional(salida);
-  ord[1] := cantidadordenes; ord[2] := totprestaciones;
-  SubtotalObraSocial(salida);
-  cantidadordenes := ord[1]; totprestaciones := ord[2];
+  if (interbase = 'N') then begin
+    if (salida = 'P') or (salida = 'I') then list.Setear(salida);
 
-  it := 0;
-  SubtotalObraSocial2(salida);
-  FinalizarInforme(salida);
-  rp := False;
- end;
+    if (exporta_web) then begin
+      utilesarchivos.BorrarArchivos(dbs.DirSistema + '\export_reportes\web_totoalesri', '*.txt');
+      list.AnularCaracteresTexto;
+      salida := 'T';
+      ExportarDatos := true;
+      list.IniciarImpresionModoTexto(10000);
+      list.exportar_rep := true;
+    end;
+
+    if not (detfact.Active) then detfact.Open;
+    detfact.IndexFieldNames := 'Periodo;Idprof;Codos;Orden;Items';
+    pag := 0; rp := True; datosListados := False;
+    ruptura := xruptura;
+    Periodo := xperiodo;
+    if salida <> 'T' then Begin
+      list.altopag := 0; list.m := 0;
+      list.IniciarTitulos;
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 14');
+      list.Titulo(0, 0, xtitulo, 1, 'Arial, normal, 12');
+      list.Titulo(0, 0, 'Facturación Resumen a Profesionales', 1, 'Arial, negrita, 12');
+      list.Titulo(0, 0, 'Período de Facturación: ' + xperiodo, 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
+      list.Titulo(0, 0, 'Paciente', 1, 'Arial, normal, 8');
+      espaciocol   := 80 div StrToInt(xcolumnas);
+      nrocol       := 80 div espaciocol;
+      distanciaImp := (nrocol * 12) div 5;
+      j := 1;
+      For i := 1 to nrocol do Begin
+        list.Titulo(espaciocol * i, list.Lineactual, 'Cód.', j+1, 'Arial, cursiva, 8');
+        list.Titulo(((espaciocol * i) + distanciaImp) - (nrocol), list.Lineactual, 'Aran.', j+2, 'Arial, cursiva, 8');
+        j := j + 2;
+      end;
+      list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
+    end else Begin
+      if not ExportarDatos then list.IniciarImpresionModoTexto(LineasPag);
+      titulo5(xperiodo, xtitulo, xcolumnas);
+    end;
+
+    detfact.First;
+    codosanter  := ''; idprofanter := 't'; idanter := ''; ordenanter := ''; i := 0; cantidad := 0; cantidadordenes := 0; subtotal := 0; it := 0; tot9984 := 0; totUB := 0; totUG := 0; totprestaciones := 0; periodo := xperiodo; titulo := xtitulo; columnas := xcolumnas; datosListados := False;
+    ttotprestaciones := 0; ccantidadordenes := 0; tttotUB := 0; ttotUG := 0; ccanUB := 0; ccanUG := 0; ttotal := 0; tot9984 := 0; totales[1] := 0; ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0; canUB1 := 0;
+    while not detfact.EOF do Begin
+      if (detfact.FieldByName('periodo').AsString >= xperiodo) and (utiles.verificarItemsLista(profSel, detfact.FieldByName('idprof').AsString)) and (utiles.verificarItemsLista(ObrasSocSel, detfact.FieldByName('codos').AsString)) and (listarLinea) then Begin   // Filtro general - Período
+        datosListados := True;
+
+        if (length(trim(codosanter)) = 0) then obsocial.getDatos(detfact.FieldByname('codos').AsString);
+
+        if (obsocial.FactNBU = 'N') or (length(trim(detfact.FieldByName('codanalisis').AsString)) = 4) then
+          nomeclatura.getDatos(detfact.FieldByName('codanalisis').AsString);
+
+        if (obsocial.FactNBU = 'S') and (length(trim(detfact.FieldByName('codanalisis').AsString)) = 6) then
+          nbu.getDatos(detfact.FieldByName('codanalisis').AsString);
+
+        if (length(trim(detfact.FieldByName('ref1').AsString)) = 7) then periodo := detfact.FieldByName('ref1').AsString else periodo := xperiodo;
+
+        if detfact.FieldByname('codos').AsString <> codosanter then Begin
+          obsocial.getDatos(detfact.FieldByname('codos').AsString);
+          if (obsocial.retencioniva <> 0) then osretieneiva := 'S' else osretieneiva := 'N';
+          if (obsocial.FactNBU = 'N') or (length(trim(detfact.FieldByName('codanalisis').AsString)) = 4) then
+            obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, periodo);
+          if (obsocial.FactNBU = 'S') and (length(trim(detfact.FieldByName('codanalisis').AsString)) = 6) then
+            obsocial.SincronizarArancelNBU(detfact.FieldByname('codos').AsString, periodo);
+        end;
+
+        if detfact.FieldByName('idprof').AsString <> idprofanter then Begin  // Ruptura por Profesional
+          ListarLineaDeAnalisis(xcolumnas, salida);
+          SubtotalProfesional(salida);
+          ord[1] := cantidadordenes; ord[2] := totprestaciones;
+          //SubtotalObraSocial2(salida);  // 22/04/2019
+          cantidadordenes := ord[1]; totprestaciones := ord[2];
+          SubtotalObraSocial2(salida);
+
+          Terminar(false, codosanter);
+
+          if not (exporta_web) then RupturaProf(salida, detfact.FieldByName('idprof').AsString, xperiodo, ruptura);
+          cantidad := 0; subtotal := 0; total := 0; codosanter := ''; caran := 0; canUB := 0; totUB := 0;
+        end;
+        if detfact.FieldByName('codos').AsString <> codosanter then Begin
+          if cantidad > 0 then Begin
+            ListarLineaDeAnalisis(xcolumnas, salida);
+            SubtotalProfesional(salida);
+          end;
+          RupturaOS(salida, xperiodo, xtitulo); // Ruptura por Obra Social
+          subtotal := 0; idprofanter := ''; idanter := ''; cantidad := 0; caran := 0; canUB := 0; totUB := 0;
+        end;
+
+        if (i >= StrToInt(xcolumnas)) or (detfact.FieldByName('codpac').AsString <> idanter) or (detfact.FieldByName('orden').AsString <> ordenanter) then Begin
+          if (detfact.FieldByName('codpac').AsString <> idanter) or (detfact.FieldByName('orden').AsString <> ordenanter) then ListarLineaDeAnalisis(xcolumnas, salida) else ListLinea(xcolumnas, salida);
+          i := 0;
+          if detfact.FieldByName('orden').AsString <> ordenanter then idanter1 := '';
+        end;
+
+        Inc(i);
+        paciente.getDatos(detfact.FieldByName('idprof').AsString, detfact.FieldByName('codpac').AsString);
+        if (length(trim(detfact.FieldByName('retiva').AsString)) > 0) then paciente.Gravadoiva := detfact.FieldByName('retiva').AsString;
+        pac_retiva := paciente.Gravadoiva;
+
+        if (obsocial.FactNBU = 'N') or (length(trim(detfact.FieldByName('codanalisis').AsString)) = 4) then Begin
+          obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, periodo);
+          if Length(Trim(nomeclatura.codfact)) = 0 then codigos[i] := detfact.FieldByName('codanalisis').AsString else codigos[i] := nomeclatura.codfact;
+          if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
+          if nomeclatura.RIE <> '*' then montos[i] := setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else montos [i] := setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
+          if nomeclatura.CF <> 'F' then Inc(totprestaciones); // Total de prestaciones
+        end;
+        if (obsocial.FactNBU = 'S') and (length(trim(detfact.FieldByName('codanalisis').AsString)) = 6) then Begin
+          obsocial.SincronizarArancelNBU(detfact.FieldByname('codos').AsString, periodo);
+          nbu.getDatos(detfact.FieldByName('codanalisis').AsString);
+          codigos[i] := detfact.FieldByName('codanalisis').AsString;
+          montos[i]  := setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, 0, 0, 0, 0);  // Valor de cada analisis
+          Inc(totprestaciones);
+          nnbu       := True;
+        end;
+
+        it := i;
+
+        subtotal   := subtotal + montos[i];
+
+        if detfact.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
+        codosanter  := detfact.FieldByName('codos').AsString;
+        idprofanter := detfact.FieldByName('idprof').AsString;
+        idanter     := detfact.FieldByName('codpac').AsString;
+        ordenanter  := detfact.FieldByName('orden').AsString;
+        npac        := detfact.FieldByName('nombre').AsString
+       end;
+       detfact.Next;
+    end;
+
+    it := i;
+
+    ListarLineaDeAnalisis(xcolumnas, salida);
+    SubtotalProfesional(salida);
+    ord[1] := cantidadordenes; ord[2] := totprestaciones;
+    cantidadordenes := ord[1]; totprestaciones := ord[2];
+    SubtotalObraSocial2(salida);   // 08/2013
+
+    it := 0;
+    if not (ExportarDatos) and (salida <> 'T') then FinalizarInforme(salida);
+    rp := False;
+
+    Terminar(true, codosanter);
+   end;
+
+  if (interbase = 'S') then begin
+    if (salida = 'P') or (salida = 'I') then list.Setear(salida);
+
+    if (exporta_web) then begin
+      utilesarchivos.BorrarArchivos(dbs.DirSistema + '\export_reportes\web_totoalesri', '*.txt');
+      list.AnularCaracteresTexto;
+      salida := 'T';
+      ExportarDatos := true;
+      list.IniciarImpresionModoTexto(10000);
+      list.exportar_rep := true;
+    end;
+
+    {if not (detfactIB.Active) then detfactIB.Open;
+    if not (ProcesamientoCentral) then ffirebird.Filtrar(detfactIB, 'periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + laboratorioactual + '''') else ffirebird.Filtrar(detfactIB, 'periodo = ' + '''' + xperiodo + '''');
+    detfactIB.IndexFieldNames := 'Periodo;Idprof;Codos;Orden;Items';
+    detfactIB.First;}
+
+    if not (ProcesamientoCentral) then
+      rsqlIB :=  ffirebird.getTransacSQL('select * from detfact where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + laboratorioactual + '''' + ' order by periodo, idprof, codos, orden, items')
+    else
+      rsqlIB :=  ffirebird.getTransacSQL('select * from detfact' + __c + ' where periodo = ' + '''' + xperiodo + '''' + ' order by periodo, idprof, codos, orden, items');
+    rsqlIB.Open; rsqlIB.First;
+
+    pag := 0; rp := True; datosListados := False;
+    ruptura := xruptura;
+    Periodo := xperiodo;
+    if salida <> 'T' then Begin
+      list.altopag := 0; list.m := 0;
+      list.IniciarTitulos;
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 14');
+      list.Titulo(0, 0, xtitulo, 1, 'Arial, normal, 12');
+      list.Titulo(0, 0, 'Facturación Resumen a Profesionales', 1, 'Arial, negrita, 12');
+      list.Titulo(0, 0, 'Período de Facturación: ' + xperiodo, 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
+      list.Titulo(0, 0, 'Paciente', 1, 'Arial, normal, 8');
+      espaciocol   := 80 div StrToInt(xcolumnas);
+      nrocol       := 80 div espaciocol;
+      distanciaImp := (nrocol * 12) div 5;
+      j := 1;
+      For i := 1 to nrocol do Begin
+        list.Titulo(espaciocol * i, list.Lineactual, 'Cód.', j+1, 'Arial, cursiva, 8');
+        list.Titulo(((espaciocol * i) + distanciaImp) - (nrocol), list.Lineactual, 'Aran.', j+2, 'Arial, cursiva, 8');
+        j := j + 2;
+      end;
+      list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
+    end else Begin
+      if not ExportarDatos then list.IniciarImpresionModoTexto(LineasPag);
+      titulo5(xperiodo, xtitulo, xcolumnas);
+    end;
+
+    codosanter  := ''; idprofanter := 't'; idanter := ''; ordenanter := ''; i := 0; cantidad := 0; cantidadordenes := 0; subtotal := 0; it := 0; tot9984 := 0; totUB := 0; totUG := 0; totprestaciones := 0; periodo := xperiodo; titulo := xtitulo; columnas := xcolumnas; datosListados := False;
+    ttotprestaciones := 0; ccantidadordenes := 0; tttotUB := 0; ttotUG := 0; ccanUB := 0; ccanUG := 0; ttotal := 0; tot9984 := 0; totales[1] := 0; ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0; canUB1 := 0;
+    __peranter := '';
+    while not rsqlIB.EOF do Begin
+      if (rsqlIB.FieldByName('periodo').AsString <> xperiodo) then break;
+      if (rsqlIB.FieldByName('periodo').AsString >= xperiodo) and (utiles.verificarItemsLista(profSel, rsqlIB.FieldByName('idprof').AsString)) and (utiles.verificarItemsLista(ObrasSocSel, rsqlIB.FieldByName('codos').AsString)) and (listarLinea) then Begin   // Filtro general - Período
+        datosListados := True;
+
+        if (length(trim(codosanter)) = 0) then obsocial.getDatos(rsqlIB.FieldByname('codos').AsString);
+
+        if (obsocial.FactNBU = 'N') or (length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 4) then
+          nomeclatura.getDatos(rsqlIB.FieldByName('codanalisis').AsString);
+
+        if (obsocial.FactNBU = 'S') and (length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 6) then
+          nbu.getDatos(rsqlIB.FieldByName('codanalisis').AsString);
+
+        if (length(trim(rsqlIB.FieldByName('ref1').AsString)) = 7) then periodo := rsqlIB.FieldByName('ref1').AsString else periodo := xperiodo;
+
+         // 21/03/2022
+        if  (utiles.getPeriodoAAAAMM(periodo) > __peranter) then __maxperiodo := periodo;
+        __peranter := utiles.getPeriodoAAAAMM(periodo);
+
+        if rsqlIB.FieldByname('codos').AsString <> codosanter then Begin
+          obsocial.getDatos(rsqlIB.FieldByname('codos').AsString);
+          if (obsocial.retencioniva <> 0) then osretieneiva := 'S' else osretieneiva := 'N';
+          if (obsocial.FactNBU = 'N') or (length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 4) then
+            obsocial.SincronizarArancel(rsqlIB.FieldByname('codos').AsString, periodo);
+          if (obsocial.FactNBU = 'S') and (length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 6) then
+            obsocial.SincronizarArancelNBU(rsqlIB.FieldByname('codos').AsString, periodo);
+        end;
+
+        if rsqlIB.FieldByName('idprof').AsString <> idprofanter then Begin  // Ruptura por Profesional
+          ListarLineaDeAnalisis(xcolumnas, salida);
+          SubtotalProfesional(salida);
+          ord[1] := cantidadordenes; ord[2] := totprestaciones;
+          SubtotalObraSocial(salida);
+          cantidadordenes := ord[1]; totprestaciones := ord[2];
+          SubtotalObraSocial2(salida);
+
+          Terminar(false, codosanter);
+
+          RupturaProf(salida, rsqlIB.FieldByName('idprof').AsString, xperiodo, ruptura);
+          cantidad := 0; subtotal := 0; total := 0; codosanter := ''; caran := 0; canUB := 0; totUB := 0;
+        end;
+        if rsqlIB.FieldByName('codos').AsString <> codosanter then Begin
+          if cantidad > 0 then Begin
+            ListarLineaDeAnalisis(xcolumnas, salida);
+            SubtotalProfesional(salida);
+          end;
+          RupturaOS(salida, xperiodo, xtitulo); // Ruptura por Obra Social
+          subtotal := 0; idprofanter := ''; idanter := ''; cantidad := 0; caran := 0; canUB := 0; totUB := 0;
+        end;
+
+        if (i >= StrToInt(xcolumnas)) or (rsqlIB.FieldByName('codpac').AsString <> idanter) or (rsqlIB.FieldByName('orden').AsString <> ordenanter) then Begin
+          if (rsqlIB.FieldByName('codpac').AsString <> idanter) or (rsqlIB.FieldByName('orden').AsString <> ordenanter) then ListarLineaDeAnalisis(xcolumnas, salida) else ListLinea(xcolumnas, salida);
+          i := 0;
+          if rsqlIB.FieldByName('orden').AsString <> ordenanter then idanter1 := '';
+        end;
+
+        Inc(i);
+
+        //paciente.getDatos(rsqlIB.FieldByName('idprof').AsString, rsqlIB.FieldByName('codpac').AsString);
+        //if (length(trim(rsqlIB.FieldByName('retiva').AsString)) > 0) then paciente.Gravadoiva := rsqlIB.FieldByName('retiva').AsString;
+        //****************
+        if (length(trim(rsqlIB.FieldByName('retiva').AsString)) > 0) then begin
+          paciente.Gravadoiva := rsqlIB.FieldByName('retiva').AsString;
+          paciente.Nombre := rsqlIB.FieldByName('nombre').AsString;
+        end else
+          paciente.getDatos(rsqlIB.FieldByName('idprof').AsString, rsqlIB.FieldByName('codpac').AsString);
+
+        pac_retiva := paciente.Gravadoiva;
+
+        //****************************
+
+        if (obsocial.FactNBU = 'N') or (length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 4) then Begin
+          obsocial.SincronizarArancel(rsqlIB.FieldByname('codos').AsString, xperiodo);
+          if Length(Trim(nomeclatura.codfact)) = 0 then codigos[i] := rsqlIB.FieldByName('codanalisis').AsString else codigos[i] := nomeclatura.codfact;
+          if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
+          if nomeclatura.RIE <> '*' then montos[i] := setValorAnalisis(rsqlIB.FieldByName('codos').AsString, rsqlIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else montos [i] := setValorAnalisis(rsqlIB.FieldByName('codos').AsString, rsqlIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
+          if nomeclatura.CF <> 'F' then Inc(totprestaciones); // Total de prestaciones
+        end;
+        if (obsocial.FactNBU = 'S') and (length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 6) then Begin
+          obsocial.SincronizarArancelNBU(rsqlIB.FieldByname('codos').AsString, periodo);
+          nbu.getDatos(rsqlIB.FieldByName('codanalisis').AsString);
+          codigos[i] := rsqlIB.FieldByName('codanalisis').AsString;
+          montos[i]  := setValorAnalisis(rsqlIB.FieldByName('codos').AsString, rsqlIB.FieldByName('codanalisis').AsString, 0, 0, 0, 0);  // Valor de cada analisis
+          Inc(totprestaciones);
+          nnbu       := True;
+        end;
+
+        it := i;
+
+        subtotal   := subtotal + montos[i];
+
+        if rsqlIB.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
+        codosanter  := rsqlIB.FieldByName('codos').AsString;
+        idprofanter := rsqlIB.FieldByName('idprof').AsString;
+        idanter     := rsqlIB.FieldByName('codpac').AsString;
+        ordenanter  := rsqlIB.FieldByName('orden').AsString;
+        npac        := rsqlIB.FieldByName('nombre').AsString;
+        __perfact   := rsqlIB.FieldByName('ref1').AsString;
+       end;
+       rsqlIB.Next;
+    end;
+
+    it := i;
+
+    rsqlIB.close; rsql.Free;
+
+    {pag := 0; rp := True; datosListados := False;
+    ruptura := xruptura;
+    Periodo := xperiodo;
+    if salida <> 'T' then Begin
+      list.altopag := 0; list.m := 0;
+      list.IniciarTitulos;
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 14');
+      list.Titulo(0, 0, xtitulo, 1, 'Arial, normal, 12');
+      list.Titulo(0, 0, 'Facturación Resumen a Profesionales', 1, 'Arial, negrita, 12');
+      list.Titulo(0, 0, 'Período de Facturación: ' + xperiodo, 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
+      list.Titulo(0, 0, 'Paciente', 1, 'Arial, normal, 8');
+      espaciocol   := 80 div StrToInt(xcolumnas);
+      nrocol       := 80 div espaciocol;
+      distanciaImp := (nrocol * 12) div 5;
+      j := 1;
+      For i := 1 to nrocol do Begin
+        list.Titulo(espaciocol * i, list.Lineactual, 'Cód.', j+1, 'Arial, cursiva, 8');
+        list.Titulo(((espaciocol * i) + distanciaImp) - (nrocol), list.Lineactual, 'Aran.', j+2, 'Arial, cursiva, 8');
+        j := j + 2;
+      end;
+      list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
+      list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
+    end else Begin
+      if not ExportarDatos then list.IniciarImpresionModoTexto(LineasPag);
+      titulo5(xperiodo, xtitulo, xcolumnas);
+    end;
+
+    codosanter  := ''; idprofanter := 't'; idanter := ''; ordenanter := ''; i := 0; cantidad := 0; cantidadordenes := 0; subtotal := 0; it := 0; tot9984 := 0; totUB := 0; totUG := 0; totprestaciones := 0; periodo := xperiodo; titulo := xtitulo; columnas := xcolumnas; datosListados := False;
+    ttotprestaciones := 0; ccantidadordenes := 0; tttotUB := 0; ttotUG := 0; ccanUB := 0; ccanUG := 0; ttotal := 0; tot9984 := 0; totales[1] := 0; ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0; canUB1 := 0;
+    while not detfactIB.EOF do Begin
+      if (detfactIB.FieldByName('periodo').AsString <> xperiodo) then break;
+      if (detfactIB.FieldByName('periodo').AsString >= xperiodo) and (utiles.verificarItemsLista(profSel, detfactIB.FieldByName('idprof').AsString)) and (utiles.verificarItemsLista(ObrasSocSel, detfactIB.FieldByName('codos').AsString)) and (listarLinea) then Begin   // Filtro general - Período
+        datosListados := True;
+
+        if (length(trim(codosanter)) = 0) then obsocial.getDatos(detfactIB.FieldByname('codos').AsString);
+
+        if (obsocial.FactNBU = 'N') or (length(trim(detfactIB.FieldByName('codanalisis').AsString)) = 4) then
+          nomeclatura.getDatos(detfactIB.FieldByName('codanalisis').AsString);
+
+        if (obsocial.FactNBU = 'S') and (length(trim(detfactIB.FieldByName('codanalisis').AsString)) = 6) then
+          nbu.getDatos(detfactIB.FieldByName('codanalisis').AsString);
+
+        if (length(trim(detfactIB.FieldByName('ref1').AsString)) = 7) then periodo := detfactIB.FieldByName('ref1').AsString else periodo := xperiodo;
+
+        if detfactIB.FieldByname('codos').AsString <> codosanter then Begin
+          obsocial.getDatos(detfactIB.FieldByname('codos').AsString);
+          if (obsocial.retencioniva <> 0) then osretieneiva := 'S' else osretieneiva := 'N';
+          if (obsocial.FactNBU = 'N') or (length(trim(detfactIB.FieldByName('codanalisis').AsString)) = 4) then
+            obsocial.SincronizarArancel(detfactIB.FieldByname('codos').AsString, periodo);
+          if (obsocial.FactNBU = 'S') and (length(trim(detfactIB.FieldByName('codanalisis').AsString)) = 6) then
+            obsocial.SincronizarArancelNBU(detfactIB.FieldByname('codos').AsString, periodo);
+        end;
+
+        if detfactIB.FieldByName('idprof').AsString <> idprofanter then Begin  // Ruptura por Profesional
+          ListarLineaDeAnalisis(xcolumnas, salida);
+          SubtotalProfesional(salida);
+          ord[1] := cantidadordenes; ord[2] := totprestaciones;
+          SubtotalObraSocial(salida);
+          cantidadordenes := ord[1]; totprestaciones := ord[2];
+          SubtotalObraSocial2(salida);
+
+          Terminar(false);
+
+          RupturaProf(salida, detfactIB.FieldByName('idprof').AsString, xperiodo, ruptura);
+          cantidad := 0; subtotal := 0; total := 0; codosanter := ''; caran := 0; canUB := 0; totUB := 0;
+        end;
+        if detfactIB.FieldByName('codos').AsString <> codosanter then Begin
+          if cantidad > 0 then Begin
+            ListarLineaDeAnalisis(xcolumnas, salida);
+            SubtotalProfesional(salida);
+          end;
+          RupturaOS(salida, xperiodo, xtitulo); // Ruptura por Obra Social
+          subtotal := 0; idprofanter := ''; idanter := ''; cantidad := 0; caran := 0; canUB := 0; totUB := 0;
+        end;
+
+        if (i >= StrToInt(xcolumnas)) or (detfactIB.FieldByName('codpac').AsString <> idanter) or (detfactIB.FieldByName('orden').AsString <> ordenanter) then Begin
+          if (detfactIB.FieldByName('codpac').AsString <> idanter) or (detfactIB.FieldByName('orden').AsString <> ordenanter) then ListarLineaDeAnalisis(xcolumnas, salida) else ListLinea(xcolumnas, salida);
+          i := 0;
+          if detfactIB.FieldByName('orden').AsString <> ordenanter then idanter1 := '';
+        end;
+
+        Inc(i);
+        paciente.getDatos(detfactIB.FieldByName('idprof').AsString, detfactIB.FieldByName('codpac').AsString);
+        if (length(trim(detfactIB.FieldByName('retiva').AsString)) > 0) then paciente.Gravadoiva := detfactIB.FieldByName('retiva').AsString;
+        pac_retiva := paciente.Gravadoiva;
+
+        if (obsocial.FactNBU = 'N') or (length(trim(detfactIB.FieldByName('codanalisis').AsString)) = 4) then Begin
+          obsocial.SincronizarArancel(detfactIB.FieldByname('codos').AsString, xperiodo);
+          if Length(Trim(nomeclatura.codfact)) = 0 then codigos[i] := detfactIB.FieldByName('codanalisis').AsString else codigos[i] := nomeclatura.codfact;
+          if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
+          if nomeclatura.RIE <> '*' then montos[i] := setValorAnalisis(detfactIB.FieldByName('codos').AsString, detfactIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else montos [i] := setValorAnalisis(detfactIB.FieldByName('codos').AsString, detfactIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
+          if nomeclatura.CF <> 'F' then Inc(totprestaciones); // Total de prestaciones
+        end;
+        if (obsocial.FactNBU = 'S') and (length(trim(detfactIB.FieldByName('codanalisis').AsString)) = 6) then Begin
+          obsocial.SincronizarArancelNBU(detfactIB.FieldByname('codos').AsString, periodo);
+          nbu.getDatos(detfactIB.FieldByName('codanalisis').AsString);
+          codigos[i] := detfactIB.FieldByName('codanalisis').AsString;
+          montos[i]  := setValorAnalisis(detfactIB.FieldByName('codos').AsString, detfactIB.FieldByName('codanalisis').AsString, 0, 0, 0, 0);  // Valor de cada analisis
+          Inc(totprestaciones);
+          nnbu       := True;
+        end;
+
+        it := i;
+
+        subtotal   := subtotal + montos[i];
+
+        if detfactIB.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
+        codosanter  := detfactIB.FieldByName('codos').AsString;
+        idprofanter := detfactIB.FieldByName('idprof').AsString;
+        idanter     := detfactIB.FieldByName('codpac').AsString;
+        ordenanter  := detfactIB.FieldByName('orden').AsString;
+        npac        := detfactIB.FieldByName('nombre').AsString
+       end;
+       detfactIB.Next;
+    end;
+
+    it := i;
+
+    ffirebird.QuitarFiltro(detfactIB);}
+
+    ListarLineaDeAnalisis(xcolumnas, salida);
+    SubtotalProfesional(salida);
+    ord[1] := cantidadordenes; ord[2] := totprestaciones;
+    SubtotalObraSocial(salida);
+    cantidadordenes := ord[1]; totprestaciones := ord[2];
+    SubtotalObraSocial2(salida);   // 08/2013
+
+    it := 0;
+    SubtotalObraSocial2(salida);
+    if not (ExportarDatos) then FinalizarInforme(salida);
+    rp := False;
+
+    Terminar(true, codosanter);
+   end;
+
+   exporta_web := false;
+
+   list.Setear('P');
+   list.altopag := 0; list.m := 0;
+
+end;
+
 
 procedure TTFacturacionCCB.titulo5(xperiodo, xtitulo, xcolumnas: String);
 // Objetivo...: Titulo para impresion en modo texto
@@ -2468,10 +5677,23 @@ begin
   obsocial.getDatos(codosanter);
   obsocial.SincronizarPosicionFiscal(codosanter, Periodo);
   profesional.SincronizarListaRetIVA(Periodo, profesional.codigo);
+  profesional.SincronizarListaRetIVA(__maxperiodo, profesional.codigo);
+  //utiles.msgError(__maxperiodo);
 
-  if ExcluirLab then totiva[4] := 0;   // Excluir laboratorios del I.V.A.
+
+  //24/12/2019
+  if (profesional.Retieneiva <> 'S') then
+    if ExcluirLab then totiva[4] := 0;   // Excluir laboratorios del I.V.A.
 
   if cantidadordenes > 0 then Begin
+
+   // Exportamos totales a la Web - 22/05/2019
+   if (exporta_web) then begin
+     GuardarTotalProfIVAExport(__periodo, idprofanter, codosanter, totiva[4], totiva[6], totiva[5], (totales[1] + totiva[6]), cantidadordenes, totprestaciones);
+     // 30/12
+     IngresarMontoFacturadoProfesional(__periodo, idprofanter, profesional.nombre, codosanter, codosanter, 0, 0, 0, totales[1] + totiva[6], totales[1] + totiva[6]);
+   end;
+
    if salida <> 'T' then Begin
     list.Linea(0, 0, ' ', 1, 'Arial, normal, 9', salida, 'N');
     list.Linea(40, list.Lineactual, 'Total de Ordenes: ', 2, 'Arial, normal, 9', salida, 'N');
@@ -2517,7 +5739,7 @@ begin
       list.Linea(0, 0, ' ', 1, 'Arial, normal, 9', salida, 'N');
       list.Linea(40, list.Lineactual, 'Subtotal Exento: ', 2, 'Arial, normal, 9', salida, 'N');
       list.Linea(80, list.Lineactual, moneda, 3, 'Arial, normal, 9', salida, 'N');
-      list.importe(95, list.Lineactual, '', totiva[5], 4, 'Arial, normal, 9');
+      list.importe(95, list.Lineactual, '', totiva[5] {totiva[5] 09/2013}, 4, 'Arial, normal, 9');
       list.Linea(96, list.Lineactual, ' ', 5, 'Arial, normal, 9', salida, 'S');
       list.Linea(0, 0, ' ', 1, 'Arial, normal, 9', salida, 'N');
       list.Linea(40, list.Lineactual, 'I.V.A.:', 2, 'Arial, normal, 9', salida, 'N');
@@ -2561,7 +5783,8 @@ begin
     list.ImporteTxt(totales[1], 12, 2, False);
     list.LineaTxt(list.modo_resaltado_cancelar, True);
     Inc(lineas); if controlarSalto then titulo1(periodo, titulo, columnas);
-    if totiva[4] > 0 then Begin                                   // Obras Sociales con I.V.A.
+    //if totiva[4] > 0 then Begin                                   // Obras Sociales con I.V.A.
+    if (totiva[4] + totiva[5] + totiva[6] >= 0) and (profesional.Retieneiva = 'S') then Begin
       list.LineaTxt(CHR18 + utiles.espacios(26) + 'Subtotal Grabado        :             ', False);
       list.LineaTxt(' ' + moneda, False);
       list.ImporteTxt(totiva[4], 12, 2, True); Inc(lineas); if controlarSalto then titulo1(periodo, titulo, columnas);
@@ -2576,13 +5799,14 @@ begin
       list.ImporteTxt(StrToFloat(utiles.FormatearNumero(FloatToStr(totales[1] + totiva[6]))), 12, 2, True); Inc(lineas); if controlarSalto then titulo1(periodo, titulo, columnas);
       list.LineaTxt(CHR18 + list.modo_resaltado_cancelar + utiles.sLlenarIzquierda(lin, 80, Caracter) + CHR15, True); Inc(lineas); if controlarSalto then titulo1(periodo, titulo, columnas);
     end;
-    if (ruptura) and (it > 0) then Begin
+    if (ruptura) and (it > 0) and not (exporta_web) then Begin
       pag := 0;
       RealizarSalto;
       titulo1(periodo, titulo, columnas);
     end;
   end;
  end;
+
  obsocial.getDatos(cos);
  cantidadordenes := 0; totprestaciones := 0; ttotprestaciones := 0; ccantidadordenes := 0; tttotUB := 0; ttotUG := 0; ccanUB := 0; ccanUG := 0; ttotal := 0; totales[1] := 0; canUB1 := 0;
  totiva[1] := 0; totiva[2] := 0; totiva[3] := 0; totiva[4] := 0; totiva[5] := 0; totiva[6] := 0; ivaret := 0; ivaret9984 := 0; ivaretcaran := 0; ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0; _caran := 0;
@@ -2607,7 +5831,7 @@ end;
 procedure TTFacturacionCCB.getDatosModeloFact(xid: string);
 // Objetivo...: Obtener modelo de factura
 begin
-  if not (modeloc.Active) then modeloc.Open;  
+  if not (modeloc.Active) then modeloc.Open;
   if modeloc.FindKey([xid]) then modelo := modeloc.FieldByName('modelo').AsString else modelo := '';
 end;
 
@@ -2683,8 +5907,8 @@ end;
 function TTFacturacionCCB.FacturarObraSociales(xperiodo, xcodos, xfecha, xvencimiento, xvto1, xvto2, xobservacion, xidcompr, xtipo, xsucursal, xnumero: String; xPorc1, xPorc2: Real; salida: char; agrupa: string): Boolean;
 // Objetivo...: Facturar para las obras sociales en Formularios Preimpresos
 var
-  i, xi: Integer; il: String;
-  nLiq: String;
+  i, xi, item: Integer; il: String;
+  nLiq, it: String;
   l, st: TStringList;
 
   procedure ListarOSAgrupadas(xperiodo, xcodos: string);
@@ -2711,6 +5935,21 @@ var
       list.RemplazarEtiquetasEnMemo('#obsocial' + inttostr(i), utiles.StringLongitudFija(obsocial.Nombre, 30));
       list.RemplazarEtiquetasEnMemo('#tos' + inttostr(i), utiles.FormatearNumero(FloatToStr(s)));
 
+      item := item + 1;
+      it := utiles.sLlenarIzquierda(inttostr(item), 2, '0');
+      if (buscardatosfactdet(xperiodo, xcodos, it)) then  datosfactdet.Edit else datosfactdet.Append;
+      datosfactdet.FieldByName('periodo').AsString  := xperiodo;
+      datosfactdet.FieldByName('codos').AsString    := xcodos;
+      datosfactdet.FieldByName('items').AsString    := it;
+      datosfactdet.FieldByName('descrip').AsString  := utiles.StringLongitudFija(obsocial.Nombre, 30);
+      datosfactdet.FieldByName('monto').AsFloat     := s;
+      try
+        datosfactdet.Post
+       except
+        datosfactdet.Cancel
+      end;
+      datosdb.refrescar(datosfactdet);
+
       rs.Next;
     end;
     rs.Close; rs.Free;
@@ -2724,8 +5963,12 @@ var
 begin
 
   if not (modeloc.Active) then modeloc.Open;
+  omitir_ressql := true;     // 29/05/2014 para que no prorratee
+
+  datosdb.tranSQL('delete from datosfactdet where periodo = ' + '''' + xperiodo + '''' + ' and codos = ' + '''' + xcodos + '''');
 
   if (agrupa <> 'S') then begin
+    item := 0;
     nLiq := setNumeroDeLiquidacion(xperiodo, xcodos);  // Obtenemos el número de Liquidación
     obsocial.getDatos(xcodos);  // Sincronizamos la Obra Social
 
@@ -2769,6 +6012,9 @@ begin
       list.RemplazarEtiquetasEnMemo('#obsocial5', ''); list.RemplazarEtiquetasEnMemo('#tos5', '');
       list.RemplazarEtiquetasEnMemo('#obsocial6', ''); list.RemplazarEtiquetasEnMemo('#tos6', '');
       list.RemplazarEtiquetasEnMemo('#obsocial7', ''); list.RemplazarEtiquetasEnMemo('#tos7', '');
+      list.RemplazarEtiquetasEnMemo('#obsocial8', ''); list.RemplazarEtiquetasEnMemo('#tos8', '');
+      list.RemplazarEtiquetasEnMemo('#obsocial9', ''); list.RemplazarEtiquetasEnMemo('#tos9', '');
+      list.RemplazarEtiquetasEnMemo('#obsocial10', ''); list.RemplazarEtiquetasEnMemo('#tos10', '');
 
       if salida <> 'T' then Begin
         For i := 1 to list.NumeroLineasMemo do Begin   // Vamos imprimiendo en un archivo las lineas del memo
@@ -2791,9 +6037,12 @@ begin
       datosfact.FieldByName('codos').AsString    := xcodos;
       datosfact.FieldByName('nroliq').AsString   := nLiq;
       datosfact.FieldByName('idcompr').AsString  := xidcompr;
-      datosfact.FieldByName('tipo').AsString     := xtipo;
-      datosfact.FieldByName('sucursal').AsString := xsucursal;
-      datosfact.FieldByName('numero').AsString   := xnumero;
+      if (not exporta_afip) then datosfact.FieldByName('fecha').AsString := xfecha else begin
+        if (datosfact.FieldByName('cae').AsString = '') then datosfact.FieldByName('fecha').Clear;
+      end;
+      datosfact.FieldByName('obrasocial').AsString := obsocial.Nombre;
+      datosfact.FieldByName('cuit').AsString     := obsocial.nrocuit;
+      datosfact.FieldByName('monto').AsFloat     := subtotal;
       try
         datosfact.Post
        except
@@ -2801,6 +6050,25 @@ begin
       end;
       datosdb.refrescar(datosfact);
       // Actualizamos los datos de la facturación emitida
+
+      // Detalle de la factura 11/12/2018
+
+      item := item + 1;
+      it := utiles.sLlenarIzquierda(inttostr(item), 2, '0');
+      if (buscardatosfactdet(xperiodo, xcodos, it)) then  datosfactdet.Edit else datosfactdet.Append;
+      datosfactdet.FieldByName('periodo').AsString  := xperiodo;
+      datosfactdet.FieldByName('codos').AsString    := xcodos;
+      datosfactdet.FieldByName('items').AsString    := it;
+      datosfactdet.FieldByName('descrip').AsString := 'Prestaciones correspondientes al mes de ' +
+        utiles.setMes(StrToInt(Copy(xfecha, 4, 2))) + ' de ' + Copy(utiles.sExprFecha2000(xfecha), 1, 4);
+      datosfactdet.FieldByName('monto').AsFloat    := subtotal;
+      try
+        datosfactdet.Post
+       except
+        datosfactdet.Cancel
+      end;
+      datosdb.refrescar(datosfactdet);
+
       if datosdb.Buscar(cabfactos, 'nroliq', 'codos', nLiq, xcodos) then cabfactos.Edit else cabfactos.Append;
       cabfactos.FieldByName('nroliq').AsString      := nLiq;
       cabfactos.FieldByName('codos').AsString       := xcodos;
@@ -2831,7 +6099,7 @@ begin
   if (agrupa = 'S') then begin
     nLiq     := setNumeroDeLiquidacion(xperiodo, xcodos);  // Obtenemos el número de Liquidación
 
-    osagrupa.conectar;
+    //osagrupa.conectar;
 
     modeloc.FindKey(['facturacion']);
     list.IniciarMemoImpresiones(modeloc, 'modelo', 500);
@@ -2891,10 +6159,16 @@ begin
       datosfact.FieldByName('periodo').AsString  := xperiodo;
       datosfact.FieldByName('codos').AsString    := xcodos;
       datosfact.FieldByName('nroliq').AsString   := nLiq;
-      datosfact.FieldByName('idcompr').AsString  := xidcompr;
-      datosfact.FieldByName('tipo').AsString     := xtipo;
-      datosfact.FieldByName('sucursal').AsString := xsucursal;
-      datosfact.FieldByName('numero').AsString   := xnumero;
+      //datosfact.FieldByName('idcompr').AsString  := xidcompr;
+      //datosfact.FieldByName('tipo').AsString     := xtipo;
+      //datosfact.FieldByName('sucursal').AsString := xsucursal;
+      //datosfact.FieldByName('numero').AsString   := xnumero;
+      if (not exporta_afip) then datosfact.FieldByName('fecha').AsString    := xfecha else begin
+        if (datosfact.FieldByName('cae').AsString = '') then datosfact.FieldByName('fecha').Clear;
+      end;
+      datosfact.FieldByName('obrasocial').AsString := osagrupa.Nombre;
+      datosfact.FieldByName('cuit').AsString     := osagrupa.Cuit;
+      datosfact.FieldByName('monto').AsFloat     := subtotal;
       try
         datosfact.Post
        except
@@ -2922,7 +6196,9 @@ begin
     end;
     nLiq := '';
 
-    osagrupa.desconectar;
+    //osagrupa.desconectar;
+
+    omitir_ressql := false;
 
     if subtotal <> 0 then Begin
       Result := True;
@@ -3103,6 +6379,7 @@ begin
     datosfact.FieldByName('tipo').AsString     := xtipo;
     datosfact.FieldByName('sucursal').AsString := xsucursal;
     datosfact.FieldByName('numero').AsString   := xnumero;
+    datosfact.FieldByName('fecha').AsString    := xfecha;
     try
       datosfact.Post
      except
@@ -3140,6 +6417,12 @@ end;
 procedure TTFacturacionCCB.ListarFacturacion(salida: Char);
 // Objetivo...: Listar Facturación
 begin
+
+  if (salida = 'A') then begin
+    list.m := 0;
+    exit;
+  end;
+
   if not datosListadosFact then Begin
     utiles.msgError(msgImpresion);
     if salida <> 'T' then list.Setear(salida);
@@ -3173,110 +6456,278 @@ begin
     // Iniciamos Nómina de Pacientes a Exportar
     paciente.IniciarExportacion(xidprof);
     // Copiamos los datos a exportar
-    cabfact.First; cabexpt.Open;
-    while not cabfact.EOF do Begin
-      if (cabfact.FieldByName('periodo').AsString = xperiodo) and (cabfact.FieldByName('idprof').AsString = xidprof) and (utiles.verificarItemsLista(listOS, cabfact.FieldByName('codos').AsString)) then Begin
-        cabexpt.Append;
-        cabexpt.FieldByName('periodo').AsString := cabfact.FieldByName('periodo').AsString;
-        cabexpt.FieldByName('idprof').AsString  := cabfact.FieldByName('idprof').AsString;
-        cabexpt.FieldByName('codos').AsString   := cabfact.FieldByName('codos').AsString;
-        cabexpt.FieldByName('fecha').AsString   := cabfact.FieldByName('fecha').AsString;
-        try
-          cabexpt.Post
-         except
-          cabexpt.Cancel
-        end;
-      end;
-      cabfact.Next;
-    end;
-    cabexpt.Close;
 
-    detfact.First; detexpt.Open;
-    while not detfact.EOF do Begin
-      if (detfact.FieldByName('periodo').AsString = xperiodo) and (detfact.FieldByName('orden').AsString < '5000') and (detfact.FieldByName('idprof').AsString = xidprof) and (utiles.verificarItemsLista(listOS, detfact.FieldByName('codos').AsString)) then Begin
-        nomeclatura.getDatos(detfact.FieldByName('codanalisis').AsString);
-        detexpt.Append;
-        detexpt.FieldByName('periodo').AsString     := detfact.FieldByName('periodo').AsString;
-        detexpt.FieldByName('idprof').AsString      := detfact.FieldByName('idprof').AsString;
-        detexpt.FieldByName('codos').AsString       := detfact.FieldByName('codos').AsString;
-        detexpt.FieldByName('items').AsString       := detfact.FieldByName('items').AsString;
-        detexpt.FieldByName('orden').AsString       := detfact.FieldByName('orden').AsString;
-        detexpt.FieldByName('codpac').AsString      := detfact.FieldByName('codpac').AsString;
-        detexpt.FieldByName('nombre').AsString      := detfact.FieldByName('nombre').AsString;
-        if Length(Trim(nomeclatura.codfact)) = 0 then detexpt.FieldByName('codanalisis').AsString := detfact.FieldByName('codanalisis').AsString else detexpt.FieldByName('codanalisis').AsString := nomeclatura.codfact;
-        try
-          detexpt.Post
-         except
-          detexpt.Cancel
-        end;
-        // Seleccionamos los Pacientes que tuvieron movimiento para Darlos de Alta
-        if not utiles.verificarItemsLista(lista2, detfact.FieldByName('idprof').AsString + detfact.FieldByName('codpac').AsString) then Begin
-          paciente.MarcarPacienteAExportar(detfact.FieldByName('idprof').AsString, detfact.FieldByName('codpac').AsString);
-          lista2.Add(detfact.FieldByName('idprof').AsString + detfact.FieldByName('codpac').AsString);
-        end;
-      end;
-      detfact.Next;
-    end;
-    detexpt.Close;
-    lista2.Destroy;
-                   
-    idordenes.First; idexpt.Open;
-    while not idordenes.EOF do Begin
-      if (idordenes.FieldByName('periodo').AsString = xperiodo) and (idordenes.FieldByName('idprof').AsString = xidprof) then Begin
-        idexpt.Append;
-        idexpt.FieldByName('periodo').AsString := idordenes.FieldByName('periodo').AsString;
-        idexpt.FieldByName('idprof').AsString  := idordenes.FieldByName('idprof').AsString;
-        idexpt.FieldByName('orden').AsString   := idordenes.FieldByName('orden').AsString;
-        try
-          idexpt.Post
-         except
-          idexpt.Cancel
-        end;
-      end;
-      idordenes.Next;
-    end;
-    idexpt.Close;
+    if (interbase = 'N') then begin
 
-    // Exportamos los totales facturados Inscriptos en I.V.A.
-    if ExportarTotalesProfInscriptosIVA then Begin
-      lista1 := TStringList.Create;
-      lista1.Add(xidprof);
-      ListarResumenRetencionesIVA(xperiodo, '', lista1, listOS, 'N', True);
-      datosdb.closeDB(totalesPROF);
-      lista1.Destroy;
-    end;
-
-    cabexpt.Free; detexpt.Free; idexpt.Free;
-
-    paciente.Exportar(xperiodo, xtodoslospacientes);
-
-    // Exportamos Ordenes Auditadas
-    directorio1 := dir_lab + '\' + Copy(xperiodo, 1, 2) + Copy(xperiodo, 4, 4) + '\' + xidprof;
-    if DirectoryExists(directorio1) then Begin
-      SeleccionarLaboratorio_Auditoria(xperiodo, directorio1);
-      if ordenes_audit <> Nil then Begin
-        // Instanciamos las tablas a usar
-        auditexpt := datosdb.openDB('ordenes_audit', '', '', dbs.DirSistema + '\exportar');
-        // Vaciamos el contenido
-        datosdb.tranSQL(dbs.DirSistema + '\exportar', 'DELETE FROM ordenes_audit');
-        // Copiamos los datos a exportar
-        ordenes_audit.First;
-        while not ordenes_audit.Eof do Begin
-          if datosdb.Buscar(auditexpt, 'periodo', 'items', 'idprof', ordenes_audit.FieldByName('periodo').AsString, ordenes_audit.FieldByName('items').AsString, ordenes_audit.FieldByName('idprof').AsString) then auditexpt.Edit else auditexpt.Append;
-          auditexpt.FieldByName('periodo').AsString      := ordenes_audit.FieldByName('periodo').AsString;
-          auditexpt.FieldByName('items').AsString        := ordenes_audit.FieldByName('items').AsString;
-          auditexpt.FieldByName('idprof').AsString       := ordenes_audit.FieldByName('idprof').AsString;
-          auditexpt.FieldByName('nroauditoria').AsString := ordenes_audit.FieldByName('nroauditoria').AsString;
+      cabfact.First; cabexpt.Open;
+      while not cabfact.EOF do Begin
+        if (cabfact.FieldByName('periodo').AsString = xperiodo) and (cabfact.FieldByName('idprof').AsString = xidprof) and (utiles.verificarItemsLista(listOS, cabfact.FieldByName('codos').AsString)) then Begin
+          cabexpt.Append;
+          cabexpt.FieldByName('periodo').AsString := cabfact.FieldByName('periodo').AsString;
+          cabexpt.FieldByName('idprof').AsString  := cabfact.FieldByName('idprof').AsString;
+          cabexpt.FieldByName('codos').AsString   := cabfact.FieldByName('codos').AsString;
+          cabexpt.FieldByName('fecha').AsString   := cabfact.FieldByName('fecha').AsString;
           try
-            auditexpt.Post
+            cabexpt.Post
            except
-            auditexpt.Cancel
+            cabexpt.Cancel
           end;
-          ordenes_audit.Next;
         end;
-
-        auditexpt.Close; auditexpt.Free;
+        cabfact.Next;
       end;
+      cabexpt.Close;
+
+      detfact.First; detexpt.Open;
+      while not detfact.EOF do Begin
+        if (detfact.FieldByName('periodo').AsString = xperiodo) {and (detfact.FieldByName('orden').AsString < '5000')} and (detfact.FieldByName('idprof').AsString = xidprof) and (utiles.verificarItemsLista(listOS, detfact.FieldByName('codos').AsString)) then Begin
+          nomeclatura.getDatos(detfact.FieldByName('codanalisis').AsString);
+          detexpt.Append;
+          detexpt.FieldByName('periodo').AsString     := detfact.FieldByName('periodo').AsString;
+          detexpt.FieldByName('idprof').AsString      := detfact.FieldByName('idprof').AsString;
+          detexpt.FieldByName('codos').AsString       := detfact.FieldByName('codos').AsString;
+          detexpt.FieldByName('items').AsString       := detfact.FieldByName('items').AsString;
+          detexpt.FieldByName('orden').AsString       := detfact.FieldByName('orden').AsString;
+          detexpt.FieldByName('codpac').AsString      := detfact.FieldByName('codpac').AsString;
+          detexpt.FieldByName('nombre').AsString      := detfact.FieldByName('nombre').AsString;
+          detexpt.FieldByName('ref1').AsString        := detfact.FieldByName('ref1').AsString;
+          if Length(Trim(nomeclatura.codfact)) = 0 then detexpt.FieldByName('codanalisis').AsString := detfact.FieldByName('codanalisis').AsString else detexpt.FieldByName('codanalisis').AsString := nomeclatura.codfact;
+          try
+            detexpt.Post
+           except
+            detexpt.Cancel
+          end;
+          // Seleccionamos los Pacientes que tuvieron movimiento para Darlos de Alta
+          if not utiles.verificarItemsLista(lista2, detfact.FieldByName('idprof').AsString + detfact.FieldByName('codpac').AsString) then Begin
+            paciente.MarcarPacienteAExportar(detfact.FieldByName('idprof').AsString, detfact.FieldByName('codpac').AsString);
+            lista2.Add(detfact.FieldByName('idprof').AsString + detfact.FieldByName('codpac').AsString);
+          end;
+        end;
+        detfact.Next;
+      end;
+      detexpt.Close;
+      lista2.Destroy;
+
+      idordenes.First; idexpt.Open;
+      while not idordenes.EOF do Begin
+        if (idordenes.FieldByName('periodo').AsString = xperiodo) and (idordenes.FieldByName('idprof').AsString = xidprof) then Begin
+          idexpt.Append;
+          idexpt.FieldByName('periodo').AsString := idordenes.FieldByName('periodo').AsString;
+          idexpt.FieldByName('idprof').AsString  := idordenes.FieldByName('idprof').AsString;
+          idexpt.FieldByName('orden').AsString   := idordenes.FieldByName('orden').AsString;
+          try
+            idexpt.Post
+           except
+            idexpt.Cancel
+          end;
+        end;
+        idordenes.Next;
+      end;
+      idexpt.Close;
+
+      // Exportamos los totales facturados Inscriptos en I.V.A.
+      if ExportarTotalesProfInscriptosIVA then Begin
+        lista1 := TStringList.Create;
+        lista1.Add(xidprof);
+        ListarResumenRetencionesIVA(xperiodo, '', lista1, listOS, 'N', True);
+        datosdb.closeDB(totalesPROF);
+        lista1.Destroy;
+      end;
+
+      cabexpt.Free; detexpt.Free; idexpt.Free;
+
+      paciente.Exportar(xperiodo, xtodoslospacientes);
+
+      // Exportamos Ordenes Auditadas
+      directorio1 := dir_lab + '\' + Copy(xperiodo, 1, 2) + Copy(xperiodo, 4, 4) + '\' + xidprof;
+      if DirectoryExists(directorio1) then Begin
+        SeleccionarLaboratorio_Auditoria(xperiodo, directorio1);
+        if ordenes_audit <> Nil then Begin
+          // Instanciamos las tablas a usar
+          auditexpt := datosdb.openDB('ordenes_audit', '', '', dbs.DirSistema + '\exportar');
+          // Vaciamos el contenido
+          datosdb.tranSQL(dbs.DirSistema + '\exportar', 'DELETE FROM ordenes_audit');
+          // Copiamos los datos a exportar
+          ordenes_audit.First;
+          while not ordenes_audit.Eof do Begin
+            if datosdb.Buscar(auditexpt, 'periodo', 'items', 'idprof', ordenes_audit.FieldByName('periodo').AsString, ordenes_audit.FieldByName('items').AsString, ordenes_audit.FieldByName('idprof').AsString) then auditexpt.Edit else auditexpt.Append;
+            auditexpt.FieldByName('periodo').AsString      := ordenes_audit.FieldByName('periodo').AsString;
+            auditexpt.FieldByName('items').AsString        := ordenes_audit.FieldByName('items').AsString;
+            auditexpt.FieldByName('idprof').AsString       := ordenes_audit.FieldByName('idprof').AsString;
+            auditexpt.FieldByName('nroauditoria').AsString := ordenes_audit.FieldByName('nroauditoria').AsString;
+            try
+              auditexpt.Post
+             except
+              auditexpt.Cancel
+            end;
+            ordenes_audit.Next;
+          end;
+
+          auditexpt.Close; auditexpt.Free;
+        end;
+      end;
+
+    end;
+
+    if (interbase = 'S') then begin
+      rsqlIB := ffirebird.getTransacSQL('select * from cabfact where periodo = ' + '''' + xperiodo + '''' + ' and idprof =  ' + '''' + xidprof + '''');
+
+      rsqlIB.Open; rsqlIB.First; cabexpt.open;
+      while not rsqlIB.EOF do Begin
+        if (rsqlIB.FieldByName('periodo').AsString = xperiodo) and (rsqlIB.FieldByName('idprof').AsString = xidprof) and (utiles.verificarItemsLista(listOS, rsqlIB.FieldByName('codos').AsString)) then Begin
+          cabexpt.Append;
+          cabexpt.FieldByName('periodo').AsString := rsqlIB.FieldByName('periodo').AsString;
+          cabexpt.FieldByName('idprof').AsString  := rsqlIB.FieldByName('idprof').AsString;
+          cabexpt.FieldByName('codos').AsString   := rsqlIB.FieldByName('codos').AsString;
+          cabexpt.FieldByName('fecha').AsString   := rsqlIB.FieldByName('fecha').AsString;
+          try
+            cabexpt.Post
+           except
+            cabexpt.Cancel
+          end;
+        end;
+        rsqlIB.Next;
+      end;
+      cabexpt.Close;
+
+      rsqlIB.Close; rsqlIB.Free;
+
+      rsqlIB := ffirebird.getTransacSQL('select * from detfact where periodo = ' + '''' + xperiodo + '''' + ' and idprof =  ' + '''' + xidprof + '''');
+
+      rsqlIB.Open; rsqlIB.First; detexpt.open;
+      while not rsqlIB.EOF do Begin
+        if (rsqlIB.FieldByName('periodo').AsString = xperiodo) and ((rsqlIB.FieldByName('orden').AsString < '5000') or (copy(rsqlIB.FieldByName('orden').AsString,1,1) = 'R')) and (rsqlIB.FieldByName('idprof').AsString = xidprof) and (utiles.verificarItemsLista(listOS, rsqlIB.FieldByName('codos').AsString)) then Begin
+          nomeclatura.getDatos(rsqlIB.FieldByName('codanalisis').AsString);
+          detexpt.Append;
+          detexpt.FieldByName('periodo').AsString     := rsqlIB.FieldByName('periodo').AsString;
+          detexpt.FieldByName('idprof').AsString      := rsqlIB.FieldByName('idprof').AsString;
+          detexpt.FieldByName('codos').AsString       := rsqlIB.FieldByName('codos').AsString;
+          detexpt.FieldByName('items').AsString       := rsqlIB.FieldByName('items').AsString;
+          detexpt.FieldByName('orden').AsString       := rsqlIB.FieldByName('orden').AsString;
+          detexpt.FieldByName('codpac').AsString      := rsqlIB.FieldByName('codpac').AsString;
+          detexpt.FieldByName('nombre').AsString      := rsqlIB.FieldByName('nombre').AsString;
+          detexpt.FieldByName('ref1').AsString        := rsqlIB.FieldByName('ref1').AsString;
+          detexpt.FieldByName('osiva').AsString       := rsqlIB.FieldByName('osiva').AsString;
+          detexpt.FieldByName('profiva').AsString     := rsqlIB.FieldByName('profiva').AsString;
+          detexpt.FieldByName('retiva').AsString      := rsqlIB.FieldByName('retiva').AsString;
+          if Length(Trim(nomeclatura.codfact)) = 0 then detexpt.FieldByName('codanalisis').AsString := rsqlIB.FieldByName('codanalisis').AsString else detexpt.FieldByName('codanalisis').AsString := nomeclatura.codfact;
+          try
+            detexpt.Post
+           except
+            detexpt.Cancel
+          end;
+          // Seleccionamos los Pacientes que tuvieron movimiento para Darlos de Alta
+          if not utiles.verificarItemsLista(lista2, rsqlIB.FieldByName('idprof').AsString + rsqlIB.FieldByName('codpac').AsString) then Begin
+            paciente.MarcarPacienteAExportar(rsqlIB.FieldByName('idprof').AsString, rsqlIB.FieldByName('codpac').AsString);
+            lista2.Add(rsqlIB.FieldByName('idprof').AsString + rsqlIB.FieldByName('codpac').AsString);
+          end;
+        end;
+        rsqlIB.Next;
+      end;
+      detexpt.Close;
+      lista2.Destroy;
+
+      rsqlIB.close; rsqlIB.free;
+
+      rsqlIB := ffirebird.getTransacSQL('select * from idordenes where periodo = ' + '''' + xperiodo + '''' + ' and idprof =  ' + '''' + xidprof + '''');
+
+      rsqlIB.Open; rsqlIB.First; idexpt.Open;
+      while not rsqlIB.EOF do Begin
+        if (rsqlIB.FieldByName('periodo').AsString = xperiodo) and (rsqlIB.FieldByName('idprof').AsString = xidprof) then Begin
+          idexpt.Append;
+          idexpt.FieldByName('periodo').AsString := rsqlIB.FieldByName('periodo').AsString;
+          idexpt.FieldByName('idprof').AsString  := rsqlIB.FieldByName('idprof').AsString;
+          idexpt.FieldByName('orden').AsString   := rsqlIB.FieldByName('orden').AsString;
+          try
+            idexpt.Post
+           except
+            idexpt.Cancel
+          end;
+        end;
+        rsqlIB.Next;
+      end;
+      idexpt.Close;
+
+      rsqlIB.Close; rsqlIB.Free;
+
+      // Exportamos los totales facturados Inscriptos en I.V.A.
+      if ExportarTotalesProfInscriptosIVA then Begin
+        lista1 := TStringList.Create;
+        lista1.Add(xidprof);
+        ListarResumenRetencionesIVA(xperiodo, '', lista1, listOS, 'N', True);
+        datosdb.closeDB(totalesPROF);
+        lista1.Destroy;
+
+        // Exportamos totales
+        // 29/04/2014
+        totalesPROF := datosdb.openDB('totalesprof', '', '', dbs.DirSistema + '\exportar');
+        totalesPROF.Open;
+        datosdb.tranSQL(dbs.DirSistema + '\exportar', 'delete from totalesprof where periodo = ' + '''' + xperiodo + '''' + ' and idprof =  ' + '''' + xidprof + '''');
+        rsql := datosdb.tranSQL(DBConexion, 'select * from totalesprof where periodo = ' + '''' + xperiodo + '''' + ' and idprof =  ' + '''' + xidprof + '''');
+        rsql.Open;
+        while not rsql.eof do begin
+          totalesPROF.Append;
+          totalesPROF.FieldByName('periodo').AsString := rsql.FieldByName('periodo').AsString;
+          totalesPROF.FieldByName('idprof').AsString := rsql.FieldByName('idprof').AsString;
+          totalesPROF.FieldByName('nombre').AsString := rsql.FieldByName('nombre').AsString;
+          totalesPROF.FieldByName('codos').AsString := rsql.FieldByName('codos').AsString;
+          totalesPROF.FieldByName('monto').AsString := rsql.FieldByName('monto').AsString;
+          totalesPROF.FieldByName('neto').AsString := rsql.FieldByName('neto').AsString;
+          totalesPROF.FieldByName('retencion').AsString := rsql.FieldByName('retencion').AsString;
+          totalesPROF.FieldByName('ug').AsString := rsql.FieldByName('ug').AsString;
+          totalesPROF.FieldByName('ub').AsString := rsql.FieldByName('ub').AsString;
+          totalesPROF.FieldByName('caran').AsString := rsql.FieldByName('caran').AsString;
+          totalesPROF.FieldByName('gravado').AsString := rsql.FieldByName('gravado').AsString;
+          totalesPROF.FieldByName('iva').AsString := rsql.FieldByName('iva').AsString;
+          totalesPROF.FieldByName('exento').AsString := rsql.FieldByName('exento').AsString;
+          try
+            totalesPROF.Post
+          except
+            totalesPROF.Cancel
+          end;
+          rsql.Next;
+        end;
+        rsql.Close; rsql.Free;
+        datosdb.closeDB(totalesPROF);
+      end;
+
+      cabexpt.Free; detexpt.Free; idexpt.Free;
+
+      paciente.Exportar(xperiodo, xtodoslospacientes);
+
+      // Exportamos Ordenes Auditadas
+      directorio1 := dir_lab + '\' + Copy(xperiodo, 1, 2) + Copy(xperiodo, 4, 4) + '\' + xidprof;
+      if DirectoryExists(directorio1) then Begin
+        SeleccionarLaboratorio_Auditoria(xperiodo, directorio1);
+        if ordenes_audit <> Nil then Begin
+          // Instanciamos las tablas a usar
+          auditexpt := datosdb.openDB('ordenes_audit', '', '', dbs.DirSistema + '\exportar');
+          // Vaciamos el contenido
+          datosdb.tranSQL(dbs.DirSistema + '\exportar', 'DELETE FROM ordenes_audit');
+          // Copiamos los datos a exportar
+
+          rsqlIB := ffirebird.getTransacSQL('select * from ordenes_audit where periodo = ' + '''' + xperiodo + '''');
+
+          rsqlIB.open; rsqlIB.First;
+          while not rsqlIB.Eof do Begin
+            if datosdb.Buscar(auditexpt, 'periodo', 'items', 'idprof', rsqlIB.FieldByName('periodo').AsString, rsqlIB.FieldByName('items').AsString, rsqlIB.FieldByName('idprof').AsString) then auditexpt.Edit else auditexpt.Append;
+            auditexpt.FieldByName('periodo').AsString      := rsqlIB.FieldByName('periodo').AsString;
+            auditexpt.FieldByName('items').AsString        := rsqlIB.FieldByName('items').AsString;
+            auditexpt.FieldByName('idprof').AsString       := rsqlIB.FieldByName('idprof').AsString;
+            auditexpt.FieldByName('nroauditoria').AsString := rsqlIB.FieldByName('nroauditoria').AsString;
+            try
+              auditexpt.Post
+             except
+              auditexpt.Cancel
+            end;
+            rsqlIB.Next;
+          end;
+
+          auditexpt.Close; auditexpt.Free;
+
+          rsqlIB.close; rsqlIB.free;
+        end;
+      end;
+
     end;
 
     // Compactamos los datos
@@ -3329,7 +6780,6 @@ function TTFacturacionCCB.setDatosIngresados(xperiodo: String): TQuery;
 begin
   Result := datosdb.tranSQL(DBConexion, 'SELECT * FROM datosexportados WHERE periodo = ' + '"' + xperiodo + '"' + ' AND modo = ' + '"' + 'M' + '"');
 end;
-
 
 procedure TTFacturacionCCB.Importar(xperiodo, xidlab, xlaboratorio, xdrive: String);
 // Objetivos...: Importar datos de Laboratorios, descompactamos los datos en el disco
@@ -3399,15 +6849,22 @@ Begin
   if i > -1 then Result := datosdb.tranSQL(dirlab[i], 'SELECT codos, idprof FROM cabfact ORDER BY codos') else Result := nil;
 end;
 
+function TTFacturacionCCB.setObrasSocialesImportadasIB(xidprof: String): TIBQuery;
+// Objetivo...: Devolver la Nómina de Obras Sociales Importadas por cada laboratorio
+Begin
+  if (ffirebird <> Nil) then Result := ffirebird.getTransacSQL('SELECT codos, idprof FROM cabfact ORDER BY codos') else Result := nil;
+end;
+
 procedure TTFacturacionCCB.TransferirDatosImportados(xperiodo, xidprof: String; listOS: TStringList);
 // Objetivo...: Transferir los Movimientos de las Obras Sociales y los profesionales Seleccionados
 
 var
-  i, j, k: Integer; no_importar, totpr, transnbu, _noimport: Boolean;
+  i, j, k: Integer; no_importar, totpr, transnbu, _noimport, fieldref1, __iniciar, fieldretiva: Boolean;
   cabexpt, detexpt, idexpt, auditexpt, totprof: TTable;
-  codnbu, ordenanter: String;
-  r, t: TQuery;
-  m: array[1..5000, 1..8] of String;
+  codnbu, ordenanter, ref1, retiva: String;
+  r, t, rs, rss: TQuery;
+  rsql: TIBQuery;
+  m: array[1..5000, 1..10] of String;
   lista1: TStringList;
 
   //----------------------------------------------------------------------------
@@ -3416,34 +6873,66 @@ var
     cons: TQuery;
     it: Integer;
   Begin
-    cons := nbu.setCodigos('I');
-    cons.Open;
-    it   := xitems;
-    while not cons.Eof do Begin
-      Inc(it);
-      detfact.Append;
-      detfact.FieldByName('periodo').AsString     := m[1, 1];
-      detfact.FieldByName('idprof').AsString      := m[1, 2];
-      detfact.FieldByName('codos').AsString       := m[1, 3];
-      detfact.FieldByName('items').AsString       := utiles.sLlenarIzquierda(IntToStr(it), 3, '0');
-      detfact.FieldByName('orden').AsString       := m[1, 5];
-      detfact.FieldByName('codpac').AsString      := m[1, 6];
-      detfact.FieldByName('nombre').AsString      := m[1, 7];
-      detfact.FieldByName('codanalisis').AsString := cons.FieldByName('codigo').AsString;
-      try
-        detfact.Post
-       except
-        detfact.Cancel
-      end;
+    if (interbase = 'N') then begin
+      cons := nbu.setCodigos('I');
+      cons.Open;
+      it   := xitems;
+      while not cons.Eof do Begin
+        Inc(it);
+        detfact.Append;
+        detfact.FieldByName('periodo').AsString     := m[1, 1];
+        detfact.FieldByName('idprof').AsString      := m[1, 2];
+        detfact.FieldByName('codos').AsString       := m[1, 3];
+        detfact.FieldByName('items').AsString       := utiles.sLlenarIzquierda(IntToStr(it), 3, '0');
+        detfact.FieldByName('orden').AsString       := m[1, 5];
+        detfact.FieldByName('codpac').AsString      := m[1, 6];
+        detfact.FieldByName('nombre').AsString      := m[1, 7];
+        detfact.FieldByName('codanalisis').AsString := cons.FieldByName('codigo').AsString;
+        try
+          detfact.Post
+         except
+          detfact.Cancel
+        end;
 
-      cons.Next;
+        cons.Next;
+      end;
+      cons.Close; cons.Free;
     end;
-    cons.Close; cons.Free;
+
+    if (interbase = 'S') then begin
+      cons := nbu.setCodigos('I');
+      cons.Open;
+      it   := xitems;
+      while not cons.Eof do Begin
+        Inc(it);
+        lote.Add('delete from detfact where periodo = ' + '''' + m[1, 1] + '''' + ' and idprof = ' + '''' + m[1, 2] + '''' + ' and codos = ' + '''' + m[1, 3] + '''' + ' and items = ' + '''' + utiles.sLlenarIzquierda(IntToStr(it), 3, '0') + '''');
+        lote.Add('insert into detfact (periodo, idprof, codos, items, orden, codpac, nombre, codanalisis, ref1, osiva, retiva, profiva) values (' +
+                '''' + m[1, 1] + '''' + ', ' +
+                '''' + m[1, 2] + '''' + ', ' +
+                '''' + m[1, 3] + '''' + ', ' +
+                '''' + utiles.sLlenarIzquierda(IntToStr(it), 3, '0') + '''' + ', ' +
+                '''' + m[1, 5] + '''' + ', ' +
+                '''' + m[1, 6] + '''' + ', ' +
+                QuotedStr(m[1, 7]) + ', ' +
+                '''' + cons.FieldByName('codigo').AsString + '''' + ', ' +
+                '''' + ref1 + '''' + ', ' +
+                '''' + obsocial.Retieneiva + '''' + ', ' +
+                '''' + retiva + '''' + ', ' +
+                '''' + profesional.Retieneiva + '''' + ')'
+                );
+
+        cons.Next;
+      end;
+      cons.Close; cons.Free;
+    end;
   end;
   //----------------------------------------------------------------------------
 
 Begin
-  if profesional.Buscar(xidprof) then Begin
+  firebird.getModulo('facturacion');
+  if (length(trim(firebird.Dir_Remoto)) = 0) then interbase := 'N';
+
+  if profesional.Buscar(xidprof) and (interbase = 'N') then Begin
     i := utiles.ObtenerItemsEnLista(listLab, xidprof);
     if i < 1 then utiles.msgError('El Laboratorio No está dado de Alta, Operación Rechazada ...!') else Begin
     LaboratorioActual := ''; codosanter := ''; no_importar := True;
@@ -3467,8 +6956,7 @@ Begin
       if (obsocial.Buscar(cabexpt.FieldByName('codos').AsString)) then begin
         obsocial.getDatos(cabexpt.FieldByName('codos').AsString); // Excluimos las Obras Sociales Capitadas que no se Importan
         if obsocial.NoImporta = 'N' then no_importar := False;    // Flag para Determinar si se Incorporan las ordenes de Auditoria
-        if (cabexpt.FieldByName('idprof').AsString = xidprof) and (utiles.verificarItemsLista(listOS, cabexpt.FieldByName('codos').AsString)) and (obsocial.NoImporta <> 'N') then Begin
-          if Buscar(xperiodo, cabexpt.FieldByName('idprof').AsString, cabexpt.FieldByName('codos').AsString) then cabfact.Edit else Begin
+        if (cabexpt.FieldByName('idprof').AsString = xidprof) and (utiles.verificarItemsLista(listOS, cabexpt.FieldByName('codos').AsString)) and (obsocial.NoImporta <> 'N') then Begin          if Buscar(xperiodo, cabexpt.FieldByName('idprof').AsString, cabexpt.FieldByName('codos').AsString) then cabfact.Edit else Begin
             datosdb.tranSQL(directorio, 'DELETE FROM detfact WHERE codos = ' + '"' + cabexpt.FieldByName('codos').AsString + '"' + ' and orden < ' + '"' + '5000' + '"');
             cabfact.Append;
           end;
@@ -3490,6 +6978,7 @@ Begin
     datosdb.refrescar(cabfact);
 
     detexpt.Open; idanter := '';
+    fieldref1 := datosdb.verificarSiExisteCampo(detexpt, 'ref1');
     while not detexpt.EOF do Begin
       if detexpt.FieldByName('codos').AsString <> idanter then Begin    // Excluimos las Obras Sociales Capitadas que no se Importan
         obsocial.getDatos(detexpt.FieldByName('codos').AsString);
@@ -3506,6 +6995,8 @@ Begin
           detfact.FieldByName('codpac').AsString      := detexpt.FieldByName('codpac').AsString;
           detfact.FieldByName('nombre').AsString      := detexpt.FieldByName('nombre').AsString;
           detfact.FieldByName('codanalisis').AsString := detexpt.FieldByName('codanalisis').AsString;
+          if (fieldref1) then
+            detfact.FieldByName('ref1').AsString        := detexpt.FieldByName('ref1').AsString;
           try
             detfact.Post
            except
@@ -3522,6 +7013,7 @@ Begin
     //--------------------------------------------------------------------------
     // Transferencia/Conversión de Datos al Sistema NBU
 
+    if not (cabfact.Active) then cabfact.Open;
     cabfact.First;
     while not cabfact.Eof do Begin
       obsocial.getDatos(cabfact.FieldByName('codos').AsString);
@@ -3721,111 +7213,131 @@ Begin
 
         datosdb.closeDB(totprof); datosdb.closeDB(totalesPROF);
       end;
+     end;
     end;
-    end;
 
-  end;
+    LaboratorioActual := '';
+  End;
 
-  datosdb.closeDB(cabfact); datosdb.closeDB(detfact); datosdb.closeDB(idordenes);
-end;
-
-procedure TTFacturacionCCB.ModificarPeriodoFacturado(xperiodoactual, xnuevoperiodo, xidprof: String);
-// Objetivo...: Mover movimientos de un periodo al otro
-var
-  i: Integer; no_importar, totpr: Boolean;
-  cabexpt, detexpt, idexpt, auditexpt, totprof: TTable;
-Begin
-  if profesional.Buscar(xidprof) then Begin
+  if (profesional.Buscar(xidprof)) and (interbase = 'S') then Begin
+    InstanciarTablas('S');
     i := utiles.ObtenerItemsEnLista(listLab, xidprof);
+    if i < 1 then utiles.msgError('El Laboratorio No está dado de Alta, Operación Rechazada ...!') else Begin
     LaboratorioActual := ''; codosanter := ''; no_importar := True;
-    PrepararDirectorio(xnuevoperiodo, xidprof);  // Activamos el directorio a Importar
-    PrepararDirectorio_OrdenesAuditadas(xnuevoperiodo, xidprof);  // Directorio a Importar Ordenes Auditoria
     // Instanciamos las tablas a usar
-    cabexpt := datosdb.openDB('cabfact', 'Periodo;Idprof;Codos', '', dir_lab + '\' + Copy(xperiodoactual, 1, 2) + Copy(xperiodoactual, 4, 4) + '\' + xidprof);
-    idexpt  := datosdb.openDB('idordenes', 'Periodo;Idprof', '', dir_lab + '\' + Copy(xperiodoactual, 1, 2) + Copy(xperiodoactual, 4, 4) + '\' + xidprof);
-    detexpt := datosdb.openDB('detfact', 'Periodo;Idprof;Codos;Items;Orden', '', dir_lab + '\' + Copy(xperiodoactual, 1, 2) + Copy(xperiodoactual, 4, 4) + '\' + xidprof);
-    if FileExists(dir_lab + '\' + Copy(xperiodoactual, 1, 2) + Copy(xperiodoactual, 4, 4) + '\' + xidprof + '\totalesprof.db') then Begin
-      totprof := datosdb.openDB('totalesprof', '', '', dir_lab + '\' + Copy(xperiodoactual, 1, 2) + Copy(xperiodoactual, 4, 4) + '\' + xidprof);
+
+    cabexpt := datosdb.openDB('cabfact', 'Periodo;Idprof;Codos', '', dirlab[i]);
+    idexpt  := datosdb.openDB('idordenes', 'Periodo;Idprof', '', dirlab[i]);
+    detexpt := datosdb.openDB('detfact', 'Periodo;Idprof;Codos;Items;Orden', '', dirlab[i]);
+    if FileExists(dirlab[i] + '\totalesprof.db') then Begin
+      totprof := datosdb.openDB('totalesprof', '', '', dirlab[i]);
       totpr   := True;
     end;
 
-    datosdb.tranSQL(directorio, 'DELETE FROM cabfact');
-    cabexpt.Open;
+    profesional.getDatos(xidprof);
+
+    lista1 := TStringList.Create;
+
+    {cabexpt.Open;
     while not cabexpt.EOF do Begin
-      obsocial.getDatos(cabexpt.FieldByName('codos').AsString); // Excluimos las Obras Sociales Capitadas que no se Importan
-      if obsocial.NoImporta = 'N' then no_importar := False;    // Flag para Determinar si se Incorporan las ordenes de Auditoria
-      if (cabexpt.FieldByName('periodo').AsString = xperiodoactual) and (cabexpt.FieldByName('idprof').AsString = xidprof) and (obsocial.NoImporta <> 'N') then Begin
-        if Buscar(cabexpt.FieldByName('periodo').AsString, cabexpt.FieldByName('idprof').AsString, cabexpt.FieldByName('codos').AsString) then cabfact.Edit else Begin
-          datosdb.tranSQL(directorio, 'DELETE FROM detfact WHERE codos = ' + '"' + cabexpt.FieldByName('codos').AsString + '"' + ' and orden < ' + '"' + '5000' + '"');
-          cabfact.Append;
-        end;
-        cabfact.FieldByName('periodo').AsString := xnuevoperiodo;
-        cabfact.FieldByName('idprof').AsString  := cabexpt.FieldByName('idprof').AsString;
-        cabfact.FieldByName('codos').AsString   := cabexpt.FieldByName('codos').AsString;
-        cabfact.FieldByName('fecha').AsString   := cabexpt.FieldByName('fecha').AsString;
-        try
-          cabfact.Post
-         except
-          cabfact.Cancel
+      _noimport := False;
+      if (utiles.verificarItemsLista(listOS, cabexpt.FieldByName('codos').AsString)) then begin
+        if (obsocial.Buscar(cabexpt.FieldByName('codos').AsString)) then begin
+          obsocial.getDatos(cabexpt.FieldByName('codos').AsString); // Excluimos las Obras Sociales Capitadas que no se Importan
+          if obsocial.NoImporta = 'N' then no_importar := False;    // Flag para Determinar si se Incorporan las ordenes de Auditoria
+          if (cabexpt.FieldByName('idprof').AsString = xidprof) and (utiles.verificarItemsLista(listOS, cabexpt.FieldByName('codos').AsString)) and (obsocial.NoImporta <> 'N') then Begin
+            if Buscar(xperiodo, cabexpt.FieldByName('idprof').AsString, cabexpt.FieldByName('codos').AsString) then cabfactIB.Edit else Begin
+              ffirebird.TransacSQL('DELETE FROM detfact WHERE codos = ' + '''' + cabexpt.FieldByName('codos').AsString + '''' + ' and idprof = ' + '''' + xidprof + '''' + ' and orden < ' + '''' + '5000' + '''' + ' AND periodo = ' + '''' + xperiodo + '''');
+              cabfactIB.Append;
+            end;
+            cabfactIB.FieldByName('periodo').AsString := xperiodo; // cabexpt.FieldByName('periodo').AsString;
+            cabfactIB.FieldByName('idprof').AsString  := cabexpt.FieldByName('idprof').AsString;
+            cabfactIB.FieldByName('codos').AsString   := cabexpt.FieldByName('codos').AsString;
+            cabfactIB.FieldByName('fecha').AsString   := cabexpt.FieldByName('fecha').AsString;
+            try
+              cabfactIB.Post
+             except
+              cabfactIB.Cancel
+            end;
+            _noimport := True;
+
+          end;
         end;
       end;
       cabexpt.Next;
     end;
+
+    ffirebird.RegistrarTransaccion(cabfactIB);
+    cabfactIB.Close; cabfactIB.Open;
     cabexpt.Close; cabexpt.Free;
-    datosdb.refrescar(cabfact);
 
     detexpt.Open; idanter := '';
+    fieldref1 := datosdb.verificarSiExisteCampo(detexpt, 'ref1');
     while not detexpt.EOF do Begin
+      if (utiles.verificarItemsLista(listOS, detexpt.FieldByName('codos').AsString)) then begin
       if detexpt.FieldByName('codos').AsString <> idanter then Begin    // Excluimos las Obras Sociales Capitadas que no se Importan
         obsocial.getDatos(detexpt.FieldByName('codos').AsString);
         idanter := detexpt.FieldByName('codos').AsString;
       end;
-      if (detexpt.FieldByName('periodo').AsString = xperiodoactual) and (detexpt.FieldByName('idprof').AsString = xidprof) and (obsocial.NoImporta <> 'N') then Begin
-        if datosdb.Buscar(detfact, 'periodo', 'idprof', 'codos', 'items', 'orden', xnuevoperiodo, detexpt.FieldByName('idprof').AsString, detexpt.FieldByName('codos').AsString, detexpt.FieldByName('items').AsString, detexpt.FieldByName('orden').AsString) then detfact.Edit else detfact.Append;
-        detfact.FieldByName('periodo').AsString     := xnuevoperiodo;
-        detfact.FieldByName('idprof').AsString      := detexpt.FieldByName('idprof').AsString;
-        detfact.FieldByName('codos').AsString       := detexpt.FieldByName('codos').AsString;
-        detfact.FieldByName('items').AsString       := detexpt.FieldByName('items').AsString;
-        detfact.FieldByName('orden').AsString       := detexpt.FieldByName('orden').AsString;
-        detfact.FieldByName('codpac').AsString      := detexpt.FieldByName('codpac').AsString;
-        detfact.FieldByName('nombre').AsString      := detexpt.FieldByName('nombre').AsString;
-        detfact.FieldByName('codanalisis').AsString := detexpt.FieldByName('codanalisis').AsString;
-        try
-          detfact.Post
-         except
-          detfact.Cancel
+      if (obsocial.Buscar(detexpt.FieldByName('codos').AsString)) then begin
+        if (detexpt.FieldByName('idprof').AsString = xidprof) and (utiles.verificarItemsLista(listOS, detexpt.FieldByName('codos').AsString)) and (obsocial.NoImporta <> 'N') then Begin
+          if not (detfactIB.Active) then detfactIB.Open;
+          //if ffirebird.Buscar(detfactIB, 'periodo;idprof;codos;items;orden', xperiodo, detexpt.FieldByName('idprof').AsString, detexpt.FieldByName('codos').AsString, detexpt.FieldByName('items').AsString, detexpt.FieldByName('orden').AsString) then detfactIB.Edit else detfactIB.Append;
+          detfactIB.Append;
+          detfactIB.FieldByName('periodo').AsString     := xperiodo; // detexpt.FieldByName('periodo').AsString;
+          detfactIB.FieldByName('idprof').AsString      := detexpt.FieldByName('idprof').AsString;
+          detfactIB.FieldByName('codos').AsString       := detexpt.FieldByName('codos').AsString;
+          detfactIB.FieldByName('items').AsString       := detexpt.FieldByName('items').AsString;
+          detfactIB.FieldByName('orden').AsString       := detexpt.FieldByName('orden').AsString;
+          detfactIB.FieldByName('codpac').AsString      := detexpt.FieldByName('codpac').AsString;
+          detfactIB.FieldByName('nombre').AsString      := detexpt.FieldByName('nombre').AsString;
+          detfactIB.FieldByName('codanalisis').AsString := detexpt.FieldByName('codanalisis').AsString;
+          if (fieldref1) then
+            detfactIB.FieldByName('ref1').AsString        := detexpt.FieldByName('ref1').AsString;
+          try
+            detfactIB.Post
+           except
+            detfactIB.Cancel
+          end;
         end;
+
+        // Aislamos los pacientes con movimientos para Importarlos
+        if (not utiles.verificarItemsLista(lista1, detexpt.FieldByName('idprof').AsString + detexpt.FieldByName('codpac').AsString)) or (lista1.Count = 0) then lista1.Add(detexpt.FieldByName('idprof').AsString + detexpt.FieldByName('codpac').AsString);
+      end;
       end;
       detexpt.Next;
     end;
-    detexpt.Close; detexpt.Free;
-    datosdb.refrescar(detfact);
+
+    ffirebird.RegistrarTransaccion(detfactIB);
+    detfactIB.Close; detfactIB.Open;
 
     idexpt.Open;
     while not idexpt.EOF do Begin
-      if (idexpt.FieldByName('periodo').AsString = xperiodoactual) and (idexpt.FieldByName('idprof').AsString = xidprof) then Begin
-        if datosdb.Buscar(idordenes, 'Periodo', 'Idprof', xnuevoperiodo, idexpt.FieldByName('idprof').AsString) then idordenes.Edit else idordenes.Append;
-        idordenes.FieldByName('periodo').AsString := xnuevoperiodo;
-        idordenes.FieldByName('idprof').AsString  := idexpt.FieldByName('idprof').AsString;
-        idordenes.FieldByName('orden').AsString   := idexpt.FieldByName('orden').AsString;
+      if (idexpt.FieldByName('idprof').AsString = xidprof) and (_noimport) then Begin
+        if not (idordenesIB.Active) then idordenesIB.Open;
+        if ffirebird.Buscar(idordenesIB, 'Periodo;Idprof', xperiodo, idexpt.FieldByName('idprof').AsString) then idordenesIB.Edit else idordenesIB.Append;
+        idordenesIB.FieldByName('periodo').AsString := xperiodo;
+        idordenesIB.FieldByName('idprof').AsString  := idexpt.FieldByName('idprof').AsString;
+        idordenesIB.FieldByName('orden').AsString   := idexpt.FieldByName('orden').AsString;
         try
-          idordenes.Post
+          idordenesIB.Post
          except
-          idordenes.Cancel
+          idordenesIB.Cancel
         end;
+        //ffirebird.RegistrarTransaccion(idordenesIB);
       end;
       idexpt.Next;
     end;
+    ffirebird.RegistrarTransaccion(idordenesIB);
+    idordenesIB.Close; idordenesIB.Open;
     idexpt.Close; idexpt.Free;
-    datosdb.refrescar(idordenes);
 
-    datosdb.closeDB(cabfact);  datosdb.closeDB(detfact);  datosdb.closeDB(idordenes);
-
-    paciente.Importar(xidprof, dir_lab + '\' + Copy(xperiodoactual, 1, 2) + Copy(xperiodoactual, 4, 4) + '\' + xidprof, nil);
+    //paciente.Importar(xidprof, dirlab[i], lista1);
+    lista1.Clear;
 
     profesional.getDatos(xidprof);
-    profesional.SincronizarCategoria(xidprof, xnuevoperiodo);
-    GuardarRefDatosImportados(xperiodoactual, xidprof, profesional.nombre, directorio, 'I');
+    profesional.SincronizarCategoria(xidprof, xperiodo);
+    GuardarRefDatosImportados(xperiodo, xidprof, profesional.nombre, directorio, 'I');
 
     // Transferimos ordenes Auditadas
     if FileExists(dirlab[i] + '\ordenes_audit.db') then Begin    // Si el modulo incluye Facturación de Ordenes Auditadas
@@ -3833,26 +7345,292 @@ Begin
         auditexpt := datosdb.openDB('ordenes_audit', '', '', dirlab[i]);
         auditexpt.Open;
         while not auditexpt.Eof do Begin
-          if datosdb.Buscar(ordenes_audit, 'periodo', 'items', 'idprof', xnuevoperiodo, auditexpt.FieldByName('items').AsString, auditexpt.FieldByName('idprof').AsString) then ordenes_audit.Edit else ordenes_audit.Append;
-          ordenes_audit.FieldByName('periodo').AsString      := xnuevoperiodo;
-          ordenes_audit.FieldByName('idprof').AsString       := auditexpt.FieldByName('idprof').AsString;
-          ordenes_audit.FieldByName('items').AsString        := auditexpt.FieldByName('items').AsString;
-          ordenes_audit.FieldByName('nroauditoria').AsString := auditexpt.FieldByName('nroauditoria').AsString;
+          if not (ordenes_auditIB.Active) then ordenes_auditIB.Open;
+          if ffirebird.Buscar(ordenes_auditIB, 'periodo;items;idprof', xperiodo, auditexpt.FieldByName('items').AsString, auditexpt.FieldByName('idprof').AsString) then ordenes_auditIB.Edit else ordenes_auditIB.Append;
+          ordenes_auditIB.FieldByName('periodo').AsString      := xperiodo; // auditexpt.FieldByName('periodo').AsString;
+          ordenes_auditIB.FieldByName('idprof').AsString       := auditexpt.FieldByName('idprof').AsString;
+          ordenes_auditIB.FieldByName('items').AsString        := auditexpt.FieldByName('items').AsString;
+          ordenes_auditIB.FieldByName('nroauditoria').AsString := auditexpt.FieldByName('nroauditoria').AsString;
           try
-            ordenes_audit.Post
+            ordenes_auditIB.Post
            except
-            ordenes_audit.Cancel
+            ordenes_auditIB.Cancel
           end;
+          //ffirebird.RegistrarTransaccion(ordenes_auditIB);
+          auditexpt.Next;
+        end;
+        ffirebird.RegistrarTransaccion(ordenes_auditIB);
+        ordenes_auditIB.Close; ordenes_auditIB.Open;
+        auditexpt.Close; auditexpt.Free;
+      end;
+    end;}
+
+    cabexpt.Open; lote.Clear;
+    while not cabexpt.EOF do Begin
+      _noimport := False;
+      if (utiles.verificarItemsLista(listOS, cabexpt.FieldByName('codos').AsString)) then begin
+        if (obsocial.Buscar(cabexpt.FieldByName('codos').AsString)) then begin
+          obsocial.getDatos(cabexpt.FieldByName('codos').AsString); // Excluimos las Obras Sociales Capitadas que no se Importan
+          if obsocial.NoImporta = 'N' then no_importar := False;   // Flag para Determinar si se Incorporan las ordenes de Auditoria
+          if (cabexpt.FieldByName('idprof').AsString = xidprof) and (utiles.verificarItemsLista(listOS, cabexpt.FieldByName('codos').AsString)) and (obsocial.NoImporta <> 'N') then Begin
+            rsqlIB := ffirebird.getTransacSQL('select periodo from cabfact where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + cabexpt.FieldByName('idprof').AsString + '''' + ' and codos = ' + '''' + cabexpt.FieldByName('codos').AsString + '''');
+            rsqlIB.Open;
+            if (rsqlIB.RecordCount = 0) then begin
+              lote.Add('insert into cabfact (periodo, idprof, codos, fecha) values (' +
+                '''' + xperiodo + '''' + ', ' +
+                '''' + cabexpt.FieldByName('idprof').AsString + '''' + ', ' +
+                '''' + cabexpt.FieldByName('codos').AsString + '''' + ', ' +
+                '''' + cabexpt.FieldByName('fecha').AsString + '''' + ')');
+            end; {else begin
+              lote.Add('DELETE FROM detfact WHERE codos = ' + '''' + cabexpt.FieldByName('codos').AsString + '''' + ' and idprof = ' + '''' + xidprof + '''' + ' and (orden < ' + '''' + '5000' + ''''  + ' or substring(orden from 1 for 1) = ' + '''' + 'R' + '''' + ') AND periodo = ' + '''' + xperiodo + '''');
+              lote.Add('DELETE FROM detfact WHERE codos = ' + '''' + cabexpt.FieldByName('codos').AsString + '''' + ' and idprof = ' + '''' + xidprof + '''' + ' and substring(orden from 1 for 1) = ' + '''' + 'R' + '''' + ' AND periodo = ' + '''' + xperiodo + '''');
+            end;}
+
+            {if (_noimport = false) then begin
+              rs := datosdb.tranSQL(cabexpt.DatabaseName, 'select distinct(codos) from detfact where periodo = ' + '''' + xperiodo + '''');
+              rs.Open;
+              while not rs.Eof  do begin
+                lote.Add('DELETE FROM detfact WHERE codos = ' + '''' + rs.FieldByName('codos').AsString + '''' + ' and idprof = ' + '''' + xidprof + '''' + ' and (orden < ' + '''' + '5000' + ''''  + ' or substring(orden from 1 for 1) = ' + '''' + 'R' + '''' + ') AND periodo = ' + '''' + xperiodo + '''');
+                rs.next;
+              end;
+              rs.Close; rs.Free;
+            end;}
+
+            _noimport := True;
+          end;
+        end;
+      end;
+      cabexpt.Next;
+    end;
+    cabexpt.Close; cabexpt.Free;
+
+    if (not __iniciar) then begin
+      // 21/11/2019
+      //lote.Add('DELETE FROM ordenes_audit WHERE idprof = ' + '''' + xidprof + '''' + ' AND periodo = ' + '''' + xperiodo + '''');
+      lote.Add('DELETE FROM idordenes WHERE idprof = ' + '''' + xidprof + '''' + ' AND periodo = ' + '''' + xperiodo + '''');
+      __iniciar := true;
+    end;
+
+    detexpt.Open; idanter := '';
+    fieldref1 := datosdb.verificarSiExisteCampo(detexpt, 'ref1');
+    fieldretiva := datosdb.verificarSiExisteCampo(detexpt, 'retiva');
+
+    // 23/07/2015 en remplazo de (1)
+    // ' and orden < ' + '''' + '5000' + '''' 21/11/2019
+    rss := datosdb.tranSQL(detexpt.DatabaseName, 'select distinct(codos) as codos from ' + detexpt.TableName);
+    rss.Open;
+    while not rss.eof do begin
+      if (utiles.verificarItemsLista(listOS, rss.FieldByName('codos').AsString)) then begin
+        lote.Add('DELETE FROM detfact WHERE periodo = ' + '''' + xperiodo + '''' + ' AND idprof = ' + '''' + xidprof + '''' + ' AND codos = ' + '''' + rss.FieldByName('codos').AsString + '''' + ' and orden < ' + '''' + '5000' + '''');
+      end;
+      rss.Next;
+    end;
+    rss.Close; rss.Free;
+
+    detexpt.First;
+    while not detexpt.EOF do Begin
+      if (utiles.verificarItemsLista(listOS, detexpt.FieldByName('codos').AsString)) then begin
+      if detexpt.FieldByName('codos').AsString <> idanter then Begin    // Excluimos las Obras Sociales Capitadas que no se Importan
+        obsocial.getDatos(detexpt.FieldByName('codos').AsString);
+        idanter := detexpt.FieldByName('codos').AsString;
+      end;
+      if (obsocial.Buscar(detexpt.FieldByName('codos').AsString)) then begin
+        if (detexpt.FieldByName('idprof').AsString = xidprof) and (utiles.verificarItemsLista(listOS, detexpt.FieldByName('codos').AsString)) and (obsocial.NoImporta <> 'N') then Begin
+            if (fieldref1) then ref1 := detexpt.FieldByName('ref1').AsString else ref1 := '';
+            if (fieldretiva) then retiva := detexpt.FieldByName('retiva').AsString else retiva := '';
+
+           // (1) lote.Add('DELETE FROM detfact WHERE periodo = ' + '''' + xperiodo + '''' + ' AND idprof = ' + '''' + xidprof + '''' + ' AND codos = ' + '''' + detexpt.FieldByName('codos').AsString + '''' +
+           //       ' AND orden = ' + '''' + detexpt.FieldByName('orden').AsString + '''' + ' AND items = ' + '''' + detexpt.FieldByName('items').AsString + '''');
+
+           lote.Add('DELETE FROM detfact WHERE periodo = ' + '''' + xperiodo + '''' + ' AND idprof = ' + '''' + xidprof + '''' + ' AND codos = ' + '''' + detexpt.FieldByName('codos').AsString + '''' +
+                    ' AND orden = ' + '''' + detexpt.FieldByName('orden').AsString + '''' + ' AND items = ' + '''' + detexpt.FieldByName('items').AsString + '''');
+
+           lote.Add('insert into detfact (periodo, idprof, codos, items, orden, codpac, nombre, codanalisis, ref1, osiva, retiva, profiva) values (' +
+                '''' + xperiodo + '''' + ', ' +
+                '''' + detexpt.FieldByName('idprof').AsString + '''' + ', ' +
+                '''' + detexpt.FieldByName('codos').AsString + '''' + ', ' +
+                '''' + detexpt.FieldByName('items').AsString + '''' + ', ' +
+                '''' + detexpt.FieldByName('orden').AsString + '''' + ', ' +
+                '''' + detexpt.FieldByName('codpac').AsString + '''' + ', ' +
+                QuotedStr(detexpt.FieldByName('nombre').AsString) + ', ' +
+                '''' + detexpt.FieldByName('codanalisis').AsString + '''' + ', ' +
+                '''' + ref1 + '''' + ', ' +
+                '''' + obsocial.Retieneiva + '''' + ', ' +
+                '''' + retiva + '''' + ', ' +
+                '''' + profesional.Retieneiva + '''' + ')'
+                );
+            end;
+
+        // Aislamos los pacientes con movimientos para Importarlos
+        if (not utiles.verificarItemsLista(lista1, detexpt.FieldByName('idprof').AsString + detexpt.FieldByName('codpac').AsString)) or (lista1.Count = 0) then lista1.Add(detexpt.FieldByName('idprof').AsString + detexpt.FieldByName('codpac').AsString);
+      end;
+      end;
+      detexpt.Next;
+    end;
+
+    idexpt.Open;
+    while not idexpt.EOF do Begin
+      if (idexpt.FieldByName('idprof').AsString = xidprof) and (_noimport) then Begin
+        lote.Add('insert into idordenes (periodo,idprof, orden) values (' +
+        '''' + xperiodo + '''' + ', ' +
+        '''' + idexpt.FieldByName('idprof').AsString + '''' + ', ' +
+        '''' + idexpt.FieldByName('orden').AsString + '''' + ')');
+      end;
+      idexpt.Next;
+    end;
+    idexpt.Close; idexpt.Free;
+
+    lista1.Clear;
+
+    profesional.getDatos(xidprof);
+    profesional.SincronizarCategoria(xidprof, xperiodo);
+    GuardarRefDatosImportados(xperiodo, xidprof, profesional.nombre, directorio, 'I');
+
+    // Transferimos ordenes Auditadas
+    if FileExists(dirlab[i] + '\ordenes_audit.db') then Begin    // Si el modulo incluye Facturación de Ordenes Auditadas
+      if no_importar then Begin
+        auditexpt := datosdb.openDB('ordenes_audit', '', '', dirlab[i]);
+        auditexpt.Open;
+        while not auditexpt.Eof do Begin
+          lote.Add('insert into ordenes_audit (periodo, idprof, items, nroauditoria) values (' +
+            '''' + xperiodo + '''' + ', ' +
+            '''' + auditexpt.FieldByName('idprof').AsString + '''' + ', ' +
+            '''' + auditexpt.FieldByName('items').AsString + '''' + ', ' +
+            '''' + auditexpt.FieldByName('nroauditoria').AsString + '''' + ')');
           auditexpt.Next;
         end;
         auditexpt.Close; auditexpt.Free;
-        datosdb.refrescar(auditexpt);
       end;
     end;
 
+    // guardamos el lote
+    ffirebird.TransacSQLBatch(lote);
+    lote.Clear;
+
+
+    //--------------------------------------------------------------------------
+    // Transferencia/Conversión de Datos al Sistema NBU
+
+    rsqlIB := ffirebird.getTransacSQL('select * from cabfact where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''');
+    rsqlIB.open;
+    while not rsqlIB.Eof do Begin
+      obsocial.getDatos(rsqlIB.FieldByName('codos').AsString);
+      obsocial.SincronizarArancelNBU(rsqlIB.FieldByName('codos').AsString, rsqlIB.FieldByName('periodo').AsString);
+      if obsocial.FactNBU = 'S' then Begin
+
+        transnbu := False;
+        rsql := ffirebird.getTransacSQL('select distinct(codanalisis) from detfact where codos = ' + '''' + rsqlIB.FieldByName('codos').AsString + '''' + ' and periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''');
+        rsql.Open; rsql.First;
+        while not rsql.Eof do Begin
+          if Length(Trim(rsql.FieldByName('codanalisis').AsString)) < 6 then Begin
+            transnbu := True;
+            if nbu.BuscarCodigoNNN(rsql.FieldByName('codanalisis').AsString) then codnbu := nbu.setCodigoNBU(rsql.FieldByName('codanalisis').AsString) else
+              codnbu := rsql.FieldByName('codanalisis').AsString;
+
+            lote.Add('update detfact set codanalisis = ' + '''' + codnbu + '''' + ' where codos = ' + '''' + rsqlIB.FieldByName('codos').AsString + '''' + ' and periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''' + ' and codanalisis = ' + '''' + rsql.FieldByName('codanalisis').AsString + '''');
+          end;
+          rsql.Next;
+        end;
+        rsql.Close; rsql.Free;
+
+        ffirebird.TransacSQLBatch(lote);
+
+        // Ahora borramos los códigos excluidos
+        r := nbu.setCodigos('E');
+        r.Open;
+        while not r.Eof do Begin
+          lote.Add('delete from detfact where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''' + ' and codanalisis = ' + '''' + r.FieldByName('codigo').AsString + '''' + ' and codos = ' + '''' + rsqlIB.FieldByName('codos').AsString + '''');
+          r.Next;
+        end;
+        r.Close; r.Free;
+
+        ffirebird.TransacSQLBatch(lote);
+
+        rsql := ffirebird.getTransacSQL('select * from detfact where codos = ' + '''' + rsqlIB.FieldByName('codos').AsString + '''' + ' and periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''' + ' order by orden, items');
+        j := 0;
+        rsql.Open; rsql.First;
+        while not rsql.Eof do Begin
+          if rsql.FieldByName('orden').AsString <> ordenanter then Begin
+            k := 0;
+            ordenanter := rsql.FieldByName('orden').AsString;
+          end;
+
+          Inc(j);
+          Inc(k);
+          m[j, 1] := xperiodo; //r.FieldByName('periodo').AsString;
+          m[j, 2] := rsql.FieldByName('idprof').AsString;
+          m[j, 3] := rsql.FieldByName('codos').AsString;
+          m[j, 4] := utiles.sLlenarIzquierda(IntToStr(k), 3, '0');
+          m[j, 5] := rsql.FieldByName('orden').AsString;
+          m[j, 6] := rsql.FieldByName('codpac').AsString;
+          m[j, 7] := rsql.FieldByName('nombre').AsString;
+          m[j, 8] := rsql.FieldByName('codanalisis').AsString;
+          m[j, 9] := rsql.FieldByName('ref1').AsString;
+          m[j,10] := rsql.FieldByName('retiva').AsString;
+
+          rsql.Next;
+        end;
+        rsql.Close; rsql.Free;
+
+        lote.Add('delete from detfact where codos = ' + '''' + rsqlIB.FieldByName('codos').AsString + '''' + ' and periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''' + ' and orden < ' + '''' + '5000' + '''');
+
+        For k := 1 to j do Begin
+              lote.Add('delete from detfact where codos = ' + '''' + rsqlIB.FieldByName('codos').AsString + '''' + ' and periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''' + ' and orden = ' + '''' + m[k, 5] + '''' + ' and items = ' + '''' + m[k, 4] + '''');
+              lote.Add('insert into detfact (periodo, idprof, codos, items, orden, codpac, nombre, codanalisis, ref1, retiva) values (' +
+                    '''' + m[k, 1] + '''' + ',' +
+                    '''' + m[k, 2] + '''' + ',' +
+                    '''' + m[k, 3] + '''' + ',' +
+                    '''' + m[k, 4] + '''' + ',' +
+                    '''' + m[k, 5] + '''' + ',' +
+                    '''' + m[k, 6] + '''' + ',' +
+                    QuotedStr(m[k, 7]) + ',' +
+                    '''' + m[k, 8] + '''' + ',' +
+                    '''' + m[k, 9] + '''' + ',' +
+                    '''' + m[k, 10] + ''''  + ')'
+          );
+        End;
+
+        // Incorporamos los códigos incluidos
+        if transnbu then Begin
+          rsql := ffirebird.getTransacSQL('select * from detfact where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''' + ' and codos = ' + '''' + rsqlIB.FieldByName('codos').AsString + '''' + ' order by codos, orden, items');
+          rsql.Open;
+          ordenanter := rsql.FieldByName('orden').AsString;
+          while not rsql.Eof do Begin
+            if rsql.FieldByName('orden').AsString <> ordenanter then Begin
+              InsertarCodigo(k);
+              ordenanter := rsql.FieldByName('orden').AsString;
+            end;
+            k       := rsql.FieldByName('items').AsInteger;
+            m[1, 1] := xperiodo;
+            m[1, 2] := rsql.FieldByName('idprof').AsString;
+            m[1, 3] := rsql.FieldByName('codos').AsString;
+            m[1, 4] := '';
+            m[1, 5] := rsql.FieldByName('orden').AsString;
+            m[1, 6] := rsql.FieldByName('codpac').AsString;
+            m[1, 7] := rsql.FieldByName('nombre').AsString;
+            m[1, 8] := rsql.FieldByName('codanalisis').AsString;
+            rsql.Next;
+          end;
+
+          InsertarCodigo(k);
+
+          ffirebird.TransacSQLBatch(lote);
+
+          rsql.Close; rsql.Free;
+        End;
+
+
+      end;
+      rsqlIB.Next;
+    end;
+
+    if (lote.Count > 0) then ffirebird.TransacSQLBatch(lote);
+
+    //--------------------------------------------------------------------------
+
     // Transferimos totales profesionales responsables inscriptos
     profesional.getDatos(xidprof);
-    profesional.SincronizarListaRetIVA(xperiodoactual, xidprof); 
+    profesional.SincronizarListaRetIVA(xperiodo, xidprof);
 
     if profesional.Retieneiva = 'S' then Begin
       if totpr then Begin
@@ -3861,23 +7639,27 @@ Begin
         testeartotalesprof;
         totprof.Open;
         while not totprof.Eof do Begin
-          if datosdb.Buscar(totalesprof, 'periodo', 'idprof', 'codos', xnuevoperiodo, totprof.FieldByName('idprof').AsString, totprof.FieldByName('codos').AsString) then totalesprof.Edit else totalesprof.Append;
-          totalesprof.FieldByName('periodo').AsString  := xnuevoperiodo;
-          totalesprof.FieldByName('idprof').AsString   := totprof.FieldByName('idprof').AsString;
-          totalesprof.FieldByName('codos').AsString    := totprof.FieldByName('codos').AsString;
-          totalesprof.FieldByName('nombre').AsString   := totprof.FieldByName('nombre').AsString;
-          totalesprof.FieldByName('monto').AsFloat     := totprof.FieldByName('monto').AsFloat;
-          totalesprof.FieldByName('neto').AsFloat      := totprof.FieldByName('neto').AsFloat;
-          totalesprof.FieldByName('retencion').AsFloat := totprof.FieldByName('retencion').AsFloat;
-          totalesprof.FieldByName('ug').AsFloat        := totprof.FieldByName('ug').AsFloat;
-          totalesprof.FieldByName('ub').AsFloat        := totprof.FieldByName('ub').AsFloat;
-          totalesprof.FieldByName('caran').AsFloat     := totprof.FieldByName('caran').AsFloat;
-          totalesprof.FieldByName('codfact').AsString  := totprof.FieldByName('codfact').AsString;
-          totalesprof.FieldByName('tipoing').AsInteger := 2;
-          try
-            totalesprof.Post
-           except
-            totalesprof.Cancel
+          if (utiles.verificarItemsLista(listOS, totprof.FieldByName('codos').AsString)) then begin
+          if (obsocial.Buscar(totalesprof.FieldByName('codos').AsString)) then begin
+            if datosdb.Buscar(totalesprof, 'periodo', 'idprof', 'codos', xperiodo, totprof.FieldByName('idprof').AsString, totprof.FieldByName('codos').AsString) then totalesprof.Edit else totalesprof.Append;
+            totalesprof.FieldByName('periodo').AsString  := xperiodo; // totprof.FieldByName('periodo').AsString;
+            totalesprof.FieldByName('idprof').AsString   := totprof.FieldByName('idprof').AsString;
+            totalesprof.FieldByName('codos').AsString    := totprof.FieldByName('codos').AsString;
+            totalesprof.FieldByName('nombre').AsString   := totprof.FieldByName('nombre').AsString;
+            totalesprof.FieldByName('monto').AsFloat     := totprof.FieldByName('monto').AsFloat;
+            totalesprof.FieldByName('neto').AsFloat      := totprof.FieldByName('neto').AsFloat;
+            totalesprof.FieldByName('retencion').AsFloat := totprof.FieldByName('retencion').AsFloat;
+            totalesprof.FieldByName('ug').AsFloat        := totprof.FieldByName('ug').AsFloat;
+            totalesprof.FieldByName('ub').AsFloat        := totprof.FieldByName('ub').AsFloat;
+            totalesprof.FieldByName('caran').AsFloat     := totprof.FieldByName('caran').AsFloat;
+            totalesprof.FieldByName('codfact').AsString  := totprof.FieldByName('codfact').AsString;
+            totalesprof.FieldByName('tipoing').AsInteger := 2;
+            try
+              totalesprof.Post
+             except
+              totalesprof.Cancel
+            end;
+          end;
           end;
           totprof.Next;
         end;
@@ -3885,15 +7667,9 @@ Begin
         datosdb.closeDB(totprof); datosdb.closeDB(totalesPROF);
       end;
     end;
-
-    // Eliminamos los movimientos del periodo original
-    datosdb.tranSQL(dir_lab + '\' + Copy(xperiodoactual, 1, 2) + Copy(xperiodoactual, 4, 4) + '\' + xidprof, 'delete from ' + cabfact.TableName);
-    datosdb.tranSQL(dir_lab + '\' + Copy(xperiodoactual, 1, 2) + Copy(xperiodoactual, 4, 4) + '\' + xidprof, 'delete from ' + detfact.TableName);
-    datosdb.tranSQL(dir_lab + '\' + Copy(xperiodoactual, 1, 2) + Copy(xperiodoactual, 4, 4) + '\' + xidprof, 'delete from ' + idordenes.TableName);
-
   end;
+  End;
 
-  datosdb.closeDB(cabfact); datosdb.closeDB(detfact); datosdb.closeDB(idordenes);
 end;
 
 procedure TTFacturacionCCB.GuardarRefDatosImportados(xperiodo, xidprof, xnombre, xdirectorio, xmodo: String);
@@ -3967,12 +7743,33 @@ function TTFacturacionCCB.setDatosImportados(xperiodo: String): TStringList;
 var
   l, m: TStringList;
   i: Integer;
+  r: TIBQuery;
 begin
+  if (directoryexists(dbs.DirSistema + '\fact_lab\' + copy(xperiodo, 1, 2) + copy(xperiodo, 4, 4))) then interbase := 'N' else interbase := 'S';
+
   m := TStringList.Create;
-  l := utilesarchivos.setListaDirectorios(dir_lab + '\' + Copy(xperiodo, 1, 2) + Copy(xperiodo, 4, 4));
-  for i := 1 to l.Count do
-    if LowerCase(Copy(l.Strings[i-1], 1, 1)) <> 'f' then m.Add(l.Strings[i-1]);
-  l.Destroy;
+
+  if (interbase = 'N') then begin
+    l := utilesarchivos.setListaDirectorios(dir_lab + '\' + Copy(xperiodo, 1, 2) + Copy(xperiodo, 4, 4));
+    for i := 1 to l.Count do
+      if LowerCase(Copy(l.Strings[i-1], 1, 1)) <> 'f' then m.Add(l.Strings[i-1]);
+    l.Destroy;
+    tibase := false;
+  end;
+  if (interbase = 'S') then begin
+    //utiles.msgError('punto xx');
+    //ffirebird := Nil; 16/04/2014
+    if (ffirebird = Nil) then InstanciarTablas('S');
+    r := ffirebird.getTransacSQL('select distinct(idprof) from cabfact where periodo = ' + '''' + xperiodo + '''');
+    r.Open;
+    while not r.eof do begin
+      m.Add(r.FieldByName('idprof').AsString);
+      r.next;
+    end;
+    r.Close; r.Free;
+    tibase := true;
+  end;
+
   Result := m;
 end;
 
@@ -3996,6 +7793,30 @@ function TTFacturacionCCB.BuscarDatosFact(xperiodo, xcodos: String): Boolean;
 begin
   if datosfact.IndexFieldNames <> 'Periodo;Codos' then datosfact.IndexFieldNames := 'Periodo;Codos';
   ExisteLiquidacion := datosdb.Buscar(datosfact, 'periodo', 'codos', xperiodo, xcodos);
+  if (ExisteLiquidacion) then begin
+    result := ExisteLiquidacion;
+    exit;
+  end;
+
+  if not (ExisteLiquidacion) then begin  // 30/04/2024
+    if not (omitir_ressql) then begin    // 29/05/2014
+      if (ressql = nil) then begin       // 01/07/2014
+        ressql := osagrupa.getListaObrasSocialesAgrupadas;
+        ressql.Open; ressql.First;
+      end;
+
+      while not ressql.eof do begin
+        if (ressql.FieldByName('codos').asstring = xcodos) then begin
+          ExisteLiquidacion := datosdb.Buscar(datosfact, 'periodo', 'codos', xperiodo, ressql.FieldByName('id').asstring);
+          break;
+        end;
+        ressql.Next;
+      end;
+
+      ressql.Close; ressql := nil;
+    end;
+  end;
+
   Result := ExisteLiquidacion;
 end;
 
@@ -4030,6 +7851,13 @@ begin
   end;
 end;
 
+function TTFacturacionCCB.BuscarDatosFactDet(xperiodo, xcodos, xitems: String): Boolean;
+// Objetivo...: Buscar datos de Facturación
+begin
+  if datosfactdet.IndexFieldNames <> 'Periodo;Codos;Items' then datosfactdet.IndexFieldNames := 'Periodo;Codos;Items';
+  result := datosdb.Buscar(datosfactdet, 'periodo', 'codos', 'items', xperiodo, xcodos, xitems);
+end;
+
 {==============================================================================}
 
 procedure TTFacturacionCCB.PrepararDirectorio(xperiodo, xlaboratorio: String);
@@ -4037,18 +7865,43 @@ procedure TTFacturacionCCB.PrepararDirectorio(xperiodo, xlaboratorio: String);
 var
   p: String;
 begin
+  labrem := xlaboratorio;
+  p := Copy(xperiodo, 1, 2) + Copy(xperiodo, 4, 4);
+  perrem := p;
+
   if (LaboratorioActual <> xlaboratorio) or (Periodo <> xperiodo) then Begin
-    p := Copy(xperiodo, 1, 2) + Copy(xperiodo, 4, 4);
     directorio := dir_lab + '\' + p + '\' + xlaboratorio;
-    if not DirectoryExists(directorio) then Begin
-      utilesarchivos.CrearDirectorio(dir_lab + '\' + p);
-      utilesarchivos.CrearDirectorio(directorio);
-      utilesarchivos.CopiarArchivos(dbs.DirSistema + '\work', '*.*', directorio);
-      if DirectoryExists(dbs.DirSistema + '\work\factNBU') then utilesarchivos.CopiarArchivos(dbs.DirSistema + '\work\factNBU', '*.*', directorio);
+
+    firebird.getModulo('facturacion');
+
+    if (length(trim(firebird.Host)) > 0) then begin
+        //directorio := firebird.Dir_Remoto + '\' + p + '\' + xlaboratorio;
+        //utilesarchivos.CrearDirectorio(firebird.Dir_Remoto + '\' + p);
+        //utilesarchivos.CrearDirectorio(directorio);
+        //if (FileExists(firebird.Dir_Remoto1 + '\FACTLAB.GDB')) then begin
+          //directorio := firebird.Dir_Remoto + '\' + p + '\' + xlaboratorio;
+          //if not (FileExists(directorio + '\FACTLAB.GDB')) then
+            //utilesarchivos.CopiarArchivos(firebird.Dir_Remoto1, '*.*', directorio);
+          interbase := 'S';
+        //end;
+    end else
+      interbase := 'N';
+
+    if (interbase = 'N') then begin
+      if not DirectoryExists(directorio) then Begin
+        utilesarchivos.CrearDirectorio(dir_lab + '\' + p);
+        utilesarchivos.CrearDirectorio(directorio);
+        if (interbase = 'N') then begin
+          utilesarchivos.CopiarArchivos(dbs.DirSistema + '\work', '*.*', directorio);
+          if DirectoryExists(dbs.DirSistema + '\work\factNBU') then utilesarchivos.CopiarArchivos(dbs.DirSistema + '\work\factNBU', '*.*', directorio);
+        end;
+      end;
     end;
+
     if directorio <> diractual then SeleccionarLaboratorio(directorio);  // Conectamos al directorio seleccionado
     LaboratorioActual := xlaboratorio;
   end;
+
   // Guardamos la referencia de los datos ingresados
   profesional.getDatos(xlaboratorio);
   GuardarRefDatosImportados(xperiodo, xlaboratorio, profesional.nombre, directorio, 'M');
@@ -4059,19 +7912,28 @@ end;
 function TTFacturacionCCB.DireccionarLaboratorio(xperiodo, xlaboratorio: String): Boolean;
 // Objetivo...: Creamos Via de trabajo para trabajar con el laboratorio eb cuestion
 var
-  p: String;
+  p, s: String;
   i, pos: Integer;
 begin
   p := Copy(xperiodo, 1, 2) + Copy(xperiodo, 4, 4);
   directorio := dir_lab + '\' + p + '\' + xlaboratorio;
-  if DirectoryExists(directorio) then   // Verificamos que exista el directorio
-    if (FileExists(directorio + '\cabfact.db') and FileExists(directorio + '\detfact.db') and FileExists(directorio + '\idordenes.db') and FileExists(directorio + '\paciente.db')) then Begin  // Verificamos que existan los archivos
+
+  firebird.getModulo('facturacion');
+  s := firebird.Dir_Remoto + '\' + p + '\' + xlaboratorio;
+  perrem := p;
+  labrem := xlaboratorio;
+
+  if (DirectoryExists(directorio)) or (length(trim(firebird.Host)) > 0)  then   // Verificamos que exista el directorio
+    if (length(trim(firebird.Host)) > 0) or (FileExists(directorio + '\cabfact.db') and FileExists(directorio + '\detfact.db') and FileExists(directorio + '\idordenes.db') and (FileExists(directorio + '\paciente.db'))) {or (FileExists(s + '\FACTLAB.GDB'))} then Begin  // Verificamos que existan los archivos
       // Guardamos la referencia de los datos ingresados - esto refleja el ultimo acceso efectuado
       profesional.getDatos(xlaboratorio);
       GuardarRefDatosImportados(xperiodo, xlaboratorio, profesional.nombre, directorio, 'M');
       GuardarRefDatosExportados(xperiodo, xlaboratorio, profesional.nombre, directorio, 'M');
       SeleccionarLaboratorio(directorio);  // Conectamos al directorio seleccionado
       LaboratorioActual := xlaboratorio;
+
+      if (length(trim(firebird.Host)) > 0) then interbase := 'S';
+      if (FileExists(directorio + '\cabfact.db') and FileExists(directorio + '\detfact.db') and FileExists(directorio + '\idordenes.db') and (FileExists(directorio + '\paciente.db'))) then interbase := 'N';
 
       VerificarOrdenInterna(xperiodo, xlaboratorio);
 
@@ -4094,57 +7956,119 @@ end;
 
 function TTFacturacionCCB.verificicarSiExisteLaboratorio(xperiodo, xlaboratorio: String): Boolean;
 var
-  p, d: String;
+  p, d, s: String;
 begin
+  if (interbase = 'S') then begin
+    result := true;
+    exit;
+  end;
+  interbase := 'N';
   if Length(Trim(xlaboratorio)) = 0 then Result := False else Begin
     p := Copy(xperiodo, 1, 2) + Copy(xperiodo, 4, 4);
     d := Trim(dir_lab + '\' + p + '\' + xlaboratorio);
-    if DirectoryExists(d) then Result := True else Begin
+
+    //firebird.getModulo('facturacion');
+    //s := firebird.Dir_Remoto + '\' + p + '\' + xlaboratorio;
+    perrem := p;
+    labrem := xlaboratorio;
+
+    //if (length(trim(firebird.Host)) > 0) then interbase := 'S';
+
+    if (DirectoryExists(d)) then Result := True else Begin
       // Si No Existe el directorio, elimino la entrada
       datosdb.tranSQL(DBConexion, 'DELETE FROM datosimportados WHERE Periodo = ' + '"' + xperiodo + '"' + ' AND Idprof = ' + '"' + xlaboratorio + '"');
       Result := False;
     end;
+
   end;
 end;
 
 procedure TTFacturacionCCB.ProcesarDatosCentrales(xperiodo: String);
 // Objetivo...: Procesar los datos de centrales, todos
+var
+  __i: boolean;
 begin
-  QuitarFiltro;
-  DBCentral  := dir_lab +  '\facturaciones\' + Copy(xperiodo, 1, 2) + Copy(xperiodo, 4, 4);
-  directorio := DBCentral;
-  LaboratorioActual := '';
-  if cabfact   <> nil then if cabfact.Active   then datosdb.closeDB(cabfact);
-  if detfact   <> nil then if detfact.Active   then datosdb.closeDB(detfact);
-  if idordenes <> nil then if idordenes.Active then datosdb.closeDB(idordenes);
-  cabfact := nil; detfact := nil; idordenes := nil;
+  interbase := 'N';
+  firebird.getModulo('facturacion');
+  if (length(trim(firebird.Host)) = 0) then interbase := 'N' else interbase := 'S';
 
-  if not DirectoryExists(DBCentral) then Begin
-    if not DirectoryExists(dir_lab + '\facturaciones') then utilesarchivos.CrearDirectorio(dir_lab + '\facturaciones');
-    if not DirectoryExists(DBCentral) then utilesarchivos.CrearDirectorio(DBCentral);
-    utilesarchivos.CopiarArchivos(dbs.DirSistema + '\work', '*.*', DBCentral);
-    utilesarchivos.CopiarArchivos(dbs.DirSistema + '\work\factNBU', '*.*', DBCentral);
+  if (FileExists(dir_lab + '\facturaciones\' + Copy(xperiodo, 1, 2) + Copy(xperiodo, 4, 4) + '\cabfact.db')) then interbase := 'N';
+
+  if (interbase = 'N') then begin
+    QuitarFiltro;
+    DBCentral  := dir_lab +  '\facturaciones\' + Copy(xperiodo, 1, 2) + Copy(xperiodo, 4, 4);
+    directorio := DBCentral;
+    LaboratorioActual := '';
+    if cabfact   <> nil then if cabfact.Active   then datosdb.closeDB(cabfact);
+    if detfact   <> nil then if detfact.Active   then datosdb.closeDB(detfact);
+    if idordenes <> nil then if idordenes.Active then datosdb.closeDB(idordenes);
+    cabfact := nil; detfact := nil; idordenes := nil;
+
+    if not DirectoryExists(DBCentral) then Begin
+      if not DirectoryExists(dir_lab + '\facturaciones') then utilesarchivos.CrearDirectorio(dir_lab + '\facturaciones');
+      if not DirectoryExists(DBCentral) then utilesarchivos.CrearDirectorio(DBCentral);
+      utilesarchivos.CopiarArchivos(dbs.DirSistema + '\work', '*.*', DBCentral);
+      utilesarchivos.CopiarArchivos(dbs.DirSistema + '\work\factNBU', '*.*', DBCentral);
+    end;
+
+    cabfact   := datosdb.openDB('cabfact', 'Periodo;Idprof;Codos', '', DBCentral);
+    detfact   := datosdb.openDB('detfact', 'Periodo;Idprof;Codos;Items;Orden', '', DBCentral);
+    idordenes := datosdb.openDB('idordenes', 'Periodo;Idprof', '', DBCentral);
+
+    if not cabfact.Active   then cabfact.Open;
+    if not detfact.Active   then detfact.Open;
+    if not idordenes.Active then idordenes.Open;
+
+    if not datosdb.verificarSiExisteCampo(detfact, 'profiva') then Begin
+      detfact.Close;
+      datosdb.tranSQL(DBCentral, 'alter table detfact add Profiva char(1)');
+      detfact.Open;
+    end;
+    if not datosdb.verificarSiExisteCampo(detfact, 'osiva') then Begin
+      detfact.Close;
+      datosdb.tranSQL(DBCentral, 'alter table detfact add Osiva char(1)');
+      detfact.Open;
+    end;
   end;
 
-  cabfact   := datosdb.openDB('cabfact', 'Periodo;Idprof;Codos', '', DBCentral);
-  detfact   := datosdb.openDB('detfact', 'Periodo;Idprof;Codos;Items;Orden', '', DBCentral);
-  idordenes := datosdb.openDB('idordenes', 'Periodo;Idprof', '', DBCentral);
+  if (interbase = 'S') then begin
 
-  if not cabfact.Active   then cabfact.Open;
-  if not detfact.Active   then detfact.Open;
-  if not idordenes.Active then idordenes.Open;
+    __c := '';
+    firebird.getModulo('facturacion');
+    directorio := DBCentral;
+    LaboratorioActual := '';
+    {if cabfactIB   <> nil then if cabfactIB.Active   then ffirebird.closeDB(cabfactIB);
+    if detfactIB   <> nil then if detfactIB.Active   then ffirebird.closeDB(detfactIB);
+    if idordenesIB <> nil then if idordenesIB.Active then ffirebird.closeDB(idordenesIB);
+    cabfactIB := nil; detfactIB := nil; idordenesIB := nil;}
+    
+    __i := true;
+    if (ffirebird <> nil) then
+      if (pos('FACTLABCENT.GDB', ffirebird.IBDatabase.DatabaseName) > 0) then __i := false;
 
-  if not datosdb.verificarSiExisteCampo(detfact, 'profiva') then Begin
-    detfact.Close;
-    datosdb.tranSQL(DBCentral, 'alter table detfact add Profiva char(1)');
-    detfact.Open;
+    if (__i) then begin
+      if (ffirebird <> nil) then  ffirebird.Desconectar;
+      //utiles.msgError('cierre');
+      ffirebird := TTFirebird.Create;
+      //utiles.msgError('new');
+      ffirebird.Conectar(firebird.Host + 'FACTLABCENT.GDB', firebird.Usuario , firebird.Password);
+      //utiles.msgError('apertura');
+    end;
+
+    {cabfactIB       := ffirebird.InstanciarTabla('cabfact');
+    detfactIB       := ffirebird.InstanciarTabla('detfact');
+    idordenesIB     := ffirebird.InstanciarTabla('idordenes');
+    ordenes_auditIB := ffirebird.InstanciarTabla('ordenes_audit');
+
+    {if not cabfactIB.Active   then cabfactIB.Open;
+    if not detfactIB.Active   then detfactIB.Open;
+    if not idordenesIB.Active then idordenesIB.Open;}
+
+    //if (ProcesamientoCentral) then ffirebird.Filtrar(detfactIB, 'periodo = ' + '''' + xperiodo + '''');
+
   end;
-  if not datosdb.verificarSiExisteCampo(detfact, 'osiva') then Begin
-    detfact.Close;
-    datosdb.tranSQL(DBCentral, 'alter table detfact add Osiva char(1)');
-    detfact.Open;
-  end;
 
+  // Prorrateamos la epoca y de acuerdo a la misma determinamos si trabaja o no en version Client/Server
 
   totalesOS   := datosdb.openDB('totalesOS', 'Periodo;Codos', '', DBConexion);
   totalesPROF := datosdb.openDB('totalesPROF', 'Periodo;Idprof;Codos', '', DBConexion);
@@ -4156,15 +8080,20 @@ end;
 procedure TTFacturacionCCB.CopiarEstructuras(xperiodo: String);
 // Objetivo...: Procesar los datos de centrales, todos
 begin
-  DBCentral  := dir_lab +  '\facturaciones\' + Copy(xperiodo, 1, 2) + Copy(xperiodo, 4, 4);
-  utilesarchivos.CopiarArchivos(dbs.DirSistema + '\work', '*.*', DBCentral);
-  utilesarchivos.CopiarArchivos(dbs.DirSistema + '\work\factNBU', '*.*', DBCentral);
+  if (interbase = 'N') then begin
+    DBCentral  := dir_lab +  '\facturaciones\' + Copy(xperiodo, 1, 2) + Copy(xperiodo, 4, 4);
+    utilesarchivos.CopiarArchivos(dbs.DirSistema + '\work', '*.*', DBCentral);
+    utilesarchivos.CopiarArchivos(dbs.DirSistema + '\work\factNBU', '*.*', DBCentral);
+  end;
+  if (interbase = 'S') then begin
+    //DBCentral  := firebird.Dir_Remoto +  'fact_lab\facturaciones\' + Copy(xperiodo, 1, 2) + Copy(xperiodo, 4, 4);
+  end;
 end;
-
+//  falta interbase
 function TTFacturacionCCB.ProcesarUnificados: Boolean;
 // Objetivo...: Procesar los datos Unificados
 begin
-  DBCentral  := dir_lab +  '\integracion';
+  {DBCentral  := dir_lab +  '\integracion';
   directorio := DBCentral;
   LaboratorioActual := '';
   if cabfact   <> nil then if cabfact.Active   then datosdb.closeDB(cabfact);
@@ -4187,7 +8116,33 @@ begin
 
     Result := True;
   end else
-    Result := False;
+    Result := False;}
+
+  if (interbase = 'S') then begin
+    ProcesarDatosCentrales('');
+    __c := '_hist';
+    {ProcesamientoCentral := true;
+    firebird.getModulo('facturacion');
+    if (ffirebird <> nil) then  ffirebird.Desconectar;
+    ffirebird := TTFirebird.Create;
+    ffirebird.Conectar(firebird.Host + 'FACTLABCENT.GDB', firebird.Usuario , firebird.Password);
+    utiles.msgError('1');
+    {directorio := DBCentral;
+    LaboratorioActual := '';
+    if cabfactIB   <> nil then if cabfactIB.Active   then ffirebird.closeDB(cabfactIB);
+    if detfactIB   <> nil then if detfactIB.Active   then ffirebird.closeDB(detfactIB);
+    if idordenesIB <> nil then if idordenesIB.Active then ffirebird.closeDB(idordenesIB);
+    cabfactIB := nil; detfactIB := nil; idordenesIB := nil;
+
+    if (ffirebird <> nil) then  ffirebird.Desconectar;
+    ffirebird := TTFirebird.Create;
+    ffirebird.Conectar(firebird.Host + 'FACTLABCENT.GDB', firebird.Usuario , firebird.Password);
+
+    cabfactIB       := ffirebird.InstanciarTabla('cabfact');
+    detfactIB       := ffirebird.InstanciarTabla('detfact');
+    idordenesIB     := ffirebird.InstanciarTabla('idordenes');
+    ordenes_auditIB := ffirebird.InstanciarTabla('ordenes_audit');}
+  end;
 end;
 
 procedure TTFacturacionCCB.ProcesarDatosHistoricos;
@@ -4201,6 +8156,13 @@ end;
 procedure TTFacturacionCCB.DepurarIB(xperiodo: String);
 // Objetivo...: Depurar Datos
 begin
+  InstanciarTablas('S');
+  if (ffirebird <> nil) then begin
+    ffirebird.TransacSQL('delete from cabfact where periodo = ' + '''' + xperiodo + '''');
+    ffirebird.TransacSQL('delete from detfact where periodo = ' + '''' + xperiodo + '''');
+    ffirebird.TransacSQL('delete from idordenes where periodo = ' + '''' + xperiodo + '''');
+    ffirebird.TransacSQL('delete from ordenes_audit where periodo <= ' + '''' + xperiodo + '''');
+  end;
 end;
 
 procedure TTFacturacionCCB.Depurar(xperiodo: String);
@@ -4542,119 +8504,338 @@ begin
 
   codosanter  := ''; idprofanter := ''; idanter := ''; idanter1 := ''; ordenanter := ''; i := 0; cantidad := 0; cantidadordenes := 0; subtotal := 0; it := 0; tot9984 := 0; totUB := 0; totUG := 0; canUB := 0; canUG := 0; totprestaciones := 0; periodo := xperiodo; titulo := xtitulo; columnas := xcolumnas; montos[1] := 0; total := 0; it := 0; i := 0; totales[1] := 0;
   ccanUB := 0; ccanUG := 0; ttotUB := 0; ttotUG := 0; ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0; total := 0;
-  //detfact.IndexName := 'DETFACT_RESUMENPROF';
-  detfact.IndexFieldNames := 'Periodo;Idprof;Codos;Orden;Items';
-  detfact.First;
-  obsocial.getDatos(detfact.FieldByname('codos').AsString);
-  ordenanter  := detfact.FieldByName('orden').AsString;
-  idprofanter := 't';
-  while not detfact.EOF do Begin
-    if (detfact.FieldByName('periodo').AsString = xperiodo) and (utiles.verificarItemsLista(profSel, detfact.FieldByName('idprof').AsString)) and (utiles.verificarItemsLista(ObrasSocSel, detfact.FieldByName('codos').AsString)) then Begin
-      datosListados := True;
-      nomeclatura.getDatos(detfact.FieldByName('codanalisis').AsString);
-      if nomeclatura.CF <> 'F' then Inc(totprestaciones); // Total de prestaciones
-      if detfact.FieldByname('codos').AsString <> codosanter then Begin
-        obsocial.getDatos(detfact.FieldByname('codos').AsString);
-        obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, detfact.FieldByname('periodo').AsString);
-      end;
 
-      if detfact.FieldByName('idprof').AsString <> idprofanter then Begin   // Ruptura por Profesional
-        if cantidad > 0 then Begin
-          ListarLineaDeAnalisis(IntToStr(nrocol), salida);
-          SubtotalProfesional(salida);
-          totUB := 0;
+  if (interbase = 'N') then begin
+    if not (detfact.Active) then detfact.Open;
+    detfact.IndexFieldNames := 'Periodo;Idprof;Codos;Orden;Items';
+    detfact.First;
+    obsocial.getDatos(detfact.FieldByname('codos').AsString);
+    ordenanter  := detfact.FieldByName('orden').AsString;
+    idprofanter := 't';
+    while not detfact.EOF do Begin
+      if (detfact.FieldByName('periodo').AsString = xperiodo) and (utiles.verificarItemsLista(profSel, detfact.FieldByName('idprof').AsString)) and (utiles.verificarItemsLista(ObrasSocSel, detfact.FieldByName('codos').AsString)) then Begin
+        datosListados := True;
+        nomeclatura.getDatos(detfact.FieldByName('codanalisis').AsString);
+        if nomeclatura.CF <> 'F' then Inc(totprestaciones); // Total de prestaciones
+        if detfact.FieldByname('codos').AsString <> codosanter then Begin
+          obsocial.getDatos(detfact.FieldByname('codos').AsString);
+          obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, detfact.FieldByname('periodo').AsString);
         end;
-        RupturaPorProfesional('clNavy', salida);
-      end;
 
-      if detfact.FieldByName('codos').AsString <> codosanter then Begin
-        if cantidad > 0 then Begin
-          ListarLineaDeAnalisis(IntToStr(nrocol), salida);
-          SubtotalProfesional(salida);
+        if detfact.FieldByName('idprof').AsString <> idprofanter then Begin   // Ruptura por Profesional
+          if cantidad > 0 then Begin
+            ListarLineaDeAnalisis(IntToStr(nrocol), salida);
+            SubtotalProfesional(salida);
+            totUB := 0;
+          end;
+          RupturaPorProfesional('clNavy', salida);
         end;
-        RupturaObraSocial(salida, xperiodo, xtitulo, ''); // Ruptura por Obra Social
-        idprofanter := ''; cantidad := 0; subtotal := 0; total := 0; totUB := 0;
+
+        if detfact.FieldByName('codos').AsString <> codosanter then Begin
+          if cantidad > 0 then Begin
+            ListarLineaDeAnalisis(IntToStr(nrocol), salida);
+            SubtotalProfesional(salida);
+          end;
+          RupturaObraSocial(salida, xperiodo, xtitulo, ''); // Ruptura por Obra Social
+          idprofanter := ''; cantidad := 0; subtotal := 0; total := 0; totUB := 0;
+        end;
+
+        if (i >= nrocol) or (detfact.FieldByName('codpac').AsString <> idanter) or (detfact.FieldByName('orden').AsString <> ordenanter) then Begin
+          if (detfact.FieldByName('codpac').AsString <> idanter) or (detfact.FieldByName('orden').AsString <> ordenanter) then ListarLineaDeAnalisis(IntToStr(nrocol), salida) else ListLinea(IntToStr(nrocol), salida);
+          i := 0;
+          if detfact.FieldByName('orden').AsString <> ordenanter then idanter1 := '';
+        end;
+
+        if (length(trim(detfact.FieldByName('ref1').AsString)) = 7) then periodo := detfact.FieldByName('ref1').AsString else periodo := xperiodo;
+
+        paciente.getDatos(detfact.FieldByName('idprof').AsString, detfact.FieldByName('codpac').AsString);
+        Inc(i);
+        if (length(trim(detfact.FieldByName('retiva').AsString)) > 0) then paciente.Gravadoiva := detfact.FieldByName('retiva').AsString;
+
+        if (obsocial.FactNBU = 'N') or (length(trim(detfact.FieldByName('codanalisis').AsString)) = 4) then Begin
+          obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, periodo);
+          if Length(Trim(nomeclatura.codfact)) = 0 then codigos[i] := detfact.FieldByName('codanalisis').AsString else codigos[i] := nomeclatura.codfact;
+          if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
+          if nomeclatura.RIE <> '*' then montos [i] := setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else montos [i] := setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
+        end;
+        if (obsocial.FactNBU = 'S') and (length(trim(detfact.FieldByName('codanalisis').AsString)) = 6) then Begin
+          obsocial.SincronizarArancelNBU(detfact.FieldByname('codos').AsString, periodo);
+          nbu.getDatos(detfact.FieldByName('codanalisis').AsString);
+          codigos[i] := detfact.FieldByName('codanalisis').AsString;
+          montos [i] := setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, 0, 0, 0, 0); // Valor de cada analisis
+          nnbu       := True;
+        end;
+
+        it := i;
+
+        subtotal := subtotal + montos[i];
+
+        if detfact.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
+        codosanter  := detfact.FieldByName('codos').AsString;
+        idprofanter := detfact.FieldByName('idprof').AsString;
+        idanter     := detfact.FieldByName('codpac').AsString;
+        ordenanter  := detfact.FieldByName('orden').AsString;
+        npac        := detfact.FieldByName('nombre').AsString
       end;
-
-      if (i >= nrocol) or (detfact.FieldByName('codpac').AsString <> idanter) or (detfact.FieldByName('orden').AsString <> ordenanter) then Begin
-        if (detfact.FieldByName('codpac').AsString <> idanter) or (detfact.FieldByName('orden').AsString <> ordenanter) then ListarLineaDeAnalisis(IntToStr(nrocol), salida) else ListLinea(IntToStr(nrocol), salida);
-        i := 0;
-        if detfact.FieldByName('orden').AsString <> ordenanter then idanter1 := '';
-      end;
-
-      obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
-      paciente.getDatos(detfact.FieldByName('idprof').AsString, detfact.FieldByName('codpac').AsString);
-      Inc(i);
-
-      if (obsocial.FactNBU = 'N') or (length(trim(detfact.FieldByName('codanalisis').AsString)) = 4) then Begin
-        if Length(Trim(nomeclatura.codfact)) = 0 then codigos[i] := detfact.FieldByName('codanalisis').AsString else codigos[i] := nomeclatura.codfact;
-        if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
-        if nomeclatura.RIE <> '*' then montos [i] := setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else montos [i] := setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
-      end;
-      if (obsocial.FactNBU = 'S') and (length(trim(detfact.FieldByName('codanalisis').AsString)) = 6) then Begin
-        nbu.getDatos(detfact.FieldByName('codanalisis').AsString);
-        codigos[i] := detfact.FieldByName('codanalisis').AsString;
-        montos [i] := setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, 0, 0, 0, 0); // Valor de cada analisis
-        nnbu       := True;
-      end;
-
-      it := i;
-
-      {Inc(i);
-      obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
-      if Length(Trim(nomeclatura.codfact)) = 0 then codigos[i] := detfact.FieldByName('codanalisis').AsString else codigos[i] := nomeclatura.codfact;
-      if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
-      if nomeclatura.RIE <> '*' then montos [i] := setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else montos [i] := setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
-      it := i;}
-
-      subtotal := subtotal + montos[i];
-
-      if detfact.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
-      codosanter  := detfact.FieldByName('codos').AsString;
-      idprofanter := detfact.FieldByName('idprof').AsString;
-      idanter     := detfact.FieldByName('codpac').AsString;
-      ordenanter  := detfact.FieldByName('orden').AsString;
-      npac        := detfact.FieldByName('nombre').AsString
+      detfact.Next;
     end;
-    detfact.Next;
-  end;
-  it := i;
-  ListarLineaDeAnalisis(IntToStr(nrocol), salida);
+    it := i;
+    ListarLineaDeAnalisis(IntToStr(nrocol), salida);
 
-  if cantidad > 0 then SubtotalProfesional(salida);
+    if cantidad > 0 then SubtotalProfesional(salida);
 
-  if totales[1] + cantidadordenes <> 0 then Begin   // Cantidades Finales
-   if salida <> 'T' then Begin
-    list.Linea(0, 0, ' ', 1, 'Arial, normal, 5', salida, 'S');
-    list.Linea(0, 0, 'Total de Ordenes: ', 1, 'Arial, negrita, 8', salida, 'N');
-    list.importe(25, list.Lineactual, '####', cantidadordenes, 2, 'Arial, negrita, 8');
-    if usuario.usuario <> 'Laboratorio' then Begin
-      list.Linea(30, list.Lineactual, 'Tot. Com. Arancel.: ', 3, 'Arial, negrita, 8', salida, 'N');
-      list.importe(58, list.Lineactual, '', utiles.setNro2Dec(total), 4, 'Arial, negrita, 8');
-      list.Linea(67, list.Lineactual, 'Total Facturado: ', 5, 'Arial, negrita, 8', salida, 'N');
-      list.importe(96, list.Lineactual, '', totales[1], 6, 'Arial, negrita, 8');
-      list.Linea(96, list.Lineactual, ' ', 7, 'Arial, negrita, 8', salida, 'S');
-    end else
-      list.Linea(95, list.Lineactual, ' ', 3, 'Arial, negrita, 8', salida, 'S');
-    list.Linea(0, 0, list.Linealargopagina('--', salida), 1, 'Arial, normal, 10', salida, 'S');
-    list.Linea(0, 0, ' ', 1, 'Arial, normal, 5', salida, 'S');
-   end else Begin
-    list.LineaTxt(CHR18, True); Inc(lineas); if controlarSalto then titulo1(periodo, titulo, columnas);
-    list.LineaTxt(CHR18 + 'Tot. de Ordenes:  ', False);
-    if usuario.usuario <> 'Laboratorio' then Begin
-      list.importeTxt(cantidadordenes, 3, 0, False);
-      list.LineaTxt(' Total Comp. Aran.: ', False);
-      list.importeTxt(total, 7, 2, False);
-      list.LineaTxt('    Total Facturado: ', False);
-      list.importeTxt(totales[1], 10, 2, True); Inc(lineas); if controlarSalto then titulo1(periodo, titulo, columnas);
-    end else Begin
-      list.importeTxt(cantidad, 4, 0, True);
-      Inc(lineas); if controlarSalto then titulo1(periodo, titulo, columnas);
+    if totales[1] + cantidadordenes <> 0 then Begin   // Cantidades Finales
+      if salida <> 'T' then Begin
+        list.Linea(0, 0, ' ', 1, 'Arial, normal, 5', salida, 'S');
+        list.Linea(0, 0, 'Total de Ordenes: ', 1, 'Arial, negrita, 8', salida, 'N');
+        list.importe(25, list.Lineactual, '####', cantidadordenes, 2, 'Arial, negrita, 8');
+        if usuario.usuario <> 'Laboratorio' then Begin
+          list.Linea(30, list.Lineactual, 'Tot. Com. Arancel.: ', 3, 'Arial, negrita, 8', salida, 'N');
+          list.importe(58, list.Lineactual, '', utiles.setNro2Dec(total), 4, 'Arial, negrita, 8');
+          list.Linea(67, list.Lineactual, 'Total Facturado: ', 5, 'Arial, negrita, 8', salida, 'N');
+          list.importe(96, list.Lineactual, '', totales[1], 6, 'Arial, negrita, 8');
+          list.Linea(96, list.Lineactual, ' ', 7, 'Arial, negrita, 8', salida, 'S');
+        end else
+          list.Linea(95, list.Lineactual, ' ', 3, 'Arial, negrita, 8', salida, 'S');
+        list.Linea(0, 0, list.Linealargopagina('--', salida), 1, 'Arial, normal, 10', salida, 'S');
+        list.Linea(0, 0, ' ', 1, 'Arial, normal, 5', salida, 'S');
+      end else Begin
+        list.LineaTxt(CHR18, True); Inc(lineas); if controlarSalto then titulo1(periodo, titulo, columnas);
+        list.LineaTxt(CHR18 + 'Tot. de Ordenes:  ', False);
+        if usuario.usuario <> 'Laboratorio' then Begin
+          list.importeTxt(cantidadordenes, 3, 0, False);
+          list.LineaTxt(' Total Comp. Aran.: ', False);
+          list.importeTxt(total, 7, 2, False);
+          list.LineaTxt('    Total Facturado: ', False);
+          list.importeTxt(totales[1], 10, 2, True); Inc(lineas); if controlarSalto then titulo1(periodo, titulo, columnas);
+        end else Begin
+          list.importeTxt(cantidad, 4, 0, True);
+          Inc(lineas); if controlarSalto then titulo1(periodo, titulo, columnas);
+        end;
+      list.LineaTxt(utiles.sLlenarIzquierda(CHR18 + lin, 80, Caracter), True); Inc(lineas); if controlarSalto then titulo1(periodo, titulo, columnas);
+     end;
     end;
-    list.LineaTxt(utiles.sLlenarIzquierda(CHR18 + lin, 80, Caracter), True); Inc(lineas); if controlarSalto then titulo1(periodo, titulo, columnas);
-   end;
+    listControl := False;
   end;
-  listControl := False;
+
+  if (interbase = 'S') then begin
+    {detfactIB.Close;
+    if not(detfactIB.Active) then detfactIB.Open;
+    if not (ProcesamientoCentral) then ffirebird.Filtrar(detfactIB, 'periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + laboratorioactual + '''') else ffirebird.Filtrar(detfactIB, 'periodo = ' + '''' + xperiodo + '''');
+    detfactIB.IndexFieldNames := 'Periodo;Codos;Idprof;Orden;Items';
+    //firebird.Buscar(detfactIB, 'periodo', xperiodo);
+    detfactIB.First;}
+
+    if (factglobal) then __t := 'detfact_gl' else __t := 'detfact';
+
+    if not (ProcesamientoCentral) then
+      rsqlIB :=  ffirebird.getTransacSQL('select * from ' + __t + ' where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + laboratorioactual + '''' + ' order by periodo, codos, idprof, orden, items')
+    else
+      rsqlIB :=  ffirebird.getTransacSQL('select * from ' + __t + ' where periodo = ' + '''' + xperiodo + '''' + ' order by periodo, codos, idprof, orden, items');
+
+    rsqlIB.Open; rsqlIB.First;
+
+    __peranter := '';
+
+    obsocial.getDatos(rsqlIB.FieldByname('codos').AsString);
+    ordenanter  := rsqlIB.FieldByName('orden').AsString;
+    idprofanter := 't';
+    while not rsqlIB.EOF do Begin
+      if (rsqlIB.FieldByName('periodo').AsString <> xperiodo) then break;
+      if (rsqlIB.FieldByName('periodo').AsString = xperiodo) and (utiles.verificarItemsLista(profSel, rsqlIB.FieldByName('idprof').AsString)) and (utiles.verificarItemsLista(ObrasSocSel, rsqlIB.FieldByName('codos').AsString)) then Begin
+        datosListados := True;
+        nomeclatura.getDatos(rsqlIB.FieldByName('codanalisis').AsString);
+        if nomeclatura.CF <> 'F' then Inc(totprestaciones); // Total de prestaciones
+        if rsqlIB.FieldByname('codos').AsString <> codosanter then Begin
+          obsocial.getDatos(rsqlIB.FieldByname('codos').AsString);
+          obsocial.SincronizarArancel(rsqlIB.FieldByname('codos').AsString, rsqlIB.FieldByname('periodo').AsString);
+        end;
+
+        if rsqlIB.FieldByName('idprof').AsString <> idprofanter then Begin   // Ruptura por Profesional
+          if cantidad > 0 then Begin
+            ListarLineaDeAnalisis(IntToStr(nrocol), salida);
+            SubtotalProfesional(salida);
+            totUB := 0;
+          end;
+          RupturaPorProfesional('clNavy', salida);
+        end;
+
+        if rsqlIB.FieldByName('codos').AsString <> codosanter then Begin
+          if cantidad > 0 then Begin
+            ListarLineaDeAnalisis(IntToStr(nrocol), salida);
+            SubtotalProfesional(salida);
+          end;
+          RupturaObraSocial(salida, xperiodo, xtitulo, ''); // Ruptura por Obra Social
+          idprofanter := ''; cantidad := 0; subtotal := 0; total := 0; totUB := 0;
+        end;
+
+        if (i >= nrocol) or (rsqlIB.FieldByName('codpac').AsString <> idanter) or (rsqlIB.FieldByName('orden').AsString <> ordenanter) then Begin
+          if (rsqlIB.FieldByName('codpac').AsString <> idanter) or (rsqlIB.FieldByName('orden').AsString <> ordenanter) then ListarLineaDeAnalisis(IntToStr(nrocol), salida) else ListLinea(IntToStr(nrocol), salida);
+          i := 0;
+          if rsqlIB.FieldByName('orden').AsString <> ordenanter then idanter1 := '';
+        end;
+
+        if (length(trim(rsqlIB.FieldByName('retiva').AsString)) > 0) then begin
+          paciente.Gravadoiva := rsqlIB.FieldByName('retiva').AsString;
+          paciente.Nombre := rsqlIB.FieldByName('nombre').AsString;
+        end else
+          paciente.getDatos(rsqlIB.FieldByName('idprof').AsString, rsqlIB.FieldByName('codpac').AsString);
+
+        Inc(i);
+        if (length(trim(rsqlIB.FieldByName('retiva').AsString)) > 0) then paciente.Gravadoiva := rsqlIB.FieldByName('retiva').AsString;
+
+        if (length(trim(rsqlIB.FieldByName('ref1').AsString)) = 7) then periodo := rsqlIB.FieldByName('ref1').AsString else periodo := xperiodo;
+
+         // 21/03/2022
+        if  (utiles.getPeriodoAAAAMM(periodo) > __peranter) then __maxperiodo := periodo;
+        __peranter := utiles.getPeriodoAAAAMM(periodo);
+
+        if (obsocial.FactNBU = 'N') or (length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 4) then Begin
+          obsocial.SincronizarArancel(rsqlIB.FieldByname('codos').AsString, periodo);
+          if Length(Trim(nomeclatura.codfact)) = 0 then codigos[i] := rsqlIB.FieldByName('codanalisis').AsString else codigos[i] := nomeclatura.codfact;
+          if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
+          if nomeclatura.RIE <> '*' then montos [i] := setValorAnalisis(rsqlIB.FieldByName('codos').AsString, rsqlIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else montos [i] := setValorAnalisis(rsqlIB.FieldByName('codos').AsString, rsqlIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
+        end;
+        if (obsocial.FactNBU = 'S') and (length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 6) then Begin
+          obsocial.SincronizarArancelNBU(rsqlIB.FieldByname('codos').AsString, periodo);
+          nbu.getDatos(rsqlIB.FieldByName('codanalisis').AsString);
+          codigos[i] := rsqlIB.FieldByName('codanalisis').AsString;
+          montos [i] := setValorAnalisis(rsqlIB.FieldByName('codos').AsString, rsqlIB.FieldByName('codanalisis').AsString, 0, 0, 0, 0); // Valor de cada analisis
+          nnbu       := True;
+        end;
+
+        it := i;
+
+        subtotal := subtotal + montos[i];
+
+        if rsqlIB.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
+        codosanter  := rsqlIB.FieldByName('codos').AsString;
+        idprofanter := rsqlIB.FieldByName('idprof').AsString;
+        idanter     := rsqlIB.FieldByName('codpac').AsString;
+        ordenanter  := rsqlIB.FieldByName('orden').AsString;
+        npac        := rsqlIB.FieldByName('nombre').AsString;
+        __perfact   := rsqlIB.FieldByName('ref1').AsString;
+      end;
+      rsqlIB.Next;
+    end;
+    it := i;
+    ListarLineaDeAnalisis(IntToStr(nrocol), salida);
+
+    rsqlIB.Close; rsqlIB.Free;
+
+
+    {obsocial.getDatos(detfactIB.FieldByname('codos').AsString);
+    ordenanter  := detfactIB.FieldByName('orden').AsString;
+    idprofanter := 't';
+    while not detfactIB.EOF do Begin
+      if (detfactIB.FieldByName('periodo').AsString <> xperiodo) then break;
+      if (detfactIB.FieldByName('periodo').AsString = xperiodo) and (utiles.verificarItemsLista(profSel, detfactIB.FieldByName('idprof').AsString)) and (utiles.verificarItemsLista(ObrasSocSel, detfactIB.FieldByName('codos').AsString)) then Begin
+        datosListados := True;
+        nomeclatura.getDatos(detfactIB.FieldByName('codanalisis').AsString);
+        if nomeclatura.CF <> 'F' then Inc(totprestaciones); // Total de prestaciones
+        if detfactIB.FieldByname('codos').AsString <> codosanter then Begin
+          obsocial.getDatos(detfactIB.FieldByname('codos').AsString);
+          obsocial.SincronizarArancel(detfactIB.FieldByname('codos').AsString, detfactIB.FieldByname('periodo').AsString);
+        end;
+
+        if detfactIB.FieldByName('idprof').AsString <> idprofanter then Begin   // Ruptura por Profesional
+          if cantidad > 0 then Begin
+            ListarLineaDeAnalisis(IntToStr(nrocol), salida);
+            SubtotalProfesional(salida);
+            totUB := 0;
+          end;
+          RupturaPorProfesional('clNavy', salida);
+        end;
+
+        if detfactIB.FieldByName('codos').AsString <> codosanter then Begin
+          if cantidad > 0 then Begin
+            ListarLineaDeAnalisis(IntToStr(nrocol), salida);
+            SubtotalProfesional(salida);
+          end;
+          RupturaObraSocial(salida, xperiodo, xtitulo, ''); // Ruptura por Obra Social
+          idprofanter := ''; cantidad := 0; subtotal := 0; total := 0; totUB := 0;
+        end;
+
+        if (i >= nrocol) or (detfactIB.FieldByName('codpac').AsString <> idanter) or (detfactIB.FieldByName('orden').AsString <> ordenanter) then Begin
+          if (detfactIB.FieldByName('codpac').AsString <> idanter) or (detfactIB.FieldByName('orden').AsString <> ordenanter) then ListarLineaDeAnalisis(IntToStr(nrocol), salida) else ListLinea(IntToStr(nrocol), salida);
+          i := 0;
+          if detfactIB.FieldByName('orden').AsString <> ordenanter then idanter1 := '';
+        end;
+
+        paciente.getDatos(detfactIB.FieldByName('idprof').AsString, detfactIB.FieldByName('codpac').AsString);
+        Inc(i);
+        if (length(trim(detfactIB.FieldByName('retiva').AsString)) > 0) then paciente.Gravadoiva := detfactIB.FieldByName('retiva').AsString;
+
+        if (length(trim(detfactIB.FieldByName('ref1').AsString)) = 7) then periodo := detfactIB.FieldByName('ref1').AsString else periodo := xperiodo;
+
+        if (obsocial.FactNBU = 'N') or (length(trim(detfactIB.FieldByName('codanalisis').AsString)) = 4) then Begin
+          obsocial.SincronizarArancel(detfactIB.FieldByname('codos').AsString, periodo);
+          if Length(Trim(nomeclatura.codfact)) = 0 then codigos[i] := detfactIB.FieldByName('codanalisis').AsString else codigos[i] := nomeclatura.codfact;
+          if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
+          if nomeclatura.RIE <> '*' then montos [i] := setValorAnalisis(detfactIB.FieldByName('codos').AsString, detfactIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else montos [i] := setValorAnalisis(detfactIB.FieldByName('codos').AsString, detfactIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
+        end;
+        if (obsocial.FactNBU = 'S') and (length(trim(detfactIB.FieldByName('codanalisis').AsString)) = 6) then Begin
+          obsocial.SincronizarArancelNBU(detfactIB.FieldByname('codos').AsString, periodo);
+          nbu.getDatos(detfactIB.FieldByName('codanalisis').AsString);
+          codigos[i] := detfactIB.FieldByName('codanalisis').AsString;
+          montos [i] := setValorAnalisis(detfactIB.FieldByName('codos').AsString, detfactIB.FieldByName('codanalisis').AsString, 0, 0, 0, 0); // Valor de cada analisis
+          nnbu       := True;
+        end;
+
+        it := i;
+
+        subtotal := subtotal + montos[i];
+
+        if detfactIB.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
+        codosanter  := detfactIB.FieldByName('codos').AsString;
+        idprofanter := detfactIB.FieldByName('idprof').AsString;
+        idanter     := detfactIB.FieldByName('codpac').AsString;
+        ordenanter  := detfactIB.FieldByName('orden').AsString;
+        npac        := detfactIB.FieldByName('nombre').AsString
+      end;
+      detfactIB.Next;
+    end;
+    it := i;
+    ListarLineaDeAnalisis(IntToStr(nrocol), salida);}
+
+    if cantidad > 0 then SubtotalProfesional(salida);
+
+    if totales[1] + cantidadordenes <> 0 then Begin   // Cantidades Finales
+      if salida <> 'T' then Begin
+        list.Linea(0, 0, ' ', 1, 'Arial, normal, 5', salida, 'S');
+        list.Linea(0, 0, 'Total de Ordenes: ', 1, 'Arial, negrita, 8', salida, 'N');
+        list.importe(25, list.Lineactual, '####', cantidadordenes, 2, 'Arial, negrita, 8');
+        if usuario.usuario <> 'Laboratorio' then Begin
+          list.Linea(30, list.Lineactual, 'Tot. Com. Arancel.: ', 3, 'Arial, negrita, 8', salida, 'N');
+          list.importe(58, list.Lineactual, '', utiles.setNro2Dec(total), 4, 'Arial, negrita, 8');
+          list.Linea(67, list.Lineactual, 'Total Facturado: ', 5, 'Arial, negrita, 8', salida, 'N');
+          list.importe(96, list.Lineactual, '', totales[1], 6, 'Arial, negrita, 8');
+          list.Linea(96, list.Lineactual, ' ', 7, 'Arial, negrita, 8', salida, 'S');
+        end else
+          list.Linea(95, list.Lineactual, ' ', 3, 'Arial, negrita, 8', salida, 'S');
+        list.Linea(0, 0, list.Linealargopagina('--', salida), 1, 'Arial, normal, 10', salida, 'S');
+        list.Linea(0, 0, ' ', 1, 'Arial, normal, 5', salida, 'S');
+      end else Begin
+        list.LineaTxt(CHR18, True); Inc(lineas); if controlarSalto then titulo1(periodo, titulo, columnas);
+        list.LineaTxt(CHR18 + 'Tot. de Ordenes:  ', False);
+        if usuario.usuario <> 'Laboratorio' then Begin
+          list.importeTxt(cantidadordenes, 3, 0, False);
+          list.LineaTxt(' Total Comp. Aran.: ', False);
+          list.importeTxt(total, 7, 2, False);
+          list.LineaTxt('    Total Facturado: ', False);
+          list.importeTxt(totales[1], 10, 2, True); Inc(lineas); if controlarSalto then titulo1(periodo, titulo, columnas);
+        end else Begin
+          list.importeTxt(cantidad, 4, 0, True);
+          Inc(lineas); if controlarSalto then titulo1(periodo, titulo, columnas);
+        end;
+      list.LineaTxt(utiles.sLlenarIzquierda(CHR18 + lin, 80, Caracter), True); Inc(lineas); if controlarSalto then titulo1(periodo, titulo, columnas);
+     end;
+    end;
+    listControl := False;
+
+    //detfactIB.Close; detfactIB.Open;
+
+  end;
 
   if presentar_inf then FinalizarInforme(salida);
 end;
@@ -4663,6 +8844,7 @@ procedure TTFacturacionCCB.ListarOrdenesAuditadas(xperiodo: String; profSel: TSt
 var
   r: TQuery; i, j, lt: Integer; lst: String;
 Begin
+// falta interbase
   if profSel <> Nil then
     For j := 1 to profSel.Count do Begin
       r := setOrdenesAuditoria(xperiodo, profSel.Strings[j-1]);
@@ -4939,11 +9121,23 @@ end;
 
 procedure TTFacturacionCCB.ListarResumenRetencionesIVA(xperiodo, xtitulo: String; profSel: TStringList; ObrasSocSel: TStringList; salida: char; xinf_com: Boolean);
 // Objetivo...: Generar Informe Resumen Retenciones I.V.A.
+var
+  id_prof, archdest: string;
+  r: TQuery;
 Begin
-  //detfact.IndexName := 'DETFACT_RESUMENPROF';
-  detfact.IndexFieldNames := 'Periodo;Idprof;Codos;Orden;Items';
-
   IniciarArreglos;
+
+  if (exporta_web) then begin
+    //utilesarchivos.BorrarArchivos(dbs.DirSistema + '\export_reportes\web_totalesri', '*.txt');
+    //list.AnularCaracteresTexto;
+    //salida := 'T';
+    //ExportarDatos := true;
+    //list.IniciarImpresionModoTexto(10000);
+    //list.exportar_rep := true;
+
+    datosdb.tranSQL(cabfactos.DatabaseName, 'delete from wtotalesprof where periodo = ' + '''' + xperiodo + '''');
+  end;
+
   informe_ivaret := True;
   if (salida = 'P') or (salida = 'I') then list.Setear(salida);
   pag := 0; datosListados := False;
@@ -4959,7 +9153,7 @@ Begin
     list.Titulo(0, 0, 'Código   Obra Social', 1, 'Arial, cursiva, 8');
     list.Titulo(36, list.Lineactual, 'Ord.', 2, 'Arial, cursiva, 8');
     list.Titulo(43, list.Lineactual, 'Det.', 3, 'Arial, cursiva, 8');
-    list.Titulo(54, list.Lineactual, 'Grabado', 4, 'Arial, cursiva, 8');
+    list.Titulo(54, list.Lineactual, 'Gravado', 4, 'Arial, cursiva, 8');
     list.Titulo(66, list.Lineactual, 'Exento', 5, 'Arial, cursiva, 8');
     list.Titulo(78, list.Lineactual, 'I.V.A.', 6, 'Arial, cursiva, 8');
     list.Titulo(89, list.Lineactual, 'Total', 7, 'Arial, cursiva, 8');
@@ -4971,64 +9165,203 @@ Begin
     titulo7(xperiodo, xtitulo);
   end;
 
-  detfact.First;
-  cantidad := 0; subtotal := 0; montos[1] := 0; montos[2] := 0; montos[3] := 0; montos[4] := 0; ordenanter := ''; codosanter := ''; idprofanter := ''; totUB := 0; totUG := 0; canUB := 0; canUG := 0; tot9984 := 0; ttotUB := 0; ttotUG := 0; ccanUB := 0; ccanUG := 0; totales[1] := 0; totales[2] := 0; totales[3] := 0; totales[4] := 0; totales[5] := 0; totales[6] := 0; totales[7] := 0; totales[8] := 0; totales[9] := 0; totales[10] := 0; totales[11] := 0;
-  ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0; ivaret := 0; ivaret9984 := 0; ivaretcaran := 0; datosListados := False;
-  while not detfact.EOF do Begin
-    if (detfact.FieldByName('periodo').AsString >= xperiodo) and (utiles.verificarItemsLista(profSel, detfact.FieldByName('idprof').AsString)) and (utiles.verificarItemsLista(ObrasSocSel, detfact.FieldByName('codos').AsString)) then Begin
-      if not datosListados then Begin
-        obsocial.getDatos(detfact.FieldByname('codos').AsString);
-        obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
-        codosanter := detfact.FieldByName('codos').AsString;
-        datosListados := True;
-      end;
-
-      if detfact.FieldByName('idprof').AsString <> idprofanter then Begin
-        if (totprestaciones > 0) and (cantidad > 0) then LineaObraSocialIvaRet(xperiodo, salida, xinf_com);
-        if (salida = 'P') or (salida = 'I') then list.Linea(0, 0, '', 1, 'Arial, normal, 5', salida, 'S');
-        if salida = 'T' then Begin
-          list.LineaTxt('', True);
-          Inc(lineas); if controlarSalto then titulo7(periodo, titulo);
-        end;
-        RupturaPorProfesional2(xperiodo, xtitulo, salida);
-        codosanter := ''; ordenanter := ''; totprestaciones := 0; idprofanter := '';
-      end;
-
-      nomeclatura.getDatos(detfact.FieldByName('codanalisis').AsString);
-      if nomeclatura.CF <> 'F' then Inc(totprestaciones); // Total de prestaciones
-
-      if (detfact.FieldByName('codos').AsString <> codosanter) and (totprestaciones > 0) and (cantidad > 0) then LineaObraSocialIvaRet(xperiodo, salida, xinf_com);
-      if detfact.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
-
-      if detfact.FieldByname('codos').AsString <> codosanter then Begin
-        obsocial.getDatos(detfact.FieldByname('codos').AsString);
-        obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
-      end;
-       obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
-
-      if obsocial.FactNBU = 'N' then Begin
-        if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
-        paciente.getDatos(detfact.FieldByName('idprof').AsString, detfact.FieldByName('codpac').AsString);
-        if nomeclatura.RIE <> '*' then subtotal := subtotal + setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else subtotal := subtotal + setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
-      end;
-      if obsocial.FactNBU = 'S' then Begin
-        paciente.getDatos(detfact.FieldByName('idprof').AsString, detfact.FieldByName('codpac').AsString);
-        subtotal := subtotal + setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, 0, 0, 0, 0);  // Valor de cada analisis
-      end;
-
-      codosanter  := detfact.FieldByName('codos').AsString;
-      idprofanter := detfact.FieldByName('idprof').AsString;
-      ordenanter  := detfact.FieldByName('orden').AsString;
+  // Si exporta, solo transfiere las indicadas
+  if not (exporta_web) then begin
+    ObrasSocSel := TStringList.Create;
+    r := obsocial.setobsocialsAlf;
+    r.Open;
+    while not r.EOF do Begin
+      if r.FieldByName('retieneiva').AsString = 'S' then ObrasSocSel.Add(r.FieldByName('codos').AsString);
+      r.Next;
     end;
-    detfact.Next;
+    r.Close; r.Free;
   end;
 
-  LineaObraSocialIvaRet(xperiodo, salida, xinf_com);
+  facturacion.ConectarTotalesProf;
 
-  if totales[1] + totales[2] > 0 then SubtotalObraSocialResumenProf('Subtotal:', salida);    // Subtotales Obra Social
-  informe_ivaret := False;
+  if (interbase = 'N') then begin
+    detfact.IndexFieldNames := 'Periodo;Idprof;Codos;Orden;Items';
+    detfact.First;
+    cantidad := 0; subtotal := 0; montos[1] := 0; montos[2] := 0; montos[3] := 0; montos[4] := 0; ordenanter := ''; codosanter := ''; idprofanter := ''; totUB := 0; totUG := 0; canUB := 0; canUG := 0; tot9984 := 0; ttotUB := 0; ttotUG := 0; ccanUB := 0; ccanUG := 0; totales[1] := 0; totales[2] := 0; totales[3] := 0; totales[4] := 0; totales[5] := 0; totales[6] := 0; totales[7] := 0; totales[8] := 0; totales[9] := 0; totales[10] := 0; totales[11] := 0;
+    ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0; ivaret := 0; ivaret9984 := 0; ivaretcaran := 0; datosListados := False;
+    while not detfact.EOF do Begin
+      if (detfact.FieldByName('periodo').AsString >= xperiodo) and (utiles.verificarItemsLista(profSel, detfact.FieldByName('idprof').AsString)) and (utiles.verificarItemsLista(ObrasSocSel, detfact.FieldByName('codos').AsString)) then Begin
+        if not datosListados then Begin
+          obsocial.getDatos(detfact.FieldByname('codos').AsString);
+          obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
+          codosanter := detfact.FieldByName('codos').AsString;
+          datosListados := True;
+        end;
 
-  FinalizarInforme(salida);
+        if detfact.FieldByName('idprof').AsString <> idprofanter then Begin
+          //if (totprestaciones > 0) and (cantidad > 0) then LineaObraSocialIvaRet(xperiodo, salida, xinf_com);
+          RupturaPorProfesional3(xperiodo, xtitulo, salida);
+          if (salida = 'P') or (salida = 'I') then list.Linea(0, 0, '', 1, 'Arial, normal, 5', salida, 'S');
+
+
+          if salida = 'T' then Begin
+            if not (exporta_web) then begin
+              list.LineaTxt('', True);
+              Inc(lineas); if controlarSalto then titulo7(periodo, titulo);
+            end else begin
+              {
+              if (idprofanter <> '') then begin
+                list.FinalizarExportacion;
+                archdest := copy(xperiodo, 1, 2) + copy(xperiodo, 4, 6) + '_' + idprofanter + '_REIN' + '.txt';
+                CopyFile(PChar(dbs.DirSistema + '\list.txt'), PChar(dbs.DirSistema + '\export_reportes\web_totalesri\' + archdest), false);
+                list.IniciarImpresionModoTexto(10000);
+                list.exportar_rep := true;
+              end;
+              }
+            end;
+
+          end;
+          if totales[1] + totales[2] > 0 then SubtotalObraSocialResumenProf('Subtotal:', salida);    // Subtotales Obra Social
+        end;
+
+        nomeclatura.getDatos(detfact.FieldByName('codanalisis').AsString);
+        if nomeclatura.CF <> 'F' then Inc(totprestaciones); // Total de prestaciones
+
+        if (detfact.FieldByName('codos').AsString <> codosanter) and (totprestaciones > 0) and (cantidad > 0) then LineaObraSocialIvaRet(xperiodo, salida, xinf_com);
+
+        if (detfact.FieldByName('codos').AsString <> codosanter) and (totprestaciones > 0) and (cantidad > 0) then LineaObraSocialIvaRet(xperiodo, salida, xinf_com);
+        if detfact.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
+
+        if detfact.FieldByname('codos').AsString <> codosanter then Begin
+          obsocial.getDatos(detfact.FieldByname('codos').AsString);
+          obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
+        end;
+         obsocial.SincronizarArancel(detfact.FieldByname('codos').AsString, xperiodo);
+
+        if obsocial.FactNBU = 'N' then Begin
+          if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
+          paciente.getDatos(detfact.FieldByName('idprof').AsString, detfact.FieldByName('codpac').AsString);
+          if nomeclatura.RIE <> '*' then subtotal := subtotal + setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else subtotal := subtotal + setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
+        end;
+        if obsocial.FactNBU = 'S' then Begin
+          paciente.getDatos(detfact.FieldByName('idprof').AsString, detfact.FieldByName('codpac').AsString);
+          subtotal := subtotal + setValorAnalisis(detfact.FieldByName('codos').AsString, detfact.FieldByName('codanalisis').AsString, 0, 0, 0, 0);  // Valor de cada analisis
+        end;
+
+        codosanter  := detfact.FieldByName('codos').AsString;
+        idprofanter := detfact.FieldByName('idprof').AsString;
+        ordenanter  := detfact.FieldByName('orden').AsString;
+      end;
+      detfact.Next;
+    end;
+
+    LineaObraSocialIvaRet(xperiodo, salida, xinf_com);
+
+    if totales[1] + totales[2] > 0 then SubtotalObraSocialResumenProf('Subtotal:', salida);    // Subtotales Obra Social
+    informe_ivaret := False;
+  end;
+
+  if (interbase = 'S') then begin
+    if not (ProcesamientoCentral) then rsqlIB := ffirebird.getTransacSQL('select * from detfact where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + laboratorioactual + '''' + ' order by Periodo, Idprof, Codos, Orden, Items') else rsqlIB := ffirebird.getTransacSQL('select * from detfact where periodo = ' + '''' + xperiodo + '''' + ' order by Periodo, Idprof, Codos, Orden, Items');
+    rsqlIB.Open; rsqlIB.First;
+    cantidad := 0; subtotal := 0; montos[1] := 0; montos[2] := 0; montos[3] := 0; montos[4] := 0; ordenanter := ''; codosanter := ''; idprofanter := ''; totUB := 0; totUG := 0; canUB := 0; canUG := 0; tot9984 := 0; ttotUB := 0; ttotUG := 0; ccanUB := 0; ccanUG := 0; totales[1] := 0; totales[2] := 0; totales[3] := 0; totales[4] := 0; totales[5] := 0; totales[6] := 0; totales[7] := 0; totales[8] := 0; totales[9] := 0; totales[10] := 0; totales[11] := 0;
+    ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0; ivaret := 0; ivaret9984 := 0; ivaretcaran := 0; datosListados := False; __peranter := '';
+    while not rsqlIB.EOF do Begin
+
+      if (rsqlIB.FieldByName('periodo').AsString >= xperiodo) and (utiles.verificarItemsLista(profSel, rsqlIB.FieldByName('idprof').AsString)) and (utiles.verificarItemsLista(ObrasSocSel, rsqlIB.FieldByName('codos').AsString)) then Begin
+        if not datosListados then Begin
+          obsocial.getDatos(rsqlIB.FieldByname('codos').AsString);
+          obsocial.SincronizarArancel(rsqlIB.FieldByname('codos').AsString, xperiodo);
+          codosanter := rsqlIB.FieldByName('codos').AsString;
+          datosListados := True;
+        end;
+
+        if (obsocial.FactNBU = 'N') or (length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 4) then Begin
+           nomeclatura.getDatos(rsqlIB.FieldByName('codanalisis').AsString);
+           if nomeclatura.CF <> 'F' then Inc(totprestaciones); // Total de prestaciones
+        end;
+
+        if (obsocial.FactNBU = 'S') and (length(trim(rsqlIB.FieldByName('codanalisis').AsString)) = 6) then Inc(totprestaciones);
+
+        if (rsqlIB.FieldByName('codos').AsString <> codosanter) and (totprestaciones > 0) and (cantidad > 0) then LineaObraSocialIvaRet(xperiodo, salida, xinf_com);
+
+        if (rsqlIB.FieldByName('idprof').AsString <> idprofanter) then Begin
+
+          RupturaPorProfesional3(xperiodo, xtitulo, salida);
+
+          if (salida = 'P') or (salida = 'I') then list.Linea(0, 0, '', 1, 'Arial, normal, 5', salida, 'S');
+          if salida = 'T' then Begin
+            list.LineaTxt('', True);
+            Inc(lineas); if controlarSalto then titulo7(periodo, titulo);
+          end;
+
+          if totales[1] + totales[2] > 0 then begin
+            SubtotalObraSocialResumenProf('Subtotal:', salida);    // Subtotales Obra Social;
+          end;
+        end;
+
+        if rsqlIB.FieldByname('codos').AsString <> codosanter then Begin
+          obsocial.getDatos(rsqlIB.FieldByname('codos').AsString);
+        end;
+
+        profesional.SincronizarCategoria(rsqlIB.FieldByName('idprof').AsString, xperiodo);
+
+        if (length(trim(rsqlIB.FieldByName('ref1').AsString)) = 7) then periodo := rsqlIB.FieldByName('ref1').AsString else periodo := xperiodo;
+
+         // 21/03/2022
+        if  (utiles.getPeriodoAAAAMM(periodo) > __peranter) then __maxperiodo := periodo;
+        __peranter := utiles.getPeriodoAAAAMM(periodo);
+
+        if (rsqlIB.FieldByName('codos').AsString <> codosanter) and (totprestaciones > 0) and (cantidad > 0) then LineaObraSocialIvaRet(xperiodo, salida, xinf_com);
+        if rsqlIB.FieldByName('orden').AsString <> ordenanter then Inc(cantidad);
+
+        if obsocial.FactNBU = 'N' then Begin
+          obsocial.SincronizarArancel(rsqlIB.FieldByname('codos').AsString, periodo);
+          if Length(Trim(nomeclatura.codfact)) > 0 then nomeclatura.getDatos(nomeclatura.codfact);
+          paciente.getDatos(rsqlIB.FieldByName('idprof').AsString, rsqlIB.FieldByName('codpac').AsString);
+          if (length(trim(rsqlIB.FieldByName('retiva').AsString)) > 0) then paciente.Gravadoiva := rsqlIB.FieldByName('retiva').AsString;
+          if nomeclatura.RIE <> '*' then subtotal := subtotal + setValorAnalisis(rsqlIB.FieldByName('codos').AsString, rsqlIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.UB, nomeclatura.gastos, obsocial.UG) else subtotal := subtotal + setValorAnalisis(rsqlIB.FieldByName('codos').AsString, rsqlIB.FieldByName('codanalisis').AsString, nomeclatura.ub, obsocial.RIEUB, nomeclatura.gastos, obsocial.RIEUG);  // Valor de cada analisis
+        end;
+        if obsocial.FactNBU = 'S' then Begin
+          obsocial.SincronizarArancelNBU(rsqlIB.FieldByname('codos').AsString, periodo);
+          paciente.getDatos(rsqlIB.FieldByName('idprof').AsString, rsqlIB.FieldByName('codpac').AsString);
+          if (length(trim(rsqlIB.FieldByName('retiva').AsString)) > 0) then paciente.Gravadoiva := rsqlIB.FieldByName('retiva').AsString;
+          subtotal := subtotal + setValorAnalisis(rsqlIB.FieldByName('codos').AsString, rsqlIB.FieldByName('codanalisis').AsString, 0, 0, 0, 0);  // Valor de cada analisis
+
+          totivaol[1] := totivaol[1] + rsqlIB.FieldByName('monto').AsFloat;
+          totivaol[2] := totivaol[2] + rsqlIB.FieldByName('iva').AsFloat;
+          totivaol[3] := totivaol[3] + rsqlIB.FieldByName('exento').AsFloat;
+        end;
+
+        codosanter  := rsqlIB.FieldByName('codos').AsString;
+        idprofanter := rsqlIB.FieldByName('idprof').AsString;
+        ordenanter  := rsqlIB.FieldByName('orden').AsString;
+      end;
+      rsqlIB.Next;
+    end;
+
+    LineaObraSocialIvaRet(xperiodo, salida, xinf_com);
+
+    if totales[1] + totales[2] > 0 then SubtotalObraSocialResumenProf('Subtotal:', salida);    // Subtotales Obra Social
+    informe_ivaret := False;
+
+    rsqlIB.Close; rsqlIB.Free;
+  end;
+
+  facturacion.DesconectarTotalesProf;
+
+  if (exporta_web) and (salida = 'T') then begin
+    list.FinalizarExportacion;
+    list.exportar_rep := false;
+    {
+    list.FinalizarExportacion;
+    list.exportar_rep := false;
+    CopyFile(PChar(dbs.DirSistema + '\list.txt'), PChar(dbs.DirSistema + '\export_reportes\web_totalesri\' + copy(xperiodo, 1, 2) + copy(xperiodo, 4, 6) + '_' + idprofanter + '_REIN' + '.txt'), false);
+    }
+  end else begin
+    if salida <> 'N' then FinalizarInforme(salida);
+    //list.FinList;
+  end;
+
+  if salida = 'N' then list.m := 0;
+
+  exporta_web := false;
+
 end;
 
 procedure TTFacturacionCCB.LineaObraSocialIvaRet(xperiodo: String; salida: char; xinf_com: Boolean);
@@ -5080,6 +9413,9 @@ begin
   if Length(Trim(obsocial.codosdif)) = 0 then GuardarTotalProfIVA(xperiodo, idprofanter, codosanter, StrToFloat(utiles.FormatearNumero(FloatToStr(((ivaret + ivaret9984 + ivaretcaran) * (obsocial.retencioniva * 0.01))))) + StrToFloat(utiles.FormatearNumero(FloatToStr((ivaexento + ivaexe9984 + ivaexecaran)))) + StrToFloat(utiles.FormatearNumero(FloatToStr((ivaret + ivaret9984 + ivaretcaran)))), totiva[1] + totiva[2]);
   if Length(Trim(obsocial.codosdif)) > 0 then GuardarTotalProfIVA(xperiodo, idprofanter, obsocial.codosdif, StrToFloat(utiles.FormatearNumero(FloatToStr(((ivaret + ivaret9984 + ivaretcaran) * (obsocial.retencioniva * 0.01))))) + StrToFloat(utiles.FormatearNumero(FloatToStr((ivaexento + ivaexe9984 + ivaexecaran)))) + StrToFloat(utiles.FormatearNumero(FloatToStr((ivaret + ivaret9984 + ivaretcaran)))), totiva[1] + totiva[2]);
 
+  if (exporta_web) and (idprofanter <> '') then GuardarTotalProfIVAExport(xperiodo, idprofanter, codosanter, totivaol[1], totivaol[2], totivaol[3], totivaol[2] + totivaol[3], cantidad, totprestaciones);
+  //utiles.msgError(idprofanter + ' ' + floattostr(totiva[2]));
+
   totales[1] := totales[1] + cantidad;
   totales[2] := totales[2] + totprestaciones;
   totales[3] := totales[3] + totiva[1];
@@ -5094,6 +9430,8 @@ begin
 
   cantidad := 0; totprestaciones := 0; totUB := 0; totUG := 0; canUB := 0; canUG := 0; caran := 0; subtotal := 0; tot9984 := 0; ivaret := 0; ivaret9984 := 0; ivaretcaran := 0; ivaexento := 0; ivaexe9984 := 0; ivaexecaran := 0;
   totiva[1] := 0; totiva[2] := 0; totiva[3] := 0; _caran := 0;
+  totivaol[1] := 0; totivaol[2] := 0; totivaol[3] := 0;
+
 end;
 
 procedure TTFacturacionCCB.titulo7(xperiodo, xtitulo: String);
@@ -5216,121 +9554,403 @@ end;
 
 { ----------------------------------------------------------------------------- }
 
-procedure TTFacturacionCCB.PrepararRegistrosTransferenciaFinal;
+procedure TTFacturacionCCB.ReiniciarProcesamientoIndividual;
+begin
+  {if (ibase <> nil) then begin
+    ibase.Desconectar;
+    ibase := nil;
+  end;}
+  if (ffirebird <> nil) then begin
+    if (pos('FACTLABWORK.GDB', ffirebird.IBDatabase.DatabaseName) = 0) then begin
+      ffirebird.Desconectar;
+      ffirebird := nil;
+      InstanciarTablas('S');
+    end;
+  end;
+  __c := '';
+end;
+
+
+procedure TTFacturacionCCB.PrepararRegistrosTransferenciaFinalTodos(xperiodo: string);
 // Objetivo...: Iniciar las Estructuras de Información antes de la Integración Final
 Begin
-  datosdb.tranSQL(DBCentral, 'DELETE FROM cabfact');
-  datosdb.tranSQL(DBCentral, 'DELETE FROM detfact');
-  datosdb.tranSQL(DBCentral, 'DELETE FROM idordenes');
+  if (interbase = 'N') then begin
+    datosdb.tranSQL(DBCentral, 'DELETE FROM cabfact');
+    datosdb.tranSQL(DBCentral, 'DELETE FROM detfact');
+    datosdb.tranSQL(DBCentral, 'DELETE FROM idordenes');
+  end;
+  {if (tibase) then begin
+    if (ibase = nil) then begin
+      ibase := TTFirebird.Create;
+      firebird.getModulo('facturacion');
+      ibase.Conectar(firebird.Host + 'FACTLABCENT.GDB', firebird.Usuario , firebird.Password);
+      cabexptIB := ibase.InstanciarTabla('cabfact');
+      detexptIB := ibase.InstanciarTabla('detfact');
+      idexptIB  := ibase.InstanciarTabla('idordenes');
+
+      // 16/04/2014
+      //if (ffirebird <> nil) then ffirebird.Desconectar;
+
+      //ffirebird := Nil;
+    end;
+  end;
+
+  if (ibase <> nil) then begin
+      ibase.TransacSQL('DELETE FROM cabfact WHERE periodo = ' + '''' + xperiodo + '''');
+      ibase.TransacSQL('DELETE FROM detfact WHERE periodo = ' + '''' + xperiodo + '''');
+      ibase.TransacSQL('DELETE FROM idordenes WHERE periodo = ' + '''' + xperiodo + '''');
+  end;}
+
+  if (interbase = 'S') then begin
+    lote.Clear;
+    lote.Add('DELETE FROM cabfact WHERE periodo = ' + '''' + xperiodo + '''');
+    lote.Add('DELETE FROM detfact WHERE periodo = ' + '''' + xperiodo + '''');
+    lote.Add('DELETE FROM idordenes WHERE periodo = ' + '''' + xperiodo + '''');
+  end;
+
 end;
 
 procedure TTFacturacionCCB.PrepararRegistrosTransferenciaFinal(xperiodo, xidprof: String);
-// Objetivo...: Iniciar las Estructuras de Información antes de la Integración Final
-Begin
-end;
-
-procedure TTFacturacionCCB.PrepararRegistrosTransferenciaFinal(xidprof: String);
 // Objetivo...: Iniciar las Estructuras de Información antes de la Integración Final,
 //              para un profesional
 Begin
-  datosdb.tranSQL(DBCentral, 'DELETE FROM cabfact where idprof = ' + '"' + xidprof + '"');
-  datosdb.tranSQL(DBCentral, 'DELETE FROM detfact where idprof = ' + '"' + xidprof + '"');
-  datosdb.tranSQL(DBCentral, 'DELETE FROM idordenes where idprof = ' + '"' + xidprof + '"');
+  if (interbase = 'N') then begin
+    datosdb.tranSQL(DBCentral, 'DELETE FROM cabfact where idprof = ' + '"' + xidprof + '"');
+    datosdb.tranSQL(DBCentral, 'DELETE FROM detfact where idprof = ' + '"' + xidprof + '"');
+    datosdb.tranSQL(DBCentral, 'DELETE FROM idordenes where idprof = ' + '"' + xidprof + '"');
+  end;
+  {if (tibase) then begin // 16/04/2014
+    if (ibase = nil) then begin
+      ibase := TTFirebird.Create;
+      firebird.getModulo('facturacion');
+      ibase.Conectar(firebird.Host + 'FACTLABCENT.GDB', firebird.Usuario , firebird.Password);
+
+      {cabexptIB := ibase.InstanciarTabla('cabfact');
+      detexptIB := ibase.InstanciarTabla('detfact');
+      idexptIB  := ibase.InstanciarTabla('idordenes');}
+      {if (ffirebird <> nil) then ffirebird.Desconectar;
+
+      ffirebird := Nil;
+    end;
+
+    ibase.transacSQL('DELETE FROM cabfact where idprof = ' + '"' + xidprof + '"' + ' AND periodo = ' + '''' + xperiodo + '''');
+    ibase.transacSQL('DELETE FROM detfact where idprof = ' + '"' + xidprof + '"' + ' AND periodo = ' + '''' + xperiodo + '''');
+    ibase.transacSQL('DELETE FROM idordenes where idprof = ' + '"' + xidprof + '"' + ' AND periodo = ' + '''' + xperiodo + '''');}
+
+  if (interbase = 'S') then begin
+    lote.Add('DELETE FROM cabfact where idprof = ' + '"' + xidprof + '"' + ' AND periodo = ' + '''' + xperiodo + '''');
+    lote.Add('DELETE FROM detfact where idprof = ' + '"' + xidprof + '"' + ' AND periodo = ' + '''' + xperiodo + '''');
+    lote.Add('DELETE FROM idordenes where idprof = ' + '"' + xidprof + '"' + ' AND periodo = ' + '''' + xperiodo + '''');
+  end;
+
+end;
+
+procedure TTFacturacionCCB.ReiniciarProcesamientoCentral;
+begin
+  //if (ibase <> nil) then ibase.Desconectar;
+  proceso_central := false;
 end;
 
 procedure TTFacturacionCCB.TransferenciaFinal(xperiodo, xidprof, xprofesional: String);
 // Objetivo...: Transferir datos Importados/Locales a la Base de Datos Final
 var
-  cabexpt, detexpt, idexpt: TTable; dir, codosant: String;
+  cabexpt, detexpt, idexpt: TTable; dir, codosant, _dir, osiva: String;
+  monto1, monto2, monto3, monto4: double;
 begin
-  if DireccionarLaboratorio(xperiodo, xidprof) then Begin // Activamos el directorio a Exportar
-    dir := directorio;
-    // Direccionamos la base de datos central
-    ProcesarDatosCentrales(xperiodo);
-    // Instanciamos las tablas en su directorio original
-    cabexpt := datosdb.openDB('cabfact', 'Periodo;Idprof;Codos', '', dir);
-    idexpt  := datosdb.openDB('idordenes', 'Periodo;Idprof', '', dir);
-    detexpt := datosdb.openDB('detfact', 'Periodo;Idprof;Codos;Items;Orden', '', dir);
-    // Copiamos los datos a la base de datos central
-    cabexpt.Open;
-    while not cabexpt.EOF do Begin
-      if Buscar(cabexpt.FieldByName('periodo').AsString, cabexpt.FieldByName('idprof').AsString, cabexpt.FieldByName('codos').AsString) then cabfact.Edit else cabfact.Append;
-      cabfact.FieldByName('periodo').AsString := cabexpt.FieldByName('periodo').AsString;
-      cabfact.FieldByName('idprof').AsString  := cabexpt.FieldByName('idprof').AsString;
-      cabfact.FieldByName('codos').AsString   := cabexpt.FieldByName('codos').AsString;
-      cabfact.FieldByName('fecha').AsString   := cabexpt.FieldByName('fecha').AsString;
-      try
-        cabfact.Post
-       except
-        cabfact.Cancel
+  if (interbase = 'N') then begin
+    if DireccionarLaboratorio(xperiodo, xidprof) then Begin // Activamos el directorio a Exportar
+      dir := directorio;
+      // Direccionamos la base de datos central
+      ProcesarDatosCentrales(xperiodo);
+      // Instanciamos las tablas en su directorio original
+      cabexpt := datosdb.openDB('cabfact', 'Periodo;Idprof;Codos', '', dir);
+      idexpt  := datosdb.openDB('idordenes', 'Periodo;Idprof', '', dir);
+      detexpt := datosdb.openDB('detfact', 'Periodo;Idprof;Codos;Items;Orden', '', dir);
+      // Copiamos los datos a la base de datos central
+      cabexpt.Open;
+      while not cabexpt.EOF do Begin
+        if Buscar(cabexpt.FieldByName('periodo').AsString, cabexpt.FieldByName('idprof').AsString, cabexpt.FieldByName('codos').AsString) then cabfact.Edit else cabfact.Append;
+        cabfact.FieldByName('periodo').AsString := cabexpt.FieldByName('periodo').AsString;
+        cabfact.FieldByName('idprof').AsString  := cabexpt.FieldByName('idprof').AsString;
+        cabfact.FieldByName('codos').AsString   := cabexpt.FieldByName('codos').AsString;
+        cabfact.FieldByName('fecha').AsString   := cabexpt.FieldByName('fecha').AsString;
+        try
+          cabfact.Post
+         except
+          cabfact.Cancel
+        end;
+        cabexpt.Next;
       end;
-      cabexpt.Next;
-    end;
-    cabexpt.Close;
+      cabexpt.Close;
 
-    profesional.getDatos(cabfact.FieldByName('idprof').AsString);
+      profesional.getDatos(cabfact.FieldByName('idprof').AsString);
+      profesional.SincronizarListaRetIVA(xperiodo, xidprof);
 
-    datosdb.refrescar(cabfact);
+      datosdb.refrescar(cabfact);
 
-    datosdb.tranSQL(directorio, 'DELETE FROM detfact WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"');
-    detexpt.Open;
-    while not detexpt.EOF do Begin
-      detfact.Append;
-      detfact.FieldByName('periodo').AsString     := detexpt.FieldByName('periodo').AsString;
-      detfact.FieldByName('idprof').AsString      := detexpt.FieldByName('idprof').AsString;
-      detfact.FieldByName('codos').AsString       := detexpt.FieldByName('codos').AsString;
-      detfact.FieldByName('items').AsString       := detexpt.FieldByName('items').AsString;
-      detfact.FieldByName('orden').AsString       := detexpt.FieldByName('orden').AsString;
-      detfact.FieldByName('codpac').AsString      := detexpt.FieldByName('codpac').AsString;
-      detfact.FieldByName('nombre').AsString      := detexpt.FieldByName('nombre').AsString;
-      detfact.FieldByName('codanalisis').AsString := detexpt.FieldByName('codanalisis').AsString;
-      detfact.FieldByName('profiva').AsString     := profesional.Retieneiva;
-      if detfact.FieldByName('codos').AsString <> codosant then obsocial.getDatos(detfact.FieldByName('codos').AsString);
-      if obsocial.retencioniva > 0 then detfact.FieldByName('osiva').AsString := 'S' else detfact.FieldByName('osiva').AsString := 'N';
-      try
-        detfact.Post
-       except
-        detfact.Cancel
+      datosdb.tranSQL(directorio, 'DELETE FROM detfact WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"');
+      detexpt.Open;
+      while not detexpt.EOF do Begin
+        detfact.Append;
+        detfact.FieldByName('periodo').AsString     := detexpt.FieldByName('periodo').AsString;
+        detfact.FieldByName('idprof').AsString      := detexpt.FieldByName('idprof').AsString;
+        detfact.FieldByName('codos').AsString       := detexpt.FieldByName('codos').AsString;
+        detfact.FieldByName('items').AsString       := detexpt.FieldByName('items').AsString;
+        detfact.FieldByName('orden').AsString       := detexpt.FieldByName('orden').AsString;
+        detfact.FieldByName('codpac').AsString      := detexpt.FieldByName('codpac').AsString;
+        detfact.FieldByName('nombre').AsString      := detexpt.FieldByName('nombre').AsString;
+        detfact.FieldByName('codanalisis').AsString := detexpt.FieldByName('codanalisis').AsString;
+        detfact.FieldByName('profiva').AsString     := profesional.Retieneiva;
+        detfact.FieldByName('ref1').AsString        := detexpt.FieldByName('ref1').AsString;
+        detfact.FieldByName('retiva').AsString      := detexpt.FieldByName('retiva').AsString;
+        if detfact.FieldByName('codos').AsString <> codosant then obsocial.getDatos(detfact.FieldByName('codos').AsString);
+        if obsocial.retencioniva > 0 then detfact.FieldByName('osiva').AsString := 'S' else detfact.FieldByName('osiva').AsString := 'N';
+        try
+          detfact.Post
+         except
+          detfact.Cancel
+        end;
+        codosant := detfact.FieldByName('codos').AsString;
+        detexpt.Next;
       end;
-      codosant := detfact.FieldByName('codos').AsString;
-      detexpt.Next;
-    end;
-    detexpt.Close;
-    datosdb.refrescar(detfact);
+      detexpt.Close;
+      datosdb.refrescar(detfact);
 
-    idexpt.Open;
-    while not idexpt.EOF do Begin
-      if datosdb.Buscar(idordenes, 'periodo', 'idprof', idexpt.FieldByName('periodo').AsString, idexpt.FieldByName('idprof').AsString) then idordenes.Edit else idordenes.Append;
-      idordenes.FieldByName('periodo').AsString := idexpt.FieldByName('periodo').AsString;
-      idordenes.FieldByName('idprof').AsString  := idexpt.FieldByName('idprof').AsString;
-      idordenes.FieldByName('orden').AsString   := idexpt.FieldByName('orden').AsString;
-      try
-        idordenes.Post
-       except
-        idordenes.Cancel
+      idexpt.Open;
+      while not idexpt.EOF do Begin
+        if datosdb.Buscar(idordenes, 'periodo', 'idprof', idexpt.FieldByName('periodo').AsString, idexpt.FieldByName('idprof').AsString) then idordenes.Edit else idordenes.Append;
+        idordenes.FieldByName('periodo').AsString := idexpt.FieldByName('periodo').AsString;
+        idordenes.FieldByName('idprof').AsString  := idexpt.FieldByName('idprof').AsString;
+        idordenes.FieldByName('orden').AsString   := idexpt.FieldByName('orden').AsString;
+        try
+          idordenes.Post
+         except
+          idordenes.Cancel
+        end;
+        idexpt.Next;
       end;
-      idexpt.Next;
-    end;
-    idexpt.Close;
-    datosdb.refrescar(idordenes);
+      idexpt.Close;
+      datosdb.refrescar(idordenes);
 
-    cabexpt.Free; detexpt.Free; idexpt.Free;
-    cabexpt := Nil; detexpt := Nil; idexpt := Nil;
+      cabexpt.Free; detexpt.Free; idexpt.Free;
+      cabexpt := Nil; detexpt := Nil; idexpt := Nil;
 
-    paciente.TransferenciaFinal(directorio);
+      paciente.TransferenciaFinal(directorio);
 
-    // Guardamos la referencia
-    if datosdb.Buscar(datosimport, 'periodo', 'idprof', xperiodo, xidprof) then Begin
-      datosimport.Edit;
-      datosimport.FieldByName('transferencia').AsString := FormatDateTime('dd/mm/yy hh:mm:ss', Now);
-      try
-        datosimport.Post
-       except
-        datosimport.Cancel
+      // Guardamos la referencia
+      if datosdb.Buscar(datosimport, 'periodo', 'idprof', xperiodo, xidprof) then Begin
+        datosimport.Edit;
+        datosimport.FieldByName('transferencia').AsString := FormatDateTime('dd/mm/yy hh:mm:ss', Now);
+        try
+          datosimport.Post
+         except
+          datosimport.Cancel
+        end;
       end;
-    end;
-  end else
-    if Length(Trim(xprofesional)) > 0 then utiles.msgError('El Laboratorio ' + xprofesional + ',' + CHR(13) + 'No tiene Operaciones Registradas ...!');
+    end else
+      if Length(Trim(xprofesional)) > 0 then utiles.msgError('El Laboratorio ' + xprofesional + ',' + CHR(13) + 'No tiene Operaciones Registradas ...!');
+  End;
+
+  if (interbase = 'S') then begin
+      //utiles.msgError('punto0');  16/04/2014
+      //if (ffirebird = Nil) then InstanciarTablas('S');
+
+      //if not (cabexptIB.Active) then cabexptIB.Open;
+      //if not (cabfactIB.Active) then cabfactIB.Open;
+      //ffirebird.Filtrar(cabfactIB, 'periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''');
+
+      rsqlIB := ffirebird.getTransacSQL('select * from cabfact where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''');
+      rsqlIB.Open; rsqlIB.First;
+      //utiles.msgError(inttostr(rsqlIB.recordcount));
+
+      //////lote.Clear;
+      ///
+      ///
+         //utiles.msgError('punto1');
+      while not rsqlIB.EOF do Begin
+        {if ibase.Buscar(cabexptIB, 'periodo;idprof;codos', rsqlIB.FieldByName('periodo').AsString, rsqlIB.FieldByName('idprof').AsString, rsqlIB.FieldByName('codos').AsString) then cabexptIB.Edit else cabexptIB.Append;
+        cabexptIB.FieldByName('periodo').AsString := rsqlIB.FieldByName('periodo').AsString;
+        cabexptIB.FieldByName('idprof').AsString  := rsqlIB.FieldByName('idprof').AsString;
+        cabexptIB.FieldByName('codos').AsString   := rsqlIB.FieldByName('codos').AsString;
+        cabexptIB.FieldByName('fecha').AsString   := rsqlIB.FieldByName('fecha').AsString;
+        try
+          cabexptIB.Post
+         except
+          cabexptIB.Cancel
+        end;}
+
+        lote.Add('insert into cabfact (periodo, idprof, codos, fecha) values (' + // 01/03/2014
+          '''' + rsqlIB.FieldByName('periodo').AsString + '''' + ', ' +
+          '''' + rsqlIB.FieldByName('idprof').AsString + '''' + ', ' +
+          '''' + rsqlIB.FieldByName('codos').AsString + '''' + ', ' +
+          '''' + rsqlIB.FieldByName('fecha').AsString + '''' + ')' );
+
+        rsqlIB.Next;
+      end;
+
+      //ibase.TransacSQLBatch(lote);
+      //lote.Clear;
+
+      //ibase.RegistrarTransaccion(cabexptIB);
+      //firebird.closeDB(cabexptIB);
+      rsqlIB.Close; rsqlIB.Free;
+
+      {cabfactIB.First;
+      while not cabfactIB.EOF do Begin
+        if ibase.Buscar(cabexptIB, 'periodo;idprof;codos', cabfactIB.FieldByName('periodo').AsString, cabfactIB.FieldByName('idprof').AsString, cabfactIB.FieldByName('codos').AsString) then cabexptIB.Edit else cabexptIB.Append;
+        cabexptIB.FieldByName('periodo').AsString := cabfactIB.FieldByName('periodo').AsString;
+        cabexptIB.FieldByName('idprof').AsString  := cabfactIB.FieldByName('idprof').AsString;
+        cabexptIB.FieldByName('codos').AsString   := cabfactIB.FieldByName('codos').AsString;
+        cabexptIB.FieldByName('fecha').AsString   := cabfactIB.FieldByName('fecha').AsString;
+        try
+          cabexptIB.Post
+         except
+          cabexptIB.Cancel
+        end;
+        cabfactIB.Next;
+      end;
+      ibase.RegistrarTransaccion(cabexptIB);
+      firebird.closeDB(cabexptIB);
+      ffirebird.QuitarFiltro(cabfactIB);}
+
+      profesional.getDatos(xidprof);
+      profesional.SincronizarListaRetIVA(xperiodo, xidprof);
+         //utiles.msgError('punto2');
+
+      //ibase.TransacSQL('DELETE FROM detfact WHERE periodo = ' + '"' + xperiodo + '"' + ' AND idprof = ' + '"' + xidprof + '"');
+      //if not (detexptIB.Active) then detexptIB.Open;
+      //detexptIB.IndexFieldNames := 'periodo;idprof;codos;items;orden';
+      //if not (detfactIB.Active) then detfactIB.Open;
+
+      //ffirebird.Filtrar(detfactIB, 'periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''');
+      //detfactIB.First;
+
+      // 28/04/2014    firebird.getTransacSQL('delete from detfact where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''');
+      lote.Add('delete from detfact where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''');
+      rsqlIB := ffirebird.getTransacSQL('select * from detfact where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''');
+      rsqlIB.Open; rsqlIB.First;
+
+      while not rsqlIB.EOF do Begin
+        //if ibase.Buscar(detexptIB, 'periodo;idprof;codos;items;orden', rsqlIB.FieldByName('periodo').AsString, rsqlIB.FieldByName('idprof').AsString, rsqlIB.FieldByName('codos').AsString, rsqlIB.FieldByName('items').AsString, rsqlIB.FieldByName('orden').AsString) then detexptIB.Edit else detexptIB.Append;
+        if rsqlIB.FieldByName('codos').AsString <> codosant then obsocial.getDatos(rsqlIB.FieldByName('codos').AsString);
+        if obsocial.retencioniva > 0 then osiva := 'S' else osiva := 'N';
+
+        if (rsqlIB.FieldByName('monto').AsString = '') then monto1 := 0 else monto1 := rsqlIB.FieldByName('monto').AsFloat;
+        if (rsqlIB.FieldByName('iva').AsString = '') then monto2 := 0 else monto2 := rsqlIB.FieldByName('iva').AsFloat;
+        if (rsqlIB.FieldByName('exento').AsString = '') then monto3 := 0 else monto3 := rsqlIB.FieldByName('exento').AsFloat;
+        if (rsqlIB.FieldByName('coseguro').AsString = '') then monto4 := 0 else monto4 := rsqlIB.FieldByName('coseguro').AsFloat;
+
+
+        lote.Add('insert into detfact (periodo, idprof, codos, items, orden, codpac, nombre, codanalisis, ref1, retiva, profiva, monto, iva, exento, coseguro, osiva) values (' +
+          '''' + rsqlIB.FieldByName('periodo').AsString + '''' + ',' +
+          '''' + rsqlIB.FieldByName('idprof').AsString + '''' + ',' +
+          '''' + rsqlIB.FieldByName('codos').AsString + '''' + ',' +
+          '''' + rsqlIB.FieldByName('items').AsString + '''' + ',' +
+          '''' + rsqlIB.FieldByName('orden').AsString + '''' + ',' +
+          '''' + rsqlIB.FieldByName('codpac').AsString + '''' + ',' +
+          QuotedStr(rsqlIB.FieldByName('nombre').AsString) + ',' +
+          '''' + rsqlIB.FieldByName('codanalisis').AsString + '''' + ',' +
+          '''' + rsqlIB.FieldByName('ref1').AsString + ''''  + ',' +
+          '''' + rsqlIB.FieldByName('retiva').AsString + ''''  + ',' +
+          '''' + profesional.Retieneiva + ''''  + ',' +
+          utiles.StringRemplazarCaracteres(FloatToStr(monto1), ',', '.') + ',' +
+          utiles.StringRemplazarCaracteres(FloatToStr(monto2), ',', '.') + ',' +
+          utiles.StringRemplazarCaracteres(FloatToStr(monto3), ',', '.') + ',' +
+          utiles.StringRemplazarCaracteres(FloatToStr(monto4), ',', '.') + ',' +
+          '''' + osiva + '''' + ')' );
+
+        {ibase.TransacSQL('insert into detfact (periodo, idprof, codos, items, orden, codpac, nombre, codanalisis, ref1, retiva, profiva, osiva) values (' +
+          '''' + rsqlIB.FieldByName('periodo').AsString + '''' + ',' +
+          '''' + rsqlIB.FieldByName('idprof').AsString + '''' + ',' +
+          '''' + rsqlIB.FieldByName('codos').AsString + '''' + ',' +
+          '''' + rsqlIB.FieldByName('items').AsString + '''' + ',' +
+          '''' + rsqlIB.FieldByName('orden').AsString + '''' + ',' +
+          '''' + rsqlIB.FieldByName('codpac').AsString + '''' + ',' +
+          '''' + rsqlIB.FieldByName('nombre').AsString + '''' + ',' +
+          '''' + rsqlIB.FieldByName('codanalisis').AsString + '''' + ',' +
+          '''' + rsqlIB.FieldByName('ref1').AsString + ''''  + ',' +
+          '''' + rsqlIB.FieldByName('retiva').AsString + ''''  + ',' +
+          '''' + profesional.Retieneiva + ''''  + ',' +
+          '''' + osiva + '''' + ')' ); }
+
+
+
+
+        {detexptIB.Append;
+        detexptIB.FieldByName('periodo').AsString     := rsqlIB.FieldByName('periodo').AsString;
+        detexptIB.FieldByName('idprof').AsString      := rsqlIB.FieldByName('idprof').AsString;
+        detexptIB.FieldByName('codos').AsString       := rsqlIB.FieldByName('codos').AsString;
+        detexptIB.FieldByName('items').AsString       := rsqlIB.FieldByName('items').AsString;
+        detexptIB.FieldByName('orden').AsString       := rsqlIB.FieldByName('orden').AsString;
+        detexptIB.FieldByName('codpac').AsString      := rsqlIB.FieldByName('codpac').AsString;
+        detexptIB.FieldByName('nombre').AsString      := rsqlIB.FieldByName('nombre').AsString;
+        detexptIB.FieldByName('codanalisis').AsString := rsqlIB.FieldByName('codanalisis').AsString;
+        detexptIB.FieldByName('ref1').AsString        := rsqlIB.FieldByName('ref1').AsString;
+        detexptIB.FieldByName('profiva').AsString     := profesional.Retieneiva;
+        detexptIB.FieldByName('retiva').AsString      := rsqlIB.FieldByName('retiva').AsString;
+
+        try
+          detexptIB.Post
+         except
+          detexptIB.Cancel
+        end;}
+
+        codosant := rsqlIB.FieldByName('codos').AsString;
+        rsqlIB.Next;
+      end;
+
+      {ibase.TransacSQLBatch(lote);
+      lote.Clear; }
+
+      //ibase.RegistrarTransaccion(detexptIB);
+      //firebird.closeDB(detexptIB);
+      //ffirebird.QuitarFiltro(detfactIB);
+      rsqlIB.close; rsqlIB.Free;
+
+      //if not (idexptIB.Active) then idexptIB.Open;
+      //if not (idordenesIB.Active) then idordenesIB.Open;
+      //ffirebird.Filtrar(idordenesIB, 'periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''');
+      //idordenesIB.Open;
+         //utiles.msgError('punto3');
+      rsqlIB := ffirebird.getTransacSQL('select * from idordenes where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''');
+      rsqlIB.Open; rsqlIB.First;
+
+      while not rsqlIB.EOF do Begin
+        lote.Add('insert into idordenes (periodo, idprof, orden) values (' +
+          '''' + rsqlIB.FieldByName('periodo').AsString + '''' + ',' +
+          '''' + rsqlIB.FieldByName('idprof').AsString + '''' + ',' +
+          '''' + rsqlIB.FieldByName('orden').AsString + '''' + ')' );
+
+        {if ibase.Buscar(idexptIB, 'periodo;idprof', rsqlIB.FieldByName('periodo').AsString, rsqlIB.FieldByName('idprof').AsString) then idexptIB.Edit else idexptIB.Append;
+        idexptIB.FieldByName('periodo').AsString := rsqlIB.FieldByName('periodo').AsString;
+        idexptIB.FieldByName('idprof').AsString  := rsqlIB.FieldByName('idprof').AsString;
+        idexptIB.FieldByName('orden').AsString   := rsqlIB.FieldByName('orden').AsString;
+        try
+          idexptIB.Post
+         except
+          idexptIB.Cancel
+        end;}
+        rsqlIB.Next;
+      end;
+      //ibase.RegistrarTransaccion(idexptIB);
+      //firebird.closeDB(idexptIB);
+      rsqlIB.Close; rsqlIB.free;
+      //ffirebird.QuitarFiltro(idordenesIB);
+
+      //ibase.TransacSQLBatch(lote);  // 01/03/2014 (guardamos todo en un solo viaje a la DB)
+
+      // Guardamos la referencia
+      if datosdb.Buscar(datosimport, 'periodo', 'idprof', xperiodo, xidprof) then Begin
+        datosimport.Edit;
+        datosimport.FieldByName('transferencia').AsString := FormatDateTime('dd/mm/yy hh:mm:ss', Now);
+        try
+          datosimport.Post
+         except
+          datosimport.Cancel
+        end;
+      end;
+
+  end;
 end;
 
 procedure TTFacturacionCCB.TransferenciaFinalLaboratorios(xperiodo: String);
@@ -5342,6 +9962,29 @@ begin
   l := setDatosImportados(xperiodo);    // Nomina de los Laboratorios con Operaciones
   for i := 1 to l.Count do TransferenciaFinal(xperiodo, l.Strings[i-1], '');
   l.Destroy;
+end;
+
+procedure TTFacturacionCCB.CerrarTransferenciaFinal;
+begin
+  if (interbase = 'S') then begin // 16/04/2014
+    ffirebird.Desconectar; ffirebird := nil;
+
+    ffirebird := TTFirebird.Create;
+    //firebird.getModulo('facturacion');
+    ffirebird.Conectar(firebird.Host + 'FACTLABCENT.GDB', firebird.Usuario , firebird.Password);
+    ffirebird.TransacSQLBatch(lote);
+    ffirebird.Desconectar;
+    lote.Clear;
+
+    {ibase := TTFirebird.Create;
+    firebird.getModulo('facturacion');
+    ibase.Conectar(firebird.Host + 'FACTLABCENT.GDB', firebird.Usuario , firebird.Password);
+    ibase.TransacSQLBatch(lote);
+    ibase.Desconectar;
+    lote.Clear;}
+    ffirebird := TTFirebird.Create;
+    ffirebird.Conectar(firebird.Host + 'FACTLABWORK.GDB', firebird.Usuario , firebird.Password);
+  end;
 end;
 
 // -----------------------------------------------------------------------------
@@ -5380,12 +10023,17 @@ Begin
 
   if not datosdb.verificarSiExisteCampo(detexpt, 'profiva') then Begin
     detexpt.Close;
-    datosdb.tranSQL(DBCentral, 'alter table detfact add Profiva char(1)');
+    datosdb.tranSQL(DBCentral, 'alter table detfact add Profiva char(7)');
     detexpt.Open;
   end;
   if not datosdb.verificarSiExisteCampo(detexpt, 'osiva') then Begin
     detexpt.Close;
     datosdb.tranSQL(DBCentral, 'alter table detfact add Osiva char(1)');
+    detexpt.Open;
+  end;
+  if not datosdb.verificarSiExisteCampo(detexpt, 'retiva') then Begin
+    detexpt.Close;
+    datosdb.tranSQL(DBCentral, 'alter table detfact add retiva char(1)');
     detexpt.Open;
   end;
 
@@ -5578,6 +10226,24 @@ begin
   Result := t;
 end;
 
+function TTFacturacionCCB.setTotalProfesionalFacturaElectronica(xperiodo, xidprof: String): TQuery;
+// Objetivo...: Devolver el total facturado para un Profesional
+begin
+  result := datosdb.tranSQL(totalesPROF.DatabaseName, 'select * from totalesPROF where idprof = ' + '''' + xidprof + '''' + 'and periodo = ' + '''' + xperiodo + '''');
+end;
+
+procedure TTFacturacionCCB.registrarFacturaElectronica(xperiodo, xidprof, xcodos, xtipo, xsucursal, xnumero: String);
+begin
+  if (datosdb.Buscar(totalesPROF, 'periodo', 'idprof', 'codos', xperiodo, xidprof, xcodos)) then begin
+    totalesprof.Edit;
+    totalesPROF.FieldByName('tipo').AsString := xtipo;
+    totalesPROF.FieldByName('sucursal').AsString := xsucursal;
+    totalesPROF.FieldByName('numero').AsString := xnumero;
+    totalesPROF.Post;
+    datosdb.refrescar(totalesPROF);
+  end;
+end;
+
 procedure TTFacturacionCCB.IniciarTotalFacturado(xperiodo: String);
 // Objetivo...: Inicializar los totales Facturados por Obra Social y por Profesional
 begin
@@ -5599,6 +10265,17 @@ begin
   rsql.Open;
   Result := rsql.Fields[0].AsFloat;
   rsql.Close; rsql.Free;
+end;
+
+function TTFacturacionCCB.setTotalFacturado(xperiodo, xcodos: String): Real;
+// Objetivo...: Obtener el Total Facturado por Todas las Obras Sociales
+var
+  l: TStringList;
+begin
+  l := TStringList.Create;
+  l.Add(xcodos);
+  ListarTotGralesObrasSociales(xperiodo, '', l, 'N');
+  Result := 0;
 end;
 
 function  TTFacturacionCCB.setItemsTotalFacturado(xperiodo: String): TQuery;
@@ -5792,24 +10469,6 @@ Begin
   Result := lub;
 end;
 
-{function  TTFacturacionCCB.setListaTotalFacturadoProfesionales(xperiodo, xidprof, xcodos: String): TStringList;
-// Objetivo...: Devolver un set con lo Facturado por cada Profesiona´l
-var
-  l: TStringList;
-Begin
-  l := TStringList.Create;
-  totalesPROF := datosdb.openDB('totalesPROF', '', '', DBConexion);
-  totalesPROF.Open;
-  testeartotalesprof;
-  datosdb.Filtrar(totalesPROF, 'periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' +  xidprof + '''' + ' and codos = ' + '''' + xcodos + '''');
-  while not totalesprof.Eof do Begin
-    l.Add(totalesPROF.FieldByName('periodo').AsString + totalesPROF.FieldByName('idprof').AsString + totalesPROF.FieldByName('codos').AsString + totalesPROF.FieldByName('monto').AsString);
-    totalesPROF.Next;
-  end;
-  totalesPROF.Close;
-  Result := l;
-end;}
-
 procedure TTFacturacionCCB.IniciarTotalProfesional(xperiodo: String);
 begin
   datosdb.tranSQL(DBConexion, 'DELETE FROM ' + totalesPROF.TableName + ' WHERE periodo = ' + '"' + xperiodo + '"' + ' AND tipoing = 1');
@@ -5833,6 +10492,9 @@ begin
       totalesPROF.FieldByName('Caran').AsFloat     := xCaran;
       totalesPROF.FieldByName('codfact').AsString  := profesional.Codfact;
       totalesPROF.FieldByName('tipoing').AsInteger := 1;
+      totalesPROF.FieldByName('gravado').AsFloat   := totiva[4];
+      totalesPROF.FieldByName('exento').AsFloat    := totiva[5];
+      totalesPROF.FieldByName('iva').AsFloat       := totiva[6];
       try
         totalesPROF.Post
        except
@@ -5848,7 +10510,7 @@ procedure TTFacturacionCCB.GuardarTotalProfIVA(xperiodo, xidprof, xcodos: String
 begin
   if ((Length(Trim(laboratorioactual)) = 0) and (xmonto <> 0)) or ((ExportarTotalesProfInscriptosIVA) and (obsocial.Retieneiva = 'S')) then Begin
     profesional.getDatos(xidprof);
-    if totalesPROF <> Nil then Begin  // Solo se exportan los montos si el procesamiento es general
+    if (totalesPROF <> Nil) or (totalesPROF = Nil) then Begin  // Solo se exportan los montos si el procesamiento es general
       if datosdb.Buscar(totalesPROF, 'Periodo', 'Idprof', 'Codos', xperiodo, idprofanter, codosanter) then totalesPROF.Edit else totalesPROF.Append;
       totalesPROF.FieldByName('periodo').AsString  := xperiodo;
       totalesPROF.FieldByName('idprof').AsString   := xidprof;
@@ -5858,6 +10520,9 @@ begin
       totalesPROF.FieldByName('neto').AsString     := utiles.FormatearNumero(FloatToStr(xneto));
       totalesPROF.FieldByName('codfact').AsString  := profesional.Codfact;
       totalesPROF.FieldByName('tipoing').AsInteger := 1;
+      totalesPROF.FieldByName('gravado').AsFloat   := totiva[4];
+      totalesPROF.FieldByName('exento').AsFloat    := totiva[5];
+      totalesPROF.FieldByName('iva').AsFloat       := totiva[6];
       try
         totalesPROF.Post
        except
@@ -5866,6 +10531,62 @@ begin
       datosdb.closeDB(totalesPROF); totalesPROF.Open;
     end;
   end;
+end;
+
+
+procedure TTFacturacionCCB.GuardarTotalProfesionalDistribucion(xperiodo, xidprof, xcodos: String; xmonto, xneto, xgrabado, xexento, xiva: Real);
+// Objetivo...: Guardamos los totales de cada Obra Profesional de aquellos que retienen I.V.A.
+begin
+    profesional.getDatos(xidprof);
+    if datosdb.Buscar(totalesPROF, 'Periodo', 'Idprof', 'Codos', xperiodo, xidprof, xcodos) then totalesPROF.Edit else totalesPROF.Append;
+    totalesPROF.FieldByName('periodo').AsString  := xperiodo;
+    totalesPROF.FieldByName('idprof').AsString   := xidprof;
+    totalesPROF.FieldByName('nombre').AsString   := profesional.nombre;
+    totalesPROF.FieldByName('codos').AsString    := xcodos;
+    totalesPROF.FieldByName('neto').AsFloat      := xneto;
+    totalesPROF.FieldByName('codfact').AsString  := profesional.Codfact;
+    totalesPROF.FieldByName('tipoing').AsInteger := 1;
+    totalesPROF.FieldByName('gravado').AsFloat   := xgrabado;
+    totalesPROF.FieldByName('exento').AsFloat    := xexento;
+    totalesPROF.FieldByName('iva').AsFloat       := xiva;
+    totalesPROF.FieldByName('monto').AsFloat     := xmonto;
+    try
+      totalesPROF.Post
+     except
+      totalesPROF.Cancel
+    end;
+    datosdb.closeDB(totalesPROF); totalesPROF.Open;
+end;
+
+procedure TTFacturacionCCB.GuardarTotalProfIVAExport(xperiodo, xidprof, xcodos: String; xneto, xiva, xexento, xtotal: Real; xcantidad, xprestaciones: integer);
+// Objetivo...: Guardamos los totales de cada Obra Profesional de aquellos que retienen I.V.A.
+begin
+  //utiles.msgError(xidprof + ' ' + xcodos + ' ' + xperiodo + ' ' + floattostr(xneto));
+
+  if (xcodos = '') then exit;
+
+  if (wtotalesPROF <> Nil) then Begin  // Solo se exportan los montos si el procesamiento es general
+      wtotalesPROF.Open;
+      if datosdb.Buscar(wtotalesPROF, 'Periodo', 'Idprof', 'Codos', xperiodo, xidprof, xcodos) then wtotalesPROF.Edit else wtotalesPROF.Append;
+      obsocial.getDatos(xcodos);
+      wtotalesPROF.FieldByName('periodo').AsString      := xperiodo;
+      wtotalesPROF.FieldByName('idprof').AsString       := xidprof;
+      wtotalesPROF.FieldByName('codos').AsString        := xcodos;
+      wtotalesPROF.FieldByName('obsocial').AsString     := obsocial.Nombre;
+      wtotalesPROF.FieldByName('grabado').AsString      := utiles.FormatearNumero(FloatToStr(xiva)); //utiles.FormatearNumero(FloatToStr(totiva[4]));
+      wtotalesPROF.FieldByName('neto').AsString         := utiles.FormatearNumero(FloatToStr(xneto));
+      wtotalesPROF.FieldByName('iva').AsString          := '0'; //utiles.FormatearNumero(FloatToStr(totiva[6]));
+      wtotalesPROF.FieldByName('exento').AsString       := utiles.FormatearNumero(FloatToStr(xexento)); //utiles.FormatearNumero(FloatToStr(totiva[5]));
+      wtotalesPROF.FieldByName('total').AsString        := utiles.FormatearNumero(FloatToStr(xtotal));
+      wtotalesPROF.FieldByName('ordenes').AsInteger     := xcantidad;
+      wtotalesPROF.FieldByName('prestaciones').AsInteger:= xprestaciones;
+      try
+        wtotalesPROF.Post
+       except
+        wtotalesPROF.Cancel
+      end;
+      datosdb.closeDB(wtotalesPROF);
+    end;
 end;
 
 function  TTFacturacionCCB.setDeterminacionesFacturadas(xperiodo: String): TQuery;
@@ -5894,20 +10615,38 @@ end;
 function  TTFacturacionCCB.setDeterminacionesFacturadasPorObraSocial(xperiodo, xcodos: String): TQuery;
 // Objetivo...: Devolver las Determinaciones Facturadas en el Periodo para una Determinada Obra Social
 Begin
-  //Result := datosdb.tranSQL(DBCentral, 'SELECT periodo, codos, codanalisis, idprof, codpac, orden FROM ' + detFact.TableName + ' WHERE periodo = ' + '"' + xperiodo + '"' + ' AND codos = ' + '"' + xcodos + '"' + ' ORDER BY codanalisis');
   Result := datosdb.tranSQL(DBCentral, 'SELECT periodo, codos, codanalisis, idprof, codpac, orden FROM ' + detFact.TableName + ' WHERE codos = ' + '"' + xcodos + '"' + ' ORDER BY codanalisis');
+end;
+
+function  TTFacturacionCCB.setDeterminacionesFacturadasPorObraSocialIB(xperiodo, xcodos: String): TIBQuery;
+// Objetivo...: Devolver las Determinaciones Facturadas en el Periodo para una Determinada Obra Social
+Begin
+  Result := ffirebird.getTransacSQL('SELECT periodo, codos, codanalisis, idprof, codpac, orden, ref1 FROM detfact WHERE codos = ' + '"' + xcodos + '"' + ' AND periodo = ' + '''' + xperiodo + '''' + ' ORDER BY codanalisis');
 end;
 
 function TTFacturacionCCB.setCantidadPacientesFacturadosObraSocial(xperiodo, xcodos: String): Integer;
 // Objetivo...: determinar la cantidad de pacientes facturados en la obra social
 var
   rs: TQuery;
+  ri: TIBQuery;
+  i: integer;
 Begin
-  //rs := datosdb.tranSQL(DBCentral, 'SELECT DISTINCT idprof, codpac FROM ' + detFact.TableName + ' WHERE periodo >= ' + '"' + xperiodo + '"' + ' AND codos = ' + '"' + xcodos + '"');
-  rs := datosdb.tranSQL(DBCentral, 'SELECT DISTINCT idprof, nombre FROM ' + detFact.TableName + ' WHERE periodo = ' + '"' + xperiodo + '"' + ' AND codos = ' + '"' + xcodos + '"');
-  rs.Open;
-  Result := rs.RecordCount;
-  rs.Close; rs.Free;
+  if (interbase = 'N') then begin
+    rs := datosdb.tranSQL(DBCentral, 'SELECT DISTINCT idprof, nombre FROM ' + detFact.TableName + ' WHERE periodo = ' + '"' + xperiodo + '"' + ' AND codos = ' + '"' + xcodos + '"');
+    rs.Open;
+    Result := rs.RecordCount;
+    rs.Close; rs.Free;
+  end;
+  if (interbase = 'S') then begin
+    ri := ffirebird.getTransacSQL('SELECT DISTINCT IDPROF, NOMBRE FROM detfact WHERE periodo = ' + '"' + xperiodo + '"' + ' AND codos = ' + '"' + xcodos + '"');
+    ri.Open; i := 0;
+    while not ri.Eof do begin
+      inc(i);
+      ri.Next;
+    end;
+    ri.Close; ri.Free;
+    result := i;
+  end;
 end;
 
 function  TTFacturacionCCB.setNominaProfesionalesQueFacturaronPorObraSocial(xperiodo, xcodos: String): TQuery;
@@ -6031,6 +10770,13 @@ Begin
   obsocial.RIEUB := xosrieub;
   obsocial.RIEUG := xosrieug;
   if nomeclatura.RIE <> '*' then Result := setValorAnalisis(xcodos, xcodanalisis, nomeclatura.ub, xosub, nomeclatura.gastos, xosug) else Result := setValorAnalisis(xcodos, xcodanalisis, nomeclatura.ub, xosrieub, nomeclatura.gastos, xosrieug);  // Valor de cada analisis
+end;
+
+function  TTFacturacionCCB.setImporteAnalisis(xcodos, xcodanalisis, xperiodo: String; xnbu: real): Real;
+// Objetivo...: Determinar el Costo de un Análisis directo por un modulo NBU
+Begin
+  nbu.getDatos(xcodanalisis);
+  result := nbu.unidad * xnbu;
 end;
 
 function  TTFacturacionCCB.setCodigoRecepcionToma: Boolean;
@@ -6281,7 +11027,7 @@ var
   l: TStringList;
 Begin
   l := TStringList.Create;
-  r := datosdb.tranSQL(DBConexion, 'SELECT * FROM totalesPROF ORDER BY Codos, Idprof');
+  r := datosdb.tranSQL(DBConexion, 'SELECT * FROM totalesPROF WHERE periodo = ' + '''' + xperiodo + '''' + ' ORDER BY Codos, Idprof');
   r.Open; idanter := ''; totales[2] := 0; totales[1] := 0; totales[3] := 0; totales[4] := 0; totales[5] := 0; totales[6] := 0; totales[7] := 0; totales[8] := 0;
   while not r.Eof do Begin
     if (utiles.verificarItemsLista(listSel, r.FieldByName('codos').AsString)) and (r.FieldByName('periodo').AsString = xperiodo) then Begin
@@ -6463,7 +11209,7 @@ Begin
       if not xincluirinscriptosiva then listar := True else Begin
         profesional.getDatos(r.FieldByName('idprof').AsString);
         obsocial.getDatos(r.FieldByName('codos').AsString);
-        profesional.SincronizarListaRetIVA(xperiodo, r.FieldByName('idprof').AsString); 
+        profesional.SincronizarListaRetIVA(xperiodo, r.FieldByName('idprof').AsString);
         if (profesional.Retieneiva = 'S') and (obsocial.Retieneiva = 'S') then listar := True;
       end;
 
@@ -6582,6 +11328,11 @@ end;
 procedure TTFacturacionCCB.FinalizarInforme(salida: Char);
 // Objetivo...: Obtener el monto a cobrar por un profesional de todas las obras sociales
 Begin
+
+  if (salida = 'P') or (salida = 'I') then begin
+    list.FinList;
+    exit;
+  end;
   if salida = 'X' then excel.Visulizar else Begin
     if not (ExportarDatos) and (salida <> 'N') then Begin
       if not datosListados then utiles.msgError(msgImpresion) else
@@ -6599,7 +11350,8 @@ Begin
   for i := 1 to elementos do Begin
     codigos[i] := ''; montos[i] := 0; totales[i] := 0; dirlab[i] := '';
   end;
-  totiva[1] := 0; totiva[2] := 0; _caran := 0;
+  totiva[1] := 0; totiva[2] := 0; _caran := 0; total_orden := 0;
+  totivaol[1] := 0; totivaol[2] := 0; totivaol[3] := 0; totivaol[4] := 0;
 end;
 
 function TTFacturacionCCB.setMontoACobrarProfesional(xperiodo, xidprof: String): Real;
@@ -6644,11 +11396,6 @@ Begin
   Result := ProcesamientoCentral;
 end;
 
-procedure TTFacturacionCCB.ReiniciarProcesamientoCentral;
-begin
-
-end;
-
 function TTFacturacionCCB.setNetoACobrarProfesional(xperiodo, xidprof: String): Real;
 // Objetivo...: Obtener el Neto a Cobrar por el Profesional
 Begin
@@ -6686,14 +11433,20 @@ var
 begin
   p := Copy(xperiodo, 1, 2) + Copy(xperiodo, 4, 4);
   directorio1 := dir_lab + '\' + p + '\' + xlaboratorio + '\';
-  if not DirectoryExists(directorio1) then PrepararDirectorio(xperiodo, xlaboratorio);
-  if Not FileExists(directorio1 + '\' + 'ordenes_audit.db') then Begin//utilesarchivos.CopiarArchivos(dbs.DirSistema + '\work\auditoria', '*.*', directorio1);
-    datosdb.tranSQL(directorio1, 'create table ordenes_audit (Periodo char(7), Items char(3), Idprof char(6), Nroauditoria char(10), Facturada char(1), primary key(Periodo, Items, Idprof))');
-    t := datosdb.openDB('ordenes_audit', '', '', directorio1);  // Cambios del 12/09/2007
-    t.Open; datosdb.closeDB(t); 
-    datosdb.tranSQL(directorio1, 'create index auditoria_nroauditoria on ordenes_audit(nroauditoria)');
+
+  if (interbase = 'N') then begin
+    if not DirectoryExists(directorio1) then PrepararDirectorio(xperiodo, xlaboratorio);
+    if Not FileExists(directorio1 + '\' + 'ordenes_audit.db') then Begin//utilesarchivos.CopiarArchivos(dbs.DirSistema + '\work\auditoria', '*.*', directorio1);
+      datosdb.tranSQL(directorio1, 'create table ordenes_audit (Periodo char(7), Items char(3), Idprof char(6), Nroauditoria char(10), Facturada char(1), primary key(Periodo, Items, Idprof))');
+      t := datosdb.openDB('ordenes_audit', '', '', directorio1);  // Cambios del 12/09/2007
+      t.Open; datosdb.closeDB(t);
+      datosdb.tranSQL(directorio1, 'create index auditoria_nroauditoria on ordenes_audit(nroauditoria)');
+    end;
+    if directorio1 <> diractual1 then SeleccionarLaboratorio_Auditoria(xperiodo, directorio1);  // Conectamos al directorio seleccionado
   end;
-  if directorio1 <> diractual1 then SeleccionarLaboratorio_Auditoria(xperiodo, directorio1);  // Conectamos al directorio seleccionado
+
+  if (interbase = 'S') then lote.Clear;
+
   Periodo := xperiodo;
 end;
 
@@ -6702,11 +11455,13 @@ function TTFacturacionCCB.verificarDirectorio_OrdenesAuditadas(xperiodo, xlabora
 var
   p: String;
 begin
-  p := Copy(xperiodo, 1, 2) + Copy(xperiodo, 4, 4);
-  directorio1 := dir_lab + '\' + p + '\' + xlaboratorio;
-  if not DirectoryExists(directorio1) then Result := False else Begin
-    SeleccionarLaboratorio_Auditoria(xperiodo, directorio1);
-    Result := True;
+  if (interbase = 'N') then begin
+    p := Copy(xperiodo, 1, 2) + Copy(xperiodo, 4, 4);
+    directorio1 := dir_lab + '\' + p + '\' + xlaboratorio;
+    if not DirectoryExists(directorio1) then Result := False else Begin
+      SeleccionarLaboratorio_Auditoria(xperiodo, directorio1);
+      Result := True;
+    end;
   end;
   profesional.getDatos(xlaboratorio);
   Periodo := xperiodo;
@@ -6716,32 +11471,72 @@ procedure TTFacturacionCCB.SeleccionarLaboratorio_Auditoria(xperiodo, xdirectori
 // Objetivo...: Cambiar directorio de trabajo
 begin
   directorio1 := xdirectorio;
-  InstanciarTablas_Auditoria(xdirectorio);
-  if ordenes_audit <> Nil then Begin
-    diractual1  := directorio1;
-    if not ordenes_audit.Active then ordenes_audit.Open;
+
+  if (interbase = 'N') then begin
+    InstanciarTablas_Auditoria(xdirectorio);
+    if ordenes_audit <> Nil then Begin
+      diractual1  := directorio1;
+      if not ordenes_audit.Active then ordenes_audit.Open;
+    end;
   end;
+
+  if (interbase = 'N') then InstanciarTablas(xdirectorio);
 end;
 
 
-procedure TTFacturacionCCB.RegistrarOrdenes(xperiodo, xitems, xidprof, xnroauditoria: String; xcantidad_items: Integer);
+procedure TTFacturacionCCB.RegistrarOrdenes(xperiodo, xitems, xidprof, xnroauditoria, xestado: String; xcantidad_items: Integer);
 // Objetivo...: Registrar Ordenes
 Begin
-  if datosdb.Buscar(ordenes_audit, 'periodo', 'items', 'idprof', xperiodo, xitems, xidprof) then ordenes_audit.Edit else ordenes_audit.Append;
-  ordenes_audit.FieldByName('periodo').AsString      := xperiodo;
-  ordenes_audit.FieldByName('idprof').AsString       := xidprof;
-  ordenes_audit.FieldByName('items').AsString        := xitems;
-  ordenes_audit.FieldByName('nroauditoria').AsString := utiles.sLlenarIzquierda(xnroauditoria, 10, '0');
-  try
-    ordenes_audit.Post
-   except
-    ordenes_audit.Cancel
+  if (interbase = 'N') then begin
+    if datosdb.Buscar(ordenes_audit, 'periodo', 'items', 'idprof', xperiodo, xitems, xidprof) then ordenes_audit.Edit else ordenes_audit.Append;
+    ordenes_audit.FieldByName('periodo').AsString      := xperiodo;
+    ordenes_audit.FieldByName('idprof').AsString       := xidprof;
+    ordenes_audit.FieldByName('items').AsString        := xitems;
+    ordenes_audit.FieldByName('nroauditoria').AsString := utiles.sLlenarIzquierda(xnroauditoria, 10, '0');
+    try
+      ordenes_audit.Post
+     except
+      ordenes_audit.Cancel
+    end;
+
+    if xitems = utiles.sLlenarIzquierda(IntToStr(xcantidad_items), 3, '0') then Begin
+      datosdb.tranSQL(diractual1, 'delete from ordenes_audit where periodo = ' + '"' + xperiodo + '"' + ' and idprof = ' + '"' + xidprof + '"' + ' and items > ' + '"' + utiles.sLlenarIzquierda(IntToStr(xcantidad_items), 3, '0') + '"');
+      datosdb.refrescar(ordenes_audit);
+    end;
   end;
 
-  if xitems = utiles.sLlenarIzquierda(IntToStr(xcantidad_items), 3, '0') then Begin
-    datosdb.tranSQL(diractual1, 'delete from ordenes_audit where periodo = ' + '"' + xperiodo + '"' + ' and idprof = ' + '"' + xidprof + '"' + ' and items > ' + '"' + utiles.sLlenarIzquierda(IntToStr(xcantidad_items), 3, '0') + '"');
-    datosdb.refrescar(ordenes_audit);
+  if (interbase = 'S') then begin
+    if (xitems = '001') then lote.Add('delete from ordenes_audit where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''');
+    lote.Add('insert into ordenes_audit (periodo, idprof, items, nroauditoria, facturada) values (' +
+      '"' + xperiodo + '"' + ',' +
+      '"' + xidprof + '"' + ',' +
+      '"' + xitems + '"' + ',' +
+      '"' + xnroauditoria + '"' + ',' +
+      '"' + xestado + '"' + ')');
+
+    if (xitems = utiles.sLlenarIzquierda(IntToStr(xcantidad_items), 3, '0')) then begin
+      ffirebird.TransacSQLBatch(lote);
+      lote.Clear;
+    end;
   end;
+
+    {if ffirebird.Buscar(ordenes_auditIB, 'periodo;items;idprof', xperiodo, xitems, xidprof) then ordenes_auditIB.Edit else ordenes_auditIB.Append;
+    ordenes_auditIB.FieldByName('periodo').AsString      := xperiodo;
+    ordenes_auditIB.FieldByName('idprof').AsString       := xidprof;
+    ordenes_auditIB.FieldByName('items').AsString        := xitems;
+    ordenes_auditIB.FieldByName('nroauditoria').AsString := utiles.sLlenarIzquierda(xnroauditoria, 10, '0');
+    try
+      ordenes_auditIB.Post
+     except
+      ordenes_auditIB.Cancel
+    end;
+    ffirebird.RegistrarTransaccion(ordenes_auditIB);
+
+    if (xitems = utiles.sLlenarIzquierda(IntToStr(xcantidad_items), 3, '0')) then Begin
+      ffirebird.TransacSQL('delete from ordenes_audit where periodo = ' + '"' + xperiodo + '"' + ' and idprof = ' + '"' + xidprof + '"' + ' and items > ' + '"' + utiles.sLlenarIzquierda(IntToStr(xcantidad_items), 3, '0') + '"');
+      ffirebird.closeDB(ordenes_auditIB); ordenes_auditIB.open;
+    end;
+  end;}
 end;
 
 procedure TTFacturacionCCB.BorrarOrdenAuditoria(xperiodo, xitems, xidprof: String);
@@ -6752,11 +11547,21 @@ Begin
   datosdb.refrescar(ordenes_audit);
 end;
 
+procedure TTFacturacionCCB.BorrarOrdenAuditoriaIB(xperiodo, xidprof: String);
+// Objetivo...: Borrar Orden de Auditoria
+Begin
+  ffirebird.TransacSQL('delete from ordenes_audit where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''');
+end;
+
 procedure TTFacturacionCCB.BorrarOrdenAuditoria(xperiodo, xidprof: String);
 // Objetivo...: Borrar Todas las Ordenes de Auditoria
 Begin
-  datosdb.tranSQL(ordenes_audit.DatabaseName, 'delete from ' + ordenes_audit.TableName + ' where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''');
-  datosdb.refrescar(ordenes_audit);
+  if (interbase = 'N') then begin
+    datosdb.tranSQL(ordenes_audit.DatabaseName, 'delete from ' + ordenes_audit.TableName + ' where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''');
+    datosdb.refrescar(ordenes_audit);
+  end;
+
+  if (interbase = 'S') then BorrarOrdenAuditoriaIB(xperiodo, xidprof);
 end;
 
 function TTFacturacionCCB.setOrdenesAuditoria(xperiodo, xidprof: String): TQuery;
@@ -6764,6 +11569,12 @@ function TTFacturacionCCB.setOrdenesAuditoria(xperiodo, xidprof: String): TQuery
 Begin
   if not verificarDirectorio_OrdenesAuditadas(xperiodo, xidprof) then Result := Nil else
     if ordenes_audit <> Nil then Result := datosdb.tranSQL(diractual1, 'select * from ordenes_audit where periodo = ' + '"' + xperiodo + '"' + ' and idprof = ' + '"' + xidprof + '"' + ' order by items') else Result := Nil;
+end;
+
+function TTFacturacionCCB.setOrdenesAuditoriaIB(xperiodo, xidprof: String): TIBQuery;
+// Objetivo...: devolver las ordenes de un determinado periodo y un determinado profesional
+Begin
+  Result := ffirebird.getTransacSQL('select * from ordenes_audit where periodo = ' + '"' + xperiodo + '"' + ' and idprof = ' + '"' + xidprof + '"' + ' order by items');
 end;
 
 function TTFacturacionCCB.verificarOrden(xidprof, xorden: String): Boolean;
@@ -6786,37 +11597,56 @@ end;
 procedure TTFacturacionCCB.MarcarOrdenAuditoria(xperiodo, xitems, xidprof, xestado: String);
 // Objetivo.... verificar estado de la orden
 Begin
-  if ordenes_audit <> nil then Begin
-    ordenes_audit.IndexFieldNames := 'Periodo;Items;Idprof';
-    if datosdb.Buscar(ordenes_audit, 'periodo', 'items', 'idprof', xperiodo, xitems, xidprof) then Begin
-      ordenes_audit.Edit;
-      ordenes_audit.FieldByName('facturada').AsString := xestado;
-      try
-        ordenes_audit.Post
-       except
-        ordenes_audit.Cancel
+  if (interbase = 'N') then begin
+    if ordenes_audit <> nil then Begin
+      ordenes_audit.IndexFieldNames := 'Periodo;Items;Idprof';
+      if datosdb.Buscar(ordenes_audit, 'periodo', 'items', 'idprof', xperiodo, xitems, xidprof) then Begin
+        ordenes_audit.Edit;
+        ordenes_audit.FieldByName('facturada').AsString := xestado;
+        try
+          ordenes_audit.Post
+         except
+          ordenes_audit.Cancel
+        end;
       end;
+      datosdb.refrescar(ordenes_audit);
     end;
-    datosdb.refrescar(ordenes_audit);
+  end;
+
+  if (interbase = 'S') then begin
+    ffirebird.TransacSQL('update ordenes_audit set facturada = ' + '''' + xestado + '''' + ' where periodo = ' + '''' + xperiodo + '''' + ' and items = ' + '''' + xitems + '''' + ' and idprof = ' + '''' + xidprof + '''');
   end;
 end;
 
-procedure TTFacturacionCCB.BorrarOrdenesPorId(xid: String);
+procedure TTFacturacionCCB.BorrarOrdenesPorId(xid, xperiodo, xidprof: String);
 // Objetivo...: Borrar Ordenes con un Id. Mayor a
 Begin
-  datosdb.tranSQL(directorio, 'delete from detfact where orden > ' + '"' + xid + '"');
+  if (interbase = 'N') then
+    datosdb.tranSQL(directorio, 'delete from detfact where (orden > ' + '"' + xid + '"' + ' and orden < ' + '"' + 'R000' + '"' + ')');
+  if (interbase = 'S') then
+    ffirebird.TransacSQL('delete from detfact where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''' + ' and (orden > ' + '"' + xid + '"' + ' and orden < ' + '"' + 'R000' + '"' + ')');
 end;
 
-function  TTFacturacionCCB.ObtenerUltimoId: Integer;
+function  TTFacturacionCCB.ObtenerUltimoId(xperiodo, xidprof: string): Integer;
 // Objetivo...: Devolver el ultimo Id de las Ordenes Facturadas desde la Auditoria
 var
   r: TQuery;
+  s: TIBQuery;
 Begin
-  Result := 5000;
-  r := datosdb.tranSQL(directorio, 'select orden from detfact where orden > ' + '"' + '5000' + '"' + ' order by orden');
-  r.Open; r.Last;
-  if r.RecordCount > 0 then Result := StrToInt(r.Fields[0].AsString);
-  r.Close; r.Free;
+  if (interbase = 'N') then begin
+    Result := 5000;
+    r := datosdb.tranSQL(directorio, 'select orden from detfact where (orden > ' + '"' + '5000' + '"' + ' and orden < ' + '"' + 'R000' + '"' + ') order by orden');
+    r.Open; r.Last;
+    if r.RecordCount > 0 then Result := StrToInt(r.Fields[0].AsString);
+    r.Close; r.Free;
+  end;
+  if (interbase = 'S') then begin
+    Result := 5000;
+    s := ffirebird.getTransacSQL('select orden from detfact where periodo = ' + '''' + xperiodo + '''' + ' and idprof = ' + '''' + xidprof + '''' + ' and (orden > ' + '"' + '5000' + '"' + ' and orden < ' + '"' + 'R000' + '"' + ') order by orden');
+    s.Open; s.Last;
+    if s.RecordCount > 0 then Result := StrToInt(s.Fields[0].AsString);
+    s.Close; s.Free;
+  end;
 end;
 
 { ------------------------------------------------------------------------------ }
@@ -6826,12 +11656,34 @@ function TTFacturacionCCB.listarLinea: Boolean;
 Begin
   if not (ProcesamientoCentral) or not (SC) then Result := True else Begin
     Result := False;
-    if ExcluirLab then Begin
-      if (detfact.FieldByName('profiva').AsString = 'N') then Result := True;
-      if (detfact.FieldByName('profiva').AsString = 'S') and (detfact.FieldByName('osiva').AsString = 'N') then Result := True;
+    if (interbase = 'N') then begin
+      if ExcluirLab then Begin
+        if (detfact.FieldByName('profiva').AsString = 'N') then Result := True;
+        if (detfact.FieldByName('profiva').AsString = 'S') and (detfact.FieldByName('osiva').AsString = 'N') then Result := True;
+      end;
+      if not ExcluirLab then Begin
+        if (detfact.FieldByName('profiva').AsString = 'S') and (detfact.FieldByName('osiva').AsString = 'S') then Result := True;
+      end;
     end;
-    if not ExcluirLab then Begin
-      if (detfact.FieldByName('profiva').AsString = 'S') and (detfact.FieldByName('osiva').AsString = 'S') then Result := True;
+
+    if (interbase = 'S') then begin
+      if ExcluirLab then Begin
+        if (rsqlIB.FieldByName('profiva').AsString = 'N') then Result := True;
+        if (rsqlIB.FieldByName('profiva').AsString = 'S') and (rsqlIB.FieldByName('osiva').AsString = 'N') then Result := True;
+      end;
+      if not ExcluirLab then Begin
+        if (rsqlIB.FieldByName('profiva').AsString = 'S') and (rsqlIB.FieldByName('osiva').AsString = 'S') then Result := True;
+      end;
+      if not ExcluirLab then Begin
+        if (length(trim(rsqlIB.FieldByName('profiva').AsString)) = 0) and (length(trim(rsqlIB.FieldByName('osiva').AsString)) = 0) then Result := True;
+      end;
+      // 18/06/2014 - historico
+      {if (length(trim(rsqlIB.FieldByName('profiva').AsString)) = 0) and (length(trim(rsqlIB.FieldByName('osiva').AsString)) = 0) then begin
+        profesional.getDatos(rsqlIB.FieldByName('idprof').AsString);
+        if (profesional.Retieneiva = 'N') then result := true;
+        obsocial.SincronizarPosicionFiscal(rsqlIB.FieldByName('codos').AsString, rsqlIB.FieldByName('periodo').AsString);
+        if (profesional.Retieneiva = 'S') and (obsocial.Retieneiva = 'N') then result := true;
+      end;}
     end;
   end;
 end;
@@ -6843,14 +11695,296 @@ Begin
                                                    'cabfact.idprof = detfact.idprof and cabfact.codos = detfact.codos order by idprof, codos, codanalisis');
 end;
 
+procedure TTFacturacionCCB.CambiarTipoTotalProfesional(xperiodo, xidprof, xcodos: string; xmodo: integer);
+begin
+  datosdb.tranSQL(totalesprof.DatabaseName, 'update totalesprof set tipoing = ' + inttostr(xmodo) + ' where periodo = ' + '''' + xperiodo + '''' + ' and codos = ' + '''' + xcodos + '''' + ' and idprof = ' + '''' + xidprof + '''');
+end;
+
+function TTFacturacionCCB.getLaboratoriosARefacturar(xperiodo: string): TIBQuery;
+// Objetivo...: devolver un set de items facturados
+begin
+  Result := ffirebird.getTransacSQL('select distinct(idprof) from detfact where periodo=' + '''' + xperiodo + '''' +
+     ' and (orden > ' + '''' + '5000' + '''' + ' and substring(orden from 1 for 1) <> ' + '''' + 'R' + '''' + ') and nroauditoria is null');
+end;
+
+function TTFacturacionCCB.getLaboratoriosARefacturarAll(xperiodo: string): TIBQuery;
+// Objetivo...: devolver un set de items facturados
+begin
+  Result := ffirebird.getTransacSQL('select distinct(idprof) from detfact where periodo=' + '''' + xperiodo + '''' +
+     ' and (orden > ' + '''' + '5000' + '''' + ' and substring(orden from 1 for 1) <> ' + '''' + 'R' + '''' + ')');
+end;
+
+{ ============================================================================== }
+
+function TTFacturacionCCB.getLaboratoriosConCoseguro(xperiodo: string): TIBQuery;
+begin
+  Result := ffirebird.getTransacSQL('select distinct(idprof) as idprof from detfact where periodo=' + '''' + xperiodo + '''' + ' and coseguro > 0');
+end;
+
+function TTFacturacionCCB.getCoseguroLaboratorios(xperiodo, xidprof: string): TIBQuery;
+begin
+  Result := ffirebird.getTransacSQL('select sum(coseguro) as coseguro, codos from detfact where idprof=' + '''' + xidprof + '''' + ' and periodo=' + '''' + xperiodo + '''' + ' and coseguro > 0 group by (codos) order by codos');
+end;
+
+function  TTFacturacionCCB.getListObrasSocialesRegla(xperiodo, xregla: string): TIBQuery;
+var
+  r: TQuery;
+  s, t: string;
+begin
+  r := obsocial.getReglas(xregla);
+  r.open; s := '';
+  while not r.eof do begin
+    s := s + r.fieldbyname('codos').asstring + ', ';
+    r.next;
+  end;
+  r.close; r.free;
+
+  if (s = '') then result := nil;
+
+  t := '(' + copy(s, length(s) - 1) + ')';
+
+  result := ffirebird.getTransacSQL('select * from detfact where periodo = ' + '''' + xperiodo + '''' + ' and codos in ' + t + ' order by periodo, codos, idprof, orden, items');
+  
+end;
+
+procedure TTFacturacionCCB.exportarRegla(xperiodo, xregla: string);
+var
+  r: TQuery;
+  s: TIBQuery;
+  t: TTable;
+  idprofanter: string;
+  monto: double;
+begin
+
+  datosdb.tranSQL('delete from obsocial_export_temp');
+
+  t := datosdb.openDB('obsocial_export_temp', '');
+  t.open;
+
+  r := datosdb.tranSQL('select c.* from obsocial_export_sopmag c, obsocial_reglas t where c.periodo= ' + '''' + xperiodo + '''' + ' and c.codos = t.codos and t.regla = ' + xregla + ' order by c.tipo, c.sucursal, c.numero');
+  r.Open; r.first;
+
+  while not r.Eof do begin
+
+    obsocial.SincronizarPosicionFiscal(r.fieldbyname('codos').asstring, xperiodo);
+
+    s := ffirebird.getTransacSQL('select * from detfact where periodo = ' + '''' + xperiodo + '''' + ' and codos = ' + '''' + r.fieldbyname('codos').asstring + '''' + ' and idprof = ' + '''' + r.fieldbyname('idprof').asstring + '''' + ' order by periodo, codos, idprof, orden, items');
+    s.open; s.first;
+
+    while not s.eof do begin
+
+      if (t.FieldByName('idprof').asstring <> idprofanter) then begin
+        profesional.getDatos(t.FieldByName('idprof').asstring);
+        idprofanter := t.FieldByName('idprof').asstring;
+      end;
+
+
+      t.Append;
+      t.FieldByName('periodo').asstring := s.FieldByName('periodo').asstring;
+      t.FieldByName('codos').asstring := s.FieldByName('codos').asstring;
+      t.FieldByName('idprof').asstring := s.FieldByName('idprof').asstring;
+      t.FieldByName('orden').asstring := s.FieldByName('orden').asstring;
+      t.FieldByName('items').asstring := s.FieldByName('items').asstring;
+      t.FieldByName('codigo').asstring := s.FieldByName('codanalisis').asstring;
+      t.FieldByName('monto').value := s.FieldByName('monto').value;
+      t.FieldByName('iva').value := s.FieldByName('iva').value;
+
+      t.FieldByName('tipo').asstring := r.FieldByName('tipo').asstring;
+      t.FieldByName('sucursal').asstring := utiles.sLlenarIzquierda(r.FieldByName('sucursal').asstring, 4, '0');
+      t.FieldByName('numero').asstring := utiles.sLlenarIzquierda(r.FieldByName('numero').asstring, 8, '0');
+
+      t.FieldByName('op1').asstring := r.FieldByName('fecha').asstring;
+      t.FieldByName('op2').asstring := s.FieldByName('nroafiliado').asstring;
+      t.FieldByName('op3').asstring := profesional.Nrocuit;
+
+      if (s.FieldByName('retiva').asstring = 'S') and (r.FieldByName('tipo').asstring <> 'C') then begin
+        monto := t.FieldByName('monto').AsFloat + (t.FieldByName('iva').AsFloat * (obsocial.retencioniva * 0.01));
+        t.FieldByName('montofinal').value := monto;
+      end else
+        t.FieldByName('montofinal').value := s.FieldByName('monto').value;
+
+      t.Post;
+
+      s.next;
+    end;
+
+    s.close; s.Free;
+
+    r.next;
+
+  end;
+
+  t.close;
+
+  r.close; r.free;
+
+end;
+
+function TTFacturacionCCB.exportarReglaFacturasRI(xperiodo: string): TQuery;
+begin
+  //result := datosdb.tranSQL('select tipo, sucursal, numero, op1, sum(montofinal) as monto from obsocial_export_temp where periodo = ' + '''' + xperiodo + '''' + '  group by tipo, sucursal, numero, op1');
+  result := datosdb.tranSQL('select tipo, sucursal, numero, op1, idprof, sum(montofinal) as monto from obsocial_export_temp where periodo = ' + '''' + xperiodo + '''' + ' and tipo <> ' + '''' + 'C' + '''' + '  group by idprof, tipo, sucursal, numero, op1 order by tipo, sucursal, numero');
+end;
+
+function TTFacturacionCCB.exportarReglaFacturasRM(xperiodo: string): TQuery;
+begin
+  //result := datosdb.tranSQL('select tipo, sucursal, numero, op1, sum(montofinal) as monto from obsocial_export_temp where periodo = ' + '''' + xperiodo + '''' + '  group by tipo, sucursal, numero, op1');
+  result := datosdb.tranSQL('select tipo, sucursal, numero, op1, sum(montofinal) as monto from obsocial_export_temp where periodo = ' + '''' + xperiodo + '''' + ' and tipo = ' + '''' + 'C' + '''' + '  group by tipo, sucursal, numero, op1 order by tipo, sucursal, numero');
+end;
+
+
+function TTFacturacionCCB.exportarReglaFacturasDetalle(xperiodo: string): TQuery;
+begin
+  result := datosdb.tranSQL('select * from obsocial_export_temp where periodo = ' + '''' + xperiodo + '''' + ' order by idprof, tipo, sucursal, numero');
+  //result := datosdb.tranSQL('select * from obsocial_export_temp where periodo = ' + '''' + xperiodo + '''' + ' order by idprof, codos, tipo, sucursal, numero, orden, items');
+  //result := datosdb.tranSQL('select * from obsocial_export_temp where periodo = ' + '''' + xperiodo + '''' + ' order by tipo, sucursal, numero, codos, idprof, orden, items');
+end;
+
+function TTFacturacionCCB.exportarReglaFacturasDetalleRM(xperiodo: string): TQuery;
+begin
+  //result := datosdb.tranSQL('select * from obsocial_export_temp where periodo = ' + '''' + xperiodo + '''' + ' order by idprof, codos, tipo, sucursal, numero, orden, items');
+  result := datosdb.tranSQL('select * from obsocial_export_temp where periodo = ' + '''' + xperiodo + '''' + ' order by tipo, sucursal, numero, codos, idprof, orden, items');
+end;
+
+procedure  TTFacturacionCCB.listarUBFacturadas(xperiodo: string; salida: char);
+// Objetivo: Listar UB Facturadas
+var
+  t, m: TIBQuery;
+  unidades, total: real;
+begin
+  list.altopag := 0; list.m := 0;
+  list.Titulo(0, 0, ' ', 1, 'Arial, negrita, 14');
+  list.Titulo(0, 0, 'UB Facturadas - Período: ' + xperiodo, 1, 'Arial, negrita, 14');
+  list.Titulo(0, 0, ' ', 1, 'Arial, negrita, 5');
+  list.Titulo(0, 0, 'Código', 1, 'Arial, cursiva, 8');
+  list.Titulo(15, list.Lineactual, 'Obra Social', 2, 'Arial, cursiva, 8');
+  list.Titulo(70, list.Lineactual, 'Prestaciones', 3, 'Arial, cursiva, 8');
+  list.Titulo(89, list.Lineactual, 'UB Fact.', 4, 'Arial, cursiva, 8');
+  list.Titulo(0, 0, list.LineaLargoPagina(salida), 1, 'Arial, normal, 11');
+  list.Titulo(0, 0, ' ', 1, 'Arial, negrita, 5');
+
+  t := ffirebird.getTransacSQL('select distinct(codos) as codos from detfact where periodo = ' + '''' + xperiodo + '''');
+
+  t.open; t.first;
+  while not t.eof do begin
+
+    // Unidades facturadas
+    m := ffirebird.getTransacSQL('select codanalisis, count(codanalisis) as cant from detfact where periodo = ' + '''' + xperiodo + '''' + ' and codos = ' + '''' + t.FieldByName('codos').AsString + '''' + ' group by codanalisis');
+    m.open; m.first; total := 0; unidades := 0;
+    while not m.eof do begin
+      unidades := unidades + m.fieldbyname('cant').asfloat;
+
+      nbu.getDatos(m.fieldbyname('codanalisis').asstring);
+      total := total + (m.fieldbyname('cant').asfloat * nbu.unidad);
+
+      m.next;
+    end;
+    m.close; m.free;
+
+    obsocial.getDatos(t.FieldByName('codos').AsString);
+    list.Linea(0, 0, obsocial.codos, 1, 'Arial, normal, 8', salida, 'N');
+    list.Linea(15, list.Lineactual, obsocial.Nombre, 2, 'Arial, normal, 8', salida, 'N');
+    list.importe(80, list.Lineactual, '', unidades, 3, 'Arial, normal, 8');
+    list.importe(95, list.Lineactual, '', total, 4, 'Arial, normal, 8');
+    list.Linea(96, list.Lineactual, '', 5, 'Arial, normal, 8', salida, 'S');
+    t.next;
+  end;
+
+  t.close; t.free;
+
+  list.FinList;
+end;
+
+{ ----------------------------------------------------------------------------- }
+procedure TTFacturacionCCB.ListarCosegurosFacturados(xperiodo: String; salida: Char);
+var
+  s: TQuery;
+  l: TStringList;
+  i: Integer;
+  r, t: TIBQuery;
+  total: double;
+begin
+  list.altopag := 0; list.m := 0;
+  list.Titulo(0, 0, ' ', 1, 'Arial, negrita, 14');
+  list.Titulo(0, 0, 'Coseguros Facturados - Período: ' + xperiodo, 1, 'Arial, negrita, 14');
+  list.Titulo(0, 0, ' ', 1, 'Arial, negrita, 5');
+  list.Titulo(0, 0, 'Código', 1, 'Arial, cursiva, 8');
+  list.Titulo(15, list.Lineactual, 'Obra Social', 2, 'Arial, cursiva, 8');
+  list.Titulo(90, list.Lineactual, 'Monto', 3, 'Arial, cursiva, 8');
+  list.Titulo(0, 0, list.LineaLargoPagina(salida), 1, 'Arial, normal, 11');
+  list.Titulo(0, 0, ' ', 1, 'Arial, negrita, 5');
+
+  l := TStringList.Create;
+  s := obsocial.getReglasCoseguros;
+  s.open; s.first;
+  while not s.eof do begin
+    l.Add(s.FieldByName('codos').AsString);
+    s.next;
+  end;
+  s.Close; s.free;
+
+  DatosListados := False;
+  r := getLaboratoriosConCoseguro(xperiodo);
+  r.Open; total := 0;
+  while not r.EOF do Begin
+    profesional.getDatos(r.FieldByName('idprof').AsString);
+
+    t := getCoseguroLaboratorios(xperiodo, r.FieldByName('idprof').AsString);
+    t.open; t.first; i := 0;
+    while not t.eof do begin
+      if (utiles.verificarItemsLista(l, t.FieldByName('codos').AsString)) then begin
+
+        if (i = 0) then begin
+           list.Linea(0, 0, 'Profesional: ' +  profesional.nombre, 1, 'Arial, negrita, 9', salida, 'N');
+           list.Linea(70, list.Lineactual, profesional.codigo, 2, 'Arial, negrita, 9', salida, 'S');
+           list.Linea(0, 0, '', 1, 'Arial, negrita, 9', salida, 'S');
+           i := 1;
+        end;
+
+        obsocial.getDatos(t.FieldByName('codos').AsString);
+        list.Linea(0, 0, obsocial.codos, 1, 'Arial, normal, 8', salida, 'N');
+        list.Linea(15, list.Lineactual, obsocial.Nombre, 2, 'Arial, normal, 8', salida, 'N');
+        list.importe(95, list.Lineactual, '', t.FieldByName('coseguro').AsFloat, 3, 'Arial, normal, 8');
+        list.Linea(96, list.Lineactual, '', 4, 'Arial, normal, 8', salida, 'S');
+        total := total + t.FieldByName('coseguro').AsFloat;
+      end;
+      t.Next;
+    end;
+    t.Close; t.free;
+
+    if (i = 1) then list.Linea(0, 0, '', 1, 'Arial, negrita, 9', salida, 'S');
+    
+
+    DatosListados := True;
+    r.Next;
+  end;
+  r.Close; r.Free;
+
+  if (DatosListados) then begin
+    list.Linea(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11', salida, 'S');
+    list.Linea(0, 0, 'Total Coseguro: ', 1, 'Arial, negrita, 9', salida, 'N');
+    list.importe(95, list.Lineactual, '', total, 2, 'Arial, negrita, 9');
+    list.Linea(96, list.Lineactual, '', 3, 'Arial, negrita, 9', salida, 'S');
+  end;
+
+  list.FinList;
+end;
+
+
 { ============================================================================== }
 
 procedure TTFacturacionCCB.vaciarBuffer;
 // Objetivo...: Vaciar Buffers
 begin
-  datosdb.closedb(cabfact); cabfact.Open;
-  datosdb.closedb(detfact); detfact.Open;
-  datosdb.closedb(idordenes); idordenes.Open;
+  if (interbase = 'N') then begin
+    datosdb.closedb(cabfact); cabfact.Open;
+    datosdb.closedb(detfact); detfact.Open;
+    datosdb.closedb(idordenes); idordenes.Open;
+  end;
+  if (interbase = 'S') then begin
+    ffirebird.TransacSQLBatch(lote);
+    lote.Clear;
+  end;
 end;
 
 function  TTFacturacionCCB.setLaboratoriosBackup(xperiodo: String): TStringList;
@@ -6901,19 +12035,26 @@ begin
   obsocial.conectar;
   nomeclaturaos.conectar;
   nbu.conectar;
-  if conexiones = 0 then Begin
-    if Length(Trim(diractual)) > 0 then Begin
-      if not cabfact.Active   then cabfact.Open;
-      if not detfact.Active   then detfact.Open;
-      if not idordenes.Active then idordenes.Open;
-      LaboratorioActivo := True;
-    end;
-    if not modeloc.Active     then modeloc.Open;
-    if not cabfactos.Active   then cabfactos.Open;
-    if not liq.Active         then liq.Open;
-    if not datosfact.Active   then datosfact.Open;
-    if not ctrlImpr.Active    then ctrlImpr.Open;
-    if not datosImport.Active then datosImport.Open;
+
+  if not (__laboratorios) then osagrupa.conectar;
+
+  if not modeloc.Active     then modeloc.Open;
+  if not cabfactos.Active   then cabfactos.Open;
+  if not liq.Active         then liq.Open;
+  if not datosfact.Active   then datosfact.Open;
+  //if not datosfactdet.Active   then datosfactdet.Open;
+  if not ctrlImpr.Active    then ctrlImpr.Open;
+  if not datosImport.Active then datosImport.Open;
+
+  if (interbase = 'N') then begin
+    if conexiones = 0 then Begin
+      if Length(Trim(diractual)) > 0 then Begin
+        if not cabfact.Active   then cabfact.Open;
+        if not detfact.Active   then detfact.Open;
+        if not idordenes.Active then idordenes.Open;
+        LaboratorioActivo := True;
+      end;
+    End;
   end;
 
   Inc(conexiones);
@@ -6922,36 +12063,68 @@ end;
 procedure TTFacturacionCCB.desconectar;
 // Objetivo...: cerrar tablas de persistencia
 begin
+  {if (ibase <> nil) then begin
+    ibase.Desconectar;
+    ibase := nil;
+    cabfactIB := nil;
+  end;}
+
+  if (ffirebird <> nil) then begin
+    ffirebird.Desconectar;
+    ffirebird := nil;
+    //cabfactIB := nil;
+  end;
+  
   if conexiones > 0 then Dec(conexiones);
   if conexiones = 0 then Begin
-    datosdb.closeDB(cabfact);
-    datosdb.closeDB(detfact);
-    datosdb.closeDB(idordenes);
+    if (interbase = 'N') then begin
+      if (cabfact <> nil) then datosdb.closeDB(cabfact);
+      if (detfact <> nil) then datosdb.closeDB(detfact);
+      if (idordenes <> nil) then datosdb.closeDB(idordenes);
+      if (ordenes_audit <> nil) then datosdb.closeDB(ordenes_audit);
+    end;
     datosdb.closeDB(modeloc);
     datosdb.closeDB(cabfactos);
     datosdb.closeDB(liq);
     datosdb.closeDB(datosfact);
+    //datosdb.closeDB(datosfactdet);
     datosdb.closeDB(ctrlImpr);
     datosdb.closeDB(datosImport);
-    if ordenes_audit <> nil then datosdb.closeDB(ordenes_audit);
   end;
   obsocial.desconectar;
   profesional.desconectar;
   paciente.desconectar;
   nomeclaturaos.desconectar;
   nbu.desconectar;
+  if not (__laboratorios) then osagrupa.desconectar;
   directorio := ''; diractual := '';
+  LaboratorioActual := ''; LaboratorioActivo := False;
+
+  if (ressql <> nil) then
+    if (ressql.Active) then ressql.Close;
+  ressql := nil;
+
+  __codigos := nil; __montos := nil;
 end;
 
 procedure TTFacturacionCCB.SeleccionarLaboratorio(xdirectorio: String);
 // Objetivo...: Cambiar directorio de trabajo
 begin
+  if (length(trim(firebird.Host)) = 0)  then interbase := 'N';
+
   directorio := xdirectorio;
   InstanciarTablas(xdirectorio);
   diractual  := directorio;
-  if not cabfact.Active   then cabfact.Open;
-  if not detfact.Active   then detfact.Open;
-  if not idordenes.Active then idordenes.Open;
+  if (interbase = 'N') then begin
+    if not cabfact.Active   then cabfact.Open;
+    if not detfact.Active   then detfact.Open;
+    if not idordenes.Active then idordenes.Open;
+  end;
+  if (interbase = 'S') then begin
+    {if not cabfactIB.Active   then cabfactIB.Open;
+    if not detfactIB.Active   then detfactIB.Open;
+    if not idordenesIB.Active then idordenesIB.Open;}
+  end;
   LaboratorioActivo    := True;
   ProcesamientoCentral := False;
 end;
@@ -6959,21 +12132,74 @@ end;
 procedure TTFacturacionCCB.InstanciarTablas(xdirectorio: String);
 // Objetivo...: Crear las tablas de persistencias en un directorio determinado
 begin
-  //if not DirectoryExists(xdirectorio) then utiles.msgError(xdirectorio);
-  if cabfact   <> nil then if cabfact.Active   then datosdb.closeDB(cabfact);
-  if detfact   <> nil then if detfact.Active   then datosdb.closeDB(detfact);
-  if idordenes <> nil then if idordenes.Active then datosdb.closeDB(idordenes);
-  cabfact := nil; detfact := nil; idordenes := nil;
-  cabfact   := datosdb.openDB('cabfact', 'Periodo;Idprof;Codos', '', xdirectorio);
-  detfact   := datosdb.openDB('detfact', 'Periodo;Idprof;Codos;Items;Orden', '', xdirectorio);
-  idordenes := datosdb.openDB('idordenes', 'Periodo;Idprof', '', xdirectorio);
+  // Prorrateamos la epoca y de acuerdo a la misma determinamos si trabaja o no en version Client/Server
+  if (FileExists(xdirectorio + '\cabfact.db')) then interbase := 'N' else interbase := 'S';
+
+  if (interbase = 'N') then begin
+    if cabfact   <> nil then if cabfact.Active   then datosdb.closeDB(cabfact);
+    if detfact   <> nil then if detfact.Active   then datosdb.closeDB(detfact);
+    if idordenes <> nil then if idordenes.Active then datosdb.closeDB(idordenes);
+    cabfact := nil; detfact := nil; idordenes := nil;
+    cabfact   := datosdb.openDB('cabfact', 'Periodo;Idprof;Codos', '', xdirectorio);
+    detfact   := datosdb.openDB('detfact', 'Periodo;Idprof;Codos;Items;Orden', '', xdirectorio);
+    idordenes := datosdb.openDB('idordenes', 'Periodo;Idprof', '', xdirectorio);
+
+    if not (datosdb.verificarSiExisteCampo('detfact', 'ref1', detfact.DatabaseName)) then
+      datosdb.tranSQL(detfact.DatabaseName, 'alter table detfact add ref1 char(7)');
+    if not (datosdb.verificarSiExisteCampo('detfact', 'retiva', detfact.DatabaseName)) then
+      datosdb.tranSQL(detfact.DatabaseName, 'alter table detfact add retiva char(1)');
+  end;
+  if (interbase = 'S') or (xdirectorio = 'S') then begin
+    //if cabfactIB   <> nil then firebird.Desconectar;
+
+    if (firebird.Usuario = '') then firebird.getModulo('facturacion');
+    //if cabfactIB   <> nil then if cabfactIB.Active   then firebird.closeDB(cabfactIB);
+    //if detfactIB   <> nil then if detfactIB.Active   then firebird.closeDB(detfactIB);
+    //if idordenesIB <> nil then if idordenesIB.Active then firebird.closeDB(idordenesIB);
+    //if ordenes_auditIB <> nil then if ordenes_auditIB.Active then firebird.closeDB(ordenes_auditIB);
+    //cabfactIB := nil; detfactIB := nil; idordenesIB := nil; ordenes_auditIB := nil;
+
+    //if (length(trim(firebird.Host)) > 0) and (length(trim(perrem)) > 0) then begin
+
+    if (ffirebird = nil) and (xdirectorio <> 'PersistObjetos') then begin
+      //firebird.Conectar(firebird.Host + perrem + '\' + labrem + '\FACTLAB.GDB', firebird.Usuario , firebird.Password);
+      //firebird.getModulo('facturacion');
+      //utiles.msgError('punto01');
+
+      ffirebird := TTFirebird.Create;
+      //if (ffirebird <> nil) then utiles.msgError('no nula');
+
+      ffirebird.Conectar(firebird.Host +  'FACTLABWORK.GDB', firebird.Usuario , firebird.Password);
+      //utiles.msgError('punto11');
+
+      {if not (factglobal) then begin
+        cabfactIB       := ffirebird.InstanciarTabla('cabfact');
+        detfactIB       := ffirebird.InstanciarTabla('detfact');
+        idordenesIB     := ffirebird.InstanciarTabla('idordenes');
+        ordenes_auditIB := ffirebird.InstanciarTabla('ordenes_audit');
+      end else begin
+        cabfactIB       := ffirebird.InstanciarTabla('cabfact_gl');
+        detfactIB       := ffirebird.InstanciarTabla('detfact_gl');
+        idordenesIB     := ffirebird.InstanciarTabla('idordenes_gl');
+        ordenes_auditIB := ffirebird.InstanciarTabla('ordenes_audit');
+      end;}
+
+    end;
+  end;
 end;
 
 procedure TTFacturacionCCB.InstanciarTablas_Auditoria(xdirectorio: String);
 // Objetivo...: Crear las tablas de persistencias en un directorio determinadp
 begin
-  if ordenes_audit <> nil then if ordenes_audit.Active then datosdb.closeDB(ordenes_audit);
-  if FileExists(xdirectorio + '\' + 'ordenes_audit.db') then ordenes_audit := datosdb.openDB('ordenes_audit', '', '', xdirectorio) else ordenes_audit := Nil;
+  if (interbase = 'N') then begin
+    if ordenes_audit <> nil then if ordenes_audit.Active then datosdb.closeDB(ordenes_audit);
+    if FileExists(xdirectorio + '\' + 'ordenes_audit.db') then ordenes_audit := datosdb.openDB('ordenes_audit', '', '', xdirectorio) else ordenes_audit := Nil;
+  end;
+  if (interbase = 'S') then begin
+    InstanciarTablas(xdirectorio);
+    //if ordenes_auditIB <> nil then if ordenes_auditIB.Active then firebird.closeDB(ordenes_auditIB);
+    //ordenes_audit := datosdb.openDB('ordenes_audit', '', '', xdirectorio) else ordenes_audit := Nil;
+  end;
 end;
 
 procedure TTFacturacionCCB.testeartotalesprof;
@@ -7038,44 +12264,236 @@ Begin
   end;
 end;
 
-function  TTFacturacionCCB.setItemsIB: TIBQuery;
-begin
-  result := nil;
-end;
-
-function  TTFacturacionCCB.setOrdenesAuditoriaIB(xperiodo, xidprof: string): TIBQuery;
-begin
-  result := nil;
-end;
-
-function  TTFacturacionCCB.setObrasSocialesImportadasIB(xperiodo: string): TIBQuery;
-begin
-  result := nil;
-end;
-
-function  TTFacturacionCCB.setDeterminacionesFacturadasPorObraSocialIB(xperiodo, xcodos: string): TIBQuery;
-begin
-  result := nil;
-end;
-
-procedure TTFacturacionCCB.PrepararRegistrosTransferenciaFinalTodos(xperiodo: string);
-begin
-end;
-
-procedure TTFacturacionCCB.CerrarTransferenciaFinal;
-begin
-end;
-
-procedure TTFacturacionCCB.ReiniciarProcesamientoIndividual;
-begin
-end;
-
 procedure TTFacturacionCCB.CerrarConexiones;
 // Objetivo...: cerrar todas las conexiones
 Begin
   desconectar;
   DesconectarTotalesProf;
 end;
+
+function TTFacturacionCCB.verificarEfector(xidprof: string): boolean;
+begin
+  if (interbase = 'S') then begin
+    InstanciarTablas('');
+    rsqlIB := ffirebird.getTransacSQL('select count(*) as cant from cabfact where idprof = ' + '''' + xidprof + '''');
+    rsqlIB.Open;
+    if rsqlIB.FieldByName('cant').asInteger = 0 then result := true else result := false;
+    rsqlIB.Close; rsqlIB.Free;
+  end;
+end;
+
+function TTFacturacionCCB.verificarObraSocial(xcodos: string): boolean;
+begin
+  if (interbase = 'S') then begin
+    InstanciarTablas('');
+    rsqlIB := ffirebird.getTransacSQL('select count(*) as cant from cabfact where codos = ' + '''' + xcodos + '''');
+    rsqlIB.Open;
+    if rsqlIB.FieldByName('cant').asInteger = 0 then result := true else result := false;
+    rsqlIB.Close; rsqlIB.Free;
+    result := false;
+  end;
+end;
+
+function TTFacturacionCCB.verificarDeterminacion(xcodigo: string): boolean;
+begin
+  if (interbase = 'S') then begin
+    InstanciarTablas('');
+    rsqlIB := ffirebird.getTransacSQL('select count(*) as cant from detfact where codanalisis = ' + '''' + xcodigo + '''');
+    rsqlIB.Open;
+    if rsqlIB.FieldByName('cant').asInteger = 0 then result := true else result := false;
+    rsqlIB.Close; rsqlIB.Free;
+    result := false;
+  end;
+end;
+
+procedure  TTFacturacionCCB.vaciarLoteSecundario;
+begin
+  ffirebird.TransacSQLBatch(lotesec);
+  lotesec.clear;
+end;
+
+procedure  TTFacturacionCCB.vaciarLoteSecundario(xlote: TStringList);
+begin
+  ffirebird.TransacSQLBatch(xlote);
+end;
+
+function TTFacturacionCCB.getTotalesInicidenciaPorDeterminacion_Detallada(xperiodo: string): TQuery;
+begin
+  result := datosdb.tranSQL(DBConexion, 'select * from totos where periodo = ' + '''' + xperiodo + '''');
+end;
+
+procedure TTFacturacionCCB.BorrarTotalesInicidenciaPorDeterminacion_Detallada(xperiodo, xcodos: string);
+begin
+  datosdb.tranSQL(DBConexion, 'delete from totos where periodo = ' + '''' + xperiodo + '''' + ' and codos = ' + '''' + xcodos + '''');
+end;
+
+function TTFacturacionCCB.getDBConexion: string;
+begin
+  result := dbconexion;
+end;
+
+function TTFacturacionCCB.getPracticasFacturadas(xdesde, xhasta: string): TIBQuery;
+var
+  p, per: string;
+  i: integer;
+begin
+  p := xdesde;
+  per := '''' + xdesde + '''';
+  for i := 1 to 1000 do begin
+     p := utiles.SumarPeriodo(p, '1');
+     per := per + ',' + '''' +  p + '''';
+     if (p = xhasta) then break;
+  end;
+
+  p := ' in (' + per + ')';
+
+  if (xdesde = xhasta) then p := ' in (' + per + ')';
+
+  InstanciarTablas('');
+  _query := 'select distinct(codanalisis) from detfact where periodo ' + p + ' and codanalisis is not null order by codanalisis';
+  //utiles.msgerror(_query);
+  if (ffirebird <> Nil) then Result := ffirebird.getTransacSQL(_query) else Result := nil;
+end;
+
+function TTFacturacionCCB.getCantidadPracticasFacturadas(xdesde, xhasta, xcodigo: string): integer;
+var
+  p, per: string;
+  i, cant: integer;
+  q: TIBQuery;
+  //x: textfile;
+begin
+  p := xdesde;
+  per := '''' + xdesde + '''';
+  for i := 1 to 1000 do begin
+     p := utiles.SumarPeriodo(p, '1');
+     per := per + ',' + '''' +  p + '''';
+     if (p = xhasta) then break;
+  end;
+
+  p := ' in (' + per + ')';
+
+//  if (xdesde = xhasta) then utiles.msgError('zzz');
+
+  if (xdesde = xhasta) then p := ' in (' + '''' + xdesde + '''' + ')';
+
+  //InstanciarTablas('');
+  _query := 'select count(codanalisis) from detfact where periodo ' + p + ' and codanalisis = ' + '''' + xcodigo + '''';
+   {
+   assignfile(x, 'c:\temp\log.txt');
+   rewrite(x);
+   WriteLn(x, _query);
+   closefile(x);
+   }
+   q := ffirebird.getTransacSQL(_query);
+   q.open; q.First;
+   cant := q.Fields[0].AsInteger;
+   q.close; q.Free;
+
+   Result := cant;
+end;
+
+procedure TTFacturacionCCB.ListarPracticasFacturadas(xdesde, xhasta: string; lista: TStringList; salida: char);
+var
+  i, c, t: integer;
+begin
+  if (salida = 'P') or (salida = 'I') then list.Setear(salida);
+  list.altopag := 0; list.m := 0;
+  list.IniciarTitulos;
+  list.Titulo(0, 0, ' ', 1, 'Arial, normal, 14');
+  list.Titulo(0, 0, 'Prácticas Realizadas en el Período: ' + xdesde + ' - ' + xhasta, 1, 'Arial, negrita, 14');
+  list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
+  list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
+  list.Titulo(0, 0, 'Código', 1, 'Arial, cursiva, 8');
+  list.Titulo(10, list.Lineactual, 'Practica', 2, 'Arial, cursiva, 8');
+  list.Titulo(75, list.Lineactual, 'Cantidad', 3, 'Arial, cursiva, 8');
+  list.Titulo(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11');
+  list.Titulo(0, 0, ' ', 1, 'Arial, normal, 5');
+
+  t := 0;
+  for i := 0 to lista.Count - 1 do begin
+    c := getCantidadPracticasFacturadas(xdesde, xhasta, lista[i]);
+    t := t + c;
+
+    nbu.getDatos(lista[i]);
+
+    list.Linea(0, 0, nbu.Codigo, 1, 'Arial, normal, 8', salida, 'N');
+    list.Linea(10, list.Lineactual, nbu.Descrip, 2, 'Arial, normal, 8', salida, 'N');
+    list.importe(80, list.Lineactual, '#####', c, 3, 'Arial, normal, 8');
+    list.Linea(95, list.Lineactual, '', 4, 'Arial, normal, 8', salida, 'S');
+
+  end;
+
+  list.Linea(0, 0, list.Linealargopagina(salida), 1, 'Arial, normal, 11', salida, 'S');
+  list.Linea(0, 0, '', 1, 'Arial, normal, 5', salida, 'S');
+  list.Linea(0, 0, 'Total Prácticas Realizadas: ', 1, 'Arial, negrita, 8', salida, 'N');
+  list.importe(80, list.Lineactual, '#####', t, 2, 'Arial, negrita, 8');
+  list.Linea(95, list.Lineactual, '', 3, 'Arial, negrita, 8', salida, 'S');
+
+
+  list.FinList;
+end;
+
+function TTFacturacionCCB.getListPracticasFacturadas(xperiodo, xcodos: string): TIBQuery;
+begin
+  //result := ffirebird.getTransacSQL('select distinct(idprof), sum(monto) as monto, sum(iva) as iva, sum(exento) as exento, max(nroautorizacion) as nroautorizacion from detfact where periodo=' + '''' + xperiodo + '''' +
+  //' and codos=' + '''' + xcodos + '''' + ' and monto > 0 and orden >= ' + '''' + '5000' + '''' + ' group by idprof');
+  result := ffirebird.getTransacSQL('select distinct(idprof), sum(monto) as monto, sum(iva) as iva, sum(exento) as exento, max(nroautorizacion) as nroautorizacion from detfact where periodo=' + '''' + xperiodo + '''' +
+  ' and codos=' + '''' + xcodos + '''' + ' and orden >= ' + '''' + '5000' + '''' + ' group by idprof');
+
+end;
+
+function TTFacturacionCCB.getListItemsFacturados(xperiodo, xcodos: string): TIBQuery;
+begin
+  result := ffirebird.getTransacSQL('select idprof, fecha, items, orden, codanalisis, monto, iva, exento, nroautorizacion, nroafiliado, nroauditoria, nombre, ref1 from detfact ' +
+  'where periodo=' + '''' + xperiodo + '''' +  ' and codos=' + '''' + xcodos + '''' + ' and fecha is not null and monto > 0 and orden >= ' + '''' + '5000' + '''' + ' order by idprof, codpac, orden, items');
+end;
+
+function TTFacturacionCCB.getListItemsFacturadosProfesional(xperiodo, xcodos, xidprof: string): TIBQuery;
+begin
+  result := ffirebird.getTransacSQL('select idprof, fecha, items, orden, codanalisis, monto, iva, exento, nroautorizacion, nroafiliado, nroauditoria, nombre from detfact ' +
+  'where periodo=' + '''' + xperiodo + '''' +  ' and codos=' + '''' + xcodos + '''' + ' and idprof=' + '''' + xidprof + '''' + 
+  ' and fecha is not null and monto > 0 and orden >= ' + '''' + '5000' + '''' + ' order by idprof, codpac, orden, items');
+end;
+
+
+function TTFacturacionCCB.getListItemsFacturadosSNF(xperiodo, xcodos: string): TIBQuery;
+begin
+  result := ffirebird.getTransacSQL('select idprof, fecha, items, orden, codanalisis, monto, iva, exento, nroautorizacion, nroafiliado, nroauditoria from detfact ' +
+  'where periodo=' + '''' + xperiodo + '''' +  ' and codos=' + '''' + xcodos + '''' + ' and monto > 0 ' + ' order by idprof, codpac, orden, items');
+end;
+
+function TTFacturacionCCB.verificarOrdenFacturada(xperiodo, xorden: String): Boolean;
+var
+  r: boolean;
+begin
+  r := false;
+  rsqlIB :=  ffirebird.getTransacSQL('select count(periodo) as cant from ordenes_audit where nroauditoria = ' + '''' + xorden + '''' + ' and periodo <= ' + '''' + xperiodo + '''');
+  rsqlIB.Open;
+  //utiles.msgError(rsqlIB.FieldByName('cant').AsString);
+  if (rsqlIB.FieldByName('cant').AsInteger > 0) then r := true;
+  //if (rsqlIB.FieldByName('periodo').AsString <> '') then
+    //if (rsqlIB.FieldByName('periodo').AsString <> xperiodo) then r := false;
+  rsqlIB.Close; rsqlIB.free;
+  //utiles.msgError('select periodo from ordenes_audit where nroauditoria = ' + '''' + xorden + '''' + ' and periodo <> ' + '''' + xperiodo + '''');
+  result := r;
+  {
+  r := true;
+  rsqlIB :=  ffirebird.getTransacSQL('select periodo from ordenes_audit where nroauditoria = ' + '''' + xorden + '''' + ' and periodo <> ' + '''' + xperiodo + '''');
+  rsqlIB.Open;
+  if (rsqlIB.FieldByName('periodo').AsString <> '') then
+    if (rsqlIB.FieldByName('periodo').AsString <> xperiodo) then r := false;
+  rsqlIB.Close; rsqlIB.free;
+  //if (r) then utiles.msgError('si') else  utiles.msgError('no');
+  result := r;}
+end;
+
+procedure TTFacturacionCCB.IniciarCache;
+begin
+  if (__codigos <> nil) then __codigos.Clear;
+  if (__montos <> nil) then __montos.Clear;
+end;
+
+
 
 {===============================================================================}
 

@@ -206,7 +206,8 @@ uses
   selectObraSocial in 'selectObraSocial.pas' {fmSelObraSocial},
   CNomeclatura_ObraSocial in 'clases\CNomeclatura_ObraSocial.pas',
   CAuditoriaCCB in 'clases\CAuditoriaCCB.pas',
-  CComregi in 'clases\CComregi.pas';
+  CComregi in 'clases\CComregi.pas',
+  CFacturacionCCB in 'clases\CFacturacionCCB.pas';
 
 {$R *.RES}
 

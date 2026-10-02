@@ -50,13 +50,11 @@ uses
   NominaDeCategoriasLab in 'NominaDeCategoriasLab.pas' {fmListCategoriasLab},
   CProfesionalCCB in '..\..\CLASES\CProfesionalCCB.pas',
   DepurarInformacion in 'DepurarInformacion.pas' {fmDepurarInformacion},
-  CFacturacionCCB in '..\..\CLASES\CFacturacionCCB.pas',
   acerca_de in '..\..\Interfases\acerca_de.pas' {fmAcerca},
   NominaNomeclador in 'NominaNomeclador.pas' {fmListNomeclador},
   NominaObrasSociales in 'NominaObrasSociales.pas' {fmListObrasSociales},
   EleccionMedicosCabecera in 'EleccionMedicosCabecera.pas' {fmEleMedicosCabecera},
   CObrasSocialesCCB in '..\..\CLASES\CObrasSocialesCCB.pas',
-  NominaDeCategorias in '..\damevin\NominaDeCategorias.pas' {fmListCategorias},
   tabladecategoriasLab in 'tabladecategoriasLab.pas' {fmTablaCategoriasLab},
   CActualizaciones in '..\..\CLASES\CActualizaciones.pas',
   CActualizacionesCentroComputosCB in '..\..\CLASES\CActualizacionesCentroComputosCB.pas',
@@ -174,7 +172,10 @@ uses
   reportUBFacturadas in 'reportUBFacturadas.pas' {fmUBFacturadas},
   PresupuestoRapido in 'PresupuestoRapido.pas' {fmPresupuestoRapido},
   CNomeclatura_ObraSocial in 'clases\CNomeclatura_ObraSocial.pas',
-  CAuditoriaCCB in 'clases\CAuditoriaCCB.pas';
+  CAuditoriaCCB in 'clases\CAuditoriaCCB.pas',
+  CComregi in 'clases\CComregi.pas',
+  CSFTP in 'clases\CSFTP.pas',
+  CFacturacionCCB in 'clases\CFacturacionCCB.pas';
 
 {$R *.RES}
 

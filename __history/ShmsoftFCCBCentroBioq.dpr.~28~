@@ -50,13 +50,11 @@ uses
   NominaDeCategoriasLab in 'NominaDeCategoriasLab.pas' {fmListCategoriasLab},
   CProfesionalCCB in '..\..\CLASES\CProfesionalCCB.pas',
   DepurarInformacion in 'DepurarInformacion.pas' {fmDepurarInformacion},
-  CFacturacionCCB in '..\..\CLASES\CFacturacionCCB.pas',
   acerca_de in '..\..\Interfases\acerca_de.pas' {fmAcerca},
   NominaNomeclador in 'NominaNomeclador.pas' {fmListNomeclador},
   NominaObrasSociales in 'NominaObrasSociales.pas' {fmListObrasSociales},
   EleccionMedicosCabecera in 'EleccionMedicosCabecera.pas' {fmEleMedicosCabecera},
   CObrasSocialesCCB in '..\..\CLASES\CObrasSocialesCCB.pas',
-  NominaDeCategorias in '..\damevin\NominaDeCategorias.pas' {fmListCategorias},
   tabladecategoriasLab in 'tabladecategoriasLab.pas' {fmTablaCategoriasLab},
   CActualizaciones in '..\..\CLASES\CActualizaciones.pas',
   CActualizacionesCentroComputosCB in '..\..\CLASES\CActualizacionesCentroComputosCB.pas',
@@ -111,7 +109,6 @@ uses
   NominaDeBancos in '..\asociacion\NominaDeBancos.pas' {fmListBancos},
   entbancarias in '..\asociacion\entbancarias.pas' {fmBancos},
   CBackup in '..\..\CLASES\CBackup.pas',
-  PresupuestoRapido in 'PresupuestoRapido.pas' {fmPresupuestoRapido},
   NominaProveedores in 'NominaProveedores.pas' {fmListProveedores},
   provedor in 'provedor.pas' {fmMRProveedores},
   FactCompras in 'FactCompras.pas' {fmFacturacionCompras},
@@ -165,7 +162,19 @@ uses
   CLiquidacionObrasSocCCB in 'clases\CLiquidacionObrasSocCCB.pas',
   fmFacturacionOnLine in 'fmFacturacionOnLine.pas' {fmFactOnLine},
   CAuditoriaFacturacion in 'clases\CAuditoriaFacturacion.pas',
-  exportarOrdenesSopMagnetico in 'exportarOrdenesSopMagnetico.pas' {fmExportarOrdenesSoporteMagnetico};
+  exportarOrdenesSopMagnetico in 'exportarOrdenesSopMagnetico.pas' {fmExportarOrdenesSoporteMagnetico},
+  buscarosonline in 'buscarosonline.pas' {fmBuscarOrdenesOnLine},
+  uLkJSON in '..\..\jsondelphi\json\uLkJSON.pas',
+  CExportObrasSociales in 'clases\CExportObrasSociales.pas',
+  os_reglas in 'os_reglas.pas' {fmReglasOs},
+  fmConfigFTP in 'fmConfigFTP.pas' {fmConfigurarFTP},
+  CDatosEmpresa in 'clases\CDatosEmpresa.pas',
+  reportUBFacturadas in 'reportUBFacturadas.pas' {fmUBFacturadas},
+  PresupuestoRapido in 'PresupuestoRapido.pas' {fmPresupuestoRapido},
+  CNomeclatura_ObraSocial in 'clases\CNomeclatura_ObraSocial.pas',
+  CAuditoriaCCB in 'clases\CAuditoriaCCB.pas',
+  CComregi in 'clases\CComregi.pas',
+  CSFTP in 'clases\CSFTP.pas';
 
 {$R *.RES}
 

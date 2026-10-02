@@ -120,7 +120,8 @@ uses
   NominaNomeclaturaObrasSociales in 'NominaNomeclaturaObrasSociales.pas' {fmListNomeclaturaObrasSociales},
   PresupuestoRapidoTit in 'PresupuestoRapidoTit.pas' {fmPresupuestoRapidoTit},
   CAuditoriaCCB in 'clases\CAuditoriaCCB.pas',
-  CComregi in 'clases\CComregi.pas';
+  CComregi in 'clases\CComregi.pas',
+  CFacturacionCCB in 'clases\CFacturacionCCB.pas';
 
 {$R *.RES}
 

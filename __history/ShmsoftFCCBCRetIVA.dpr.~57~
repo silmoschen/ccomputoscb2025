@@ -37,28 +37,22 @@ uses
   WSOCKBUF in '..\..\INTERNET\smtp\DELPHI\VC32\WSOCKBUF.PAS',
   WAIT in '..\..\INTERNET\smtp\DELPHI\VC32\WAIT.PAS',
   MBXFILE in '..\..\INTERNET\smtp\DELPHI\VC32\MBXFILE.PAS',
-  CNomeclaCCB in '..\..\CLASES\CNomeclaCCB.pas',
   MDIFormCRetIva in 'MDIFormCRetIva.pas' {fmSistemFact},
-  CAdmNumCompr in '..\..\CLASES\CAdmNumCompr.pas',
+  CAdmNumCompr in 'clases\CAdmNumCompr.pas',
   FacturacionManual in 'FacturacionManual.pas' {fmFactManual},
   NomecladorAn in 'NomecladorAn.pas' {fmNomeclador},
   NominaComprobantes in '..\..\SME\IVA\NominaComprobantes.pas' {fmListComprobantes},
   Disposit in '..\..\Interfases\Disposit.pas' {Dispositivo},
   obrasocial in 'obrasocial.pas' {fmObsociales},
   NominaPacientes in 'NominaPacientes.pas' {fmListPacientes},
-  CPacienteCCB in '..\..\CLASES\CPacienteCCB.pas',
   MD5 in '..\..\INTERNET\pop3\DELPHI\VC32\MD5.PAS',
   NominaDeCategoriasLab in 'NominaDeCategoriasLab.pas' {fmListCategoriasLab},
-  CProfesionalCCB in '..\..\CLASES\CProfesionalCCB.pas',
   DepurarInformacion in 'DepurarInformacion.pas' {fmDepurarInformacion},
   acerca_de in '..\..\Interfases\acerca_de.pas' {fmAcerca},
   NominaNomeclador in 'NominaNomeclador.pas' {fmListNomeclador},
   NominaObrasSociales in 'NominaObrasSociales.pas' {fmListObrasSociales},
   EleccionProfesionales in 'EleccionProfesionales.pas' {fmEleProfesional},
-  CObrasSocialesCCB in '..\..\CLASES\CObrasSocialesCCB.pas',
-  NominaDeCategorias in '..\damevin\NominaDeCategorias.pas' {fmListCategorias},
   tabladecategoriasLab in 'tabladecategoriasLab.pas' {fmTablaCategoriasLab},
-  CActualizaciones in '..\..\CLASES\CActualizaciones.pas',
   CActualizacionesCentroComputosCB in '..\..\CLASES\CActualizacionesCentroComputosCB.pas',
   ModifObraSocial in 'ModifObraSocial.pas' {fmModificarObraSocial},
   CEstadisticas in '..\..\CLASES\CEstadisticas.pas',
@@ -81,11 +75,9 @@ uses
   ImgForms in 'ImgForms.pas' {contenedorImg},
   EleccionObrasSociales in 'EleccionObrasSociales.pas' {fmEleObraSociales},
   PreparacionViaTrabajo in '..\..\SME\IVA\PreparacionViaTrabajo.pas' {fmPreparacionVia},
-  CLiquidacionObrasSocCCB in '..\..\CLASES\CLiquidacionObrasSocCCB.pas',
   PropiedadesEscritorio in '..\..\Interfases\PropiedadesEscritorio.pas' {frmPropiedades},
   MsgEditor in 'MsgEditor.pas' {fmMessageEditor},
   intro04072004 in '..\..\Interfases\intro04072004.pas' {fmIntroForm},
-  PresupuestoRapidoTit in 'PresupuestoRapidoTit.pas' {fmPresupuestoRapidoTit},
   BajarActualizacionesOnLine in 'BajarActualizacionesOnLine.pas' {fmBajarActualizaciones},
   Parametros in '..\..\Interfases\Parametros.pas' {fmParametros},
   AutenticacionSMTP in '..\..\Interfases\AutenticacionSMTP.pas' {fmAutenticacionSMTP},
@@ -102,11 +94,9 @@ uses
   TUTIL32 in '..\..\Varios\repara_paradox\32BIT\TUTIL32.PAS',
   MAINRP in '..\..\Varios\repara_paradox\DEMO32\MAINRP.PAS' {MainForm},
   CAgrupacionOSFact in 'clases\CAgrupacionOSFact.pas',
-  CNBU in '..\..\CLASES\CNBU.pas',
   CUnidadesNBU in 'clases\CUnidadesNBU.pas',
   CMedicosCabAO in 'clases\CMedicosCabAO.pas',
   CCoseguros in 'clases\CCoseguros.pas',
-  CFacturacionCCB in '..\..\CLASES\CFacturacionCCB.pas',
   CFTP in 'clases\CFTP.pas',
   FichaProfesionalLiquidacionOS in 'FichaProfesionalLiquidacionOS.pas' {fmFichaProfesionalCCB},
   distribucionOrdenesFacturadas in 'distribucionOrdenesFacturadas.pas' {fmDistribucionOrdenesFacturadas},
@@ -124,7 +114,13 @@ uses
   CPadronOSCCB in 'clases\CPadronOSCCB.pas',
   tablaNBU in 'tablaNBU.pas' {fmTablaNBU},
   CExportObrasSociales in 'clases\CExportObrasSociales.pas',
-  CDatosEmpresa in 'clases\CDatosEmpresa.pas';
+  CDatosEmpresa in 'clases\CDatosEmpresa.pas',
+  CPresupuestoRapidoFabbrissin in 'clases\CPresupuestoRapidoFabbrissin.pas',
+  CNomeclatura_ObraSocial in 'clases\CNomeclatura_ObraSocial.pas',
+  NominaNomeclaturaObrasSociales in 'NominaNomeclaturaObrasSociales.pas' {fmListNomeclaturaObrasSociales},
+  PresupuestoRapidoTit in 'PresupuestoRapidoTit.pas' {fmPresupuestoRapidoTit},
+  CAuditoriaCCB in 'clases\CAuditoriaCCB.pas',
+  CComregi in 'clases\CComregi.pas';
 
 {$R *.RES}
 
@@ -138,5 +134,6 @@ begin
   Application.CreateForm(TfmSistemFact, fmSistemFact);
   fmIntroForm.Hide;
   fmIntroForm.Release; fmIntroForm := Nil;
+  Application.CreateForm(TfmListNomeclaturaObrasSociales, fmListNomeclaturaObrasSociales);
   Application.Run;
 end.

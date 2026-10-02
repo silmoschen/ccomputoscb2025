@@ -109,6 +109,7 @@ type
   function    verificicarSiExisteLaboratorio(xperiodo, xlaboratorio: String): Boolean;
 
   procedure   Depurar(xperiodo: String);
+  procedure   DepurarIB(xperiodo: String);
   function    VerificarPeriodoHistorico(xperiodo: String): Boolean;
   function    VerificarSiElPeriodoEstaDepurado(xperiodo: String): Boolean;
   procedure   BorrarDirectoriosDepurados;
@@ -126,6 +127,7 @@ type
   procedure   QuitarBloqueo;
   procedure   PrepararRegistrosTransferenciaFinal; overload;
   procedure   PrepararRegistrosTransferenciaFinal(xidprof: String); overload;
+  procedure   PrepararRegistrosTransferenciaFinal(xperiodo, xidprof: String); overload;
   procedure   TransferenciaFinal(xperiodo, xidprof, xprofesional: String);
   procedure   TransferenciaFinalLaboratorios(xperiodo: String);
 
@@ -196,6 +198,7 @@ type
   procedure   ConectarTotalesProf;
   procedure   DesconectarTotalesProf;
   function    ProcesandoDatosCentrales: Boolean;
+  procedure   ReiniciarProcesamientoCentral;
 
   { Ordenes Auditadas }
   procedure   PrepararDirectorio_OrdenesAuditadas(xperiodo, xlaboratorio: String);
@@ -224,7 +227,16 @@ type
   procedure   CerrarConexiones;
 
   function    setItemsIB:TIBQuery;
-  function    setOrdenesAuditoriaIB: TIBQuery;
+  function    setOrdenesAuditoriaIB(xperiodo, xidprof: string): TIBQuery;
+  function    setObrasSocialesImportadasIB(xperiodo: string): TIBQuery;
+
+  procedure   PrepararRegistrosTransferenciaFinalTodos(xperiodo: string);
+
+  function    setDeterminacionesFacturadasPorObraSocialIB(xperiodo, xcodos: string): TIBQuery;
+
+  procedure   CerrarTransferenciaFinal;
+
+  procedure   ReiniciarProcesamientoIndividual;
 
  private
   { Declaraciones Privadas }
@@ -4186,6 +4198,11 @@ begin
   idprof := ''; laboratorioactual := '';   // Cambiamos los indicadores de laboratorios
 end;
 
+procedure TTFacturacionCCB.DepurarIB(xperiodo: String);
+// Objetivo...: Depurar Datos
+begin
+end;
+
 procedure TTFacturacionCCB.Depurar(xperiodo: String);
 // Objetivo...: Depurar Datos
 var
@@ -5205,6 +5222,11 @@ Begin
   datosdb.tranSQL(DBCentral, 'DELETE FROM cabfact');
   datosdb.tranSQL(DBCentral, 'DELETE FROM detfact');
   datosdb.tranSQL(DBCentral, 'DELETE FROM idordenes');
+end;
+
+procedure TTFacturacionCCB.PrepararRegistrosTransferenciaFinal(xperiodo, xidprof: String);
+// Objetivo...: Iniciar las Estructuras de Información antes de la Integración Final
+Begin
 end;
 
 procedure TTFacturacionCCB.PrepararRegistrosTransferenciaFinal(xidprof: String);
@@ -6622,6 +6644,11 @@ Begin
   Result := ProcesamientoCentral;
 end;
 
+procedure TTFacturacionCCB.ReiniciarProcesamientoCentral;
+begin
+
+end;
+
 function TTFacturacionCCB.setNetoACobrarProfesional(xperiodo, xidprof: String): Real;
 // Objetivo...: Obtener el Neto a Cobrar por el Profesional
 Begin
@@ -7016,9 +7043,31 @@ begin
   result := nil;
 end;
 
-function  TTFacturacionCCB.setOrdenesAuditoriaIB: TIBQuery;
+function  TTFacturacionCCB.setOrdenesAuditoriaIB(xperiodo, xidprof: string): TIBQuery;
 begin
   result := nil;
+end;
+
+function  TTFacturacionCCB.setObrasSocialesImportadasIB(xperiodo: string): TIBQuery;
+begin
+  result := nil;
+end;
+
+function  TTFacturacionCCB.setDeterminacionesFacturadasPorObraSocialIB(xperiodo, xcodos: string): TIBQuery;
+begin
+  result := nil;
+end;
+
+procedure TTFacturacionCCB.PrepararRegistrosTransferenciaFinalTodos(xperiodo: string);
+begin
+end;
+
+procedure TTFacturacionCCB.CerrarTransferenciaFinal;
+begin
+end;
+
+procedure TTFacturacionCCB.ReiniciarProcesamientoIndividual;
+begin
 end;
 
 procedure TTFacturacionCCB.CerrarConexiones;

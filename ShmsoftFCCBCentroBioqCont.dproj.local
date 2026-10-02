@@ -118,5 +118,6 @@
     <Transaction>2026/10/02 09:40:27.587.pas,C:\sidelphi32\CLASES\CActualizacionesCentroComputosCB.pas=</Transaction>
     <Transaction>2026/10/02 09:40:40.925.pas,C:\sidelphi32\CLASES\CAdmNumCompr.pas=</Transaction>
     <Transaction>2026/10/02 09:41:08.956.pas,C:\sidelphi32\CLASES\CFacturacionCCB.pas=</Transaction>
+    <Transaction>2026/10/02 09:52:12.594.pas,C:\sidelphi32\CLASES\CFacturacionCCB.pas=C:\sidelphi32\SGen\ccomputoscb\clases\CFacturacionCCB.pas</Transaction>
   </Transactions>
 </BorlandProject>

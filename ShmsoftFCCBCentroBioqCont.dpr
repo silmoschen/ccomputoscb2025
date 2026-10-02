@@ -1,4 +1,4 @@
-program ShmsoftFCCBCentroBioqCont;
+﻿program ShmsoftFCCBCentroBioqCont;
 
 
 
@@ -36,7 +36,6 @@ uses
   MBXFILE in '..\..\INTERNET\smtp\DELPHI\VC32\MBXFILE.PAS',
   CNomeclaCCB in '..\..\CLASES\CNomeclaCCB.pas',
   MDIFormCont in 'MDIFormCont.pas' {fmSistem},
-  CAdmNumCompr in '..\..\CLASES\CAdmNumCompr.pas',
   CEstadisticasFacturacionCCB in '..\..\CLASES\CEstadisticasFacturacionCCB.pas',
   FacturacionManual in 'FacturacionManual.pas' {fmFactManual},
   NomecladorAn in 'NomecladorAn.pas' {fmNomeclador},
@@ -56,8 +55,6 @@ uses
   CObrasSocialesCCB in '..\..\CLASES\CObrasSocialesCCB.pas',
   NominaDeCategorias in 'NominaDeCategorias.pas' {fmListCategorias},
   tabladecategoriasLab in 'tabladecategoriasLab.pas' {fmTablaCategoriasLab},
-  CActualizaciones in '..\..\CLASES\CActualizaciones.pas',
-  CActualizacionesCentroComputosCB in '..\..\CLASES\CActualizacionesCentroComputosCB.pas',
   EleccionObrasSocialesAgrupadas in 'EleccionObrasSocialesAgrupadas.pas' {fmEleObraSocialesAgrupadas},
   ModifObraSocial in 'ModifObraSocial.pas' {fmModificarObraSocial},
   Estadisticas in 'Estadisticas.pas' {fmEstadisticas},
@@ -171,7 +168,6 @@ uses
   CNBU in 'clases\CNBU.pas',
   CExportObrasSociales in 'clases\CExportObrasSociales.pas',
   Nomina_NBU in 'Nomina_NBU.pas' {fmListNBU},
-  CFacturacionCCB in '..\..\CLASES\CFacturacionCCB.pas',
   BuscarMedicoCab in 'BuscarMedicoCab.pas' {fmBuscarMedicoCabecera},
   CMedicosCabAO in 'clases\CMedicosCabAO.pas',
   configaccesoremoto in 'configaccesoremoto.pas' {fmConfigFirebird},

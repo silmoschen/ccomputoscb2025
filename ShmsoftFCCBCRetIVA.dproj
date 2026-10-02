@@ -45,23 +45,14 @@
     <DelphiCompile Include="ShmsoftFCCBCRetIVA.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
-    <DCCReference Include="..\..\CLASES\CActualizaciones.pas" />
     <DCCReference Include="..\..\CLASES\CActualizacionesCentroComputosCB.pas" />
-    <DCCReference Include="..\..\CLASES\CAdmNumCompr.pas" />
     <DCCReference Include="..\..\clases\CBDT.pas" />
     <DCCReference Include="..\..\clases\CConfigImpresora.pas" />
     <DCCReference Include="..\..\CLASES\CEstadisticas.pas" />
     <DCCReference Include="..\..\CLASES\CExpira.pas" />
-    <DCCReference Include="..\..\CLASES\CFacturacionCCB.pas" />
     <DCCReference Include="..\..\clases\CIDBFM.pas" />
-    <DCCReference Include="..\..\CLASES\CLiquidacionObrasSocCCB.pas" />
     <DCCReference Include="..\..\CLASES\CListar.pas" />
     <DCCReference Include="..\..\CLASES\CLog.pas" />
-    <DCCReference Include="..\..\CLASES\CNBU.pas" />
-    <DCCReference Include="..\..\CLASES\CNomeclaCCB.pas" />
-    <DCCReference Include="..\..\CLASES\CObrasSocialesCCB.pas" />
-    <DCCReference Include="..\..\CLASES\CPacienteCCB.pas" />
-    <DCCReference Include="..\..\CLASES\CProfesionalCCB.pas" />
     <DCCReference Include="..\..\clases\CUsuario.pas" />
     <DCCReference Include="..\..\clases\CUtiles.pas" />
     <DCCReference Include="..\..\CLASES\CUtilidadesArchivos.pas" />
@@ -197,12 +188,10 @@
     <DCCReference Include="..\..\Varios\repara_paradox\PXHEADER.PAS" />
     <DCCReference Include="..\..\Varios\repara_paradox\RBLD1.PAS" />
     <DCCReference Include="..\..\Varios\repara_paradox\RKSINI.PAS" />
-    <DCCReference Include="..\damevin\NominaDeCategorias.pas">
-      <Form>fmListCategorias</Form>
-    </DCCReference>
     <DCCReference Include="BajarActualizacionesOnLine.pas">
       <Form>fmBajarActualizaciones</Form>
     </DCCReference>
+    <DCCReference Include="clases\CAdmNumCompr.pas" />
     <DCCReference Include="clases\CAgrupacionOSFact.pas" />
     <DCCReference Include="clases\CAuditoriaCCB.pas" />
     <DCCReference Include="clases\CAuditoriaFacturacion.pas" />

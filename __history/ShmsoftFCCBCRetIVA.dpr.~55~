@@ -39,7 +39,7 @@ uses
   MBXFILE in '..\..\INTERNET\smtp\DELPHI\VC32\MBXFILE.PAS',
   CNomeclaCCB in '..\..\CLASES\CNomeclaCCB.pas',
   MDIFormCRetIva in 'MDIFormCRetIva.pas' {fmSistemFact},
-  CAdmNumCompr in '..\..\CLASES\CAdmNumCompr.pas',
+  CAdmNumCompr in 'clases\CAdmNumCompr.pas',
   FacturacionManual in 'FacturacionManual.pas' {fmFactManual},
   NomecladorAn in 'NomecladorAn.pas' {fmNomeclador},
   NominaComprobantes in '..\..\SME\IVA\NominaComprobantes.pas' {fmListComprobantes},
@@ -56,9 +56,7 @@ uses
   NominaObrasSociales in 'NominaObrasSociales.pas' {fmListObrasSociales},
   EleccionProfesionales in 'EleccionProfesionales.pas' {fmEleProfesional},
   CObrasSocialesCCB in '..\..\CLASES\CObrasSocialesCCB.pas',
-  NominaDeCategorias in '..\damevin\NominaDeCategorias.pas' {fmListCategorias},
   tabladecategoriasLab in 'tabladecategoriasLab.pas' {fmTablaCategoriasLab},
-  CActualizaciones in '..\..\CLASES\CActualizaciones.pas',
   CActualizacionesCentroComputosCB in '..\..\CLASES\CActualizacionesCentroComputosCB.pas',
   ModifObraSocial in 'ModifObraSocial.pas' {fmModificarObraSocial},
   CEstadisticas in '..\..\CLASES\CEstadisticas.pas',
@@ -85,7 +83,6 @@ uses
   PropiedadesEscritorio in '..\..\Interfases\PropiedadesEscritorio.pas' {frmPropiedades},
   MsgEditor in 'MsgEditor.pas' {fmMessageEditor},
   intro04072004 in '..\..\Interfases\intro04072004.pas' {fmIntroForm},
-  PresupuestoRapido in 'PresupuestoRapido.pas' {fmPresupuestoRapido},
   BajarActualizacionesOnLine in 'BajarActualizacionesOnLine.pas' {fmBajarActualizaciones},
   Parametros in '..\..\Interfases\Parametros.pas' {fmParametros},
   AutenticacionSMTP in '..\..\Interfases\AutenticacionSMTP.pas' {fmAutenticacionSMTP},
@@ -124,7 +121,13 @@ uses
   CPadronOSCCB in 'clases\CPadronOSCCB.pas',
   tablaNBU in 'tablaNBU.pas' {fmTablaNBU},
   CExportObrasSociales in 'clases\CExportObrasSociales.pas',
-  CDatosEmpresa in 'clases\CDatosEmpresa.pas';
+  CDatosEmpresa in 'clases\CDatosEmpresa.pas',
+  CPresupuestoRapidoFabbrissin in 'clases\CPresupuestoRapidoFabbrissin.pas',
+  CNomeclatura_ObraSocial in 'clases\CNomeclatura_ObraSocial.pas',
+  NominaNomeclaturaObrasSociales in 'NominaNomeclaturaObrasSociales.pas' {fmListNomeclaturaObrasSociales},
+  PresupuestoRapidoTit in 'PresupuestoRapidoTit.pas' {fmPresupuestoRapidoTit},
+  CAuditoriaCCB in 'clases\CAuditoriaCCB.pas',
+  CComregi in 'clases\CComregi.pas';
 
 {$R *.RES}
 
@@ -136,8 +139,8 @@ begin
   fmIntroForm.Update;
   Application.Initialize;
   Application.CreateForm(TfmSistemFact, fmSistemFact);
-  Application.CreateForm(TfmTablaNBU, fmTablaNBU);
   fmIntroForm.Hide;
   fmIntroForm.Release; fmIntroForm := Nil;
+  Application.CreateForm(TfmListNomeclaturaObrasSociales, fmListNomeclaturaObrasSociales);
   Application.Run;
 end.

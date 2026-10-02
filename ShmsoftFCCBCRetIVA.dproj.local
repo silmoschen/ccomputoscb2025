@@ -46,5 +46,16 @@
     <Transaction>2025/10/10 16:37:41.419.dfm,C:\sidelphi32\SGen\ccomputoscb\PresupuestoRapidoTit.dfm=</Transaction>
     <Transaction>2026/06/17 09:57:00.009.pas,C:\sidelphi32\SGen\ccomputoscb\PresupuestoRapido.pas=</Transaction>
     <Transaction>2026/06/17 09:57:00.009.dfm,C:\sidelphi32\SGen\ccomputoscb\PresupuestoRapido.dfm=</Transaction>
+    <Transaction>2026/10/02 09:32:22.130.pas,C:\sidelphi32\SGen\damevin\NominaDeCategorias.pas=</Transaction>
+    <Transaction>2026/10/02 09:32:22.130.dfm,C:\sidelphi32\SGen\damevin\NominaDeCategorias.dfm=</Transaction>
+    <Transaction>2026/10/02 09:33:55.447.pas,C:\sidelphi32\CLASES\CAdmNumCompr.pas=C:\sidelphi32\SGen\ccomputoscb\clases\CAdmNumCompr.pas</Transaction>
+    <Transaction>2026/10/02 09:34:20.520.pas,C:\sidelphi32\CLASES\CActualizaciones.pas=</Transaction>
+    <Transaction>2026/10/02 09:35:22.765.pas,C:\sidelphi32\CLASES\CFacturacionCCB.pas=</Transaction>
+    <Transaction>2026/10/02 09:35:46.250.pas,C:\sidelphi32\CLASES\CNomeclaCCB.pas=</Transaction>
+    <Transaction>2026/10/02 09:36:08.258.pas,C:\sidelphi32\CLASES\CNBU.pas=</Transaction>
+    <Transaction>2026/10/02 09:38:00.530.pas,C:\sidelphi32\CLASES\CObrasSocialesCCB.pas=</Transaction>
+    <Transaction>2026/10/02 09:38:25.634.pas,C:\sidelphi32\CLASES\CLiquidacionObrasSocCCB.pas=</Transaction>
+    <Transaction>2026/10/02 09:38:40.232.pas,C:\sidelphi32\CLASES\CPacienteCCB.pas=</Transaction>
+    <Transaction>2026/10/02 09:38:44.192.pas,C:\sidelphi32\CLASES\CProfesionalCCB.pas=</Transaction>
   </Transactions>
 </BorlandProject>

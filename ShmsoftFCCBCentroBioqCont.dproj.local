@@ -114,5 +114,9 @@
     <Transaction>2025/10/10 15:27:50.251.pas,C:\sidelphi32\SGen\ccomputoscb\actp.pas=</Transaction>
     <Transaction>2025/10/10 15:27:50.251.dfm,C:\sidelphi32\SGen\ccomputoscb\actp.dfm=</Transaction>
     <Transaction>2026/05/15 09:18:20.402.pas,C:\sidelphi32\CLASES\CAuditoriaOnLine.pas=C:\sidelphi32\SGen\ccomputoscb\clases\CAuditoriaOnLine.pas</Transaction>
+    <Transaction>2026/10/02 09:40:17.089.pas,C:\sidelphi32\CLASES\CActualizaciones.pas=</Transaction>
+    <Transaction>2026/10/02 09:40:27.587.pas,C:\sidelphi32\CLASES\CActualizacionesCentroComputosCB.pas=</Transaction>
+    <Transaction>2026/10/02 09:40:40.925.pas,C:\sidelphi32\CLASES\CAdmNumCompr.pas=</Transaction>
+    <Transaction>2026/10/02 09:41:08.956.pas,C:\sidelphi32\CLASES\CFacturacionCCB.pas=</Transaction>
   </Transactions>
 </BorlandProject>

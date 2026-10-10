@@ -3,7 +3,7 @@ unit CSFTP;
 interface
 
 uses
-  Windows, SysUtils, Classes;
+  Windows, SysUtils, Classes, Forms;
 
 function SFTPBuscarCliente(const DirSistema: string): string;
 function SFTPPuerto(const PuertoTexto: string): Integer;
@@ -97,7 +97,8 @@ begin
   if not CreateProcess(nil, Cmd, nil, nil, False, CREATE_NO_WINDOW, nil, nil, SI, PI) then
     Exit;
   try
-    WaitForSingleObject(PI.hProcess, 180000);
+    while WaitForSingleObject(PI.hProcess, 200) = WAIT_TIMEOUT do
+      Application.ProcessMessages;
     if GetExitCodeProcess(PI.hProcess, Code) then
       Result := Integer(Code);
   finally

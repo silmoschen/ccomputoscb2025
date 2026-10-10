@@ -57,7 +57,8 @@ var
 
 implementation
 
-uses CNomeclatura_ObraSocial, CBDT, CUtiles, CSFTP, IdFTP, IdFTPCommon, HTTPCliente;
+uses CNomeclatura_ObraSocial, CBDT, CUtiles, CSFTP, IdFTP, IdFTPCommon, HTTPCliente,
+  IdAntiFreezeBase, IdAntiFreeze;
 
 {$R *.DFM}
 
@@ -76,14 +77,14 @@ begin
   x := '';
 
   if (tipo = 1) then begin
-    if not (FileExists(dbs.DirSistema + '\ftpsauditoria.ini')) then exit;
-    AssignFile(archivo, dbs.DirSistema + '\ftpsauditoria.ini');
+    if not (FileExists(dbs.DirSistema + '\ftpsauditoria1.ini')) then exit;
+    AssignFile(archivo, dbs.DirSistema + '\ftpsauditoria1.ini');
     x := '1';
   end;
 
   if (tipo = 2) then begin
-    if not (FileExists(dbs.DirSistema + '\ftpauditoria.ini')) then exit;
-    AssignFile(archivo, dbs.DirSistema + '\ftpauditoria.ini');
+    if not (FileExists(dbs.DirSistema + '\ftpauditoria1.ini')) then exit;
+    AssignFile(archivo, dbs.DirSistema + '\ftpauditoria1.ini');
     x := '1';
   end;
 
@@ -123,8 +124,8 @@ var
   tipo: integer;
 begin
   tipo := 2;
-  if not (FileExists(dbs.DirSistema + '\ftpauditoriasel.ini')) then tftp.Checked := true else begin
-    AssignFile(archivo, dbs.DirSistema + '\ftpauditoriasel.ini');
+  if not (FileExists(dbs.DirSistema + '\ftpauditoriasel1.ini')) then tftp.Checked := true else begin
+    AssignFile(archivo, dbs.DirSistema + '\ftpauditoriasel1.ini');
     reset(archivo);
     readln(archivo, v7);
     closeFile(archivo);
@@ -183,16 +184,16 @@ procedure TfmActualizacionesAuditoria.btnAplicarClick(Sender: TObject);
 var
   archivo: TextFile;
 begin
-  AssignFile(archivo, dbs.DirSistema + '\ftpauditoriasel.ini');
+  AssignFile(archivo, dbs.DirSistema + '\ftpauditoriasel1.ini');
   rewrite(archivo);
   if (tsftp.Checked) then writeln(archivo, '1') else writeln(archivo, '2');
   closeFile(archivo);
 
   if (tsftp.Checked) then
-    GuardarParametrosRemotos(dbs.DirSistema + '\ftpsauditoria.ini', host.Text, ftp.Text, usuario.Text, contrasenia.Text, puerto.Text, dirremoto.Text, ftpPasivo.Checked);
+    GuardarParametrosRemotos(dbs.DirSistema + '\ftpsauditoria1.ini', host.Text, ftp.Text, usuario.Text, contrasenia.Text, puerto.Text, dirremoto.Text, ftpPasivo.Checked);
 
   if (tftp.Checked) then
-    GuardarParametrosRemotos(dbs.DirSistema + '\ftpauditoria.ini', host.Text, ftp.Text, usuario.Text, contrasenia.Text, puerto.Text, dirremoto.Text, ftpPasivo.Checked);
+    GuardarParametrosRemotos(dbs.DirSistema + '\ftpauditoria1.ini', host.Text, ftp.Text, usuario.Text, contrasenia.Text, puerto.Text, dirremoto.Text, ftpPasivo.Checked);
 
   host.SetFocus;
 end;
@@ -282,6 +283,7 @@ var
   i: Integer;
   Ok: Boolean;
   Fallo, Respuesta: string;
+  Anti: TIdAntiFreeze;
 begin
   if not utiles.msgSiNo('Seguro para Transferir Datos ?') then Exit;
 
@@ -292,7 +294,12 @@ begin
   end;
 
   Archivos := TStringList.Create;
+  btnIniciar.Enabled := False;
+  btnProcesar.Enabled := False;
+  Anti := TIdAntiFreeze.Create(nil);
   try
+    Anti.Active := True;
+    Anti.OnlyWhenIdle := False;
     if FindFirst(Dir + '\*.*', faAnyFile, SR) = 0 then
     try
       repeat
@@ -367,8 +374,12 @@ begin
       end;
     end;
     StatusBar1.Refresh;
+    Application.ProcessMessages;
   finally
+    Anti.Free;
     Archivos.Free;
+    btnIniciar.Enabled := True;
+    btnProcesar.Enabled := True;
   end;
 end;
 

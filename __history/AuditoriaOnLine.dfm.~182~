@@ -51,60 +51,12 @@ object fmAuditoriaOnLine: TfmAuditoriaOnLine
         OnResize = Panel1Resize
         object Panel3: TPanel
           Left = 6
-          Top = 36
+          Top = 39
           Width = 560
           Height = 66
           Align = alTop
           BevelOuter = bvNone
           TabOrder = 0
-          object Panel7: TPanel
-            Left = 413
-            Top = 0
-            Width = 147
-            Height = 66
-            Align = alRight
-            BevelOuter = bvNone
-            TabOrder = 1
-            object Si: TSpeedButton
-              Left = 62
-              Top = 6
-              Width = 18
-              Height = 22
-              Hint = 'S'#237'/No Selecci'#243'n'
-              Caption = '&S'
-              Flat = True
-              ParentShowHint = False
-              ShowHint = True
-              Visible = False
-              OnClick = SiClick
-            end
-            object Ninguno: TSpeedButton
-              Left = 80
-              Top = 6
-              Width = 18
-              Height = 22
-              Hint = 'Quitar Todos'
-              Caption = '&N'
-              Flat = True
-              ParentShowHint = False
-              ShowHint = True
-              Visible = False
-              OnClick = NingunoClick
-            end
-            object Todos: TSpeedButton
-              Left = 98
-              Top = 6
-              Width = 18
-              Height = 22
-              Hint = 'Seleccionar Todos'
-              Caption = '&T'
-              Flat = True
-              ParentShowHint = False
-              ShowHint = True
-              Visible = False
-              OnClick = TodosClick
-            end
-          end
           object GroupBox1: TGroupBox
             Left = 4
             Top = 0
@@ -139,25 +91,25 @@ object fmAuditoriaOnLine: TfmAuditoriaOnLine
             Height = 17
             Caption = '&Sincronizar el Estado de las Determinaciones Transferidas'
             Enabled = False
-            TabOrder = 2
+            TabOrder = 1
             OnClick = CheckBox2Click
           end
           object CheckBox3: TCheckBox
-            Left = 342
-            Top = 46
+            Left = 350
+            Top = 21
             Width = 180
             Height = 17
             Caption = '&Cons. Totales Transf. O. Sociales'
-            TabOrder = 3
+            TabOrder = 2
             OnClick = CheckBox3Click
           end
           object CheckBox5: TCheckBox
-            Left = 394
-            Top = 27
+            Left = 350
+            Top = 4
             Width = 124
             Height = 17
             Caption = 'Procesar Asincrono'
-            TabOrder = 4
+            TabOrder = 3
           end
         end
         object btnTransferir: TButton
@@ -173,21 +125,21 @@ object fmAuditoriaOnLine: TfmAuditoriaOnLine
           Left = 6
           Top = 6
           Width = 560
-          Height = 30
+          Height = 33
           Align = alTop
           BevelOuter = bvNone
           TabOrder = 2
           object Label3: TLabel
-            Left = 4
-            Top = 6
+            Left = 7
+            Top = 9
             Width = 34
             Height = 13
             Alignment = taRightJustify
             Caption = 'Desde:'
           end
           object Label4: TLabel
-            Left = 103
-            Top = 6
+            Left = 106
+            Top = 9
             Width = 64
             Height = 13
             Alignment = taRightJustify
@@ -206,9 +158,48 @@ object fmAuditoriaOnLine: TfmAuditoriaOnLine
             Font.Style = []
             ParentFont = False
           end
+          object Si: TSpeedButton
+            Left = 261
+            Top = 2
+            Width = 18
+            Height = 22
+            Hint = 'S'#237'/No Selecci'#243'n'
+            Caption = '&S'
+            Flat = True
+            ParentShowHint = False
+            ShowHint = True
+            Visible = False
+            OnClick = SiClick
+          end
+          object Ninguno: TSpeedButton
+            Left = 279
+            Top = 2
+            Width = 18
+            Height = 22
+            Hint = 'Quitar Todos'
+            Caption = '&N'
+            Flat = True
+            ParentShowHint = False
+            ShowHint = True
+            Visible = False
+            OnClick = NingunoClick
+          end
+          object Todos: TSpeedButton
+            Left = 297
+            Top = 2
+            Width = 18
+            Height = 22
+            Hint = 'Seleccionar Todos'
+            Caption = '&T'
+            Flat = True
+            ParentShowHint = False
+            ShowHint = True
+            Visible = False
+            OnClick = TodosClick
+          end
           object desde: TMaskEdit
-            Left = 41
-            Top = 3
+            Left = 44
+            Top = 6
             Width = 58
             Height = 21
             EditMask = '99/99/99;1; '
@@ -218,8 +209,8 @@ object fmAuditoriaOnLine: TfmAuditoriaOnLine
             OnKeyDown = desdeKeyDown
           end
           object hasta: TMaskEdit
-            Left = 170
-            Top = 3
+            Left = 173
+            Top = 6
             Width = 58
             Height = 21
             EditMask = '99/99/99;1; '
@@ -228,41 +219,32 @@ object fmAuditoriaOnLine: TfmAuditoriaOnLine
             Text = '  /  /  '
             OnKeyDown = hastaKeyDown
           end
-          object Panel6: TPanel
-            Left = 379
-            Top = 0
-            Width = 181
-            Height = 30
-            Align = alRight
-            BevelOuter = bvNone
+          object btnSubir: TButton
+            Left = 334
+            Top = 3
+            Width = 11
+            Height = 25
+            Caption = '&Transferir Datos al Servidor'
             TabOrder = 2
-            object btnDescargar: TButton
-              Left = 25
-              Top = 2
-              Width = 145
-              Height = 25
-              Caption = 'S&incronizar Datos Remotos'
-              Enabled = False
-              TabOrder = 0
-              OnClick = btnDescargarClick
-            end
-            object btnSubir: TButton
-              Left = 9
-              Top = 3
-              Width = 11
-              Height = 25
-              Caption = '&Transferir Datos al Servidor'
-              TabOrder = 1
-              Visible = False
-              OnClick = btnSubirClick
-            end
+            Visible = False
+            OnClick = btnSubirClick
+          end
+          object btnDescargar: TButton
+            Left = 350
+            Top = 5
+            Width = 155
+            Height = 25
+            Caption = 'S&incronizar Datos Remotos'
+            Enabled = False
+            TabOrder = 3
+            OnClick = btnDescargarClick
           end
         end
         object Panel4: TPanel
           Left = 381
-          Top = 102
+          Top = 105
           Width = 185
-          Height = 195
+          Height = 192
           Align = alRight
           BevelInner = bvLowered
           Caption = 'Panel4'
@@ -272,7 +254,7 @@ object fmAuditoriaOnLine: TfmAuditoriaOnLine
             Left = 2
             Top = 2
             Width = 181
-            Height = 191
+            Height = 188
             Align = alClient
             BorderStyle = bsNone
             ColCount = 2
@@ -291,9 +273,9 @@ object fmAuditoriaOnLine: TfmAuditoriaOnLine
         end
         object Panel11: TPanel
           Left = 6
-          Top = 102
+          Top = 105
           Width = 375
-          Height = 195
+          Height = 192
           Align = alClient
           BevelInner = bvLowered
           Enabled = False
@@ -302,7 +284,7 @@ object fmAuditoriaOnLine: TfmAuditoriaOnLine
             Left = 2
             Top = 2
             Width = 371
-            Height = 191
+            Height = 188
             Align = alClient
             BorderStyle = bsNone
             ColCount = 13
@@ -471,7 +453,7 @@ object fmAuditoriaOnLine: TfmAuditoriaOnLine
           Left = 11
           Top = 64
           Width = 368
-          Height = 146
+          Height = 181
           Caption = ' Par'#225'metros Procesamiento de Datos Remotos '
           TabOrder = 0
           object Label1: TLabel
@@ -508,11 +490,19 @@ object fmAuditoriaOnLine: TfmAuditoriaOnLine
           end
           object Label10: TLabel
             Left = 14
-            Top = 101
+            Top = 136
             Width = 59
             Height = 13
             Alignment = taRightJustify
             Caption = 'Dir. Remoto:'
+          end
+          object Label11: TLabel
+            Left = 39
+            Top = 102
+            Width = 34
+            Height = 13
+            Alignment = taRightJustify
+            Caption = 'Puerto:'
           end
           object host: TMaskEdit
             Left = 76
@@ -549,7 +539,7 @@ object fmAuditoriaOnLine: TfmAuditoriaOnLine
           end
           object ftpPasivo: TCheckBox
             Left = 76
-            Top = 122
+            Top = 157
             Width = 117
             Height = 17
             Caption = 'FTP Modo Pasivo'
@@ -560,11 +550,19 @@ object fmAuditoriaOnLine: TfmAuditoriaOnLine
           end
           object dirremoto: TMaskEdit
             Left = 76
-            Top = 98
+            Top = 133
             Width = 277
             Height = 21
             TabOrder = 5
             Text = '/var/www/html/reco/actualizar'
+          end
+          object puerto: TMaskEdit
+            Left = 76
+            Top = 99
+            Width = 98
+            Height = 21
+            TabOrder = 6
+            Text = '22'
           end
         end
         object btnAplicar: TButton
@@ -665,8 +663,8 @@ object fmAuditoriaOnLine: TfmAuditoriaOnLine
     end
   end
   object CheckBox4: TCheckBox
-    Left = 404
-    Top = 68
+    Left = 360
+    Top = 106
     Width = 124
     Height = 17
     Caption = '&Recalcular Tot. O.S.'
@@ -676,7 +674,7 @@ object fmAuditoriaOnLine: TfmAuditoriaOnLine
   object IdLogDebug1: TIdLogDebug
     LogTime = False
     Left = 400
-    Top = 96
+    Top = 264
   end
   object IdFTP1: TIdFTP
     AutoLogin = True
@@ -685,10 +683,10 @@ object fmAuditoriaOnLine: TfmAuditoriaOnLine
     ProxySettings.Port = 0
     ReadTimeout = 160000
     Left = 432
-    Top = 96
+    Top = 264
   end
   object IdAntiFreeze1: TIdAntiFreeze
     Left = 464
-    Top = 96
+    Top = 264
   end
 end

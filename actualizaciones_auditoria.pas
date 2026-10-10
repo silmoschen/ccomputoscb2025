@@ -1,4 +1,4 @@
-unit actualizaciones_auditoria;
+﻿unit actualizaciones_auditoria;
 
 interface
 
@@ -41,11 +41,13 @@ type
     procedure FormShow(Sender: TObject);
     procedure btnProcesarClick(Sender: TObject);
     procedure btnAplicarClick(Sender: TObject);
+    procedure btnIniciarClick(Sender: TObject);
     procedure tsftpClick(Sender: TObject);
     procedure tftpClick(Sender: TObject);
   private
     { Private declarations }
     procedure loadTrans(tipo: integer);
+    procedure SubirPorFTP(Archivos: TStrings);
   public
     { Public declarations }
   end;
@@ -55,7 +57,7 @@ var
 
 implementation
 
-uses CNomeclatura_ObraSocial, CBDT;
+uses CNomeclatura_ObraSocial, CBDT, CUtiles, CSFTP, IdFTP, IdFTPCommon, HTTPCliente;
 
 {$R *.DFM}
 
@@ -193,6 +195,181 @@ begin
     GuardarParametrosRemotos(dbs.DirSistema + '\ftpauditoria.ini', host.Text, ftp.Text, usuario.Text, contrasenia.Text, puerto.Text, dirremoto.Text, ftpPasivo.Checked);
 
   host.SetFocus;
+end;
+
+procedure TfmActualizacionesAuditoria.SubirPorFTP(Archivos: TStrings);
+var
+  Cliente: TIdFTP;
+  Datos: TFileStream;
+  i: Integer;
+  Nombre, Ruta, Remoto: string;
+
+  procedure Enviar(const Local, Destino: string);
+  begin
+    Datos := TFileStream.Create(Local, fmOpenRead or fmShareDenyNone);
+    try
+      Cliente.TransferType := ftBinary;
+      Cliente.Put(Datos, Destino, False);
+    finally
+      Datos.Free;
+    end;
+  end;
+
+begin
+  Ruta := StringReplace(Trim(dirremoto.Text), '\', '/', [rfReplaceAll]);
+  if Ruta = '' then
+    raise Exception.Create('Falta indicar el directorio remoto.');
+  if Ruta[Length(Ruta)] = '/' then
+    Delete(Ruta, Length(Ruta), 1);
+
+  Cliente := TIdFTP.Create(nil);
+  try
+    Cliente.Passive := True;
+    Cliente.ReadTimeout := 160000;
+    {$IFDEF VER140}
+    Cliente.User := usuario.Text;
+    {$ELSE}
+    Cliente.UserName := usuario.Text;
+    {$ENDIF}
+    Cliente.Password := contrasenia.Text;
+    Cliente.Host := ftp.Text;
+    Cliente.Port := StrToIntDef(Trim(puerto.Text), 21);
+    StatusBar1.Panels[0].Text := 'Conectando FTP ...!';
+    StatusBar1.Refresh;
+    Cliente.Connect;
+    StatusBar1.Panels[0].Text := 'Directorio remoto ' + Ruta;
+    StatusBar1.Refresh;
+    try
+      Cliente.ChangeDir(Ruta);
+    except
+      on E: Exception do
+        raise Exception.Create(E.ClassName + ': ' + E.Message +
+          ' | No se pudo acceder al directorio remoto ' + Ruta);
+    end;
+    for i := 0 to Archivos.Count - 1 do begin
+      Nombre := ExtractFileName(StringReplace(Archivos[i], '/', '\', [rfReplaceAll]));
+      Remoto := Ruta + '/' + Nombre;
+      StatusBar1.Panels[0].Text := 'Transfiriendo ' + Nombre + ' ...!';
+      StatusBar1.Refresh;
+      try
+        Enviar(Archivos[i], Nombre);
+      except
+        on E: Exception do
+          if Pos('Could not create file', E.Message) > 0 then begin
+            try
+              Enviar(Archivos[i], Remoto);
+            except
+              on E2: Exception do
+                raise Exception.Create(E2.ClassName + ': ' + E2.Message +
+                  ' | ' + Remoto + ' | Sin permiso de escritura o el servidor rechazó el archivo');
+            end;
+          end else
+            raise Exception.Create(E.ClassName + ': ' + E.Message + ' | ' + Nombre);
+      end;
+    end;
+    if Cliente.Connected then
+      Cliente.Disconnect;
+  finally
+    Cliente.Free;
+  end;
+end;
+
+procedure TfmActualizacionesAuditoria.btnIniciarClick(Sender: TObject);
+var
+  Dir: string;
+  Archivos: TStringList;
+  SR: TSearchRec;
+  i: Integer;
+  Ok: Boolean;
+  Fallo, Respuesta: string;
+begin
+  if not utiles.msgSiNo('Seguro para Transferir Datos ?') then Exit;
+
+  Dir := dbs.DirSistema + '\auditoria\online\sincro';
+  if not DirectoryExists(Dir) then begin
+    utiles.msgError('No existe la carpeta de sincronización ...!');
+    Exit;
+  end;
+
+  Archivos := TStringList.Create;
+  try
+    if FindFirst(Dir + '\*.*', faAnyFile, SR) = 0 then
+    try
+      repeat
+        if (SR.Attr and faDirectory) = 0 then
+          Archivos.Add(Dir + '\' + SR.Name);
+      until FindNext(SR) <> 0;
+    finally
+      FindClose(SR);
+    end;
+
+    if Archivos.Count = 0 then begin
+      utiles.msgError('No hay archivos para transferir ...!');
+      Exit;
+    end;
+
+    if tsftp.Checked and (SFTPBuscarCliente(dbs.DirSistema) = '') then begin
+      utiles.msgError('No se encuentra PSCP.EXE. Copie las herramientas SFTP a la carpeta tools\putty.');
+      Exit;
+    end;
+
+    StatusBar1.Panels[0].Text := 'Transfiriendo Datos ...!';
+    StatusBar1.Refresh;
+    Ok := True;
+    Fallo := '';
+
+    try
+      if tsftp.Checked then begin
+        for i := 0 to Archivos.Count - 1 do begin
+          StatusBar1.Panels[0].Text := 'Transfiriendo ' + ExtractFileName(Archivos[i]) + ' ...!';
+          StatusBar1.Refresh;
+          if not SFTPSubirArchivo(dbs.DirSistema, ftp.Text, usuario.Text, contrasenia.Text,
+            puerto.Text, dirremoto.Text, Archivos[i]) then
+            Ok := False;
+        end;
+      end else
+        SubirPorFTP(Archivos);
+    except
+      on E: Exception do begin
+        Ok := False;
+        Fallo := E.ClassName + ': ' + E.Message;
+      end;
+    end;
+
+    if Fallo <> '' then begin
+      StatusBar1.Panels[0].Text := Fallo;
+      utiles.msgError(Fallo);
+    end else if not Ok then
+      utiles.msgError('No se pudieron transferir todos los archivos ...!')
+    else begin
+      StatusBar1.Panels[0].Text := 'Procesando datos remotos ...!';
+      StatusBar1.Refresh;
+      try
+        Application.CreateForm(TfmClientHTML, fmClientHTML);
+        try
+          fmClientHTML.cbURL.Text := host.Text + '/operaciones/importar_nbu_os.php';
+          fmClientHTML.FormActivate(Self);
+          fmClientHTML.btnGoClick(Self);
+          Respuesta := Trim(fmClientHTML.memoHTML.Lines.Text);
+        finally
+          fmClientHTML.Release;
+          fmClientHTML := nil;
+        end;
+        if UpperCase(Respuesta) = 'OK' then
+          StatusBar1.Panels[0].Text := 'Actualización Remota Correcta'
+        else if Respuesta = '' then
+          StatusBar1.Panels[0].Text := 'El servidor no devolvió respuesta'
+        else
+          StatusBar1.Panels[0].Text := Respuesta;
+      except
+        on E: Exception do
+          StatusBar1.Panels[0].Text := E.ClassName + ': ' + E.Message;
+      end;
+    end;
+    StatusBar1.Refresh;
+  finally
+    Archivos.Free;
+  end;
 end;
 
 procedure TfmActualizacionesAuditoria.tsftpClick(Sender: TObject);

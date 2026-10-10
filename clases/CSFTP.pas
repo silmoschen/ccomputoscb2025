@@ -11,6 +11,8 @@ function SFTPDescargarArchivo(const DirSistema, Host, Usuario, Password, PuertoT
   DirRemoto, NombreArchivo, DirLocal: string): Boolean;
 function SFTPDescargarArchivos(const DirSistema, Host, Usuario, Password, PuertoTexto,
   DirRemoto, DirLocal: string; Archivos: TStrings): Integer;
+function SFTPSubirArchivo(const DirSistema, Host, Usuario, Password, PuertoTexto,
+  DirRemoto, ArchivoLocal: string): Boolean;
 
 implementation
 
@@ -164,6 +166,43 @@ begin
     if SFTPDescargarArchivo(DirSistema, Host, Usuario, Password, PuertoTexto,
       DirRemoto, Archivos[i], DirLocal) then
       Inc(Result);
+end;
+
+function SFTPSubirArchivo(const DirSistema, Host, Usuario, Password, PuertoTexto,
+  DirRemoto, ArchivoLocal: string): Boolean;
+var
+  Pscp, PwFile, Remoto, Cmd: string;
+  F: TextFile;
+begin
+  Result := False;
+  Pscp := SFTPBuscarCliente(DirSistema);
+  if Pscp = '' then
+    Exit;
+  if Trim(Host) = '' then
+    Exit;
+  if not FileExists(ArchivoLocal) then
+    Exit;
+
+  Remoto := UnirRutaRemota(DirRemoto, ExtractFileName(ArchivoLocal));
+  PwFile := DirTemp + 'sftp_pw_' + IntToStr(GetCurrentProcessId) + '.tmp';
+
+  AssignFile(F, PwFile);
+  Rewrite(F);
+  try
+    Write(F, Password);
+  finally
+    CloseFile(F);
+  end;
+
+  try
+    Cmd := 'cmd.exe /c echo y| "' + Pscp + '" -sftp -P ' + IntToStr(SFTPPuerto(PuertoTexto)) +
+           ' -pwfile "' + PwFile + '" "' + ArchivoLocal + '" ' +
+           Trim(Usuario) + '@' + Trim(Host) + ':"' + Remoto + '"';
+    Result := EjecutarOculto(Cmd) = 0;
+  finally
+    if FileExists(PwFile) then
+      DeleteFile(PwFile);
+  end;
 end;
 
 end.

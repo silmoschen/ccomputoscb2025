@@ -97,6 +97,7 @@ object fmActualizacionesAuditoria: TfmActualizacionesAuditoria
             Height = 25
             Caption = 'Iniciar Proceso de Transferencia'
             TabOrder = 1
+            OnClick = btnIniciarClick
           end
         end
       end

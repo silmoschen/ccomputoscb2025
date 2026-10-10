@@ -12,7 +12,7 @@ TTNomeclaturaOS = class
   Unidad, Unidades: Real;
   tabla, tablaun, texport, texportun: TTable;
  public
-  { Declaraciones Públicas }
+  { Declaraciones Pï¿½blicas }
   constructor Create;
   destructor  Destroy; override;
 
@@ -154,7 +154,7 @@ begin
 end;
 
 procedure TTNomeclaturaOS.GenerarNomencladosOSUn;
-// Objetivo...: Generar nomeclados_os_un.json desde la tabla nomecladosun
+// Objetivo...: Generar nomenclados_os_un.json desde la tabla nomecladosun
 var
   lista: TlkJSONlist;
   item: TlkJSONobject;
@@ -184,14 +184,16 @@ begin
     finally
       tablaun.EnableControls;
     end;
-    TlkJSONstreamed.SaveToFile(lista, carpeta + '\nomeclados_os_un.json');
+    TlkJSONstreamed.SaveToFile(lista, carpeta + '\nomenclados_os_un.json');
   finally
     lista.Free;
   end;
 end;
 
-procedure TTNomeclaturaOS.Importar;
-// Objetivo...: Importar Datos
+
+procedure TTNomeclaturaOS.Importar;
+
+// Objetivo...: Importar Datos
 var
   texport: TTable;
 Begin
@@ -281,7 +283,7 @@ begin
     unidad   := tabla.FieldByName('unidad').AsFloat;
     unidades := tabla.FieldByName('unidades').AsFloat;
 
-    // Sincronizamos Unidades por Período
+    // Sincronizamos Unidades por Perï¿½odo
     rs := datosdb.tranSQL('select first 1 unidad from nomecladosun where periodo1 <= ' + '''' + copy(xperiodo, 4, 4) + copy(xperiodo, 1, 2) + '''' + ' order by codos, codigo, periodo1 desc');
     rs.open;
     if (rs.RecordCount > 0) then unidad := rs.FieldByName('unidad').AsFloat;
@@ -313,7 +315,7 @@ begin
   datosdb.Filtrar(tabla, 'codos = ' + '''' + xcodos + '''');
    if (tabla.Active) then begin
     tabla.FieldByName('codos').Visible := False;
-    tabla.FieldByName('codigo').DisplayLabel := 'Código'; tabla.FieldByName('descrip').DisplayLabel := 'Descripción'; tabla.FieldByName('codref').DisplayLabel := 'Cód.Ref'; tabla.FieldByName('nroaut').DisplayLabel := 'Nro.Aut.';
+    tabla.FieldByName('codigo').DisplayLabel := 'Cï¿½digo'; tabla.FieldByName('descrip').DisplayLabel := 'Descripciï¿½n'; tabla.FieldByName('codref').DisplayLabel := 'Cï¿½d.Ref'; tabla.FieldByName('nroaut').DisplayLabel := 'Nro.Aut.';
     tabla.FieldByName('especial').DisplayLabel := 'Esp'; tabla.FieldByName('unidad').DisplayLabel := 'Unidad'; tabla.FieldByName('unidades').DisplayLabel := 'Unidades';
     tabla.FieldByName('descrip').DisplayWidth := 60;
   end;
@@ -335,7 +337,7 @@ begin
   List.Titulo(0, 0, ' ', 1, 'Arial, negrita, 14');
   List.Titulo(0, 0, ' Listado Nomeclaturas Obra Social: ' + obsocial.Nombre, 1, 'Arial, negrita, 14');
   List.Titulo(0, 0, ' ', 1, 'Arial, negrita, 5');
-  List.Titulo(0, 0, 'Cód.' + utiles.espacios(3) +  'Descripción', 1, 'Arial, cursiva, 8');
+  List.Titulo(0, 0, 'Cï¿½d.' + utiles.espacios(3) +  'Descripciï¿½n', 1, 'Arial, cursiva, 8');
   List.Titulo(56, list.Lineactual, 'Cant.Aut.Mes', 2, 'Arial, cursiva, 8');
   List.Titulo(67, list.Lineactual, 'Equivalencia Nomelcador Nacional', 3, 'Arial, cursiva, 8');
   List.Titulo(0, 0, List.linealargopagina(salida), 1, 'Arial, normal, 11');
@@ -343,12 +345,12 @@ begin
 
   tabla.First;
   while not tabla.EOF do Begin
-    // Ordenado por Código
+    // Ordenado por Cï¿½digo
     if (ent_excl = 'E') and (orden = 'C') then
       if (tabla.FieldByName('codigo').AsString >= iniciar) and (tabla.FieldByName('codigo').AsString <= finalizar) then ListLinea(salida);
     if (ent_excl = 'X') and (orden = 'C') then
       if (tabla.FieldByName('codigo').AsString < iniciar) or (tabla.FieldByName('codigo').AsString > finalizar) then ListLinea(salida);
-    // Ordenado Alfabéticamente
+    // Ordenado Alfabï¿½ticamente
     if (ent_excl = 'E') and (orden = 'A') then
       if (tabla.FieldByName('descrip').AsString >= iniciar) and (tabla.FieldByName('descrip').AsString <= finalizar) then ListLinea(salida);
     if (ent_excl = 'X') and (orden = 'A') then
@@ -516,7 +518,7 @@ begin
   end;
   if (tabla.Active) then begin
     tabla.FieldByName('codos').Visible := False;
-    tabla.FieldByName('codigo').DisplayLabel := 'Código'; tabla.FieldByName('descrip').DisplayLabel := 'Descripción'; tabla.FieldByName('codref').DisplayLabel := 'Cód.Ref'; tabla.FieldByName('nroaut').DisplayLabel := 'Nro.Aut.';
+    tabla.FieldByName('codigo').DisplayLabel := 'Cï¿½digo'; tabla.FieldByName('descrip').DisplayLabel := 'Descripciï¿½n'; tabla.FieldByName('codref').DisplayLabel := 'Cï¿½d.Ref'; tabla.FieldByName('nroaut').DisplayLabel := 'Nro.Aut.';
     tabla.FieldByName('especial').DisplayLabel := 'Esp'; tabla.FieldByName('unidad').DisplayLabel := 'Unidad'; tabla.FieldByName('unidades').DisplayLabel := 'Unidades';
     tabla.FieldByName('descrip').DisplayWidth := 60;
   end;

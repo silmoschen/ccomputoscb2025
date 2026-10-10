@@ -59,17 +59,19 @@ object fmActualizacionesOnline: TfmActualizacionesOnline
           TabOrder = 0
           object Panel4: TPanel
             Left = 0
-            Top = 139
+            Top = 145
             Width = 354
-            Height = 74
+            Height = 68
             Align = alClient
             BevelInner = bvLowered
             TabOrder = 0
+            ExplicitTop = 139
+            ExplicitHeight = 74
             object estado: TMemo
               Left = 2
               Top = 2
               Width = 350
-              Height = 70
+              Height = 64
               Align = alClient
               BorderStyle = bsNone
               Font.Charset = ANSI_CHARSET
@@ -80,19 +82,20 @@ object fmActualizacionesOnline: TfmActualizacionesOnline
               ParentFont = False
               ScrollBars = ssBoth
               TabOrder = 0
+              ExplicitHeight = 70
             end
           end
           object Panel2: TPanel
             Left = 0
             Top = 0
             Width = 354
-            Height = 139
+            Height = 145
             Align = alTop
             BevelOuter = bvNone
             TabOrder = 1
             object Label26: TLabel
               Left = 9
-              Top = 54
+              Top = 59
               Width = 88
               Height = 13
               Alignment = taRightJustify
@@ -100,7 +103,7 @@ object fmActualizacionesOnline: TfmActualizacionesOnline
             end
             object procesar: TButton
               Left = 6
-              Top = 2
+              Top = 5
               Width = 169
               Height = 25
               Caption = '&Procesar Datos a Actualizar'
@@ -109,7 +112,7 @@ object fmActualizacionesOnline: TfmActualizacionesOnline
             end
             object transferir: TButton
               Left = 6
-              Top = 112
+              Top = 117
               Width = 169
               Height = 25
               Caption = '&Iniciar Proceso de Transferencia'
@@ -121,10 +124,11 @@ object fmActualizacionesOnline: TfmActualizacionesOnline
               Left = 280
               Top = 0
               Width = 74
-              Height = 139
+              Height = 145
               Align = alRight
               BevelOuter = bvNone
               TabOrder = 2
+              ExplicitHeight = 139
               object cerrar: TButton
                 Left = 6
                 Top = 5
@@ -137,7 +141,7 @@ object fmActualizacionesOnline: TfmActualizacionesOnline
             end
             object DriveComboBox: TDriveComboBox
               Left = 100
-              Top = 53
+              Top = 58
               Width = 136
               Height = 19
               Enabled = False
@@ -145,7 +149,7 @@ object fmActualizacionesOnline: TfmActualizacionesOnline
             end
             object RadioButton1: TRadioButton
               Left = 6
-              Top = 33
+              Top = 36
               Width = 169
               Height = 17
               Caption = '&Generar Disco de Distribuci'#243'n'
@@ -155,7 +159,7 @@ object fmActualizacionesOnline: TfmActualizacionesOnline
             end
             object RadioButton2: TRadioButton
               Left = 6
-              Top = 74
+              Top = 79
               Width = 243
               Height = 17
               Caption = '&Enviar Actualizaci'#243'n a Servidor FTP/NTFS'
@@ -166,7 +170,7 @@ object fmActualizacionesOnline: TfmActualizacionesOnline
             end
             object RadioButton3: TRadioButton
               Left = 6
-              Top = 92
+              Top = 97
               Width = 209
               Height = 17
               Caption = 'Enviar &Actualizaci'#243'n por Email'
@@ -178,7 +182,7 @@ object fmActualizacionesOnline: TfmActualizacionesOnline
       end
     end
     object TabSheet2: TTabSheet
-      Caption = '&Configuraciones'
+      Caption = '&Par'#225'metros'
       ImageIndex = 1
       object Panel5: TPanel
         Left = 0

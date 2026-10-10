@@ -404,6 +404,7 @@ object fmActualizacionesOnline: TfmActualizacionesOnline
   end
   object IdFTP1: TIdFTP
     AutoLogin = True
+    Passive = True
     Password = 'idftp@client.com'
     ProxySettings.ProxyType = fpcmNone
     ProxySettings.Port = 0

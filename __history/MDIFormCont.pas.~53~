@@ -219,6 +219,14 @@ type
     Laboratorios1: TMenuItem;
     CategorasLaboratorios1: TMenuItem;
     PrcticasRealizadas1: TMenuItem;
+    FacturacinAFIP1: TMenuItem;
+    DatosdelaEmpresa1: TMenuItem;
+    ApplicationCreateFormTfmExportarOrdenesSoporteMagneticofmExportarOrdenesSoporteMagnetico1: TMenuItem;
+    N35: TMenuItem;
+    ExportarDetalleFacturacin1: TMenuItem;
+    N36: TMenuItem;
+    ReglasExportacinObrasSociales1: TMenuItem;
+    UBFacturadas1: TMenuItem;
     procedure FormActivate(Sender: TObject);
     procedure sistObrasSocialesClick(Sender: TObject);
     procedure Salir1Click(Sender: TObject);
@@ -302,6 +310,13 @@ type
     procedure Coseguros1Click(Sender: TObject);
     procedure ConfigurarAccesoFTP1Click(Sender: TObject);
     procedure PrcticasRealizadas1Click(Sender: TObject);
+    procedure FacturacinAFIP1Click(Sender: TObject);
+    procedure DatosdelaEmpresa1Click(Sender: TObject);
+    procedure ApplicationCreateFormTfmExportarOrdenesSoporteMagneticofmExportarOrdenesSoporteMagnetico1Click(
+      Sender: TObject);
+    procedure ExportarDetalleFacturacin1Click(Sender: TObject);
+    procedure ReglasExportacinObrasSociales1Click(Sender: TObject);
+    procedure UBFacturadas1Click(Sender: TObject);
   private
     { Private declarations }
     FIniFileName : String;
@@ -344,7 +359,9 @@ uses CUtiles, CBDT, ImgForms, NominaPacientes, NominaNomeclador,
   RenumerarAsientos, ExportarAsientos, ImportacionAsientos,
   InformesContables, ParametrosAuditoria, EstadisticasIAPOS, AuditoriaOnLine,
   AgruparObrasSociales, configaccesoremoto, Coseguros, fmConfigFTP,
-  ListPracticasRealizadas;
+  ListPracticasRealizadas, facturacionAFIP, datosempresa,
+  exportarOrdenesSopMagnetico, ExportarDetalleFacturacion, os_reglas,
+  reportUBFacturadas;
 
 {$R *.DFM}
 
@@ -463,6 +480,12 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
+
+procedure TfmSistem.FacturacinAFIP1Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmFacturacionAfip, fmFacturacionAfip);
+  fmFacturacionAfip.ShowModal;
+end;
 
 procedure TfmSistem.FormActivate(Sender: TObject);
 begin
@@ -687,6 +710,13 @@ begin
   end;
 end;
 
+procedure TfmSistem.DatosdelaEmpresa1Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmDatosEmpresa, fmDatosEmpresa);
+  fmDatosEmpresa.ShowModal;
+  fmDatosEmpresa.Release; fmDatosEmpresa := nil;
+end;
+
 procedure TfmSistem.Datosdelsistema1Click(Sender: TObject);
 begin
   if not Assigned(fmDatosSistema) then Begin
@@ -799,6 +829,13 @@ begin
     fmFactManual.PageControl1.ActivePage := fmFactManual.TabSheet2;
   end;
   fmFactManual.Show;
+end;
+
+procedure TfmSistem.UBFacturadas1Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmUBFacturadas, fmUBFacturadas);
+  fmUBFacturadas.ShowModal;
+  fmUBFacturadas.Release; fmUBFacturadas := nil;
 end;
 
 procedure TfmSistem.Usuarios1Click(Sender: TObject);
@@ -935,6 +972,12 @@ begin
     fmFactManual.CheckBox2.Visible := True;
   end;
   fmFactManual.ShowModal;
+end;
+
+procedure TfmSistem.ReglasExportacinObrasSociales1Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmReglasOs, fmReglasOs);
+  fmReglasOs.ShowModal;
 end;
 
 procedure TfmSistem.sistAuditoriaClick(Sender: TObject);
@@ -1152,6 +1195,13 @@ begin
   fmAgruparObrasSociales.Release; fmAgruparObrasSociales := Nil;
 end;
 
+procedure TfmSistem.ApplicationCreateFormTfmExportarOrdenesSoporteMagneticofmExportarOrdenesSoporteMagnetico1Click(
+  Sender: TObject);
+begin
+  Application.CreateForm(TfmExportarOrdenesSoporteMagnetico, fmExportarOrdenesSoporteMagnetico);
+  fmExportarOrdenesSoporteMagnetico.ShowModal;
+end;
+
 procedure TfmSistem.ArancelesDiferencialesObrasSociales1Click(
   Sender: TObject);
 begin
@@ -1297,6 +1347,12 @@ procedure TfmSistem.ExportacindeAsientos1Click(Sender: TObject);
 begin
   Application.CreateForm(TfmExportarAsientos, fmExportarAsientos);
   fmExportarAsientos.ShowModal;
+end;
+
+procedure TfmSistem.ExportarDetalleFacturacin1Click(Sender: TObject);
+begin
+  Application.CreateForm(TfmExportarDetalleFacturacion, fmExportarDetalleFacturacion);
+  fmExportarDetalleFacturacion.ShowModal;
 end;
 
 procedure TfmSistem.ImportacindeAsientos1Click(Sender: TObject);

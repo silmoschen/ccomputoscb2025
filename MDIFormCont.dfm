@@ -310,6 +310,10 @@ object fmSistem: TfmSistem
         Caption = '&Exportar Actualizaciones de Datos'
         OnClick = GenerarDatosparaActualizacionesOnLine1Click
       end
+      object ExportarActualizacionesSistAuditoria1: TMenuItem
+        Caption = 'Exportar Actualizaciones Sistema Auditoria'
+        OnClick = ExportarActualizacionesSistAuditoria1Click
+      end
       object N15: TMenuItem
         Caption = '-'
       end
@@ -337,7 +341,7 @@ object fmSistem: TfmSistem
             Caption = '-'
           end
           object NomeclaturasObrasSociales1: TMenuItem
-            Caption = 'Nomeclaturas Obras Sociales'
+            Caption = 'Nomenclaturas Obras Sociales'
             OnClick = NomeclaturasObrasSociales1Click
           end
           object IncluiryExcluirCdigosNomenclatura2: TMenuItem

@@ -217,6 +217,9 @@
     <DCCReference Include="..\asociacion\RenumerarAsientos.pas">
       <Form>fmRenumerarAsientos</Form>
     </DCCReference>
+    <DCCReference Include="actualizaciones_auditoria.pas">
+      <Form>fmActualizacionesAuditoria</Form>
+    </DCCReference>
     <DCCReference Include="ActualizarMontosFijosNBU.pas">
       <Form>fmActMontosFijosNBU</Form>
     </DCCReference>

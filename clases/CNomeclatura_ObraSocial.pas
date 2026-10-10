@@ -41,6 +41,8 @@ TTNomeclaturaOS = class
 
   procedure   MarcarPracticaDiferencial(xcodos, xcodigo: string);
   procedure   Exportar;
+  procedure   GenerarNomencladosOS;
+  procedure   GenerarNomencladosOSUn;
   procedure   Importar;
 
   procedure   RegistrarUnidad(xcodos, xcodigo, xperiodo: string; xunidad: real);
@@ -59,6 +61,8 @@ end;
 function nomeclaturaos: TTNomeclaturaOS;
 
 implementation
+
+uses uLkJSON;
 
 var
   xnomeclaturaos: TTNomeclaturaOS = nil;
@@ -110,6 +114,81 @@ Begin
   End;
   datosdb.closeDB(texport);
 End;
+
+procedure TTNomeclaturaOS.GenerarNomencladosOS;
+// Objetivo...: Generar nomenclados_os.json desde la tabla nomeclados
+var
+  lista: TlkJSONlist;
+  item: TlkJSONobject;
+  carpeta: string;
+begin
+  carpeta := dbs.DirSistema + '\auditoria\online\sincro';
+  if not DirectoryExists(carpeta) then ForceDirectories(carpeta);
+  if not tabla.Active then tabla.Open;
+
+  lista := TlkJSONlist.Create;
+  try
+    tabla.DisableControls;
+    try
+      tabla.First;
+      while not tabla.Eof do begin
+        item := TlkJSONobject.Create;
+        item.Add('codos', tabla.FieldByName('codos').AsString);
+        item.Add('codigo', tabla.FieldByName('codigo').AsString);
+        item.Add('descrip', tabla.FieldByName('descrip').AsString);
+        item.Add('codref', tabla.FieldByName('codref').AsString);
+        item.Add('especial', tabla.FieldByName('especial').AsString);
+        item.Add('nroaut', tabla.FieldByName('nroaut').AsInteger);
+        item.Add('unidad', tabla.FieldByName('unidad').AsFloat);
+        item.Add('unidades', tabla.FieldByName('unidades').AsFloat);
+        lista.Add(item);
+        tabla.Next;
+      end;
+    finally
+      tabla.EnableControls;
+    end;
+    TlkJSONstreamed.SaveToFile(lista, carpeta + '\nomenclados_os.json');
+  finally
+    lista.Free;
+  end;
+end;
+
+procedure TTNomeclaturaOS.GenerarNomencladosOSUn;
+// Objetivo...: Generar nomeclados_os_un.json desde la tabla nomecladosun
+var
+  lista: TlkJSONlist;
+  item: TlkJSONobject;
+  carpeta: string;
+begin
+  carpeta := dbs.DirSistema + '\auditoria\online\sincro';
+  if not DirectoryExists(carpeta) then ForceDirectories(carpeta);
+  if not Assigned(tablaun) then
+    tablaun := datosdb.openDB('nomecladosun', '', '', dbs.BaseDat);
+  if not tablaun.Active then tablaun.Open;
+
+  lista := TlkJSONlist.Create;
+  try
+    tablaun.DisableControls;
+    try
+      tablaun.First;
+      while not tablaun.Eof do begin
+        item := TlkJSONobject.Create;
+        item.Add('codos', tablaun.FieldByName('codos').AsString);
+        item.Add('codigo', tablaun.FieldByName('codigo').AsString);
+        item.Add('periodo', tablaun.FieldByName('periodo').AsString);
+        item.Add('periodo1', tablaun.FieldByName('periodo1').AsString);
+        item.Add('unidad', tablaun.FieldByName('unidad').AsFloat);
+        lista.Add(item);
+        tablaun.Next;
+      end;
+    finally
+      tablaun.EnableControls;
+    end;
+    TlkJSONstreamed.SaveToFile(lista, carpeta + '\nomeclados_os_un.json');
+  finally
+    lista.Free;
+  end;
+end;
 
 procedure TTNomeclaturaOS.Importar;
 // Objetivo...: Importar Datos

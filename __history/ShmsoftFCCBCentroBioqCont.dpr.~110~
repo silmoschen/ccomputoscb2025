@@ -1,4 +1,4 @@
-program ShmsoftFCCBCentroBioqCont;
+ï»¿program ShmsoftFCCBCentroBioqCont;
 
 
 
@@ -36,7 +36,6 @@ uses
   MBXFILE in '..\..\INTERNET\smtp\DELPHI\VC32\MBXFILE.PAS',
   CNomeclaCCB in '..\..\CLASES\CNomeclaCCB.pas',
   MDIFormCont in 'MDIFormCont.pas' {fmSistem},
-  CAdmNumCompr in '..\..\CLASES\CAdmNumCompr.pas',
   CEstadisticasFacturacionCCB in '..\..\CLASES\CEstadisticasFacturacionCCB.pas',
   FacturacionManual in 'FacturacionManual.pas' {fmFactManual},
   NomecladorAn in 'NomecladorAn.pas' {fmNomeclador},
@@ -56,8 +55,6 @@ uses
   CObrasSocialesCCB in '..\..\CLASES\CObrasSocialesCCB.pas',
   NominaDeCategorias in 'NominaDeCategorias.pas' {fmListCategorias},
   tabladecategoriasLab in 'tabladecategoriasLab.pas' {fmTablaCategoriasLab},
-  CActualizaciones in '..\..\CLASES\CActualizaciones.pas',
-  CActualizacionesCentroComputosCB in '..\..\CLASES\CActualizacionesCentroComputosCB.pas',
   EleccionObrasSocialesAgrupadas in 'EleccionObrasSocialesAgrupadas.pas' {fmEleObraSocialesAgrupadas},
   ModifObraSocial in 'ModifObraSocial.pas' {fmModificarObraSocial},
   Estadisticas in 'Estadisticas.pas' {fmEstadisticas},
@@ -160,7 +157,7 @@ uses
   DebitosCreditosEstadisticaIAPOS in 'DebitosCreditosEstadisticaIAPOS.pas' {fmAjustesDepositosRetiros},
   CUBReferentes in 'clases\CUBReferentes.pas',
   DetalleDeterminacionesOnLine in 'DetalleDeterminacionesOnLine.pas' {fmEdicionDeterminaciones},
-  CAuditoriaOnLine in '..\..\CLASES\CAuditoriaOnLine.pas',
+  CAuditoriaOnLine in 'clases\CAuditoriaOnLine.pas',
   AgregarQuitarDetOnLine in 'AgregarQuitarDetOnLine.pas' {fmDeterminacionOnLine},
   AgruparObrasSociales in 'AgruparObrasSociales.pas' {fmAgruparObrasSociales},
   CAgrupacionOSFact in 'clases\CAgrupacionOSFact.pas',
@@ -171,7 +168,6 @@ uses
   CNBU in 'clases\CNBU.pas',
   CExportObrasSociales in 'clases\CExportObrasSociales.pas',
   Nomina_NBU in 'Nomina_NBU.pas' {fmListNBU},
-  CFacturacionCCB in '..\..\CLASES\CFacturacionCCB.pas',
   BuscarMedicoCab in 'BuscarMedicoCab.pas' {fmBuscarMedicoCabecera},
   CMedicosCabAO in 'clases\CMedicosCabAO.pas',
   configaccesoremoto in 'configaccesoremoto.pas' {fmConfigFirebird},
@@ -182,7 +178,9 @@ uses
   formAjustarTotalesProfIVA in 'formAjustarTotalesProfIVA.pas' {fmAjustesTotalesIVA},
   CUtilidadesArchivos in '..\..\CLASES\CUtilidadesArchivos.pas',
   CFTP in 'clases\CFTP.pas',
+  CSFTP in 'clases\CSFTP.pas',
   AuditoriaOnLine in 'AuditoriaOnLine.pas' {fmAuditoriaOnLine},
+  actualizaciones_auditoria in 'actualizaciones_auditoria.pas' {fmActualizacionesAuditoria},
   CPadronOSCCB in 'clases\CPadronOSCCB.pas',
   Comprobantes in 'Comprobantes.pas' {fmComprobantes},
   uploadftp in 'uploadftp.pas' {fmUploadFTP},
@@ -206,7 +204,11 @@ uses
   CUnidadesNBU in 'clases\CUnidadesNBU.pas',
   detalleFacturado in 'detalleFacturado.pas' {fmDetalleFacturado},
   reportUBFacturadas in 'reportUBFacturadas.pas' {fmUBFacturadas},
-  selectObraSocial in 'selectObraSocial.pas' {fmSelObraSocial};
+  selectObraSocial in 'selectObraSocial.pas' {fmSelObraSocial},
+  CNomeclatura_ObraSocial in 'clases\CNomeclatura_ObraSocial.pas',
+  CAuditoriaCCB in 'clases\CAuditoriaCCB.pas',
+  CComregi in 'clases\CComregi.pas',
+  CFacturacionCCB in 'clases\CFacturacionCCB.pas';
 
 {$R *.RES}
 
@@ -214,9 +216,9 @@ begin
   fmIntroForm := TfmIntroForm.Create(Application);
   fmIntroForm.Label1.Left := fmIntroForm.Label1.Left - 80;
   fmIntroForm.Label2.Left := fmIntroForm.Label2.Left - 80;
-  fmIntroForm.Label1.Caption := 'Administración Central de Bioquímicos';
-  fmIntroForm.Label2.Caption := 'Versión: 3.07.009';
-  fmIntroForm.Label2.Caption := 'Versión: 4.05.006';
+  fmIntroForm.Label1.Caption := 'AdministraciÃ³n Central de BioquÃ­micos';
+  fmIntroForm.Label2.Caption := 'VersiÃ³n: 3.07.009';
+  fmIntroForm.Label2.Caption := 'VersiÃ³n: 4.05.006';
   fmIntroForm.Show;
   fmIntroForm.Update;
   Application.Initialize;

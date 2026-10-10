@@ -38,7 +38,6 @@ uses
   MDIFormCont in 'MDIFormCont.pas' {fmSistem},
   CEstadisticasFacturacionCCB in '..\..\CLASES\CEstadisticasFacturacionCCB.pas',
   FacturacionManual in 'FacturacionManual.pas' {fmFactManual},
-  NomecladorAn in 'NomecladorAn.pas' {fmNomeclador},
   NominaComprobantes in '..\..\SME\IVA\NominaComprobantes.pas' {fmListComprobantes},
   Disposit in '..\..\Interfases\Disposit.pas' {Dispositivo},
   obrasocial in 'obrasocial.pas' {fmObsociales},
@@ -180,6 +179,7 @@ uses
   CFTP in 'clases\CFTP.pas',
   CSFTP in 'clases\CSFTP.pas',
   AuditoriaOnLine in 'AuditoriaOnLine.pas' {fmAuditoriaOnLine},
+  actualizaciones_auditoria in 'actualizaciones_auditoria.pas' {fmActualizacionesAuditoria},
   CPadronOSCCB in 'clases\CPadronOSCCB.pas',
   Comprobantes in 'Comprobantes.pas' {fmComprobantes},
   uploadftp in 'uploadftp.pas' {fmUploadFTP},
@@ -207,7 +207,8 @@ uses
   CNomeclatura_ObraSocial in 'clases\CNomeclatura_ObraSocial.pas',
   CAuditoriaCCB in 'clases\CAuditoriaCCB.pas',
   CComregi in 'clases\CComregi.pas',
-  CFacturacionCCB in 'clases\CFacturacionCCB.pas';
+  CFacturacionCCB in 'clases\CFacturacionCCB.pas',
+  NomecladorAn in 'NomecladorAn.pas' {fmNomeclador};
 
 {$R *.RES}
 
@@ -222,6 +223,7 @@ begin
   fmIntroForm.Update;
   Application.Initialize;
   Application.CreateForm(TfmSistem, fmSistem);
+  Application.CreateForm(TfmNomeclador, fmNomeclador);
   fmIntroForm.Hide;
   fmIntroForm.Release; fmIntroForm := Nil;
   Application.Run;

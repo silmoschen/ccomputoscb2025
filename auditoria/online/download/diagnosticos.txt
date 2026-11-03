@@ -1,0 +1,53 @@
+R59      R59                ADENOMEGALIA                                                                                          
+R10.0    R10   0            ABDOMEN AGUDO                                                                                         
+A06      A06                AMEBIASIS                                                                                             
+J20      J20                BRONQUITIS AGUDA                                                                                      
+D64.9    64    9            ANEMIA DE TIPO NO ESPECIFICADO                                                                        
+J45      J45                ASMA                                                                                                  
+L64      64                 ALOPECIA AREATA                                                                                       
+N39.0    N39   0            INFECCION DE VIAS URINARIAS, SITIO NO ESPECIFICADO                                                    
+E23.2    E23   2            DIABETES                                                                                              
+T78.4    T78   4            ALERGIA NO ESPECIFICADA                                                                               
+E88.9    E88   9            TRASTORNO METABOLICO, NO ESPECIFICA                                                                   
+E03.9    E03   9            HIPOTIROIDISMO, NO ESPECIFICADO                                                                       
+K59.1    K59   1            DIARREA FUNCIONAL                                                                                     
+J02      J02                FARINGITIS AGUDA                                                                                      
+E78.5    78    5            HIPERLIPIDEMIA NO ESPECIFICADA                                                                        
+N18      N18                INSUFICIENCIA RENAL CRONICA                                                                           
+Z40.9    Z40.9              CIRUGIA NO ESPECIFICADA                                                                               
+I10      HT    01    01     HIPERTENSION ARTERIAL                                                                                 
+B49      B49                MICOSIS, NO ESPECIFICADA                                                                              
+I42      I42                CARDIOMIOPATIA                                                                                        
+C80      80                 TUMOR MALIGNO DE SITIOS NO ESPECIFICADOS                                                              
+C50      C50                TUMOR MALIGNO DE LA MAMA                                                                              
+C61      C61                TUMOR MALIGNO DE LA PROSTATA                                                                          
+R50.9    R50   9            FIEBRE, NO ESPECIFICADA                                                                               
+R42      R42                MAREO Y DESVANECIMIENTO                                                                               
+03011    PR    01    11     PREOPERATORIO                                                                                         
+R10      10                 DOLOR ABDOMINAL Y PELVICO                                                                             
+N30      N30                CISTITIS                                                                                              
+M81.9    81    9            OSTEOPOROSIS NO ESPECIFICADA                                                                          
+D68.9    Z100  0            ANTICOAGULACION                                                                                       
+000000   00    00    00     RECIEN NACIDO                                                                                         
+N91      N91                MENSTRUACION AUSENTE, ESCASA O RARA                                                                   
+R30.0    R30   0            DISURIA                                                                                               
+M06.9    M06   9            ARTRITIS REUMATOIDE, NO ESPECIFICADA                                                                  
+E66      E66                OBESIDAD                                                                                              
+J18.9    J18   9            NEUMONIA, NO ESPECIFICADA                                                                             
+N76.0    N76   0            VAGINITIS AGUDA                                                                                       
+R63.4    R63   4            PERDIDA ANORMAL DE PESO                                                                               
+O20.0    O20   0            AMENAZA DE ABORTO                                                                                     
+N91.0    N91   0            AMENORREA PRIMARIA                                                                                    
+M79.1    M79   1            MIALGIA                                                                                               
+R73.9    R73   9            HIPERGLICEMIA, NO ESPECIFICADA                                                                        
+B36.9    B36   9            MICOSIS SUPERFICIAL, SIN OTRA ESPECIFICACION                                                          
+B82      B82                PARASITOSIS INTESTINALES, SIN OTRA ESPECIFICACION                                                     
+E05      HT    06    09     HIPERTIROIDISMO                                                                                       
+I82.9    82    9            EMBOLIA Y TROMBOSIS DE VENA NO ESPECIFICADO                                                           
+K35      K35                APENDICITIS AGUDA                                                                                     
+R17      R17                ICTERICIA NO ESPECIFICADA                                                                             
+N34      N34                URETRITIS Y SINDROME URETRAL                                                                          
+I21      I21                INFARTO AGUDO DEL MIOCARDIO                                                                           
+K29.7    K29   7            GASTRITIS, NO ESPECIFICADA                                                                            
+N94.2    N94   2            VAGINISMO                                                                                             
+K81      K81                COLECISTITIS                                                                                          

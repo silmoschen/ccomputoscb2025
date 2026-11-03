@@ -145,7 +145,6 @@ uses
   RBLD1 in '..\..\Varios\repara_paradox\RBLD1.PAS',
   TRANSLAT in '..\..\Varios\repara_paradox\INTERNAT\TRANSLAT.PAS',
   tablaNBU in 'tablaNBU.pas' {fmTablaNBU},
-  CNBU in 'clases\CNBU.pas',
   CDebitosCreditosIAPOS in 'clases\CDebitosCreditosIAPOS.pas',
   CUBReferentes in 'clases\CUBReferentes.pas',
   EstadisticasIAPOS in 'EstadisticasIAPOS.pas' {fmEstadisticasIAPOS},
@@ -171,11 +170,12 @@ uses
   CDatosEmpresa in 'clases\CDatosEmpresa.pas',
   reportUBFacturadas in 'reportUBFacturadas.pas' {fmUBFacturadas},
   PresupuestoRapido in 'PresupuestoRapido.pas' {fmPresupuestoRapido},
-  CNomeclatura_ObraSocial in 'clases\CNomeclatura_ObraSocial.pas',
   CAuditoriaCCB in 'clases\CAuditoriaCCB.pas',
   CComregi in 'clases\CComregi.pas',
   CSFTP in 'clases\CSFTP.pas',
-  CFacturacionCCB in 'clases\CFacturacionCCB.pas';
+  CFacturacionCCB in 'clases\CFacturacionCCB.pas',
+  CNBU in 'clases\CNBU.pas',
+  CNomeclatura_ObraSocial in 'clases\CNomeclatura_ObraSocial.pas';
 
 {$R *.RES}
 

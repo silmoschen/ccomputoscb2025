@@ -24,13 +24,10 @@ object fmReportsAFIP: TfmReportsAFIP
   end
   object Database: TDatabase
     DatabaseName = 'centrobioq'
-    DriverName = 'INTRBASE'
     KeepConnection = False
     LoginPrompt = False
     Params.Strings = (
-      
-        'SERVER NAME=C:\sidelphi32\SGen\ccomputoscb\interbase\centrobioq.' +
-        'gdb'
+      'SERVER NAME=C:\sidelphi32\SGen\interbase\cblnsf\centrobioq.gdb'
       'USER NAME=sysdba'
       'OPEN MODE=READ/WRITE'
       'SCHEMA CACHE SIZE=8'
@@ -119,8 +116,8 @@ object fmReportsAFIP: TfmReportsAFIP
       
         'select distinct copia, periodo, codos, idcompr, tipo, sucursal, ' +
         'numero, fechavto1, fechavto2, fecha, cae, obrasocial, cuit, mont' +
-        'o, vtocae, comprobante, p1, p2, p3, p4, p5, par1, par2, par3 fro' +
-        'm datosfactreport order by orden')
+        'o, vtocae, comprobante, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10,' +
+        '  par1, par2, par3 from datosfactreport order by orden')
     Left = 48
     Top = 48
     object QueryMasterCOPIA: TStringField
@@ -215,6 +212,26 @@ object fmReportsAFIP: TfmReportsAFIP
     end
     object QueryMasterPAR3: TStringField
       FieldName = 'PAR3'
+      Size = 50
+    end
+    object QueryMasterP6: TStringField
+      FieldName = 'P6'
+      Size = 50
+    end
+    object QueryMasterP7: TStringField
+      FieldName = 'P7'
+      Size = 50
+    end
+    object QueryMasterP8: TStringField
+      FieldName = 'P8'
+      Size = 50
+    end
+    object QueryMasterP9: TStringField
+      FieldName = 'P9'
+      Size = 50
+    end
+    object QueryMasterP10: TStringField
+      FieldName = 'P10'
       Size = 50
     end
   end

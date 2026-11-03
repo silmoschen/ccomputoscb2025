@@ -360,6 +360,10 @@ object fmExportarOrdenesSoporteMagnetico: TfmExportarOrdenesSoporteMagnetico
     object TabSheet2: TTabSheet
       Caption = 'Exportaci'#243'n por Regla'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object TPanel
         Left = 0
         Top = 0
@@ -374,7 +378,7 @@ object fmExportarOrdenesSoporteMagnetico: TfmExportarOrdenesSoporteMagnetico
           Top = 16
           Width = 169
           Height = 21
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 0
           Text = 'FE SALUD (Regla 10)'
           OnChange = reglasExportChange
@@ -386,7 +390,7 @@ object fmExportarOrdenesSoporteMagnetico: TfmExportarOrdenesSoporteMagnetico
           Top = 43
           Width = 169
           Height = 21
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 1
           Text = '10'
           Visible = False

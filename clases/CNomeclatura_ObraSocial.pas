@@ -1,4 +1,4 @@
-unit CNomeclatura_ObraSocial;
+﻿unit CNomeclatura_ObraSocial;
 
 interface
 
@@ -283,8 +283,8 @@ begin
     unidad   := tabla.FieldByName('unidad').AsFloat;
     unidades := tabla.FieldByName('unidades').AsFloat;
 
-    // Sincronizamos Unidades por Per�odo
-    rs := datosdb.tranSQL('select first 1 unidad from nomecladosun where periodo1 <= ' + '''' + copy(xperiodo, 4, 4) + copy(xperiodo, 1, 2) + '''' + ' order by codos, codigo, periodo1 desc');
+    // Sincronizamos Unidades por Periodo
+    rs := datosdb.tranSQL('select first 1 unidad from nomecladosun where codigo = ' + '''' + xcodigo + '''' + ' and periodo1 <= ' + '''' + copy(xperiodo, 4, 4) + copy(xperiodo, 1, 2) + '''' + ' order by codos, codigo, periodo1 desc');
     rs.open;
     if (rs.RecordCount > 0) then unidad := rs.FieldByName('unidad').AsFloat;
     rs.close;

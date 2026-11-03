@@ -902,9 +902,9 @@ object fmFactManual: TfmFactManual
             BevelOuter = bvNone
             TabOrder = 0
             object Panel56: TPanel
-              Left = 425
+              Left = 424
               Top = 27
-              Width = 67
+              Width = 68
               Height = 51
               Align = alRight
               BevelOuter = bvNone
@@ -998,11 +998,12 @@ object fmFactManual: TfmFactManual
             object Panel62: TPanel
               Left = 0
               Top = 27
-              Width = 425
+              Width = 424
               Height = 51
               Align = alClient
               BevelOuter = bvNone
               TabOrder = 2
+              ExplicitWidth = 425
               object Label50: TLabel
                 Left = 6
                 Top = 6
@@ -1083,15 +1084,6 @@ object fmFactManual: TfmFactManual
                 OnKeyDown = ordenauditKeyDown
                 OnKeyUp = ordenauditKeyUp
               end
-              object recordenes: TCheckBox
-                Left = 305
-                Top = 25
-                Width = 120
-                Height = 17
-                Caption = 'Refacturar &Ordenes'
-                Enabled = False
-                TabOrder = 3
-              end
               object btnBuscarOrdenes: TBitBtn
                 Left = 264
                 Top = 27
@@ -1100,7 +1092,7 @@ object fmFactManual: TfmFactManual
                 Hint = 'Buscar Ordenes Auditadas para Facturar'
                 ParentShowHint = False
                 ShowHint = True
-                TabOrder = 4
+                TabOrder = 3
                 OnClick = btnBuscarOrdenesClick
                 Glyph.Data = {
                   F6000000424DF600000000000000760000002800000010000000100000000100
@@ -1112,14 +1104,24 @@ object fmFactManual: TfmFactManual
                   FFFFFFFF00F0BB00FFFFFFF0B00F0BB00FFFFFF0B00FF0B00FFFFFF0BB000BB0
                   0FFFFFFF0BBBBB00FFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFF}
               end
+              object recordenes: TCheckBox
+                Left = 304
+                Top = 26
+                Width = 120
+                Height = 17
+                Caption = 'Refacturar &Ordenes'
+                Enabled = False
+                TabOrder = 4
+              end
               object verPac: TCheckBox
-                Left = 305
+                Left = 304
                 Top = 3
                 Width = 120
                 Height = 17
                 Caption = 'Mostrar Paciente'
                 Enabled = False
                 TabOrder = 5
+                Visible = False
                 OnClick = verPacClick
               end
             end

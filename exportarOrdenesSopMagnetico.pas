@@ -740,7 +740,8 @@ begin
 
     // Prorrateamos comprobante
     exportObrasSociales.getDatos(periodo.Text, r.FieldByName('idprof').asstring, idos.Text);
-
+    //if (exportObrasSociales.Tipo = 'C') and (exportObrasSociales.Sucursal = '0006') and (exportObrasSociales.Numero = '00000001')  then begin
+    
     monto1 := r.FieldByName('iva').AsFloat * (obsocial.retencioniva * 0.01);
     total  := total + (r.FieldByName('monto').asfloat + monto1);
     total2 := r.FieldByName('monto').asfloat + monto1;
@@ -764,6 +765,7 @@ begin
     write(arch, utiles.sLlenarIzquierda(utiles.StringRemplazarCaracteres(importe, ',', '.'), 10, '0') + sepa);
     writeLn(arch, utiles.sLlenarIzquierda(profesional.Nrocuit, 13, '0') + sepa);
 
+    //end;
     //monto1 := r.FieldByName('iva').AsFloat * (obsocial.retencioniva * 0.01);
     //total := total + (r.FieldByName('monto').asfloat + monto1);
 

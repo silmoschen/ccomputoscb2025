@@ -311,7 +311,7 @@ object fmSistem: TfmSistem
         OnClick = GenerarDatosparaActualizacionesOnLine1Click
       end
       object ExportarActualizacionesSistAuditoria1: TMenuItem
-        Caption = 'Exportar Actualizaciones Sistema Auditoria'
+        Caption = 'Exportar Actualizaciones Sistema Auditor'#237'a'
         OnClick = ExportarActualizacionesSistAuditoria1Click
       end
       object N15: TMenuItem
@@ -799,7 +799,7 @@ object fmSistem: TfmSistem
         Caption = '-'
       end
       object ParmetrosdeAuditoria1: TMenuItem
-        Caption = '&Par'#225'metros de Auditoria'
+        Caption = '&Par'#225'metros de Auditor'#237'a'
         OnClick = ParmetrosdeAuditoria1Click
       end
     end

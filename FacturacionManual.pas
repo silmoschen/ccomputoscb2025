@@ -126,7 +126,6 @@ type
     idprofaudit: TMaskEdit;
     btnBuscarProfAudit: TBitBtn;
     ordenaudit: TMaskEdit;
-    recordenes: TCheckBox;
     Panel58: TPanel;
     FAudit: TStringGrid;
     TabSheet2: TTabSheet;
@@ -440,6 +439,7 @@ type
     btnRefacturar: TButton;
     btnExportarTotalesRI: TBitBtn;
     RadioButton9: TRadioButton;
+    recordenes: TCheckBox;
     verPac: TCheckBox;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure periodoKeyDown(Sender: TObject; var Key: Word;

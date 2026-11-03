@@ -287,7 +287,7 @@ type
   procedure  recalcularMontosAnalisisRI(xperiodo, xcodos: string);
   function   getFacturas(xperiodo: string): TQuery;
   procedure  registrarCAE(xperiodo, xcodos, xcae, xtipo, xsucursal, xnumero, xfecha, xfechavto1, xfechavto2, xvtocae, xcodigocomprobante: string);
-  procedure  registrarFechaVto2(xperiodo, xcodos, xfechavto2: string);
+  procedure  registrarFechaVto2(xperiodo, xcodos, xfecha, xfechavto2: string);
   procedure  generarFactura(xperiodo, xcodos, xinicioactividad, xcomprobante, xcbu: string; xcopias: integer);
 
   procedure  exportarTotalesRI(xperiodo: string);
@@ -827,11 +827,12 @@ begin
   end;
 end;
 
-procedure TTFacturacionCCB.registrarFechaVto2(xperiodo, xcodos, xfechavto2: string);
+procedure TTFacturacionCCB.registrarFechaVto2(xperiodo, xcodos, xfecha, xfechavto2: string);
 begin
   if BuscarDatosFact(xperiodo, xcodos) then begin
       datosfact.Edit;
       datosfact.FieldByName('fechavto2').AsString := xfechavto2;
+      datosfact.FieldByName('fecha').AsString := xfecha;
       try
         datosfact.Post
        except
@@ -915,7 +916,8 @@ begin
       t.FieldByName('p3').asstring := osiva;
       t.FieldByName('p4').asstring := osloc;
       t.FieldByName('p5').asstring := xinicioactividad;
-      t.FieldByName('par3').asstring := xcbu;
+      t.FieldByName('p6').asstring := xcbu;
+      t.FieldByName('par1').asstring := '01/' + copy(r.FieldByName('fecha').asstring, 4, 9);
       try
         t.post
       except

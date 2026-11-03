@@ -398,7 +398,7 @@ begin
     fmDatosSistema.BackupCierre;
     if (usuario.usuario = 'Administrador') then
       if dbs.setOpcionBackup = 1 then Begin
-        // Backup MÃÂ³dulos Generales
+        // Backup Módulos Generales
         auditoriacb.RealizarBackup;
       end;
     fmDatosSistema.release; fmDatosSistema := nil;
@@ -513,7 +513,7 @@ begin
     if dialogoimpresoras then Impresoras1Click(Sender);   // Solo cuando ingresa por primera vez al sistema
 
     if actualizaciones.ReinicarAplicacion then Begin
-      utiles.msgError('Se han Instalado Nuevas Actualizaciones, ' + chr(13) + 'Debe Reiniciar la AplicaciÃÂ³n.');
+      utiles.msgError('Se han Instalado Nuevas Actualizaciones, ' + chr(13) + 'Debe Reiniciar la Aplicación.');
       Application.Terminate;
     end;
   end;
@@ -629,7 +629,7 @@ begin
     ComprobantesRegistrables1.Enabled := False;
   end;
   if usuario.usuario = 'Administrador' then Begin  // Upgrades
-    Caption := 'shmSOFT - AdministraciÃÂ³n Central de BioquÃÂ­micos';
+    Caption := 'shmSOFT - Administración Central de Bioquímicos';
     {
     actualizaciones.Version('1.0.01');
     actualizaciones.Version('1.10.00');
@@ -660,24 +660,24 @@ begin
     actualizaciones.Version('3.05.20');
     actualizaciones.Version('3.06.001');
     if actualizaciones.reinicia then Begin
-      utiles.msgError('Se han Instalado Nuevas Actualizaciones, ' + chr(13) + 'Debe Reiniciar la AplicaciÃÂ³n.', 'Importante !');
+      utiles.msgError('Se han Instalado Nuevas Actualizaciones, ' + chr(13) + 'Debe Reiniciar la Aplicación.', 'Importante !');
       Application.Terminate;
     end;
     actualizaciones.Version('3.06.002');
     actualizaciones.Version('3.06.005');
     if actualizaciones.reinicia then Begin
-      utiles.msgError('Se han Instalado Nuevas Actualizaciones, ' + chr(13) + 'Debe Reiniciar la AplicaciÃÂ³n.', 'Importante !');
+      utiles.msgError('Se han Instalado Nuevas Actualizaciones, ' + chr(13) + 'Debe Reiniciar la Aplicación.', 'Importante !');
       Application.Terminate;
     end;
     actualizaciones.Version('3.06.007');
     if actualizaciones.reinicia then Begin
-      utiles.msgError('Se han Instalado Nuevas Actualizaciones, ' + chr(13) + 'Debe Reiniciar la AplicaciÃÂ³n.', 'Importante !');
+      utiles.msgError('Se han Instalado Nuevas Actualizaciones, ' + chr(13) + 'Debe Reiniciar la Aplicación.', 'Importante !');
       Application.Terminate;
     end;
 
     actualizaciones.Version('3.07.009');
     if actualizaciones.reinicia then Begin
-      utiles.msgError('Se han Instalado Nuevas Actualizaciones, ' + chr(13) + 'Debe Reiniciar la AplicaciÃÂ³n.', 'Importante !');
+      utiles.msgError('Se han Instalado Nuevas Actualizaciones, ' + chr(13) + 'Debe Reiniciar la Aplicación.', 'Importante !');
       Application.Terminate;
     end; 
     actualizaciones.Version('4.01.001');
@@ -701,7 +701,7 @@ begin
   if not Assigned(fmBackup) then Begin
     usuario.desconectar;
     Application.CreateForm(TfmBackup, fmBackup);
-    // Predeterminamos la VÃÂ­a a Respaldar
+    // Predeterminamos la Vía a Respaldar
     fmBackup.FileListBox.Items.Clear;
     fmBackup.FileListBox.Items.Add(dbs.DirSistema + '\arch\*.*');
     fmBackup.FileListBox.Items.Add(dbs.DirSistema + '\archdat\*.*');
@@ -852,7 +852,7 @@ procedure TfmSistem.Acercade1Click(Sender: TObject);
 begin
   Application.CreateForm(TfmAcerca, fmAcerca);
   fmAcerca.version.Caption := version;
-  fmAcerca.Label3.Caption  := 'AdministraciÃÂ³n Central de BioquÃÂ­micos';
+  fmAcerca.Label3.Caption  := 'Administración Central de Bioquímicos';
   fmAcerca.ShowModal;
   fmAcerca.Release; fmAcerca := nil;
 end;
@@ -864,7 +864,7 @@ begin
   if not Assigned(fmBackup) then Begin
     usuario.desconectar;
     Application.CreateForm(TfmBackup, fmBackup);
-    // Predeterminamos la VÃÂ­a a Respaldar
+    // Predeterminamos la Vía a Respaldar
     fmBackup.FileListBox.Items.Clear;
     r := facturacion.setDatosIngresadosEnElDia;
     r.Open;
@@ -903,7 +903,7 @@ begin
   if ((Sem <> 0) and (GetLastError = ERROR_ALREADY_EXISTS)) then
   begin
     CloseHandle( Sem );
-    ShowMessage('Este programa ya se estÃÂ¡ ejecutando...');
+    ShowMessage('Este programa ya se está ejecutando...');
     Halt;
   end;
   FIniFileName := dbs.dirSistema + '\ccomputoscb.ini';
@@ -912,10 +912,10 @@ end;
 procedure TfmSistem.DatosFactLaboratorios1Click(Sender: TObject);
 begin
   if MDIChildCount > 0 then utiles.msgError('Debe Cerrar El Resto de las Operaciones para Proceder') else
-    if utiles.DepurarInformacion('DepuraciÃÂ³n de InformaciÃÂ³n') then
+    if utiles.DepurarInformacion('Depuración de Información') then
       if not Assigned(fmDepurarInformacion) then Begin
         Application.CreateForm(TfmDepurarInformacion, fmDepurarInformacion);
-        fmDepurarInformacion.Caption := 'Depurar PerÃÂ­odos Facturados';
+        fmDepurarInformacion.Caption := 'Depurar Períodos Facturados';
         fmDepurarInformacion.ShowModal;
       end;
 end;

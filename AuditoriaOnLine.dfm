@@ -317,6 +317,10 @@ object fmAuditoriaOnLine: TfmAuditoriaOnLine
     object TabSheet3: TTabSheet
       Caption = '&Informes de Control'
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Panel8: TPanel
         Left = 0
         Top = 0

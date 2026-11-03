@@ -72,12 +72,12 @@ object fmFacturacionAfip: TfmFacturacionAfip
           Caption = 'Fecha:'
         end
         object Label6: TLabel
-          Left = 276
+          Left = 267
           Top = 10
-          Width = 62
+          Width = 71
           Height = 13
           Alignment = taRightJustify
-          Caption = 'F. Vto. Pago:'
+          Caption = 'F. Vto. Pago 1:'
         end
         object Label7: TLabel
           Left = 22
@@ -187,7 +187,7 @@ object fmFacturacionAfip: TfmFacturacionAfip
           Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowSelect]
           ParentFont = False
           TabOrder = 0
-          OnClick = DClick
+          OnDblClick = DDblClick
           OnKeyDown = DKeyDown
           ColWidths = (
             269
@@ -315,7 +315,7 @@ object fmFacturacionAfip: TfmFacturacionAfip
           TabOrder = 6
         end
         object ComboBox4: TComboBox
-          Left = 247
+          Left = 287
           Top = 20
           Width = 71
           Height = 21

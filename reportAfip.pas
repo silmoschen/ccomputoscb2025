@@ -47,6 +47,11 @@ type
     QueryMasterPAR1: TStringField;
     QueryMasterPAR2: TStringField;
     QueryMasterPAR3: TStringField;
+    QueryMasterP6: TStringField;
+    QueryMasterP7: TStringField;
+    QueryMasterP8: TStringField;
+    QueryMasterP9: TStringField;
+    QueryMasterP10: TStringField;
     procedure Button1Click(Sender: TObject);
   private
     { Private declarations }

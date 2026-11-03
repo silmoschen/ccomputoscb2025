@@ -56,7 +56,7 @@ type
     procedure ComboBox1Change(Sender: TObject);
     procedure fvtopagoKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure DClick(Sender: TObject);
+    procedure DDblClick(Sender: TObject);
   private
     { Private declarations }
     //CREAMOS EL PORT
@@ -186,7 +186,7 @@ var asociados: cbteAsocArray;
 var _cuit, _fecha, _fvto, cbuEnvio, s, t: string;
 var numero, fila: Integer;
 var monto: double;
-begin
+begin     
 
      seleccionarComprobante;
 
@@ -317,7 +317,7 @@ begin
   tope.Text := combobox3.Text;
 end;
 
-procedure TfmFacturacionAfip.DClick(Sender: TObject);
+procedure TfmFacturacionAfip.DDblClick(Sender: TObject);
 begin
   fecha.Text := copy(D.Cells[1, D.Row], 1, 6) + copy(D.Cells[1, D.Row], 9, 2);
   fvtopago.Text := copy(D.Cells[13, D.Row], 1, 6) + copy(D.Cells[13, D.Row], 9, 2);
@@ -388,14 +388,19 @@ end;
 procedure TfmFacturacionAfip.fvtopagoKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
-  m, n: string;
+  m, n, x, z: string;
 begin
    if (Key = VK_RETURN) then begin
      if (utiles.ctrlFecha(fvtopago)) then begin
        m := utiles.sExprFecha2000(fvtopago.Text);
        n := copy(m, 7, 2) + '/' + copy(m, 5, 2) + '/' + copy(m, 1, 4);
-       facturacion.registrarFechaVto2(periodo.Text, D.Cells[2, D.Row], n);
+       x := utiles.sExprFecha2000(fecha.Text);
+       z := copy(x, 7, 2) + '/' + copy(x, 5, 2) + '/' + copy(x, 1, 4);
+
+       facturacion.registrarFechaVto2(periodo.Text, D.Cells[2, D.Row], z, n);
+
        D.Cells[13, D.Row] := n;
+
      end;
    end;
 end;

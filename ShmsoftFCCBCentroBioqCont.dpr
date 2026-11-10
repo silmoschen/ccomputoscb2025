@@ -185,7 +185,6 @@ uses
   uploadftp in 'uploadftp.pas' {fmUploadFTP},
   fmConfigFTP in 'fmConfigFTP.pas' {fmConfigurarFTP},
   CFirebirdConnect in 'clases\CFirebirdConnect.pas',
-  CFirebird in '..\..\CLASES\CFirebird.pas',
   ListPracticasRealizadas in 'ListPracticasRealizadas.pas' {fmListPracticasRealizadas},
   facturacionAFIP in 'facturacionAFIP.pas' {fmFacturacionAfip},
   facturaService3 in 'clases\facturaService3.pas',
@@ -208,7 +207,8 @@ uses
   CAuditoriaCCB in 'clases\CAuditoriaCCB.pas',
   CComregi in 'clases\CComregi.pas',
   CFacturacionCCB in 'clases\CFacturacionCCB.pas',
-  NomecladorAn in 'NomecladorAn.pas' {fmNomeclador};
+  NomecladorAn in 'NomecladorAn.pas' {fmNomeclador},
+  CFirebird in 'clases\CFirebird.pas';
 
 {$R *.RES}
 

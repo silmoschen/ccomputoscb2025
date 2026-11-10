@@ -85,7 +85,6 @@ Begin
     IBDatabase.Params.Add('user_name=' + xusuario);
     IBDatabase.Params.Add('password=' + xpassword);
     IBDatabase.TraceFlags := [];
-    IBDatabase.IdleTimer := 1;
     IBDatabase.LoginPrompt := False;
     try
       IBDatabase.Open;
@@ -100,9 +99,7 @@ Begin
     IBTransaction.Params.Add('nowait');
 
     IBDatabase.DefaultTransaction := IBTransaction;
-
     IBTransaction.Active := true;
-    utiles.msgError('2');
   end;
 
   Result := IBDatabase.Connected;
@@ -112,23 +109,25 @@ procedure TTFirebird.Desconectar;
 var
   i: integer;
 Begin
-  if IBDatabase <> Nil then
-    //if IBDatabase.Connected then Begin
-      // 01/05/2014
-      for i := IBDatabase.TransactionCount - 1 downto 0 do begin
-        if (IBDatabase.Transactions[i].Active) then begin
-          IBDatabase.Transactions[i].Rollback;
-          IBDatabase.Transactions[i].Active := false;
-        end;
+  if IBDatabase <> Nil then begin
+    for i := IBDatabase.TransactionCount - 1 downto 0 do begin
+      if (IBDatabase.Transactions[i].Active) then begin
+        IBDatabase.Transactions[i].Rollback;
+        IBDatabase.Transactions[i].Active := false;
       end;
-      IBTransaction.Destroy;
-      IBDatabase.RemoveTransactions;
-      IBDatabase.CloseDataSets;
+    end;
+    IBTransaction.Destroy;
+    IBTransaction := Nil;
+    IBDatabase.RemoveTransactions;
+    IBDatabase.CloseDataSets;
+    try
+      IBDatabase.Close;
+    except
       IBDatabase.ForceClose;
-      IBDatabase.Destroy;
-      IBDatabase := Nil;
-      //UTILES.msgError('CERRADA');
-    //end;
+    end;
+    IBDatabase.Destroy;
+    IBDatabase := Nil;
+  end;
 end;
 
 procedure  TTFirebird.Desconectar(xdatabase: TIBDataBase);
@@ -295,25 +294,33 @@ end;
 procedure TTFirebird.TransacSQL(xsql: String);
 // Objetivo...: Disparar una sentencia sql
 var
+  tr: TIBTransaction;
   rsql: TIBQuery;
 Begin
-  if not (IBDatabase.Connected) then begin
+  if not (IBDatabase.Connected) then
     IBDatabase.Connected := true;
-    IBDatabase.DefaultTransaction := IBTransaction;
-    IBTransaction.Active := true;
-  end;
 
+  tr := TIBTransaction.Create(Nil);
+  rsql := TIBQuery.Create(Nil);
   try
-    if not (IBTransaction.Active) then IBTransaction.Active := true;
-    rsql := TIBQuery.Create(Nil);
-    rsql.Transaction := IBTransaction;
-    rsql.SQL.Add(xsql);
-    rsql.ExecSQL;
-    IBTransaction.CommitRetaining;
-    IBTransaction.AutoStopAction := SACommit;
-  except
-    IBTransaction.RollbackRetaining;
-    utiles.msgError(xsql);
+    try
+      tr.DefaultDatabase := IBDatabase;
+      tr.Params.Add('read_committed');
+      tr.Params.Add('rec_version');
+      tr.Params.Add('nowait');
+      tr.Active := true;
+      rsql.Database := IBDatabase;
+      rsql.Transaction := tr;
+      rsql.SQL.Add(xsql);
+      rsql.ExecSQL;
+      tr.Commit;
+    except
+      if tr.Active then tr.Rollback;
+      utiles.msgError(xsql);
+    end;
+  finally
+    rsql.Free;
+    tr.Free;
   end;
 end;
 
@@ -344,54 +351,83 @@ end;
 procedure TTFirebird.TransacSQLBatch(xsql: TStringList);
 // Objetivo...: Disparar una sentencia sql
 var
+  tr: TIBTransaction;
   rsql: TIBQuery;
   i: integer;
+  ok: Boolean;
 Begin
-  if not (IBDatabase.Connected) then begin
+  if not (IBDatabase.Connected) then
     IBDatabase.Connected := true;
-    IBDatabase.DefaultTransaction := IBTransaction;
-    IBTransaction.Active := true;
-  end;
 
-  if not (IBTransaction.Active) then IBTransaction.Active := true;
+  tr := TIBTransaction.Create(Nil);
   rsql := TIBQuery.Create(Nil);
-  rsql.Transaction := IBTransaction;
-  for i := 1 to xsql.Count do begin
-    rsql.SQL.Add(xsql[i-1]);
-    try
-      rsql.ExecSQL;
-      rsql.SQL.Clear;
-    except
-      utiles.msgError(xsql[i-1]);
-      exit;
+  ok := True;
+  try
+    tr.DefaultDatabase := IBDatabase;
+    tr.Params.Add('read_committed');
+    tr.Params.Add('rec_version');
+    tr.Params.Add('nowait');
+    tr.Active := true;
+    rsql.Database := IBDatabase;
+    rsql.Transaction := tr;
+    for i := 1 to xsql.Count do begin
+      rsql.SQL.Add(xsql[i-1]);
+      try
+        rsql.ExecSQL;
+        rsql.SQL.Clear;
+      except
+        utiles.msgError(xsql[i-1]);
+        ok := False;
+        Break;
+      end;
     end;
+    if ok then tr.Commit
+    else if tr.Active then tr.Rollback;
+  finally
+    rsql.Free;
+    tr.Free;
   end;
-  IBTransaction.CommitRetaining;
-  IBTransaction.AutoStopAction := SACommit;
-  xsql.Clear;
+  if ok then xsql.Clear;
 end;
 
 procedure TTFirebird.TransacSQLBatch(xsql, xparams: TStringList);
 // Objetivo...: Disparar una sentencia sql
 var
+  tr: TIBTransaction;
   rsql: TIBQuery;
   i: integer;
+  ok: Boolean;
 Begin
+  tr := TIBTransaction.Create(Nil);
   rsql := TIBQuery.Create(Nil);
-  rsql.Transaction := IBTransaction;
-  for i := 1 to xsql.Count do begin
-    rsql.SQL.Add(xsql[i-1]);
-    //rsql.Params.AssignValues(xparams[i-1]);
-    try
-      rsql.ExecSQL;
-      rsql.SQL.Clear;
-    except
-      utiles.msgError(xsql[i-1])
+  ok := True;
+  try
+    tr.DefaultDatabase := IBDatabase;
+    tr.Params.Add('read_committed');
+    tr.Params.Add('rec_version');
+    tr.Params.Add('nowait');
+    tr.Active := true;
+    rsql.Database := IBDatabase;
+    rsql.Transaction := tr;
+    for i := 1 to xsql.Count do begin
+      rsql.SQL.Add(xsql[i-1]);
+      //rsql.Params.AssignValues(xparams[i-1]);
+      try
+        rsql.ExecSQL;
+        rsql.SQL.Clear;
+      except
+        utiles.msgError(xsql[i-1]);
+        ok := False;
+        Break;
+      end;
     end;
+    if ok then tr.Commit
+    else if tr.Active then tr.Rollback;
+  finally
+    rsql.Free;
+    tr.Free;
   end;
-  IBTransaction.CommitRetaining;
-  IBTransaction.AutoStopAction := SACommit;
-  xsql.Clear;
+  if ok then xsql.Clear;
 end;
 
 //------------------------------------------------------------------------------

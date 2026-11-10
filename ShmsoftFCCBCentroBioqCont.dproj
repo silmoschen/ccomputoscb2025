@@ -50,7 +50,6 @@
     <DCCReference Include="..\..\CLASES\CEstadisticasFacturacionCCB.pas" />
     <DCCReference Include="..\..\CLASES\CExpira.pas" />
     <DCCReference Include="..\..\CLASES\CExpiracion.pas" />
-    <DCCReference Include="..\..\CLASES\CFirebird.pas" />
     <DCCReference Include="..\..\clases\CIDBFM.pas" />
     <DCCReference Include="..\..\CLASES\CListar.pas" />
     <DCCReference Include="..\..\CLASES\CMedicosCabCCB.pas" />
@@ -271,6 +270,7 @@
     <DCCReference Include="clases\CDebitosCreditosIAPOS.pas" />
     <DCCReference Include="clases\CExportObrasSociales.pas" />
     <DCCReference Include="clases\CFacturacionCCB.pas" />
+    <DCCReference Include="clases\CFirebird.pas" />
     <DCCReference Include="clases\CFirebirdConnect.pas" />
     <DCCReference Include="clases\CFTP.pas" />
     <DCCReference Include="clases\CIntegridadReferencial.pas" />
